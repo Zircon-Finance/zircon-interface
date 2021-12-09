@@ -66,6 +66,12 @@ export default function Pool() {
             </Text>
           </ButtonPrimary>
 
+          <ButtonPrimary id="join-pool-button" as={Link} style={{ padding: 16 }} to="/add/ETH">
+            <Text fontWeight={500} fontSize={20}>
+              {'Add Single Sided Liquidity'}
+            </Text>
+          </ButtonPrimary>
+
           <AutoColumn gap="12px" style={{ width: '100%' }}>
             <RowBetween padding={'0 8px'}>
               <Text color={theme.text1} fontWeight={500}>

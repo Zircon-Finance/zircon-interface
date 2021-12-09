@@ -316,7 +316,6 @@ export default function Swap() {
               otherCurrency={currencies[Field.INPUT]}
               id="swap-currency-output"
             />
-
             {recipient !== null && !showWrap ? (
               <>
                 <AutoRow justify="space-between" style={{ padding: '0 1rem' }}>

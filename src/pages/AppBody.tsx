@@ -23,8 +23,8 @@ export const BodyWrapper = styled.div`
     left: 0;
     z-index: -2;
     border-radius: inherit; /* !importanté */
-    background: rgba(24, 24, 24, 0.37);
-    backdrop-filter: blur(26px);
+    //background: rgba(24, 24, 24, 0.37);
+    //backdrop-filter: blur(26px);
   }
 `
 

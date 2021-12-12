@@ -1,21 +1,19 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, currencyEquals, DEV, TokenAmount, WDEV } from 'moonbeamswap'
-import React, { useCallback, useContext, useState } from 'react'
-import { Plus } from 'react-feather'
+import React, { useCallback, useState } from 'react'
 import ReactGA from 'react-ga'
 import { RouteComponentProps } from 'react-router-dom'
 import { Text } from 'rebass'
-import { ThemeContext } from 'styled-components'
 import { ButtonError, ButtonLight, ButtonPrimary } from '../../components/Button'
 import { BlueCard, GreyCard, LightCard } from '../../components/Card'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
 import TransactionConfirmationModal, { ConfirmationModalContent } from '../../components/TransactionConfirmationModal'
-import CurrencyInputPanel from '../../components/CurrencyInputPanel'
+import SingleSidedCurrencyInputPanel from '../../components/SingleSidedCurrencyInputPanel'
 import DoubleCurrencyLogo from '../../components/DoubleLogo'
 import { AddRemoveTabs } from '../../components/NavigationTabs'
 import { MinimalPositionCard } from '../../components/PositionCard'
-import Row, { RowBetween, RowFlat } from '../../components/Row'
+import Row, {RowBetween, RowFixed, RowFlat} from '../../components/Row'
 
 import { ROUTER_ADDRESS } from '../../constants'
 import { PairState } from '../../data/Reserves'
@@ -28,7 +26,7 @@ import { useDerivedMintInfo, useMintActionHandlers, useMintState } from '../../s
 
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { useIsExpertMode, useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
-import { TYPE } from '../../theme'
+import {TYPE} from '../../theme'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from '../../utils'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
@@ -37,15 +35,15 @@ import { Dots, Wrapper } from '../Pool/styleds'
 import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 import { currencyId } from '../../utils/currencyId'
 import { PoolPriceBar } from './PoolPriceBar'
+import Toggle from "../../components/Toggle";
 
 export default function AddSingleSidedLiquidity({
   match: {
-    params: { currencyIdA, currencyIdB }
+    params: { poolToken, currencyIdA, currencyIdB }
   },
   history
-}: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
+}: RouteComponentProps<{poolToken?: string, currencyIdA?: string; currencyIdB?: string }>) {
   const { account, chainId, library } = useActiveWeb3React()
-  const theme = useContext(ThemeContext)
 
   const currencyA = useCurrency(currencyIdA)
   const currencyB = useCurrency(currencyIdB)
@@ -75,8 +73,8 @@ export default function AddSingleSidedLiquidity({
     poolTokenPercentage,
     error
   } = useDerivedMintInfo(currencyA ?? undefined, currencyB ?? undefined)
-  const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity)
-
+  const { onFieldAInput } = useMintActionHandlers(noLiquidity)
+  const [isAsync, setIsAsync] = useState(false);
   const isValid = !error
 
   // modal and loading
@@ -277,24 +275,25 @@ export default function AddSingleSidedLiquidity({
     (currencyA: Currency) => {
       const newCurrencyIdA = currencyId(currencyA)
       if (newCurrencyIdA === currencyIdB) {
-        history.push(`/add/${currencyIdB}/${currencyIdA}`)
+        history.push(`/addSingleSided/${poolToken}/${currencyIdB}/${currencyIdA}`)
       } else {
-        history.push(`/add/${newCurrencyIdA}/${currencyIdB}`)
+        history.push(`/addSingleSided/${poolToken}/${newCurrencyIdA}/${currencyIdB}`)
       }
     },
     [currencyIdB, history, currencyIdA]
   )
+
   const handleCurrencyBSelect = useCallback(
     (currencyB: Currency) => {
       const newCurrencyIdB = currencyId(currencyB)
       if (currencyIdA === newCurrencyIdB) {
         if (currencyIdB) {
-          history.push(`/add/${currencyIdB}/${newCurrencyIdB}`)
+          history.push(`/addSingleSided/${poolToken}/${currencyIdB}/${newCurrencyIdB}`)
         } else {
-          history.push(`/add/${newCurrencyIdB}`)
+          history.push(`/addSingleSided/${poolToken}/${newCurrencyIdB}`)
         }
       } else {
-        history.push(`/add/${currencyIdA ? currencyIdA : 'ETH'}/${newCurrencyIdB}`)
+        history.push(`/addSingleSided/${poolToken}/${currencyIdA ? currencyIdA : 'ETH'}/${newCurrencyIdB}`)
       }
     },
     [currencyIdA, history, currencyIdB]
@@ -308,11 +307,17 @@ export default function AddSingleSidedLiquidity({
     }
     setTxHash('')
   }, [onFieldAInput, txHash])
-
+  function capitalizeFirstLetter(str?: string) {
+    if (str === undefined) {
+      return ""
+    }else{
+      return str?.charAt(0).toUpperCase() + str?.slice(1);
+    }
+  }
   return (
     <>
       <AppBody>
-        <AddRemoveTabs adding={true} />
+        <AddRemoveTabs adding={true} extraText={capitalizeFirstLetter(poolToken)}/>
         <Wrapper>
           <TransactionConfirmationModal
             isOpen={showConfirm}
@@ -347,31 +352,18 @@ export default function AddSingleSidedLiquidity({
                 </BlueCard>
               </ColumnCenter>
             )}
-            <CurrencyInputPanel
+            <SingleSidedCurrencyInputPanel
               value={formattedAmounts[Field.CURRENCY_A]}
               onUserInput={onFieldAInput}
               onMax={() => {
                 onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '')
               }}
-              onCurrencySelect={handleCurrencyASelect}
+              onCurrency1Select={handleCurrencyASelect}
+              onCurrency2Select={handleCurrencyBSelect}
               showMaxButton={!atMaxAmounts[Field.CURRENCY_A]}
-              currency={currencies[Field.CURRENCY_A]}
+              currencyA={currencies[Field.CURRENCY_A]}
+              currencyB={currencies[Field.CURRENCY_B]}
               id="add-liquidity-input-tokena"
-              showCommonBases
-            />
-            <ColumnCenter>
-              <Plus size="16" color={theme.text2} />
-            </ColumnCenter>
-            <CurrencyInputPanel
-              value={formattedAmounts[Field.CURRENCY_B]}
-              onUserInput={onFieldBInput}
-              onCurrencySelect={handleCurrencyBSelect}
-              onMax={() => {
-                onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
-              }}
-              showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
-              currency={currencies[Field.CURRENCY_B]}
-              id="add-liquidity-input-tokenb"
               showCommonBases
             />
             {currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (
@@ -393,6 +385,19 @@ export default function AddSingleSidedLiquidity({
                 </GreyCard>
               </>
             )}
+            <RowBetween>
+              <RowFixed>
+                <TYPE.black fontWeight={400} fontSize={14}>
+                  {"Async"}
+                </TYPE.black>
+              </RowFixed>
+              <Toggle
+                  id="toggle-expert-mode-button"
+                  isActive={isAsync}
+                  toggle={() => setIsAsync(!isAsync)}
+              />
+            </RowBetween>
+
 
             {!account ? (
               <ButtonLight onClick={toggleWalletModal}>Connect Wallet</ButtonLight>

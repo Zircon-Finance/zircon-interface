@@ -8,11 +8,11 @@ import { useTranslation } from 'react-i18next'
 import Question from '../../components/QuestionHelper'
 import FullPositionCard from '../../components/PositionCard'
 import { useTokenBalancesWithLoadingIndicator } from '../../state/wallet/hooks'
-import { StyledInternalLink, TYPE } from '../../theme'
+import {StyledInternalLink, TYPE} from '../../theme'
 import { Text } from 'rebass'
 import { LightCard } from '../../components/Card'
 import { RowBetween } from '../../components/Row'
-import { ButtonPrimary } from '../../components/Button'
+import {ButtonPrimary} from '../../components/Button'
 import { AutoColumn } from '../../components/Column'
 
 import { useActiveWeb3React } from '../../hooks'
@@ -60,17 +60,21 @@ export default function Pool() {
       <AppBody>
         <SwapPoolTabs active={'pool'} />
         <AutoColumn gap="lg" justify="center">
-          <ButtonPrimary id="join-pool-button" as={Link} style={{ padding: 16 }} to="/add/ETH">
-            <Text fontWeight={500} fontSize={20}>
-              {t('addLiquidity')}
-            </Text>
-          </ButtonPrimary>
+          <div style={{flexDirection: 'row', display: 'flex'}}>
+            <ButtonPrimary id="join-pool-button" as={Link} style={{ padding: 16, width: 150, marginRight: 8 }} to="/addSingleSided/anchor">
+              <Text fontWeight={500} fontSize={20}>
+                {'Add Anchor'}
+              </Text>
+            </ButtonPrimary>
 
-          <ButtonPrimary id="join-pool-button" as={Link} style={{ padding: 16 }} to="/add/ETH">
-            <Text fontWeight={500} fontSize={20}>
-              {'Add Single Sided Liquidity'}
-            </Text>
-          </ButtonPrimary>
+            <ButtonPrimary id="join-pool-button" as={Link} style={{ padding: 16, width: 150, marginLeft: 8  }} to="/addSingleSided/float">
+              <Text fontWeight={500} fontSize={20}>
+                {'Add Float'}
+              </Text>
+            </ButtonPrimary>
+          </div>
+
+
 
           <AutoColumn gap="12px" style={{ width: '100%' }}>
             <RowBetween padding={'0 8px'}>

@@ -20,6 +20,19 @@ export interface Colors {
   bg4: Color
   bg5: Color
 
+  // purple-bg-light
+  bg6: Color
+
+  //purple-currency-bg
+  bg7: Color
+  bg8: Color
+  bg9: Color
+  bg10: Color
+  bg11: Color
+  bg12: Color
+  bg13: Color
+  bg14: Color
+
   modalBG: Color
   advancedBG: Color
 

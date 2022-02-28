@@ -1,4 +1,4 @@
-import { Token, TokenAmount } from 'moonbeamswap'
+import { Token, TokenAmount } from 'zircon-sdk'
 import { useMemo } from 'react'
 import { useAllTokenBalances } from '../../state/wallet/hooks'
 

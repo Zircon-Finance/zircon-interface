@@ -3,16 +3,15 @@ import styled from 'styled-components'
 import { ExternalLink } from '../../theme'
 
 const InfoCard = styled.button<{ active?: boolean }>`
-  background-color: ${({ theme, active }) => (active ? theme.bg3 : theme.bg2)};
+  background-color: #534169;
   padding: 1rem;
   outline: none;
-  border: 1px solid;
+  border: none;
+  display: flex;
+  flex-flow: column-reverse !important;
   border-radius: 12px;
-  width: 100% !important;
-  &:focus {
-    box-shadow: 0 0 0 1px ${({ theme }) => theme.primary1};
-  }
-  border-color: ${({ theme, active }) => (active ? 'transparent' : theme.bg3)};
+  width: 60% !important;
+  margin: auto;
 `
 
 const OptionCard = styled(InfoCard as any)`
@@ -28,13 +27,13 @@ const OptionCardLeft = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap};
   justify-content: center;
   height: 100%;
+  margin: 10px 0 10px 0;
 `
 
 const OptionCardClickable = styled(OptionCard as any)<{ clickable?: boolean }>`
   margin-top: 0;
   &:hover {
     cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
-    border: ${({ clickable, theme }) => (clickable ? `1px solid ${theme.primary1}` : ``)};
   }
   opacity: ${({ disabled }) => (disabled ? '0.5' : '1')};
 `
@@ -61,6 +60,7 @@ const CircleWrapper = styled.div`
 `
 
 const HeaderText = styled.div`
+  justify-content: center;
   ${({ theme }) => theme.flexRowNoWrap};
   color: ${props => (props.color === 'blue' ? ({ theme }) => theme.primary1 : ({ theme }) => theme.text1)};
   font-size: 1rem;
@@ -76,11 +76,12 @@ const SubHeader = styled.div`
 const IconWrapper = styled.div<{ size?: number | null }>`
   ${({ theme }) => theme.flexColumnNoWrap};
   align-items: center;
+  margin: 20px 0 20px 0;
   justify-content: center;
   & > img,
   span {
-    height: ${({ size }) => (size ? size + 'px' : '24px')};
-    width: ${({ size }) => (size ? size + 'px' : '24px')};
+    height: ${({ size }) => (size ? size + 'px' : '65px')};
+    width: ${({ size }) => (size ? size + 'px' : '65px')};
   }
   ${({ theme }) => theme.mediaWidth.upToMedium`
     align-items: flex-end;

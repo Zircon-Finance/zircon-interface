@@ -1,4 +1,4 @@
-import { TokenAmount, Pair, Currency } from 'moonbeamswap'
+import { TokenAmount, Pair, Currency } from 'zircon-sdk'
 import { useMemo } from 'react'
 import { abi as IUniswapV2PairABI } from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 import { Interface } from '@ethersproject/abi'
@@ -49,6 +49,7 @@ export function usePairs(currencies: [Currency | undefined, Currency | undefined
       if (!reserves) return [PairState.NOT_EXISTS, null]
       const { reserve0, reserve1 } = reserves
       const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA]
+
       return [
         PairState.EXISTS,
         new Pair(new TokenAmount(token0, reserve0.toString()), new TokenAmount(token1, reserve1.toString()))

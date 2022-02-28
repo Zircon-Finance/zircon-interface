@@ -11,6 +11,12 @@ export const Wrapper = styled.div`
 
 export const ArrowWrapper = styled.div<{ clickable: boolean }>`
   padding: 2px;
+  height: 2.2rem;
+  width: 2.2rem;
+  display: flex;
+  background-color: ${({ theme }) => theme.bg6};
+  border-radius: 100%;
+  justify-content: center;
 
   ${({ clickable }) =>
     clickable

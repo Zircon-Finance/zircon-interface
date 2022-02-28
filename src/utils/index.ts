@@ -4,8 +4,9 @@ import { AddressZero } from '@ethersproject/constants'
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
-import { ROUTER_ADDRESS } from '../constants'
-import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, DEV } from 'moonbeamswap'
+import { abi as ZirconPylonRouterABI }  from 'zircon-protocol/artifacts/contracts/periphery/ZirconPylonRouter.sol/ZirconPylonRouter.json'
+import { PYLON_ROUTER_ADDRESS, ROUTER_ADDRESS } from '../constants'
+import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, DEV } from 'zircon-sdk'
 import { TokenAddressMap } from '../state/lists/hooks'
 
 // returns the checksummed address if the address is valid, otherwise returns false
@@ -91,6 +92,10 @@ export function getContract(address: string, ABI: any, library: Web3Provider, ac
 // account is optional
 export function getRouterContract(chainId: number, library: Web3Provider, account?: string): Contract {
   return getContract(ROUTER_ADDRESS[chainId ? chainId.toString() : ''], IUniswapV2Router02ABI, library, account)
+}
+
+export function getPylonRouterContract(chainId: number, library: Web3Provider, account?: string): Contract {
+  return getContract(PYLON_ROUTER_ADDRESS[chainId ? chainId.toString() : ''], ZirconPylonRouterABI, library, account)
 }
 
 export function escapeRegExp(string: string): string {

@@ -7,12 +7,16 @@ import { NavLink, Link as HistoryLink } from 'react-router-dom'
 import { ArrowLeft } from 'react-feather'
 import { RowBetween } from '../Row'
 import QuestionHelper from '../QuestionHelper'
+import Settings from '../Settings'
 
 const Tabs = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
   align-items: center;
-  border-radius: 3rem;
+  border-radius: 15px;
   justify-content: space-evenly;
+  padding: 0.2em;
+  margin: auto;
+  border: 1px solid ${({ theme }) => theme.bg6};
 `
 
 const activeClassName = 'ACTIVE'
@@ -22,6 +26,7 @@ const StyledNavLink = styled(NavLink).attrs({
 })`
   ${({ theme }) => theme.flexRowNoWrap}
   align-items: center;
+  font-weight: 400;
   justify-content: center;
   height: 3rem;
   border-radius: 3rem;
@@ -30,11 +35,12 @@ const StyledNavLink = styled(NavLink).attrs({
   text-decoration: none;
   color: ${({ theme }) => theme.text3};
   font-size: 20px;
+  padding: 1rem;
 
   &.${activeClassName} {
     border-radius: 12px;
-    font-weight: 500;
     color: ${({ theme }) => theme.text1};
+    background-color: ${({ theme }) => theme.bg6};
   }
 
   :hover,
@@ -44,7 +50,7 @@ const StyledNavLink = styled(NavLink).attrs({
 `
 
 const ActiveText = styled.div`
-  font-weight: 500;
+  font-weight: 200;
   font-size: 20px;
 `
 
@@ -68,10 +74,10 @@ export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' }) {
 
 export function FindPoolTabs() {
   return (
-    <Tabs>
+    <Tabs style={{border: 'none'}}>
       <RowBetween style={{ padding: '1rem' }}>
         <HistoryLink to="/pool">
-          <StyledArrowLeft />
+          <StyledArrowLeft strokeWidth={1} />
         </HistoryLink>
         <ActiveText>Import Pool</ActiveText>
         <QuestionHelper text={"Use this tool to find pairs that don't automatically appear in the interface."} />
@@ -82,19 +88,41 @@ export function FindPoolTabs() {
 
 export function AddRemoveTabs({ adding }: { adding: boolean }) {
   return (
-    <Tabs>
+    <Tabs style={{border: 'none', padding: '1rem'}}>
       <RowBetween style={{ padding: '1rem' }}>
         <HistoryLink to="/pool">
-          <StyledArrowLeft />
+          <StyledArrowLeft strokeWidth={1} />
         </HistoryLink>
         <ActiveText>{adding ? 'Add' : 'Remove'} Liquidity</ActiveText>
-        <QuestionHelper
+        <Settings />
+        {/* <QuestionHelper
           text={
             adding
               ? 'When you add liquidity, you are given pool tokens representing your position. These tokens automatically earn fees proportional to your share of the pool, and can be redeemed at any time.'
               : 'Removing pool tokens converts your position back into underlying tokens at the current rate, proportional to your share of the pool. Accrued fees are included in the amounts you receive.'
           }
-        />
+        /> */}
+      </RowBetween>
+    </Tabs>
+  )
+}
+
+export function AddRemoveTabsClassic({ adding }: { adding: boolean }) {
+  return (
+    <Tabs style={{border: 'none', padding: '1rem'}}>
+      <RowBetween style={{ padding: '1rem' }}>
+        <HistoryLink to="/pool">
+          <StyledArrowLeft strokeWidth={1} />
+        </HistoryLink>
+        <ActiveText>{adding ? 'Classic' : 'Remove'} Liquidity</ActiveText>
+        <Settings />
+        {/* <QuestionHelper
+          text={
+            adding
+              ? 'When you add liquidity, you are given pool tokens representing your position. These tokens automatically earn fees proportional to your share of the pool, and can be redeemed at any time.'
+              : 'Removing pool tokens converts your position back into underlying tokens at the current rate, proportional to your share of the pool. Accrued fees are included in the amounts you receive.'
+          }
+        /> */}
       </RowBetween>
     </Tabs>
   )

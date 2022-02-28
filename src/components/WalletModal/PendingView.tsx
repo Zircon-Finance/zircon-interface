@@ -24,7 +24,7 @@ const StyledLoader = styled(Loader)`
 const LoadingMessage = styled.div<{ error?: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap};
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   border-radius: 12px;
   margin-bottom: 20px;
   color: ${({ theme, error }) => (error ? theme.red1 : 'inherit')};
@@ -48,7 +48,7 @@ const ErrorButton = styled.div`
   background-color: ${({ theme }) => theme.bg4};
   margin-left: 1rem;
   padding: 0.5rem;
-  font-weight: 600;
+  font-weight: 500;
   user-select: none;
 
   &:hover {

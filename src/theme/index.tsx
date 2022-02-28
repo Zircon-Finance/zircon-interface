@@ -49,18 +49,34 @@ export function colors(): Colors {
     text5: '#2C2F36',
 
     // backgrounds / greys
-    bg1: '#212429',
-    bg2: '#020202',
-    bg3: '#40444F',
-    bg4: '#565A69',
+    bg1: '#221237', // Dark purple
+    bg2: '#020202', //Black
+    bg3: '#40444F', // Dark gray
+    bg4: '#565A69', // Lighter gray
     bg5: '#6C7284',
-
+    // light purple - inputs
+    bg6: '#534169',
+    // darker purple - container
+    bg7: '#402d58',
+    // connect wallet button - dark purple
+    bg8: '#4a207c',
+    // max button - very light purple
+    bg9: '#443455',
+    //modal bg 
+    bg10: '#3c2955',
+    //button bg
+    bg11: '#604C7A',
+    // hover button
+    bg12: '#5B4874',
+    // button purple
+    bg13: '#5F299F',
+    bg14: '#4E386B',
     //specialty colors
     modalBG: 'rgba(0,0,0,.425)',
     advancedBG: 'rgba(0,0,0,0.1)',
 
     //primary colors
-    primary1: '#9221E5',
+    primary1: '#A69BB5',
     primary2: '#A548E9',
     primary3: '#BA73ED',
     primary4: '#A548E970',
@@ -140,6 +156,9 @@ export const TYPE = {
   body(props: TextProps) {
     return <TextWrapper fontWeight={400} fontSize={16} color={'text1'} {...props} />
   },
+  smallerBody(props: TextProps) {
+    return <TextWrapper fontWeight={400} fontSize={13} color={'text1'} {...props} />
+  },
   largeHeader(props: TextProps) {
     return <TextWrapper fontWeight={600} fontSize={24} {...props} />
   },
@@ -171,13 +190,13 @@ export const TYPE = {
 
 export const FixedGlobalStyle = createGlobalStyle`
 html, input, textarea, button {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   letter-spacing: -0.018em;
   font-display: fallback;
 }
 @supports (font-variation-settings: normal) {
   html, input, textarea, button {
-    font-family: 'Inter var', sans-serif;
+    font-family: 'Montserrat', sans-serif;
   }
 }
 
@@ -189,6 +208,8 @@ body {
 
 * {
   box-sizing: border-box;
+  transition: all 0.1s ease-out;
+  ${window.innerWidth < 800 && 'overflow: hidden'}
 }
 
 button {
@@ -214,7 +235,9 @@ html {
 body {
   min-height: 100vh;
   background-repeat: no-repeat;
-  background-image: radial-gradient(circle at right top, #9221E544, #020202);
+  background-size: cover;
+  background: radial-gradient(42.57% 42.57% at 50% 50%, rgba(44, 9, 90, 0.95) 0%, rgba(29, 8, 51, 0.95) 99.19%);
+  background-attachment: fixed;
 
 }
 

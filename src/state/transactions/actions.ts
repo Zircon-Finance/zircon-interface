@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit'
-import { ChainId } from 'moonbeamswap'
+import { ChainId } from 'zircon-sdk'
 
 export interface SerializableTransactionReceipt {
   to: string

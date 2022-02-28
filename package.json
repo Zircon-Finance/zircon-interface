@@ -1,6 +1,6 @@
 {
   "name": "@uniswap/interface",
-  "description": "Uniswap Interface",
+  "description": "Swap and provide liquidity in one token on Zircon, powered by Moonbeam",
   "homepage": ".",
   "private": true,
   "devDependencies": {
@@ -104,5 +104,10 @@
       "last 1 safari version"
     ]
   },
-  "license": "GPL-3.0-or-later"
+  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "react-ga4": "^1.4.1",
+    "zircon-protocol": "^1.0.0",
+    "zircon-sdk": "1.0.1"
+  }
 }

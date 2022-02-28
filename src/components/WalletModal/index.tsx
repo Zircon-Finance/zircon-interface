@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import ReactGA from 'react-ga'
+import ReactGA from 'react-ga4'
 import styled from 'styled-components'
 import { isMobile } from 'react-device-detect'
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
@@ -16,13 +16,13 @@ import MetamaskIcon from '../../assets/images/metamask.png'
 import { ReactComponent as Close } from '../../assets/images/x.svg'
 import { injected, fortmatic, portis } from '../../connectors'
 import { OVERLAY_READY } from '../../connectors/Fortmatic'
-import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
+// import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 
 const CloseIcon = styled.div`
   position: absolute;
-  right: 1rem;
-  top: 14px;
+  right: 2rem;
+  top: 2rem;
   &:hover {
     cursor: pointer;
     opacity: 0.6;
@@ -44,17 +44,17 @@ const Wrapper = styled.div`
 
 const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
-  padding: 1rem 1rem;
+  padding: 2rem;
   font-weight: 500;
-  color: ${props => (props.color === 'blue' ? ({ theme }) => theme.primary1 : 'inherit')};
+  color: white;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     padding: 1rem;
   `};
 `
 
 const ContentWrapper = styled.div`
-  background-color: ${({ theme }) => theme.bg2};
-  padding: 2rem;
+  background-color: ${({ theme }) => theme.bg14};
+  padding: 1rem;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
 
@@ -179,9 +179,9 @@ export default function WalletModal({
     setWalletView(WALLET_VIEWS.PENDING)
 
     // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
-    if (connector instanceof WalletConnectConnector && connector.walletConnectProvider?.wc?.uri) {
-      connector.walletConnectProvider = undefined
-    }
+    // if (connector instanceof WalletConnectConnector && connector.walletConnectProvider?.wc?.uri) {
+    //   connector.walletConnectProvider = undefined
+    // }
 
     connector &&
       activate(connector, undefined, true).catch(error => {
@@ -296,7 +296,7 @@ export default function WalletModal({
           <HeaderRow>{error instanceof UnsupportedChainIdError ? 'Wrong Network' : 'Error connecting'}</HeaderRow>
           <ContentWrapper>
             {error instanceof UnsupportedChainIdError ? (
-              <h5>Please connect to the appropriate Ethereum network.</h5>
+              <h5>Please connect to the appropriate Moonbase Alpha network.</h5>
             ) : (
               'Error connecting. Try refreshing the page.'
             )}
@@ -336,7 +336,7 @@ export default function WalletModal({
             <HoverText>Connect to a wallet</HoverText>
           </HeaderRow>
         )}
-        <ContentWrapper>
+        <ContentWrapper style={{backgroundColor: 'transparent', width: '100%'}}>
           {walletView === WALLET_VIEWS.PENDING ? (
             <PendingView
               connector={pendingWallet}
@@ -348,9 +348,17 @@ export default function WalletModal({
             <OptionGrid>{getOptions()}</OptionGrid>
           )}
           {walletView !== WALLET_VIEWS.PENDING && (
-            <Blurb>
-              <span>New to Ethereum? &nbsp;</span>{' '}
-              <ExternalLink href="https://ethereum.org/wallets/">Learn more about wallets</ExternalLink>
+            <Blurb style={{display: 'flex', flexFlow: 'column'}}>
+              <span style={{marginBottom: '10px'}}>Haven't got a crypto wallet yet? &nbsp;</span>{' '}
+              <ExternalLink 
+                href="https://ethereum.org/wallets/"
+                style={{padding: '10px 0 10px 0',
+                        border: `1px solid #59496E`, 
+                        width: '100%', 
+                        textAlign: 'center', 
+                        borderRadius: '25px', 
+                        color: 'white',
+                        }}>Learn how to connect</ExternalLink>
             </Blurb>
           )}
         </ContentWrapper>

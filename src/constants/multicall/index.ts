@@ -1,4 +1,4 @@
-import { ChainId } from 'moonbeamswap'
+import { ChainId } from 'zircon-sdk'
 import MULTICALL_ABI from './abi.json'
 import { multicall } from '../../moonbase_address.json'
 

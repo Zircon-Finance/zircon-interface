@@ -1,5 +1,5 @@
-import React, { Suspense } from 'react'
-import { HashRouter, Route, Switch } from 'react-router-dom'
+import React, { Suspense, useEffect, useState } from 'react'
+import { HashRouter, Redirect, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import GoogleAnalyticsReporter from '../components/analytics/GoogleAnalyticsReporter'
 import Header from '../components/Header'
@@ -7,10 +7,16 @@ import Popups from '../components/Popups'
 import Web3ReactManager from '../components/Web3ReactManager'
 import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader'
 import AddLiquidity from './AddLiquidity'
+import AddLiquidityPro from './AddLiquidityPro'
+import MobileView from './MobileView'
+import {
+  RedirectDuplicateTokenIdsPro,
+  RedirectOldAddLiquidityProPathStructure,
+  RedirectToAddLiquidityPro
+} from './AddLiquidityPro/redirects'
 import {
   RedirectDuplicateTokenIds,
   RedirectOldAddLiquidityPathStructure,
-  RedirectToAddLiquidity
 } from './AddLiquidity/redirects'
 import Pool from './Pool'
 import PoolFinder from './PoolFinder'
@@ -18,12 +24,27 @@ import Swap from './Swap'
 import RemoveLiquidity from './RemoveLiquidity'
 import { RedirectPathToSwapOnly, RedirectToSwap } from './Swap/redirects'
 import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
+import {RedirectOldRemoveLiquidityProPathStructure} from "./RemoveProLiquidity/redirects";
+import RemoveProLiquidity from "./RemoveProLiquidity";
 
 const AppWrapper = styled.div`
   display: flex;
   flex-flow: column;
   align-items: flex-start;
-  overflow-x: hidden;
+`
+
+const MobileWrapper = styled.div`
+  display: flex;
+  flex-flow: column;
+  align-items: flex-start;
+  background-color: rgba(12,12,12,0.8);
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  overflow: hidden;
 `
 
 const HeaderWrapper = styled.div`
@@ -39,8 +60,7 @@ const BodyWrapper = styled.div`
   padding-top: 160px;
   align-items: center;
   flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
+
   z-index: 10;
 
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
@@ -55,12 +75,27 @@ const Marginer = styled.div`
 `
 
 export default function App() {
+
+  const [isMobile, setIsMobile] = useState(false)
+
+  const handleResize = () => {
+    if (window.innerWidth < 800) {
+        setIsMobile(true)
+    } else {
+        setIsMobile(false)
+    }
+  }
+  useEffect(() => {
+    handleResize()
+  })
   return (
     <Suspense fallback={null}>
       <HashRouter>
+        {isMobile && <Redirect to="/mobile" />}
+        {isMobile && <MobileWrapper><MobileView /></MobileWrapper>}
         <Route component={GoogleAnalyticsReporter} />
         <Route component={DarkModeQueryParamReader} />
-        <AppWrapper>
+        <AppWrapper style={{overflow: isMobile ? 'hidden' : 'auto'}}>
           <HeaderWrapper>
             <Header />
           </HeaderWrapper>
@@ -73,12 +108,18 @@ export default function App() {
                 <Route exact strict path="/send" component={RedirectPathToSwapOnly} />
                 <Route exact strict path="/find" component={PoolFinder} />
                 <Route exact strict path="/pool" component={Pool} />
-                <Route exact strict path="/create" component={RedirectToAddLiquidity} />
+                <Route exact strict path="/create" component={RedirectToAddLiquidityPro} />
                 <Route exact path="/add" component={AddLiquidity} />
                 <Route exact path="/add/:currencyIdA" component={RedirectOldAddLiquidityPathStructure} />
                 <Route exact path="/add/:currencyIdA/:currencyIdB" component={RedirectDuplicateTokenIds} />
+                <Route exact path="/add-pro" component={AddLiquidityPro} />
+                <Route exact path="/add-pro/:currencyIdA" component={RedirectOldAddLiquidityProPathStructure} />
+                <Route exact path="/add-pro/:currencyIdA/:currencyIdB" component={RedirectDuplicateTokenIdsPro} />
                 <Route exact strict path="/remove/:tokens" component={RedirectOldRemoveLiquidityPathStructure} />
                 <Route exact strict path="/remove/:currencyIdA/:currencyIdB" component={RemoveLiquidity} />
+                <Route exact strict path="/remove-pro/:tokens" component={RedirectOldRemoveLiquidityProPathStructure} />
+                <Route exact strict path="/remove-pro/:currencyIdA/:currencyIdB" component={RedirectOldRemoveLiquidityProPathStructure} />
+                <Route exact strict path="/remove-pro/:currencyIdA/:currencyIdB/:float" component={RemoveProLiquidity} />
                 <Route component={RedirectPathToSwapOnly} />
               </Switch>
             </Web3ReactManager>

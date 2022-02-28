@@ -28,16 +28,15 @@ const AnimatedDialogContent = animated(DialogContent)
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, ...rest }) => (
   <AnimatedDialogContent {...rest} />
-)).attrs({
+)).attrs({ //width 300 px is width of wallet modal
   'aria-label': 'dialog'
 })`
   &[data-reach-dialog-content] {
     margin: 0 0 2rem 0;
-    border: 1px solid ${({ theme }) => theme.bg1};
-    background-color: ${({ theme }) => theme.bg1};
+    background-color: ${({ theme }) => theme.bg10};
     box-shadow: 0 4px 8px 0 ${({ theme }) => transparentize(0.95, theme.shadow1)};
     padding: 0px;
-    width: 50vw;
+    width: 350px;
     overflow: hidden;
 
     align-self: ${({ mobile }) => (mobile ? 'flex-end' : 'center')};
@@ -54,7 +53,7 @@ const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, ...r
         min-height: ${minHeight}vh;
       `}
     display: flex;
-    border-radius: 20px;
+    border-radius: 27px;
     ${({ theme }) => theme.mediaWidth.upToMedium`
       width: 65vw;
       margin: 0;
@@ -64,7 +63,7 @@ const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, ...r
       ${mobile &&
         css`
           width: 100vw;
-          border-radius: 20px;
+          border-radius: 27px;
           border-bottom-left-radius: 0;
           border-bottom-right-radius: 0;
         `}

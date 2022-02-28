@@ -60,6 +60,7 @@ const InfoCard = styled.div`
   display: grid;
   grid-row-gap: 12px;
   margin-bottom: 20px;
+  background-color:${({ theme }) => theme.bg14};
 `
 
 const AccountGroupingRow = styled.div`
@@ -76,7 +77,6 @@ const AccountGroupingRow = styled.div`
 `
 
 const AccountSection = styled.div`
-  background-color: ${({ theme }) => theme.bg1};
   padding: 0rem 1rem;
   ${({ theme }) => theme.mediaWidth.upToMedium`padding: 0rem 1rem 1.5rem 1rem;`};
 `
@@ -98,7 +98,6 @@ const LowerSection = styled.div`
   padding: 1.5rem;
   flex-grow: 1;
   overflow: auto;
-  background-color: ${({ theme }) => theme.bg2};
   border-bottom-left-radius: 25px;
   border-bottom-right-radius: 20px;
 
@@ -133,8 +132,7 @@ const AccountControl = styled.div`
 
 const AddressLink = styled(ExternalLink)<{ hasENS: boolean; isENS: boolean }>`
   font-size: 0.825rem;
-  color: ${({ theme }) => theme.text3};
-  margin-left: 1rem;
+  color: ${({ theme }) => theme.text2};
   font-size: 0.825rem;
   display: flex;
   :hover {
@@ -162,7 +160,7 @@ const WalletName = styled.div`
   width: initial;
   font-size: 0.825rem;
   font-weight: 500;
-  color: ${({ theme }) => theme.text3};
+  color: #FFF;
 `
 
 const IconWrapper = styled.div<{ size?: number }>`
@@ -244,7 +242,7 @@ export default function AccountDetails({
   function getStatusIcon() {
     if (connector === injected) {
       return (
-        <IconWrapper size={16}>
+        <IconWrapper size={28}>
           <Identicon />
         </IconWrapper>
       )
@@ -322,7 +320,7 @@ export default function AccountDetails({
                   </WalletAction>
                 </div>
               </AccountGroupingRow>
-              <AccountGroupingRow id="web3-account-identifier-row">
+              <AccountGroupingRow id="web3-account-identifier-row" style={{border: '1px solid #604C7A', borderRadius: '12px', padding: '10px'}}>
                 <AccountControl>
                   {ENSName ? (
                     <>
@@ -333,9 +331,14 @@ export default function AccountDetails({
                     </>
                   ) : (
                     <>
-                      <div>
+                      <div >
                         {getStatusIcon()}
-                        <p> {account && shortenAddress(account)}</p>
+                        <p style={{fontSize: 30, fontWeight: 300}}> {account && shortenAddress(account)}</p>
+                        {account && (
+                          <Copy toCopy={account}>
+                            <span style={{ marginLeft: '4px' }}>Copy</span>
+                          </Copy>
+                        )}
                       </div>
                     </>
                   )}
@@ -346,11 +349,7 @@ export default function AccountDetails({
                   <>
                     <AccountControl>
                       <div>
-                        {account && (
-                          <Copy toCopy={account}>
-                            <span style={{ marginLeft: '4px' }}>Copy Address</span>
-                          </Copy>
-                        )}
+
                         {chainId && account && (
                           <AddressLink
                             hasENS={!!ENSName}
@@ -368,19 +367,13 @@ export default function AccountDetails({
                   <>
                     <AccountControl>
                       <div>
-                        {account && (
-                          <Copy toCopy={account}>
-                            <span style={{ marginLeft: '4px' }}>Copy Address</span>
-                          </Copy>
-                        )}
                         {chainId && account && (
                           <AddressLink
                             hasENS={!!ENSName}
                             isENS={false}
                             href={getEtherscanLink(chainId, account, 'address')}
                           >
-                            <LinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>View on Etherscan</span>
+                            <span>View on Etherscan ↗</span>
                           </AddressLink>
                         )}
                       </div>

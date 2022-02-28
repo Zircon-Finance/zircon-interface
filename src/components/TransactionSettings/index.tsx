@@ -27,15 +27,9 @@ const FancyButton = styled.button`
   font-size: 12px;
   width: auto;
   min-width: 3rem;
-  border: 1px solid ${({ theme }) => theme.bg3};
+  border: none;
   outline: none;
-  background: ${({ theme }) => theme.bg1};
-  :hover {
-    border: 1px solid ${({ theme }) => theme.bg4};
-  }
-  :focus {
-    border: 1px solid ${({ theme }) => theme.primary1};
-  }
+  background: #604C7A;
 `
 
 const Option = styled(FancyButton)<{ active: boolean }>`
@@ -43,14 +37,15 @@ const Option = styled(FancyButton)<{ active: boolean }>`
   :hover {
     cursor: pointer;
   }
-  background-color: ${({ active, theme }) => active && theme.primary1};
+  background-color: ${({ active }) => active && '#997AAF'};
   color: ${({ active, theme }) => (active ? theme.white : theme.text1)};
 `
 
 const Input = styled.input`
-  background: ${({ theme }) => theme.bg1};
+  background: transparent;
   font-size: 16px;
   width: auto;
+  border: ${({ theme }) => theme.bg2}
   outline: none;
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
@@ -150,7 +145,7 @@ export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, se
     <AutoColumn gap="md">
       <AutoColumn gap="sm">
         <RowFixed>
-          <TYPE.black fontWeight={400} fontSize={14} color={theme.text2}>
+          <TYPE.black fontWeight={400} fontSize={13} color={theme.white}>
             {t('slippageTolerance')}
           </TYPE.black>
           <QuestionHelper text="Your transaction will revert if the price changes unfavorably by more than this percentage." />
@@ -227,7 +222,7 @@ export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, se
 
       <AutoColumn gap="sm">
         <RowFixed>
-          <TYPE.black fontSize={14} fontWeight={400} color={theme.text2}>
+          <TYPE.black fontSize={13} fontWeight={400} color={theme.white}>
           {t('transactionDeadline')}
           </TYPE.black>
           <QuestionHelper text="Your transaction will revert if it is pending for more than this long." />

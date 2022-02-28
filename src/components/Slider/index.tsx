@@ -34,9 +34,9 @@ const StyledRangeInput = styled.input<{ size: number }>`
 
   &::-moz-range-thumb {
     height: ${({ size }) => size}px;
-    width: ${({ size }) => size}px;
-    background-color: #565a69;
-    border-radius: 100%;
+    width: 35px;
+    background-color: ${({ theme }) => theme.bg9};
+    border-radius: 17px;
     border: none;
     color: ${({ theme }) => theme.bg1};
 

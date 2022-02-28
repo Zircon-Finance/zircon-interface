@@ -31,7 +31,7 @@ export const MenuItem = styled(RowBetween)`
   cursor: ${({ disabled }) => !disabled && 'pointer'};
   pointer-events: ${({ disabled }) => disabled && 'none'};
   :hover {
-    background-color: ${({ theme, disabled }) => !disabled && theme.bg2};
+    background-color: ${({ theme, disabled }) => !disabled && theme.bg6};
   }
   opacity: ${({ disabled, selected }) => (disabled || selected ? 0.5 : 1)};
 `
@@ -39,34 +39,35 @@ export const MenuItem = styled(RowBetween)`
 export const SearchInput = styled.input`
   position: relative;
   display: flex;
-  padding: 16px;
+  padding: 18px 20px;
   align-items: center;
   width: 100%;
+  ::placeholder {
+    color: white;
+  }
   white-space: nowrap;
-  background: none;
+  background-color: ${({ theme}) => theme.bg9};
   border: none;
   outline: none;
-  border-radius: 20px;
-  color: ${({ theme }) => theme.text1};
+  border-radius: 17px;
+  color: white;
   border-style: solid;
   border: 1px solid ${({ theme }) => theme.bg3};
   -webkit-appearance: none;
+  transition: all 1s;
 
-  font-size: 18px;
-
-  ::placeholder {
-    color: ${({ theme }) => theme.text3};
-  }
+  font-size: 16px;
   transition: border 100ms;
   :focus {
-    border: 1px solid ${({ theme }) => theme.primary1};
+    border: 1px solid ${({ theme }) => theme.bg6};
     outline: none;
+    background-color: ${({ theme}) => theme.bg10}
   }
 `
 export const Separator = styled.div`
   width: 100%;
   height: 1px;
-  background-color: ${({ theme }) => theme.bg2};
+  background-color: ${({ theme }) => theme.bg6};
 `
 
 export const SeparatorDark = styled.div`

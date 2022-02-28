@@ -1,4 +1,4 @@
-import { CurrencyAmount, DEV, JSBI } from 'moonbeamswap'
+import { CurrencyAmount, DEV, JSBI } from 'zircon-sdk'
 import { MIN_ETH } from '../constants'
 
 /**

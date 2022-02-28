@@ -1,7 +1,7 @@
-import { CurrencyAmount, JSBI, Token, Trade } from 'moonbeamswap'
+import { CurrencyAmount, JSBI, Token, Trade } from 'zircon-sdk'
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ArrowDown } from 'react-feather'
-import ReactGA from 'react-ga'
+import ReactGA from 'react-ga4'
 import { Text } from 'rebass'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'styled-components'
@@ -11,7 +11,7 @@ import Card, { GreyCard } from '../../components/Card'
 import { AutoColumn } from '../../components/Column'
 import ConfirmSwapModal from '../../components/swap/ConfirmSwapModal'
 import CurrencyInputPanel from '../../components/CurrencyInputPanel'
-import { SwapPoolTabs } from '../../components/NavigationTabs'
+// import { SwapPoolTabs } from '../../components/NavigationTabs'
 import { AutoRow, RowBetween } from '../../components/Row'
 import AdvancedSwapDetailsDropdown from '../../components/swap/AdvancedSwapDetailsDropdown'
 import confirmPriceImpactWithoutFee from '../../components/swap/confirmPriceImpactWithoutFee'
@@ -19,6 +19,7 @@ import { ArrowWrapper, BottomGrouping, SwapCallbackError, Wrapper } from '../../
 import TradePrice from '../../components/swap/TradePrice'
 import TokenWarningModal from '../../components/TokenWarningModal'
 import ProgressSteps from '../../components/ProgressSteps'
+import Settings from '../../components/Settings'
 
 import { INITIAL_ALLOWED_SLIPPAGE } from '../../constants'
 import { useActiveWeb3React } from '../../hooks'
@@ -37,7 +38,7 @@ import {
   useSwapState
 } from '../../state/swap/hooks'
 import { useExpertModeManager, useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
-import { LinkStyledButton, TYPE } from '../../theme'
+import { LinkButtonHidden, LinkButtonLeftSide, TYPE } from '../../theme'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import AppBody from '../AppBody'
@@ -253,13 +254,18 @@ export default function Swap() {
 
   return (
     <>
+      {/* <SwapPoolTabs active={'swap'} /> */}
       <TokenWarningModal
         isOpen={urlLoadedTokens.length > 0 && !dismissTokenWarning}
         tokens={urlLoadedTokens}
         onConfirm={handleConfirmTokenWarning}
       />
       <AppBody>
-        <SwapPoolTabs active={'swap'} />
+        <div style={{display: 'flex', padding: '1rem', justifyContent: 'space-between'}}>
+        <p>{'Swap'}</p>
+        <Settings />
+        </div>
+
         <Wrapper id="swap-page">
           <ConfirmSwapModal
             isOpen={showConfirm}
@@ -275,7 +281,7 @@ export default function Swap() {
             onDismiss={handleConfirmDismiss}
           />
 
-          <AutoColumn gap={'md'}>
+          <AutoColumn gap={'md'} style={{backgroundColor: theme.bg7, borderRadius: '27px', padding: '25px 10px 10px 10px'}}>
             <CurrencyInputPanel
               label={independentField === Field.OUTPUT && !showWrap && trade ? 'From (estimated)' : 'From'}
               value={formattedAmounts[Field.INPUT]}
@@ -287,22 +293,28 @@ export default function Swap() {
               otherCurrency={currencies[Field.OUTPUT]}
               id="swap-currency-input"
             />
-            <AutoColumn justify="space-between">
-              <AutoRow justify={isExpertMode ? 'space-between' : 'center'} style={{ padding: '0 1rem' }}>
+            <AutoColumn>
+              <AutoRow justify={isExpertMode ? recipient === null ? 'space-between' : 'center' : 'center'} style={{ padding: '0 1rem', backgroundColor: theme.bg7 }}>
+                { recipient === null && isExpertMode && (<LinkButtonHidden>
+                    + Add a send (optional)
+                  </LinkButtonHidden>)}
                 <ArrowWrapper clickable>
                   <ArrowDown
-                    size="16"
+                    size="24"
+                    strokeWidth={1}
+                    stroke={'#FFF'}
                     onClick={() => {
                       setApprovalSubmitted(false) // reset 2 step UI for approvals
                       onSwitchTokens()
                     }}
+                    style={{alignSelf: 'center'}}
                     color={currencies[Field.INPUT] && currencies[Field.OUTPUT] ? theme.primary1 : theme.text2}
                   />
                 </ArrowWrapper>
                 {recipient === null && !showWrap && isExpertMode ? (
-                  <LinkStyledButton id="add-recipient-button" onClick={() => onChangeRecipient('')}>
+                  <LinkButtonLeftSide id="add-recipient-button" onClick={() => onChangeRecipient('')}>
                     + Add a send (optional)
-                  </LinkStyledButton>
+                  </LinkButtonLeftSide>
                 ) : null}
               </AutoRow>
             </AutoColumn>
@@ -317,19 +329,26 @@ export default function Swap() {
               id="swap-currency-output"
             />
 
-            {recipient !== null && !showWrap ? (
+            {recipient !== null && !showWrap && isExpertMode && (
               <>
                 <AutoRow justify="space-between" style={{ padding: '0 1rem' }}>
-                  <ArrowWrapper clickable={false}>
-                    <ArrowDown size="16" color={theme.text2} />
-                  </ArrowWrapper>
-                  <LinkStyledButton id="remove-recipient-button" onClick={() => onChangeRecipient(null)}>
+                    <LinkButtonHidden>
                     - Remove send
-                  </LinkStyledButton>
+                  </LinkButtonHidden>
+                  <ArrowWrapper clickable={false}>
+                    <ArrowDown size="24"
+                    strokeWidth={1}
+                    stroke={'#FFF'}
+                    style={{alignSelf: 'center'}}
+                    color={currencies[Field.INPUT] && currencies[Field.OUTPUT] ? theme.primary1 : theme.text2} />
+                  </ArrowWrapper>
+                  <LinkButtonLeftSide id="remove-recipient-button" onClick={() => onChangeRecipient(null)}>
+                    - Remove send
+                  </LinkButtonLeftSide>
                 </AutoRow>
                 <AddressInputPanel id="recipient" value={recipient} onChange={onChangeRecipient} />
               </>
-            ) : null}
+            )}
 
             {showWrap ? null : (
               <Card padding={'.25rem .75rem 0 .75rem'} borderRadius={'20px'}>

@@ -1,7 +1,8 @@
-import { ChainId } from 'moonbeamswap'
+// import { ChainId } from 'zircon-sdk'
 import React from 'react'
-import { isMobile } from 'react-device-detect'
+// import { isMobile } from 'react-device-detect'
 import { Text } from 'rebass'
+import { useLocation } from 'react-router-dom';
 
 import styled from 'styled-components'
 
@@ -9,10 +10,9 @@ import Logo from '../../assets/images/mainlogo.png'
 import { useActiveWeb3React } from '../../hooks'
 //import { useDarkModeManager } from '../../state/user/hooks'
 import { useETHBalances } from '../../state/wallet/hooks'
+import { SwapPoolTabs } from '../../components/NavigationTabs'
 
-import { YellowCard } from '../Card'
-import Settings from '../Settings'
-import Menu from '../Menu'
+// import { YellowCard } from '../Card'
 
 import { RowBetween } from '../Row'
 import Web3Status from '../Web3Status'
@@ -26,6 +26,7 @@ const HeaderFrame = styled.div`
   width: 100%;
   top: 0;
   position: absolute;
+  overflow-x: hidden;
   z-index: 2;
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     padding: 12px 0 0 0;
@@ -50,6 +51,7 @@ const HeaderElementWrap = styled.div`
 
 const Title = styled.a`
   display: flex;
+  width: 250px;
   align-items: center;
   pointer-events: auto;
   text-decoration: none;
@@ -64,29 +66,29 @@ const AccountElement = styled.div<{ active: boolean }>`
   display: flex;
   flex-direction: row;
   align-items: center;
-  background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.bg3)};
+  background-color: ${({ theme, active }) => (!active ? theme.bg1 : '#25123C')};
   border-radius: 12px;
   white-space: nowrap;
-  width: 100%;
+  width: 250px;
 
   :focus {
     border: 1px solid blue;
   }
 `
 
-const TestnetWrapper = styled.div`
-  white-space: nowrap;
-  width: fit-content;
-  margin-left: 10px;
-  pointer-events: auto;
-`
+// const TestnetWrapper = styled.div`
+//   white-space: nowrap;
+//   width: fit-content;
+//   margin-left: 10px;
+//   pointer-events: auto;
+// `
 
-const NetworkCard = styled(YellowCard)`
-  width: fit-content;
-  margin-right: 10px;
-  border-radius: 12px;
-  padding: 8px 12px;
-`
+// const NetworkCard = styled(YellowCard)`
+//   width: fit-content;
+//   margin-right: 10px;
+//   border-radius: 12px;
+//   padding: 8px 12px;
+// `
 
 const UniIcon = styled.div`
   transition: transform 0.3s ease;
@@ -112,19 +114,20 @@ const BalanceText = styled(Text)`
   `};
 `
 
-const NETWORK_LABELS: { [chainId in ChainId]: string | null } = {
-  [ChainId.MAINNET]: null,
-  [ChainId.STANDALONE]: 'Moonbeam Development',
-  [ChainId.MOONROCK]: 'Moonrock Rococo',
-  [ChainId.MOONBASE]: 'Moonbase Alpha',
-  [ChainId.MOONSHADOW]: 'Moonshadow Westend',
-}
+// const NETWORK_LABELS: { [chainId in ChainId]: string | null } = {
+//   [ChainId.MAINNET]: null,
+//   [ChainId.STANDALONE]: 'Moonbeam Development',
+//   [ChainId.MOONROCK]: 'Moonrock Rococo',
+//   [ChainId.MOONBASE]: 'Moonbase Alpha',
+//   [ChainId.MOONSHADOW]: 'Moonshadow Westend',
+// }
 
 export default function Header() {
-  const { account, chainId } = useActiveWeb3React()
+  const { account } = useActiveWeb3React()
 
   const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   //const [isDark] = useDarkModeManager()
+  const location = useLocation();
 
   return (
     <HeaderFrame>
@@ -136,11 +139,12 @@ export default function Header() {
             </UniIcon>
           </Title>
         </HeaderElement>
+        <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : 'pool'} />
         <HeaderControls>
           <HeaderElement>
-            <TestnetWrapper>
+            {/* <TestnetWrapper>
               {!isMobile && chainId && NETWORK_LABELS[chainId] && <NetworkCard>{NETWORK_LABELS[chainId]}</NetworkCard>}
-            </TestnetWrapper>
+            </TestnetWrapper> */}
             <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
               {account && userEthBalance ? (
                 <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
@@ -152,8 +156,6 @@ export default function Header() {
           </HeaderElement>
           <HeaderElementWrap>
             {/* <VersionSwitch /> */}
-            <Settings />
-            <Menu />
           </HeaderElementWrap>
         </HeaderControls>
       </RowBetween>

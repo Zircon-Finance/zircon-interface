@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, Pair, Token, Trade } from 'moonbeamswap'
+import { Currency, CurrencyAmount, Pair, Token, Trade } from 'zircon-sdk'
 import flatMap from 'lodash.flatmap'
 import { useMemo } from 'react'
 

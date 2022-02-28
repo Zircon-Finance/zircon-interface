@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, DEV, JSBI, Token, TokenAmount } from 'moonbeamswap'
+import { Currency, CurrencyAmount, DEV, JSBI, Token, TokenAmount } from 'zircon-sdk'
 import { useMemo } from 'react'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
 import { useAllTokens } from '../../hooks/Tokens'
@@ -48,7 +48,8 @@ export function useETHBalances(
  */
 export function useTokenBalancesWithLoadingIndicator(
   address?: string,
-  tokens?: (Token | undefined)[]
+  tokens?: (Token | undefined)[],
+
 ): [{ [tokenAddress: string]: TokenAmount | undefined }, boolean] {
   const validatedTokens: Token[] = useMemo(
     () => tokens?.filter((t?: Token): t is Token => isAddress(t?.address) !== false) ?? [],

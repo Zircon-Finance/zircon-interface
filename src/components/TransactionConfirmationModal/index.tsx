@@ -1,4 +1,4 @@
-import { ChainId } from 'moonbeamswap'
+import { ChainId } from 'zircon-sdk'
 import React, { useContext } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 import Modal from '../Modal'
@@ -18,11 +18,11 @@ const Wrapper = styled.div`
   width: 100%;
 `
 const Section = styled(AutoColumn)`
-  padding: 24px;
+  padding: 30px;
 `
 
 const BottomSection = styled(Section)`
-  background-color: ${({ theme }) => theme.bg2};
+  background-color: transparent;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
 `
@@ -52,11 +52,11 @@ function ConfirmationPendingContent({ onDismiss, pendingText }: { onDismiss: () 
             Waiting For Confirmation
           </Text>
           <AutoColumn gap="12px" justify={'center'}>
-            <Text fontWeight={600} fontSize={14} color="" textAlign="center">
+            <Text fontWeight={500} fontSize={14} color="" textAlign="center">
               {pendingText}
             </Text>
           </AutoColumn>
-          <Text fontSize={12} color="#565A69" textAlign="center">
+          <Text fontSize={12} color="gray" textAlign="center">
             Confirm this transaction in your wallet
           </Text>
         </AutoColumn>
@@ -74,7 +74,6 @@ function TransactionSubmittedContent({
   hash: string | undefined
   chainId: ChainId
 }) {
-  const theme = useContext(ThemeContext)
 
   return (
     <Wrapper>
@@ -84,22 +83,22 @@ function TransactionSubmittedContent({
           <CloseIcon onClick={onDismiss} />
         </RowBetween>
         <ConfirmedIcon>
-          <ArrowUpCircle strokeWidth={0.5} size={90} color={theme.primary1} />
+          <ArrowUpCircle strokeWidth={0.5} size={90} color={'#9082A2'} />
         </ConfirmedIcon>
         <AutoColumn gap="12px" justify={'center'}>
-          <Text fontWeight={500} fontSize={20}>
+          <Text fontWeight={400} fontSize={20}>
             Transaction Submitted
           </Text>
 
           {chainId && hash && (
             <ExternalLink href={getEtherscanLink(chainId, hash, 'transaction')}>
-              <Text fontWeight={500} fontSize={14} color={theme.primary1}>
-                View on Moonbeam explorer
+              <Text fontWeight={400} fontSize={14} color={'#9082A2'}>
+                View on Moonbeam explorer ↗
               </Text>
             </ExternalLink>
           )}
           <ButtonPrimary onClick={onDismiss} style={{ margin: '20px 0 0 0' }}>
-            <Text fontWeight={500} fontSize={20}>
+            <Text fontWeight={400} fontSize={20}>
               Close
             </Text>
           </ButtonPrimary>
@@ -122,12 +121,12 @@ export function ConfirmationModalContent({
 }) {
   return (
     <Wrapper>
-      <Section>
+      <Section style={{padding: '24px 24px 0 24px'}}>
         <RowBetween>
-          <Text fontWeight={500} fontSize={20}>
+          <Text fontWeight={400} fontSize={16}>
             {title}
           </Text>
-          <CloseIcon onClick={onDismiss} />
+          <CloseIcon onClick={onDismiss} strokeWidth={1} />
         </RowBetween>
         {topContent()}
       </Section>

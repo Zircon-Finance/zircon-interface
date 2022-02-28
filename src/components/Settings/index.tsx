@@ -1,6 +1,7 @@
 import React, { useRef, useContext, useState } from 'react'
-import { Settings, X } from 'react-feather'
+import { X } from 'react-feather'
 import styled from 'styled-components'
+import Settingsicon from '../SettingsIcon'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import {
   useUserSlippageTolerance,
@@ -21,7 +22,7 @@ import { Text } from 'rebass'
 import Modal from '../Modal'
 import { useTranslation } from 'react-i18next'
 
-const StyledMenuIcon = styled(Settings)`
+const StyledMenuIcon = styled(Settingsicon)`
   height: 20px;
   width: 20px;
 
@@ -51,7 +52,7 @@ const StyledMenuButton = styled.button`
   margin: 0;
   padding: 0;
   height: 35px;
-  background-color: ${({ theme }) => theme.bg3};
+  background-color: ${({ theme }) => theme.bg1};
 
   padding: 0.15rem 0.5rem;
   border-radius: 0.5rem;
@@ -60,7 +61,7 @@ const StyledMenuButton = styled.button`
   :focus {
     cursor: pointer;
     outline: none;
-    background-color: ${({ theme }) => theme.bg4};
+    background-color: ${({ theme }) => theme.bg9};
   }
 
   svg {
@@ -75,7 +76,6 @@ const EmojiWrapper = styled.div`
 `
 
 const StyledMenu = styled.div`
-  margin-left: 0.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -86,13 +86,9 @@ const StyledMenu = styled.div`
 
 const MenuFlyout = styled.span`
   min-width: 20.125rem;
-  background-color: ${({ theme }) => theme.bg1};
-  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
-    0px 24px 32px rgba(0, 0, 0, 0.01);
-
-  border: 1px solid ${({ theme }) => theme.bg3};
-
-  border-radius: 0.5rem;
+  background-color: ${({ theme }) => theme.bg14};
+  border-radius: 12px;
+  box-shadow: 0px 0px 30px rgba(34, 18, 55, 0.5);
   display: flex;
   flex-direction: column;
   font-size: 1rem;
@@ -160,7 +156,7 @@ export default function SettingsTab() {
               <Text fontWeight={500} fontSize={20}>
               {t('expertModeTips1')}
               </Text>
-              <Text fontWeight={600} fontSize={20}>
+              <Text fontWeight={500} fontSize={20}>
               {t('expertModeTips2')}
               </Text>
               <ButtonError
@@ -194,7 +190,7 @@ export default function SettingsTab() {
       {open && (
         <MenuFlyout>
           <AutoColumn gap="md" style={{ padding: '1rem' }}>
-            <Text fontWeight={600} fontSize={14}>
+            <Text fontWeight={400} fontSize={16}>
               {t('transactionSettings')}
             </Text>
             <TransactionSettings
@@ -203,12 +199,12 @@ export default function SettingsTab() {
               deadline={deadline}
               setDeadline={setDeadline}
             />
-            <Text fontWeight={600} fontSize={14}>
+            <Text fontWeight={400} fontSize={13}>
             {t('interfaceSettings')}
             </Text>
             <RowBetween>
               <RowFixed>
-                <TYPE.black fontWeight={400} fontSize={14} color={theme.text2}>
+                <TYPE.black fontWeight={400} fontSize={13} color={theme.text2}>
                 {t('toggleExpertMode')}
                 </TYPE.black>
                 <QuestionHelper text="Bypasses confirmation modals and allows high slippage trades. Use at your own risk." />

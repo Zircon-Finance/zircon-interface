@@ -342,25 +342,22 @@ export default function AddLiquidityPro({
                 addTransaction(response, {
                   summary:
                       'Add ' +
-                      parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
+                      parsedAmounts[float.field_a]?.toSignificant(3) +
                       ' ' +
-                      currencies[Field.CURRENCY_A]?.symbol +
+                      float.currency_a?.symbol +
                       ' and ' +
-                      parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
+                      parsedAmounts[float.field_b]?.toSignificant(3) +
                       ' ' +
-                      currencies[Field.CURRENCY_B]?.symbol
+                      float.currency_b?.symbol
 
                 })
               }else{
                 addTransaction(response, {
                   summary:
-                      sync === "off" ? 'Add sync ' : 'Add Async-100' +
-                      isFloat ? (parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
-                          ' ' +
-                          currencies[Field.CURRENCY_A]?.symbol)  : (
-                          parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
-                          ' ' +
-                          currencies[Field.CURRENCY_B]?.symbol)
+                      (sync === "off" ? 'Add sync ' : 'Add Async-100 ') +
+                      parsedAmounts[float.field_a]?.toSignificant(3) +
+                      ' ' +
+                      currencies[float.field_a]?.symbol
 
 
                 })
@@ -595,7 +592,9 @@ export default function AddLiquidityPro({
                           value={ formattedAmounts[float.field_a] }
                           onUserInput={float.field_a === Field.CURRENCY_A ? onFieldAInput : onFieldBInput}
                           onMax={() => {
-                            onFieldAInput(maxAmounts[float.field_a]?.toExact() ?? '')
+                            float.field_a === Field.CURRENCY_A ?
+                            onFieldAInput(maxAmounts[float.field_a as Field]?.toExact() ?? '') :
+                            onFieldAInput(maxAmounts[float.field_b as Field]?.toExact() ?? '')
                           }}
                           onCurrencySelect={handleCurrencyASelect}
                           showMaxButton={!atMaxAmounts[float.field_a]}

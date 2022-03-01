@@ -33,7 +33,7 @@ const AppWrapper = styled.div`
   align-items: flex-start;
 `
 
-const MobileWrapper = styled.div`
+export const MobileWrapper = styled.div`
   display: flex;
   flex-flow: column;
   align-items: flex-start;
@@ -92,7 +92,11 @@ export default function App() {
     <Suspense fallback={null}>
       <HashRouter>
         {isMobile && <Redirect to="/mobile" />}
-        {isMobile && <MobileWrapper><MobileView /></MobileWrapper>}
+        {isMobile && <MobileWrapper><MobileView 
+          icon='laptop'
+          upperText='Please use your desktop to try the Zircon Beta'
+          lowerText='Our app will be available on your phone soon'  />
+        </MobileWrapper>}
         <Route component={GoogleAnalyticsReporter} />
         <Route component={DarkModeQueryParamReader} />
         <AppWrapper style={{overflow: isMobile ? 'hidden' : 'auto'}}>

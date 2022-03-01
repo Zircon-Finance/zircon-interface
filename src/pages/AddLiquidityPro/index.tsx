@@ -38,6 +38,7 @@ import AppBody from '../AppBody'
 import {Dots, Wrapper} from '../Pool/styleds'
 import {ConfirmAddModalBottom} from './ConfirmAddModalBottom'
 import {currencyId} from '../../utils/currencyId'
+import { MobileWrapper } from '../App'
 // import { PoolPriceBar } from './PoolPriceBar'
 // import { ArrowDown } from 'react-feather'
 
@@ -129,11 +130,11 @@ export default function AddLiquidityPro({
 
   // check whether the user has approved the router on the tokens
   const [approvalA, approveACallback] = useApproveCallback(
-      parsedAmounts[Field.CURRENCY_A],
+      parsedAmounts[float.field_a],
       PYLON_ROUTER_ADDRESS[chainId ? chainId : '']
   )
   const [approvalB, approveBCallback] = useApproveCallback(
-      parsedAmounts[Field.CURRENCY_B],
+      parsedAmounts[float.field_b],
       PYLON_ROUTER_ADDRESS[chainId ? chainId : '']
   )
 
@@ -493,6 +494,7 @@ export default function AddLiquidityPro({
 
   return (
       <>
+      {pylonState === PylonState.LOADING && <MobileWrapper style={{backgroundColor: 'rgba(12,12,12,0.5)', position: 'fixed'}}></MobileWrapper>}
         <AppBody>
           <AddRemoveTabs adding={true} />
           <Wrapper>
@@ -687,25 +689,25 @@ export default function AddLiquidityPro({
                                       <ButtonPrimary
                                           onClick={approveACallback}
                                           disabled={approvalA === ApprovalState.PENDING}
-                                          width={approvalB !== ApprovalState.APPROVED ? '48%' : '100%'}
+                                          width={sync === 'half' ? (approvalB !== ApprovalState.APPROVED ? '48%' : '100%') : '100%'}
                                       >
                                         {approvalA === ApprovalState.PENDING ? (
-                                            <Dots>Approving {currencies[Field.CURRENCY_A]?.symbol}</Dots>
+                                            <Dots>Approving {currencies[float.field_a]?.symbol}</Dots>
                                         ) : (
-                                            'Approve ' + currencies[Field.CURRENCY_A]?.symbol
+                                            'Approve ' + currencies[float.field_a]?.symbol
                                         )}
                                       </ButtonPrimary>
                                   )}
-                                  {approvalB !== ApprovalState.APPROVED && (
+                                  {sync === 'half' && approvalB !== ApprovalState.APPROVED && (
                                       <ButtonPrimary
                                           onClick={approveBCallback}
                                           disabled={approvalB === ApprovalState.PENDING}
                                           width={approvalA !== ApprovalState.APPROVED ? '48%' : '100%'}
                                       >
                                         {approvalB === ApprovalState.PENDING ? (
-                                            <Dots>Approving {currencies[Field.CURRENCY_B]?.symbol}</Dots>
+                                            <Dots>Approving {currencies[float.field_b]?.symbol}</Dots>
                                         ) : (
-                                            'Approve ' + currencies[Field.CURRENCY_B]?.symbol
+                                            'Approve ' + currencies[float.field_b]?.symbol
                                         )}
                                       </ButtonPrimary>
                                   )}
@@ -715,7 +717,7 @@ export default function AddLiquidityPro({
                                 onClick={() => {
                                   expertMode ? onAdd() : setShowConfirm(true)
                                 }}
-                                disabled={!isValid || approvalA !== ApprovalState.APPROVED || approvalB !== ApprovalState.APPROVED}
+                                disabled={!isValid || approvalA !== ApprovalState.APPROVED || (sync === 'half' && approvalB !== ApprovalState.APPROVED)}
                                 error={ sync === 'half' && (!isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]) }
                             >
                               <Text fontSize={20} fontWeight={500}>

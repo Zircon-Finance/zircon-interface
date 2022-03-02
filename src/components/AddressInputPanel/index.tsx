@@ -43,7 +43,7 @@ const Input = styled.input<{ error?: boolean }>`
   color: ${({ error, theme }) => (error ? theme.red1 : theme.primary1)};
   overflow: hidden;
   text-overflow: ellipsis;
-  font-weight: 500;
+  font-weight: 400;
   width: 100%;
   ::placeholder {
     color: ${({ theme }) => theme.text4};
@@ -98,7 +98,7 @@ export default function AddressInputPanel({
         <InputContainer>
           <AutoColumn gap="md">
             <RowBetween>
-              <TYPE.black color={theme.text2} fontWeight={500} fontSize={14}>
+              <TYPE.black color={theme.text2} fontWeight={400} fontSize={14}>
                 Recipient
               </TYPE.black>
               {address && chainId && (

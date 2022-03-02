@@ -518,7 +518,7 @@ export default function AddLiquidityPro({
                   <ColumnCenter>
                     <BlueCard>
                       <AutoColumn gap="10px">
-                        <TYPE.link fontWeight={500} color={'primaryText1'}>
+                        <TYPE.link fontWeight={400} color={'primaryText1'}>
                           You are the first liquidity provider.
                         </TYPE.link>
                         <TYPE.link fontWeight={400} color={'primaryText1'}>
@@ -662,7 +662,7 @@ export default function AddLiquidityPro({
                 <>
                   <GreyCard padding="0.5rem" borderRadius={'20px'} style={{backgroundColor: 'transparent'}}>
                     {/* <RowBetween padding="1rem">
-                    <TYPE.subHeader fontWeight={500} fontSize={14}>
+                    <TYPE.subHeader fontWeight={400} fontSize={14}>
                       {noPylon ? 'Initial prices' : 'Prices'} and pool share
                     </TYPE.subHeader>
                   </RowBetween>{' '} */}
@@ -721,7 +721,7 @@ export default function AddLiquidityPro({
                                 disabled={!isValid || approvalA !== ApprovalState.APPROVED || (sync === 'half' && approvalB !== ApprovalState.APPROVED)}
                                 error={ sync === 'half' && (!isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]) }
                             >
-                              <Text fontSize={20} fontWeight={500}>
+                              <Text fontSize={20} fontWeight={400}>
                                 {error ?? (pylonState === PylonState.EXISTS ? "Add Liquidity" :pylonState === PylonState.ONLY_PAIR ? 'Create Pylon' :'Create Pair & Pylon')}
                               </Text>
                             </ButtonError>

@@ -93,7 +93,7 @@ export default function Pool() {
         <AppBody>
           <AutoColumn gap="lg" justify="center" style={{display: 'flex', flexFlow: 'column'}}>
             <div style={{display: 'flex', padding: '1rem', justifyContent: 'space-between'}}>
-              <Text color={theme.text1} fontWeight={500} style={{width: '50%', alignSelf: 'center'}}>
+              <Text color={theme.text1} fontWeight={400} style={{width: '50%', alignSelf: 'center'}}>
                 {t('yourLiquidity')}
               </Text>
               <TriMenu />

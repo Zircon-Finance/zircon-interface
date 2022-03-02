@@ -130,7 +130,7 @@ export default function CurrencyInputPanel({
                 {!hideInput && (
                   <>
                   <div style={{display: 'flex', flexFlow:'column', border: `2px solid ${theme.bg11}`, borderRadius: '12px'}}>
-                  <span style={{padding: '10px 12px 10px 12px', fontWeight:500}}>
+                  <span style={{padding: '10px 12px 10px 12px', fontWeight:400}}>
                     {!isFloat? 'ANCHOR' : 'FLOAT'}
                   </span>
                     <div style={{display: 'flex', justifyContent: 'center', borderTop: `2px solid ${theme.bg11}`, borderRadius: '12px'}}>
@@ -164,7 +164,7 @@ export default function CurrencyInputPanel({
                 <TYPE.body
                   onClick={onMax}
                   color={theme.text2}
-                  fontWeight={500}
+                  fontWeight={400}
                   fontSize={14}
                   style={{ display: 'flex',
                            cursor: 'pointer',

@@ -118,7 +118,7 @@ const SwapCallbackErrorInner = styled.div`
   p {
     padding: 0;
     margin: 0;
-    font-weight: 500;
+    font-weight: 400;
   }
 `
 

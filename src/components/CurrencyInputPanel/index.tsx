@@ -218,7 +218,7 @@ export default function CurrencyInputPanel({
                 <TYPE.body
                   onClick={onMax}
                   color={theme.text2}
-                  fontWeight={500}
+                  fontWeight={400}
                   fontSize={14}
                   style={{ display: 'flex',
                            cursor: 'pointer',

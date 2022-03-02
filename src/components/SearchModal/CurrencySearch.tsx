@@ -142,7 +142,7 @@ export function CurrencySearch({
     <Column style={{ width: '100%', flex: '1 1' }}>
       <PaddedColumn gap="14px">
         <RowBetween>
-          <Text fontWeight={500} fontSize={16} style={{padding: '15px 0 15px 0'}}>
+          <Text fontWeight={400} fontSize={16} style={{padding: '15px 0 15px 0'}}>
             Select a token
             {/* <QuestionHelper text="Find a token by searching for its name or symbol or by pasting its address below." /> */}
           </Text>
@@ -199,7 +199,7 @@ export function CurrencySearch({
             </Row>
           ) : null}
           <LinkStyledButton
-            style={{ fontWeight: 500, color: theme.text2, fontSize: 16 }}
+            style={{ fontWeight: 400, color: theme.text2, fontSize: 16 }}
             onClick={onChangeList}
             id="currency-search-change-list-button"
           >

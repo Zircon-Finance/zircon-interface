@@ -335,7 +335,7 @@ export default function AddLiquidity({
               <ColumnCenter>
                 <BlueCard>
                   <AutoColumn gap="10px">
-                    <TYPE.link fontWeight={500} color={'primaryText1'}>
+                    <TYPE.link fontWeight={400} color={'primaryText1'}>
                       You are the first liquidity provider.
                     </TYPE.link>
                     <TYPE.link fontWeight={400} color={'primaryText1'}>
@@ -381,7 +381,7 @@ export default function AddLiquidity({
               <>
                 <GreyCard padding="0.5rem" borderRadius={'20px'} style={{backgroundColor: 'transparent'}}>
                   {/* <RowBetween padding="1rem">
-                    <TYPE.subHeader fontWeight={500} fontSize={14}>
+                    <TYPE.subHeader fontWeight={400} fontSize={14}>
                       {noLiquidity ? 'Initial prices' : 'Prices'} and pool share
                     </TYPE.subHeader>
                   </RowBetween>{' '} */}
@@ -440,7 +440,7 @@ export default function AddLiquidity({
                         disabled={!isValid || approvalA !== ApprovalState.APPROVED || approvalB !== ApprovalState.APPROVED}
                         error={!isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]}
                       >
-                        <Text fontSize={20} fontWeight={500}>
+                        <Text fontSize={20} fontWeight={400}>
                           {error ?? 'Supply'}
                         </Text>
                       </ButtonError>

@@ -25,7 +25,7 @@ export const MaxButton = styled.button<{ width: string }>`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     padding: 0.25rem 0.5rem;
   `};
-  font-weight: 500;
+  font-weight: 400;
   cursor: pointer;
   overflow: hidden;
   color: #fff;

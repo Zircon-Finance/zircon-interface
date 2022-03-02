@@ -134,7 +134,7 @@ export default function Header() {
       <RowBetween style={{ alignItems: 'flex-start' }} padding="1rem 1rem 0 1rem">
         <HeaderElement>
           <Title href=".">
-            <UniIcon>
+            <UniIcon id="z-logo">
               <img style={{ height: 50 }} src={Logo} alt="logo" />
             </UniIcon>
           </Title>

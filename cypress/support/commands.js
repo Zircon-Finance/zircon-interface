@@ -95,5 +95,5 @@ Cypress.Commands.add('select_moons', () => {
     cy.get('#add-liquidity-input-tokenb').contains('token').click()
     cy.get('#list-introduction-choose-a-list').contains('list').click()
     cy.get('.select-button').contains('Select').click()
-    cy.get('#root').click()
+    cy.get('#modal-close-x').click()
 })

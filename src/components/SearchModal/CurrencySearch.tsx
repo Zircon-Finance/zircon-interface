@@ -146,7 +146,7 @@ export function CurrencySearch({
             Select a token
             {/* <QuestionHelper text="Find a token by searching for its name or symbol or by pasting its address below." /> */}
           </Text>
-          <CloseIcon onClick={onDismiss} />
+          <CloseIcon onClick={onDismiss} id="modal-close-x" />
         </RowBetween>
         <SearchInput
           type="text"

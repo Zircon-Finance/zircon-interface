@@ -491,7 +491,7 @@ export default function AddLiquidityPro({
 
   return (
       <>
-      {pylonState === PylonState.LOADING && <MobileWrapper style={{backgroundColor: 'rgba(12,12,12,0.5)', position: 'fixed'}}></MobileWrapper>}
+      {pylonState === PylonState.LOADING && account && <MobileWrapper style={{backgroundColor: 'rgba(12,12,12,0.5)', position: 'fixed'}}></MobileWrapper>}
         <AppBody>
           <AddRemoveTabs adding={true} />
           <Wrapper>
@@ -550,7 +550,7 @@ export default function AddLiquidityPro({
               {currencies[Field.CURRENCY_B] !== undefined ? (
                   <div style={{backgroundColor: theme.bg10, padding: '10px', borderRadius: '27px'}}>
                     <div style={{display: 'flex', justifyContent: 'space-evenly', marginBottom: '10px'}}>
-                <span style={{display: 'inline', alignSelf: 'center', fontSize: '16px'}}>
+                <span style={{display: 'inline', alignSelf: 'center', fontSize: '16px'}} id="pylon-check">
 
                   {/* Pylon condition */}
                   {pylonState === PylonState.EXISTS ? 'Token used for investment' : pylonState === PylonState.ONLY_PAIR ? 'Create Pylon' :'Create Pair & Pylon'}

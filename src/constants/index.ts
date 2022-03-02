@@ -2,9 +2,8 @@ import { ChainId, JSBI, Percent, Token, WDEV } from 'zircon-sdk'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { routerv2, pylonRouter } from '../moonbase_address.json'
 
-import { injected } from '../connectors'
-// import { injected, walletconnect } from '../connectors'
-//fortmatic, portis, walletconnect, walletlink, lattice
+import { injected, walletconnect } from '../connectors'
+// fortmatic, portis, walletconnect, walletlink, lattice
 
 export const ROUTER_ADDRESS: { [key: string]: string } = {
   [ChainId.STANDALONE]: '0x1408886Cf200EB3d843796f6d4c8bD71497DAe67',
@@ -137,7 +136,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: 'Easy-to-use browser extension.',
     href: null,
     color: '#E8831D',
-  }/*
+  },
   WALLET_CONNECT: {
     connector: walletconnect,
     name: 'WalletConnect',
@@ -147,6 +146,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     color: '#4196FC',
     mobile: true,
   }
+  /*
   LATTICE: {
     connector: lattice,
     name: 'Lattice',

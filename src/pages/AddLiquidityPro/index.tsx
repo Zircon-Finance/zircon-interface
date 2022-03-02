@@ -594,7 +594,7 @@ export default function AddLiquidityPro({
                           onMax={() => {
                             float.field_a === Field.CURRENCY_A ?
                             onFieldAInput(maxAmounts[float.field_a as Field]?.toExact() ?? '') :
-                            onFieldAInput(maxAmounts[float.field_b as Field]?.toExact() ?? '')
+                            onFieldBInput(maxAmounts[float.field_a as Field]?.toExact() ?? '')
                           }}
                           onCurrencySelect={handleCurrencyASelect}
                           showMaxButton={!atMaxAmounts[float.field_a]}
@@ -610,6 +610,8 @@ export default function AddLiquidityPro({
                               onUserInput={onFieldBInput}
                               onCurrencySelect={handleCurrencyBSelect}
                               onMax={() => {
+                                float.field_a === Field.CURRENCY_B ?
+                                onFieldAInput(maxAmounts[float.field_b as Field]?.toExact() ?? '') :
                                 onFieldBInput(maxAmounts[float.field_b as Field]?.toExact() ?? '')
                               }}
                               showMaxButton={!atMaxAmounts[float.field_b as Field]}

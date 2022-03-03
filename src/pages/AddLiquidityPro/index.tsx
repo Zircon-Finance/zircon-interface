@@ -383,7 +383,6 @@ export default function AddLiquidityPro({
   }
 
   const modalHeader = () => {
-    console.log(sync)
     return noPylon ? (
         <AutoColumn gap="20px">
           <LightCard mt="20px" borderRadius="27px" style={{backgroundColor: theme.bg14}}>
@@ -410,7 +409,7 @@ export default function AddLiquidityPro({
             </Text>
             <Text fontSize="16px" width={'100%'} marginTop={15} display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
               {currencies[Field.CURRENCY_A]?.symbol + '/' + currencies[Field.CURRENCY_B]?.symbol + 
-              sync !== "half" ? float.field_a === Field.CURRENCY_A ? 'Float shares' : 'Anchor shares' : 'Pool tokens'
+              (sync !== "half" ? (float.field_a === Field.CURRENCY_A ? ' Float shares' : ' Anchor shares') : (' Pool tokens'))
               }
               <DoubleCurrencyLogo
                   currency0={currencies[Field.CURRENCY_A]}
@@ -617,7 +616,7 @@ export default function AddLiquidityPro({
                                 onFieldAInput(maxAmounts[float.field_b as Field]?.toExact() ?? '') :
                                 onFieldBInput(maxAmounts[float.field_b as Field]?.toExact() ?? '')
                               }}
-                              showMaxButton={!atMaxAmounts[float.field_b as Field]}
+                              showMaxButton={!atMaxAmounts[float.field_b as Field] && sync !== 'half'}
                               currency={currencies[float.field_b as Field]}
                               id="add-liquidity-input-tokenb_bal"
                               showCommonBases

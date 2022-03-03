@@ -152,7 +152,7 @@ export default function CurrencyInputPanel({
                       className="token-amount-input"
                       value={value}
                       onUserInput={val => {
-                        (!isFloat || sync === 'half' || !exists) && onUserInput(val)
+                        (!isFloat || sync !== 'half' || !exists) && onUserInput(val)
                       }}
                     />
                   </>

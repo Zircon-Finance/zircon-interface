@@ -11,7 +11,7 @@ import { useTokenBalancesWithLoadingIndicator } from '../../state/wallet/hooks'
 import { TYPE } from '../../theme'
 import { Text } from 'rebass'
 import { LightCard } from '../../components/Card'
-import { RowBetween } from '../../components/Row'
+import { AutoRow, RowBetween } from '../../components/Row'
 // import { ButtonLighter } from '../../components/Button'
 import { AutoColumn } from '../../components/Column'
 // import { Plus } from 'react-feather'
@@ -28,6 +28,9 @@ import { Dots } from '../../components/swap/styleds'
 import {usePylons} from "../../data/PylonReserves";
 import {PylonPositionCard} from "../../components/PositionCard";
 import HistoryIcon from '../../components/HistoryIcon'
+import TriMenu from '../../components/TriMenu'
+import { ButtonOutlined, ButtonPrimary } from '../../components/Button'
+import { Link } from 'react-router-dom'
 
 export default function Pool() {
   const theme = useContext(ThemeContext)
@@ -102,7 +105,8 @@ export default function Pool() {
               <div style={{display: 'grid', gridAutoFlow: 'column', columnGap: '20px', alignItems: 'center'}}>
                 {filterOptions.map(option => (
                   <Text color={filter === option ? theme.white : theme.text2} 
-                        fontSize={13} 
+                        fontSize={13}
+                        key = {option} 
                         onClick={() => setFilter(option)}
                         style={{borderBottom: `${filter === option ? ('1px solid'+theme.bg5) : 'none'}`, 
                               cursor: 'pointer', 
@@ -121,7 +125,7 @@ export default function Pool() {
 
             </div>
 
-            <AutoColumn gap="12px" style={{ width: '100%', padding: '10px', maxWidth: '450px', scrollbarWidth: 'thin' }}>
+            <AutoColumn gap="6px" style={{ width: '100%', padding: '10px', maxHeight: '400px', scrollbarWidth: 'none', overflow: 'scroll' }}>
               <RowBetween padding={'0 8px'}>
                 {/* <Question text="When you add liquidity, you are given pool tokens that represent your share. If you don’t see a pool you joined in this list, try importing a pool below." /> */}
               </RowBetween>
@@ -167,6 +171,15 @@ export default function Pool() {
               </Text>
             </div> */}
             </AutoColumn>
+            <AutoRow style={{padding: '10px'}}>
+              <div style={{width: '15%', height: '100%'}}>
+                <TriMenu />
+              </div>
+              <div style={{width: '85%',display: 'flex', justifyContent: 'center'}}>
+                <ButtonOutlined style={{marginRight: '10px'}} as={Link} to={'/find'}>{'Import'}</ButtonOutlined>
+                <ButtonPrimary as={Link} to={'/add-pro/ETH'}>{'Add liquidity'}</ButtonPrimary>
+              </div>
+            </AutoRow>
           </AutoColumn>
         </AppBody>
       </>

@@ -1,10 +1,9 @@
 import {JSBI, Pair, Percent, Pylon, TokenAmount} from 'zircon-sdk'
-import { darken } from 'polished'
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { ChevronDown, ChevronUp, Plus } from 'react-feather'
 import { Link } from 'react-router-dom'
 import { Text } from 'rebass'
-import styled from 'styled-components'
+import styled, { ThemeContext } from 'styled-components'
 import { useTotalSupply } from '../../data/TotalSupply'
 
 import { useActiveWeb3React } from '../../hooks'
@@ -32,10 +31,15 @@ export const FixedHeightRow = styled(RowBetween)`
 `
 
 export const HoverCard = styled(Card)`
-  border: 1px solid ${({ theme }) => theme.bg7};
-  :hover {
-    border: 1px solid ${({ theme }) => darken(0.06, theme.bg8)};
-  }
+  
+`
+
+const BadgeSmall = styled.span`
+  background-color: #321f46;
+  padding: 3px 5px;
+  border-radius: 5px;
+  color: ${({ theme }) => theme.text2};
+  margin-left: 5px;
 `
 
 interface PositionCardProps {
@@ -51,6 +55,7 @@ interface PylonPositionCardProps {
 }
 
 export function MinimalPositionCard({ pair, showUnwrapped = false, border }: PositionCardProps) {
+  const theme = useContext(ThemeContext)
   const { account } = useActiveWeb3React()
 
   const currency0 = showUnwrapped ? pair.token0 : unwrappedToken(pair.token0)
@@ -93,7 +98,7 @@ export function MinimalPositionCard({ pair, showUnwrapped = false, border }: Pos
                 </Text>
               </RowFixed>
               <RowFixed>
-                <Text fontWeight={400} fontSize={16}>
+                <Text fontWeight={400} fontSize={16} color={theme.text2}>
                   {userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}
                 </Text>
               </RowFixed>
@@ -138,6 +143,7 @@ export function MinimalPositionCard({ pair, showUnwrapped = false, border }: Pos
 
 
 export default function FullPositionCard({ pair, border }: PositionCardProps) {
+  const theme = useContext(ThemeContext)
   const { account } = useActiveWeb3React()
   const currency0 = unwrappedToken(pair.token0)
   const currency1 = unwrappedToken(pair.token1)
@@ -165,17 +171,18 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
       : [undefined, undefined]
 
   return (
-    <HoverCard border={border} backgroundColor={showMore ? '#3C2955' : 'transparent'}>
+    <HoverCard border={'none'} backgroundColor={showMore ? '#3C2955' : '#2B1840'}>
       <AutoColumn gap="12px">
         <FixedHeightRow onClick={() => setShowMore(!showMore)} style={{ cursor: 'pointer' }}>
           <RowFixed>
             <DoubleCurrencyLogo currency0={currency0} currency1={currency1} margin={true} size={28} />
-            <Text fontWeight={400} fontSize={16}>
-              {!currency0 || !currency1 ? <Dots>Loading</Dots> : `${currency0.symbol}/${currency1.symbol} CLASSIC`}
+            <Text fontWeight={400} fontSize={16} style={{display: 'flex', alignItems: 'center'}}>
+              {!currency0 || !currency1 ? <Dots>Loading</Dots> : `${currency0.symbol}/${currency1.symbol}`}
+              <BadgeSmall>{'CLASSIC'}</BadgeSmall>
             </Text>
           </RowFixed>
           <RowFixed>
-            <Text fontSize={16} fontWeight={400}>
+            <Text fontSize={16} fontWeight={400} color={theme.text2}>
                 {userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}
             </Text>
             {showMore ? (
@@ -229,7 +236,7 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
                 {poolTokenPercentage ? poolTokenPercentage.toFixed(2) + '%' : '-'}
               </Text>
             </FixedHeightRow>
-              <ButtonPrimary as={Link} to={`/remove/${currencyId(currency0)}/${currencyId(currency1)}`}>
+              <ButtonPrimary as={Link} to={`/remove/${currencyId(currency0)}/${currencyId(currency1)}`} style={{backgroundColor: '#5F299F'}}>
                 <Text fontSize={16} fontWeight={400}>
                   Remove
                 </Text>
@@ -248,6 +255,7 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
 }
 
 export function PylonPositionCard({ isFloat, border, pylon }: PylonPositionCardProps) {
+  const theme = useContext(ThemeContext)
   const { account } = useActiveWeb3React()
   const currency0 = unwrappedToken(pylon.token0)
   const currency1 = unwrappedToken(pylon.token1)
@@ -289,17 +297,19 @@ export function PylonPositionCard({ isFloat, border, pylon }: PylonPositionCardP
       : [undefined, undefined]
 
   return (
-    <HoverCard border={border} backgroundColor={showMore ? '#3C2955' : 'transparent'}>
+    <HoverCard border={'none'} backgroundColor={showMore ? '#3C2955' : '#2B1840'}>
       <AutoColumn gap="12px">
         <FixedHeightRow onClick={() => setShowMore(!showMore)} style={{ cursor: 'pointer' }}>
           <RowFixed>
             <DoubleCurrencyLogo currency0={currency0} currency1={currency1} margin={true} size={28} />
-            <Text fontWeight={400} fontSize={16}>
-              {!currency0 || !currency1 ? <Dots>Loading</Dots> : `${currency0.symbol}/${currency1.symbol} ${isFloat ? "FLOAT" : "ANCHOR"}`}
-            </Text>
+            <Text fontWeight={400} fontSize={16} style={{display: 'flex', alignItems: 'center'}}>
+              {!currency0 || !currency1 ? <Dots>Loading</Dots> : 
+              `${currency0.symbol}/${currency1.symbol}`}
+              <BadgeSmall>{isFloat? 'FLOAT' : 'ANCHOR'}</BadgeSmall>
+            </Text>  
           </RowFixed>
           <RowFixed>
-            <Text fontSize={16} fontWeight={400}>
+            <Text fontSize={16} fontWeight={400} color={theme.text2}>
                 {userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}
             </Text>
             {showMore ? (
@@ -353,7 +363,8 @@ export function PylonPositionCard({ isFloat, border, pylon }: PylonPositionCardP
             {/*    {poolTokenPercentage ? poolTokenPercentage.toFixed(2) + '%' : '-'}*/}
             {/*  </Text>*/}
             {/*</FixedHeightRow>*/}
-              <ButtonPrimary as={Link} to={`/remove-pro/${currencyId(currency0)}/${currencyId(currency1)}/${isFloat ? "FLOAT" : "ANCHOR"}`}>
+              <ButtonPrimary as={Link} to={`/remove-pro/${currencyId(currency0)}/${currencyId(currency1)}/${isFloat ? "FLOAT" : "ANCHOR"}`}
+              style={{backgroundColor: '#5F299F'}}>
                 <Text fontSize={16} fontWeight={400}>
                   Remove
                 </Text>

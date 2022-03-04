@@ -27,10 +27,10 @@ import AppBody from '../AppBody'
 import { Dots } from '../../components/swap/styleds'
 import {usePylons} from "../../data/PylonReserves";
 import {PylonPositionCard} from "../../components/PositionCard";
-import HistoryIcon from '../../components/HistoryIcon'
 import TriMenu from '../../components/TriMenu'
 import { ButtonOutlined, ButtonPrimary } from '../../components/Button'
 import { Link } from 'react-router-dom'
+import HistoryTransactions from '../../components/HistoryTransactions'
 
 export default function Pool() {
   const theme = useContext(ThemeContext)
@@ -115,7 +115,7 @@ export default function Pool() {
                               alignItems: 'center'}}>{option}</Text>
                 ))}
               </div>
-              <div style={{height: '50px', display: 'flex', alignItems: 'center'}}><HistoryIcon /></div>
+              <div style={{height: '50px', display: 'flex', alignItems: 'center'}}><HistoryTransactions /></div>
               {/* <ButtonLighter id="join-pool-button" as={Link} style={{ padding: '12px', width: 'auto', borderRadius: '12px'  }} to="/add-pro/ETH">
                 <Plus size="25" color='gray' style={{marginRight: '8px'}} />
                 <Text fontWeight={300} fontSize={18} width={'max-content'}>

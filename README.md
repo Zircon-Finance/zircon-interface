@@ -7,15 +7,15 @@
 ![](https://dev.d25bmdgq9cv6w9.amplifyapp.com/build/banner.png)
 
 ## Links
-  - ![Website](https://www.zircon.finance/)
-  - ![Beta](https://beta.zircon.finance/)
-  - ![Docs](https://docs.zircon.finance/)
+  - [Website](https://www.zircon.finance/)
+  - [Beta](https://beta.zircon.finance/)
+  - [Docs](https://docs.zircon.finance/)
  
   Socials:
-  - ![Discord](https://discord.gg/wbqNAqvvTg)
-  - ![Twitter](https://twitter.com/Zircon_Finance)
-  - ![Email](mailto:hello@zircon.finance)
-  - ![Reddit](https://www.reddit.com/r/zirconfinance)
+  - [Discord](https://discord.gg/wbqNAqvvTg)
+  - [Twitter](https://twitter.com/Zircon_Finance)
+  - [Email](mailto:hello@zircon.finance)
+  - [Reddit](https://www.reddit.com/r/zirconfinance)
 
 ## 🛠 Getting started
 

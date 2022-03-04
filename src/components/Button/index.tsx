@@ -16,7 +16,7 @@ const Base = styled(RebassButton)<{
   width: ${({ width }) => (width ? width : '100%')};
   font-weight: 400;
   text-align: center;
-  border-radius: 20px;
+  border-radius: 17px;
   border-radius: ${({ borderRadius }) => borderRadius && borderRadius};
   outline: none;
   border: 1px solid transparent;
@@ -175,7 +175,7 @@ export const ButtonOutlined = styled(Base)`
 
 export const ButtonLighter = styled(Base)`
   border: 1px solid ${({ theme }) => theme.bg10};
-  background-color: #534169;
+  background-color: ${({ theme }) => theme.bg6};
   color: ${({ theme }) => theme.text1};
 
   &:hover {

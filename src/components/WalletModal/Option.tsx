@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { ExternalLink } from '../../theme'
 
 const InfoCard = styled.button<{ active?: boolean }>`
-  background-color: #534169;
+  background-color:${({ theme }) => theme.bg6};
   padding: 1rem;
   outline: none;
   border: none;

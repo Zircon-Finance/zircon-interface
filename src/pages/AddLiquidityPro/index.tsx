@@ -512,7 +512,7 @@ export default function AddLiquidityPro({
                 )}
                 pendingText={pendingText()}
             />
-            <AutoColumn gap="20px" style={{backgroundColor: theme.bg1, padding: '10px', borderRadius: '20px'}}>
+            <AutoColumn gap="10px" style={{backgroundColor: theme.bg1, borderRadius: '20px'}}>
 
               {/* Pylon condition, previously noPylon && */}
 
@@ -536,7 +536,7 @@ export default function AddLiquidityPro({
 
               {/* Condition that triggers pylov view */}
 
-              <div style={{display: 'flex', border: '1px solid #402D58', borderRadius: '17px'}}>
+              <div style={{display: 'flex', border: '1px solid #402D58', borderRadius: '17px', margin: '0px 10px'}}>
                 <CurrencyInputPanelInputOnly
                     onCurrencySelect={handleCurrencyASelect}
                     currency={currencies[Field.CURRENCY_A]} id="add-liquidity-input-tokena" showCommonBases
@@ -569,7 +569,7 @@ export default function AddLiquidityPro({
                                         })}}>
                           <CurrencyInputPanelPicOnly
                               currency={currencies[Field.CURRENCY_A]} id="add-liquidity-input-tokena_pic" showCommonBases />
-                          <span style={{marginLeft: '5px'}}>{'FLOAT'}</span>
+                          <span style={{marginLeft: '5px', fontSize: '13px', letterSpacing: '0.05em' }}>{'FLOAT'}</span>
                         </ButtonAnchor>
 
                         <ButtonAnchor borderRadius={'12px'} padding={'5px 8px 5px 8px'}
@@ -582,7 +582,7 @@ export default function AddLiquidityPro({
                                         })}}>
                           <CurrencyInputPanelPicOnly
                               currency={currencies[Field.CURRENCY_B]} id="add-liquidity-input-tokenb_pic" showCommonBases />
-                          <span style={{marginLeft: '5px'}}>{'ANCHOR'}</span>
+                          <span style={{marginLeft: '5px', fontSize: '13px', letterSpacing: '0.05em'}}>{'ANCHOR'}</span>
                         </ButtonAnchor>
                       </div>}
                     </div>
@@ -632,8 +632,8 @@ export default function AddLiquidityPro({
 
               {currencies[Field.CURRENCY_B] !== undefined && pylonState === PylonState.EXISTS && (
                   <div style={{display: 'flex', border: '1px solid #402D58', borderRadius: '17px', justifyContent: 'space-between'}}>
-                    <span style={{display: 'inline', alignSelf: 'center', fontSize: '16px', margin: 'auto'}}>{'ADVANCED MODE'}</span>
-                    <div style={{display: 'flex', borderLeft: `1px solid ${theme.bg9}`, borderRadius: '17px', padding: '5px'}}>
+                    <span style={{display: 'inline', alignSelf: 'center', fontSize: '13px', margin: 'auto', letterSpacing: '0.05em'}}>{'ADVANCED MODE'}</span>
+                    <div style={{display: 'flex', borderLeft: `1px solid ${theme.bg9}`, borderRadius: '17px', padding: '5px', fontSize: '13px'}}>
 
                       <ButtonAnchor borderRadius={'12px'} padding={'10px'}
                                     style={{backgroundColor: sync === 'off' ? theme.bg9 : 'transparent'}}
@@ -668,7 +668,7 @@ export default function AddLiquidityPro({
                       {noPylon ? 'Initial prices' : 'Prices'} and pool share
                     </TYPE.subHeader>
                   </RowBetween>{' '} */}
-                    <LightCard padding="0" borderRadius={'20px'} style={{marginTop: '10px', border: 'none'}} >
+                    <LightCard padding="0" borderRadius={'20px'} style={{ border: 'none'}} >
                       {/* <div style={{padding: '1rem'}}>
                       <PoolPriceBar
                         currencies={currencies}

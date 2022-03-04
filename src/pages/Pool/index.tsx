@@ -125,7 +125,7 @@ export default function Pool() {
 
             </div>
 
-            <AutoColumn gap="6px" style={{ width: '100%', padding: '10px', maxHeight: '400px', scrollbarWidth: 'none', overflow: 'scroll' }}>
+            <AutoColumn gap="6px" style={{ width: '100%', padding: '10px', maxHeight: '400px', scrollbarWidth: 'none', overflowY: 'scroll' }}>
               <RowBetween padding={'0 8px'}>
                 {/* <Question text="When you add liquidity, you are given pool tokens that represent your share. If you don’t see a pool you joined in this list, try importing a pool below." /> */}
               </RowBetween>

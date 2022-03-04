@@ -50,12 +50,9 @@ const StyledMenuButton = styled.button`
   border: none;
   background-color: transparent;
   margin: 0;
-  padding: 0;
-  height: 35px;
+  padding: 12px;
   background-color: ${({ theme }) => theme.bg1};
-
-  padding: 0.15rem 0.5rem;
-  border-radius: 0.5rem;
+  border-radius: 12px;
 
   :hover,
   :focus {
@@ -70,7 +67,7 @@ const StyledMenuButton = styled.button`
 `
 const EmojiWrapper = styled.div`
   position: absolute;
-  bottom: -6px;
+  bottom: -4px;
   right: 0px;
   font-size: 14px;
 `
@@ -93,7 +90,7 @@ const MenuFlyout = styled.span`
   flex-direction: column;
   font-size: 1rem;
   position: absolute;
-  top: 3rem;
+  top: 3.4rem;
   right: 0rem;
   z-index: 100;
 

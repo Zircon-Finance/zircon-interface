@@ -11,7 +11,7 @@ const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: s
   border: none;
   flex: 1 1 auto;
   background-color: ${({ theme }) => theme.bg6};
-  font-size: ${({ fontSize }) => fontSize ?? '18px'};
+  font-size: ${({ fontSize }) => fontSize ?? '16px'};
   text-align: ${({ align }) => align && align};
   white-space: nowrap;
   overflow: hidden;

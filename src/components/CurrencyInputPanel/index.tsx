@@ -26,7 +26,7 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
   width: max-content;
   font-size: 16px;
   font-weight: 200;
-  background-color: ${({ selected, theme }) => (selected ? theme.bg10 : '#A987C2')};
+  background-color: ${({ selected, theme }) => (selected ? theme.bg7 : '#A987C2')};
   color: ${({ selected, theme }) => (selected ? theme.text1 : theme.white)};
   border-radius: 12px;
   box-shadow: ${({ selected }) => (selected ? 'none' : '0px 6px 10px rgba(0, 0, 0, 0.075)')};
@@ -34,7 +34,7 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
   cursor: pointer;
   user-select: none;
   border: none;
-  padding: 0 0.5rem;
+  padding: 10px;
   transition: all 0.2s;
 
   :focus,
@@ -77,29 +77,30 @@ const InputPanel = styled.div<{ hideInput?: boolean }>`
   ${({ theme }) => theme.flexColumnNoWrap}
   position: relative;
   border-radius: ${({ hideInput }) => (hideInput ? '8px' : '17px')};
-  background-color: ${({ theme }) => theme.bg2};
+  background-color: transparent;
   z-index: 1;
 `
 
 const Container = styled.div<{ hideInput: boolean }>`
   border-radius: ${({ hideInput }) => (hideInput ? '8px' : '17px')};
-  background-color: ${({ theme }) => theme.bg6};
 `
 
 const StyledTokenName = styled.span<{ active?: boolean }>`
   ${({ active }) => (active ? '  margin: 0 0.75rem 0 0.75rem;' : '  margin: 0 0.25rem 0 0.25rem;')}
-  font-size:  ${({ active }) => (active ? '18px' : '16px')};
+  font-size:  16px;
+  align-self: center;
 
 `
 
 const StyledBalanceMax = styled.button`
   height: 30px;
   width: 50px;
-  padding: 0 0.55rem 0 0.55rem;
-  background-color: ${({ theme }) => theme.bg9};
+  padding: 6px 10px 7px;
+  background-color: #68597B;
   border: 0;
+  letter-spacing: 0.05em
   border-radius: 0.9rem;
-  font-size: 0.675rem;
+  font-size: 10px;
   outline: none;
 
   font-weight: 300;
@@ -224,10 +225,10 @@ export default function CurrencyInputPanel({
                            cursor: 'pointer',
                            justifyContent: 'space-between',
                            width: '100%',
-                           padding: showMaxButton ? '10px 0 0 0' : '10px 0 5px 5px'
+                           padding: showMaxButton ? '0px' : '10px 0 5px 5px'
                   }}
                 >
-                  <div style={{fontWeight: 400}}>
+                  <div style={{display: 'flex', alignItems: 'center', fontSize: '13px'}}>
                   {account && currency && showMaxButton && label !== 'To' && (
                   <StyledBalanceMax onClick={onMax}>MAX</StyledBalanceMax>
                   )}

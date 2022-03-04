@@ -2,11 +2,12 @@ import React from 'react'
 
 const QuestionMarkIcon = () => {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" strokeWidth={1.5}>
-    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#90889A" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M9.08984 9.00002C9.32495 8.33169 9.789 7.76813 10.3998 7.40915C11.0106 7.05018 11.7287 6.91896 12.427 7.03873C13.1253 7.15851 13.7587 7.52154 14.2149 8.06355C14.6712 8.60555 14.9209 9.29154 14.9198 10C14.9198 12 11.9198 13 11.9198 13V14.5" stroke="#90889A" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M12 17H12.01" stroke="#90889A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10 19C14.9706 19 19 14.9706 19 10C19 5.02944 14.9706 1 10 1C5.02944 1 1 5.02944 1 10C1 14.9706 5.02944 19 10 19Z" fill="#604C7A"/>
+    <path d="M7.57495 7.50002C7.77087 6.94307 8.15758 6.47344 8.66658 6.17429C9.17558 5.87515 9.77403 5.7658 10.3559 5.86561C10.9378 5.96542 11.4656 6.26795 11.8458 6.71962C12.2261 7.17129 12.4342 7.74295 12.4333 8.33335C12.4333 10 9.93328 10.8334 9.93328 10.8334V12.0833" stroke="#BFB7CA" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M10 14.1667H10.0083" stroke="#BFB7CA" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
+
 
   )
 }

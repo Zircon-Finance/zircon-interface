@@ -261,7 +261,7 @@ export default function Swap() {
         onConfirm={handleConfirmTokenWarning}
       />
       <AppBody>
-        <div style={{display: 'flex', padding: '1rem', justifyContent: 'space-between'}}>
+        <div style={{display: 'flex', padding: '25px', justifyContent: 'space-between'}}>
         <p>{'Swap'}</p>
         <Settings />
         </div>
@@ -281,7 +281,7 @@ export default function Swap() {
             onDismiss={handleConfirmDismiss}
           />
 
-          <AutoColumn gap={'md'} style={{backgroundColor: theme.bg7, borderRadius: '27px', padding: '25px 10px 10px 10px'}}>
+          <AutoColumn gap={'md'} style={{backgroundColor: theme.bg7, borderRadius: '27px', padding: '10px'}}>
             <CurrencyInputPanel
               label={independentField === Field.OUTPUT && !showWrap && trade ? 'From (estimated)' : 'From'}
               value={formattedAmounts[Field.INPUT]}

@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useState } from 'react'
-import { HashRouter, Redirect, Route, Switch } from 'react-router-dom'
+import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import GoogleAnalyticsReporter from '../components/analytics/GoogleAnalyticsReporter'
 import Header from '../components/Header'
@@ -8,7 +8,7 @@ import Web3ReactManager from '../components/Web3ReactManager'
 import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader'
 import AddLiquidity from './AddLiquidity'
 import AddLiquidityPro from './AddLiquidityPro'
-import MobileView from './MobileView'
+// import MobileView from './MobileView'
 import {
   RedirectDuplicateTokenIdsPro,
   RedirectOldAddLiquidityProPathStructure,
@@ -91,12 +91,12 @@ export default function App() {
   return (
     <Suspense fallback={null}>
       <HashRouter>
-        {isMobile && <Redirect to="/mobile" />}
+        {/* {isMobile && <Redirect to="/mobile" />}
         {isMobile && <MobileWrapper><MobileView 
           icon='laptop'
           upperText='Please use your desktop to try the Zircon Beta'
           lowerText='Our app will be available on your phone soon'  />
-        </MobileWrapper>}
+        </MobileWrapper>} */}
         <Route component={GoogleAnalyticsReporter} />
         <Route component={DarkModeQueryParamReader} />
         <AppWrapper style={{overflow: isMobile ? 'hidden' : 'auto'}}>

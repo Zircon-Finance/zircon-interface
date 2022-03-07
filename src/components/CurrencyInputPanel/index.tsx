@@ -83,6 +83,7 @@ const InputPanel = styled.div<{ hideInput?: boolean }>`
 
 const Container = styled.div<{ hideInput: boolean }>`
   border-radius: ${({ hideInput }) => (hideInput ? '8px' : '17px')};
+  background-color: ${({ theme }) => theme.bg6};
 `
 
 const StyledTokenName = styled.span<{ active?: boolean }>`
@@ -230,7 +231,7 @@ export default function CurrencyInputPanel({
                 >
                   <div style={{display: 'flex', alignItems: 'center', fontSize: '13px'}}>
                   {account && currency && showMaxButton && label !== 'To' && (
-                  <StyledBalanceMax onClick={onMax}>MAX</StyledBalanceMax>
+                  <StyledBalanceMax onClick={onMax} style={{marginTop: '10px'}}>MAX</StyledBalanceMax>
                   )}
                   {!hideBalance && !!currency && selectedCurrencyBalance
                     ? 'Balance: ' + selectedCurrencyBalance?.toSignificant(6)

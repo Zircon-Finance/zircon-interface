@@ -1,5 +1,5 @@
 // import { ChainId } from 'zircon-sdk'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 // import { isMobile } from 'react-device-detect'
 import { Text } from 'rebass'
 import { useLocation } from 'react-router-dom';
@@ -7,6 +7,7 @@ import { useLocation } from 'react-router-dom';
 import styled from 'styled-components'
 
 import Logo from '../../assets/images/mainlogo.png'
+import ZirconSmall from '../ZirconSmall';
 import { useActiveWeb3React } from '../../hooks'
 //import { useDarkModeManager } from '../../state/user/hooks'
 import { useETHBalances } from '../../state/wallet/hooks'
@@ -19,20 +20,24 @@ import Web3Status from '../Web3Status'
 // import VersionSwitch from './VersionSwitch'
 
 const HeaderFrame = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-direction: column;
   width: 100%;
-  top: 0;
-  position: absolute;
-  overflow-x: hidden;
-  z-index: 2;
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    padding: 12px 0 0 0;
-    width: calc(100%);
-    position: relative;
-  `};
+  @media (min-width: 992px) {
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    width: 100%;
+    top: 0;
+    position: absolute;
+    overflow-x: hidden;
+    z-index: 2;
+    ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+      padding: 12px 0 0 0;
+      width: calc(100%);
+      position: relative;
+    `};
+  }
 `
 
 const HeaderElement = styled.div`
@@ -128,6 +133,29 @@ export default function Header() {
   const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   //const [isDark] = useDarkModeManager()
   const location = useLocation();
+  function getWindowDimensions() {
+    const { innerWidth: width, innerHeight: height } = window;
+    return {
+      width,
+      height
+    };
+  }
+  
+  const useWindowDimensions = () => {
+    const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
+  
+    useEffect(() => {
+      function handleResize() {
+        setWindowDimensions(getWindowDimensions());
+      }
+  
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
+  
+    return windowDimensions;
+  }
+  const { width } = useWindowDimensions();
 
   return (
     <HeaderFrame>
@@ -135,7 +163,11 @@ export default function Header() {
         <HeaderElement>
           <Title href=".">
             <UniIcon id="z-logo">
-              <img style={{ height: 50 }} src={Logo} alt="logo" />
+              {width > 992 ? 
+              <img style={{ height: 50 }} src={Logo} alt="logo" /> :
+              <ZirconSmall />
+              }
+              
             </UniIcon>
           </Title>
         </HeaderElement>

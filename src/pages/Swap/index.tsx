@@ -251,6 +251,7 @@ export default function Swap() {
   const handleOutputSelect = useCallback(outputCurrency => onCurrencySelection(Field.OUTPUT, outputCurrency), [
     onCurrencySelection
   ])
+  console.log(currencies[Field.OUTPUT]);
 
   return (
     <>
@@ -350,7 +351,7 @@ export default function Swap() {
               </>
             )}
 
-            {showWrap ? null : (
+            {!showWrap && currencies[Field.OUTPUT] !== undefined && (
               <Card padding={'.25rem .75rem 0 .75rem'} borderRadius={'20px'}>
                 <AutoColumn gap="4px">
                   {Boolean(trade) && (
@@ -379,7 +380,7 @@ export default function Swap() {
               </Card>
             )}
           </AutoColumn>
-          <BottomGrouping>
+          <BottomGrouping style={{marginTop: '0'}}>
             {!account ? (
               <ButtonLight onClick={toggleWalletModal}>Connect Wallet</ButtonLight>
             ) : showWrap ? (

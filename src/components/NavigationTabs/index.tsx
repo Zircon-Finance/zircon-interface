@@ -8,6 +8,7 @@ import { ArrowLeft } from 'react-feather'
 import { RowBetween } from '../Row'
 import QuestionHelper from '../QuestionHelper'
 import Settings from '../Settings'
+import { useWindowDimensions } from '../../hooks'
 
 const Tabs = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -36,6 +37,7 @@ const StyledNavLink = styled(NavLink).attrs({
   color: ${({ theme }) => theme.text3};
   font-size: 16px;
   padding: 10px 12px;
+  width: 50%;
 
   &.${activeClassName} {
     border-radius: 12px;
@@ -46,6 +48,9 @@ const StyledNavLink = styled(NavLink).attrs({
   :hover,
   :focus {
     color: ${({ theme }) => darken(0.1, theme.text1)};
+  }
+  @media (min-width: 700px) {
+    width: auto;
   }
 `
 
@@ -59,9 +64,10 @@ const StyledArrowLeft = styled(ArrowLeft)`
 `
 
 export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
+  const { width } = useWindowDimensions();
   return (
-    <Tabs style={{ marginBottom: '20px' }}>
+    <Tabs style={{ marginBottom: '20px', width: width > 700 ? 'auto' : '100%' }}>
       <StyledNavLink id={`swap-nav-link`} to={'/swap'} isActive={() => active === 'swap'}>
         {t('swap')}
       </StyledNavLink>

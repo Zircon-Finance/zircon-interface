@@ -1,5 +1,5 @@
 // import { ChainId } from 'zircon-sdk'
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 // import { isMobile } from 'react-device-detect'
 import { Text } from 'rebass'
 import { useLocation } from 'react-router-dom';
@@ -8,7 +8,7 @@ import styled from 'styled-components'
 
 import Logo from '../../assets/images/mainlogo.png'
 import ZirconSmall from '../ZirconSmall';
-import { useActiveWeb3React } from '../../hooks'
+import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
 //import { useDarkModeManager } from '../../state/user/hooks'
 import { useETHBalances } from '../../state/wallet/hooks'
 import { SwapPoolTabs } from '../../components/NavigationTabs'
@@ -21,7 +21,7 @@ import Web3Status from '../Web3Status'
 
 const HeaderFrame = styled.div`
   width: 100%;
-  @media (min-width: 992px) {
+  @media (min-width: 700px) {
     flex-direction: column;
     display: flex;
     align-items: center;
@@ -56,15 +56,15 @@ const HeaderElementWrap = styled.div`
 
 const Title = styled.a`
   display: flex;
-  width: 250px;
   align-items: center;
   pointer-events: auto;
   text-decoration: none;
   text-decoration-style: unset;
-
   :hover {
     cursor: pointer;
   }
+  @media (min-width: 700px) {
+    width: 250px;
 `
 
 const AccountElement = styled.div<{ active: boolean }>`
@@ -72,13 +72,16 @@ const AccountElement = styled.div<{ active: boolean }>`
   flex-direction: row;
   align-items: center;
   background-color: ${({ theme, active }) => (!active ? theme.bg1 : '#25123C')};
-  border-radius: 12px;
+  border-radius: 17px;
   white-space: nowrap;
-  width: 250px;
-
   :focus {
     border: 1px solid blue;
   }
+  @media (min-width: 700px) {
+    width: 250px;
+  }
+
+  
 `
 
 // const TestnetWrapper = styled.div`
@@ -114,9 +117,10 @@ const HeaderControls = styled.div`
 `
 
 const BalanceText = styled(Text)`
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+  display: block;
+  @media (max-width: 300px) {
     display: none;
-  `};
+  }
 `
 
 // const NETWORK_LABELS: { [chainId in ChainId]: string | null } = {
@@ -133,50 +137,23 @@ export default function Header() {
   const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   //const [isDark] = useDarkModeManager()
   const location = useLocation();
-  function getWindowDimensions() {
-    const { innerWidth: width, innerHeight: height } = window;
-    return {
-      width,
-      height
-    };
-  }
-  
-  const useWindowDimensions = () => {
-    const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
-  
-    useEffect(() => {
-      function handleResize() {
-        setWindowDimensions(getWindowDimensions());
-      }
-  
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
-    }, []);
-  
-    return windowDimensions;
-  }
   const { width } = useWindowDimensions();
 
   return (
     <HeaderFrame>
-      <RowBetween style={{ alignItems: 'flex-start' }} padding="1rem 1rem 0 1rem">
+      <RowBetween style={{ alignItems: 'flex-start', flexWrap: width > 700 ? 'nowrap' : 'wrap' }} padding="1rem 1rem 0 1rem">
+        {width > 700 ?
+        <>
         <HeaderElement>
           <Title href=".">
             <UniIcon id="z-logo">
-              {width > 992 ? 
-              <img style={{ height: 50 }} src={Logo} alt="logo" /> :
-              <ZirconSmall />
-              }
-              
+              <img style={{ height: 50 }} src={Logo} alt="logo" />
             </UniIcon>
           </Title>
         </HeaderElement>
         <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : 'pool'} />
         <HeaderControls>
           <HeaderElement>
-            {/* <TestnetWrapper>
-              {!isMobile && chainId && NETWORK_LABELS[chainId] && <NetworkCard>{NETWORK_LABELS[chainId]}</NetworkCard>}
-            </TestnetWrapper> */}
             <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
               {account && userEthBalance ? (
                 <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={400}>
@@ -187,9 +164,35 @@ export default function Header() {
             </AccountElement>
           </HeaderElement>
           <HeaderElementWrap>
-            {/* <VersionSwitch /> */}
           </HeaderElementWrap>
         </HeaderControls>
+        </> :
+        <>
+          <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between', marginBottom: '20px'}}>
+          <HeaderElement>
+            <Title href=".">
+              <UniIcon id="z-logo">
+                <ZirconSmall />
+              </UniIcon>
+            </Title>
+          </HeaderElement>
+          <HeaderControls>
+            <HeaderElement>
+              <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
+                {account && userEthBalance ? (
+                  <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={400}>
+                    {userEthBalance?.toSignificant(4)} DEV
+                  </BalanceText>
+                ) : null}
+                <Web3Status />
+              </AccountElement>
+            </HeaderElement>
+          </HeaderControls>
+          </div>
+          <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : 'pool'} />
+        </>
+
+        }
       </RowBetween>
     </HeaderFrame>
   )

@@ -16,7 +16,7 @@ import { AutoRow, RowBetween } from '../../components/Row'
 import { AutoColumn } from '../../components/Column'
 // import { Plus } from 'react-feather'
 
-import { useActiveWeb3React } from '../../hooks'
+import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
 import {
   toLiquidityAnchor2Token, toLiquidityAnchorToken,
   toLiquidityFloat2Token, toLiquidityFloatToken,
@@ -31,6 +31,7 @@ import TriMenu from '../../components/TriMenu'
 import { ButtonOutlined, ButtonPrimary } from '../../components/Button'
 import { Link } from 'react-router-dom'
 import HistoryTransactions from '../../components/HistoryTransactions'
+import { SmallerQuestionmark } from '../../components/LearnIcon'
 
 export default function Pool() {
   const theme = useContext(ThemeContext)
@@ -93,14 +94,16 @@ export default function Pool() {
 
   const filterOptions = ['ALL','FLOAT','ANCHOR','CLASSIC']
 
+  const { width } = useWindowDimensions();
+
   return (
       <>
-        <Text color={theme.text1} fontWeight={300} fontSize={30} style={{alignSelf: 'center', marginBottom: '90px'}}>
+        <Text color={theme.text1} fontWeight={300} fontSize={30} style={{alignSelf: 'center', marginBottom: width > 700 ? '40px' : '20px'}}>
           {t('yourLiquidity')}
         </Text>
         {/* <SwapPoolTabs active={'pool'} /> */}
         <AppBody>
-          <AutoColumn gap="lg" justify="center" style={{display: 'flex', flexFlow: 'column'}}>
+          <AutoColumn gap='1px' justify="center" style={{display: 'flex', flexFlow: 'column'}}>
             <div style={{display: 'flex', padding: '15px 15px 0px 15px', justifyContent: 'space-between', boxShadow: `inset 1px -10px 2px -10px ${theme.bg14}`}}>
               <div style={{display: 'grid', gridAutoFlow: 'column', columnGap: '20px', alignItems: 'center'}}>
                 {filterOptions.map(option => (
@@ -125,7 +128,7 @@ export default function Pool() {
 
             </div>
 
-            <AutoColumn gap="6px" style={{ width: '100%', padding: '10px', maxHeight: '400px', scrollbarWidth: 'none', overflowY: 'scroll' }}>
+            <AutoColumn gap="6px" style={{ width: '100%', padding: '10px', maxHeight: '55vh', scrollbarWidth: 'none', overflowY: 'scroll' }}>
               <RowBetween padding={'0 8px'}>
                 {/* <Question text="When you add liquidity, you are given pool tokens that represent your share. If you don’t see a pool you joined in this list, try importing a pool below." /> */}
               </RowBetween>
@@ -172,12 +175,13 @@ export default function Pool() {
             </div> */}
             </AutoColumn>
             <AutoRow style={{padding: '10px'}}>
+              {width < 700 && (<SmallerQuestionmark />)}
               <div style={{width: '15%', height: '100%'}}>
                 <TriMenu />
               </div>
               <div style={{width: '85%',display: 'flex', justifyContent: 'center'}}>
-                <ButtonOutlined style={{marginRight: '10px'}} as={Link} to={'/find'}>{'Import'}</ButtonOutlined>
-                <ButtonPrimary as={Link} to={'/add-pro/ETH'}>{'Add liquidity'}</ButtonPrimary>
+                <ButtonOutlined style={{marginRight: '5px', padding: '0px'}} as={Link} to={'/find'}>{'Import'}</ButtonOutlined>
+                <ButtonPrimary as={Link} to={'/add-pro/ETH'} style={{padding: '18px 0 18px 0'}}>{'Add liquidity'}</ButtonPrimary>
               </div>
             </AutoRow>
           </AutoColumn>

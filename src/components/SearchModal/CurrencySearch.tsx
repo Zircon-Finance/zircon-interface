@@ -8,7 +8,7 @@ import { ThemeContext } from 'styled-components'
 // import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens, useToken } from '../../hooks/Tokens'
 import { useSelectedListInfo } from '../../state/lists/hooks'
-import { CloseIcon, LinkStyledButton, TYPE } from '../../theme'
+import { CloseIcon, TYPE } from '../../theme'
 import { isAddress } from '../../utils'
 import Card from '../Card'
 import Column from '../Column'
@@ -22,6 +22,7 @@ import { filterTokens } from './filtering'
 import { useTokenComparator } from './sorting'
 import { PaddedColumn, SearchInput, Separator } from './styleds'
 import AutoSizer from 'react-virtualized-auto-sizer'
+import { ButtonPositionsMobile } from '../Button'
 
 interface CurrencySearchProps {
   isOpen: boolean
@@ -198,13 +199,13 @@ export function CurrencySearch({
               <TYPE.main id="currency-search-selected-list-name">{selectedListInfo.current.name}</TYPE.main>
             </Row>
           ) : null}
-          <LinkStyledButton
-            style={{ fontWeight: 400, color: theme.text2, fontSize: 16 }}
+          <ButtonPositionsMobile
+            style={{ fontWeight: 400, color: theme.white, fontSize: 13, width: 'auto', padding: '10px 15px 10px 15px' }}
             onClick={onChangeList}
             id="currency-search-change-list-button"
           >
             {selectedListInfo.current ? 'Change' : 'Select a list'}
-          </LinkStyledButton>
+          </ButtonPositionsMobile>
         </RowBetween>
       </Card>
     </Column>

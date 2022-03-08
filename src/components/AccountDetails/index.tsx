@@ -18,9 +18,9 @@ import WalletConnectIcon from '../../assets/images/walletConnectIcon.svg'
 import FortmaticIcon from '../../assets/images/fortmaticIcon.png'
 import PortisIcon from '../../assets/images/portisIcon.png'
 import Identicon from '../Identicon'
-import { ButtonSecondary } from '../Button'
+import { ButtonPositionsMobile, ButtonSecondary } from '../Button'
 import { ExternalLink as LinkIcon } from 'react-feather'
-import { ExternalLink, LinkStyledButton, TYPE } from '../../theme'
+import { ExternalLink, TYPE } from '../../theme'
 
 const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
@@ -53,13 +53,12 @@ const UpperSection = styled.div`
 `
 
 const InfoCard = styled.div`
-  padding: 1rem;
-  border: 1px solid ${({ theme }) => theme.bg3};
-  border-radius: 20px;
+  padding: 5px;
+  border-radius: 17px;
   position: relative;
   display: grid;
   grid-row-gap: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   background-color:${({ theme }) => theme.bg14};
 `
 
@@ -158,7 +157,8 @@ const CloseColor = styled(Close)`
 
 const WalletName = styled.div`
   width: initial;
-  font-size: 0.825rem;
+  margin-left: 10px;
+  font-size: 16px;
   font-weight: 400;
   color: #FFF;
 `
@@ -311,7 +311,7 @@ export default function AccountDetails({
                     </WalletAction>
                   )}
                   <WalletAction
-                    style={{ fontSize: '.825rem', fontWeight: 400 }}
+                    style={{ fontSize: '13px', padding: '9px 12px 10px', fontWeight: 400, borderRadius: '12px' }}
                     onClick={() => {
                       openOptions()
                     }}
@@ -331,15 +331,18 @@ export default function AccountDetails({
                     </>
                   ) : (
                     <>
-                      <div >
-                        {getStatusIcon()}
-                        <p style={{fontSize: 30, fontWeight: 300}}> {account && shortenAddress(account)}</p>
-                        {account && (
-                          <Copy toCopy={account}>
-                            <span style={{ marginLeft: '4px' }}>Copy</span>
-                          </Copy>
+                      <div style={{width: '100%'}} >
+                      {account && (
+                      <Copy toCopy={account}>
+                        <div>
+                          {getStatusIcon()}
+                          < p style={{fontSize: 30, fontWeight: 300}}> {account && shortenAddress(account)}</p>
+                        </div>
+                        <span style={{ marginLeft: '4px', fontSize: '13px',  }}>Copy</span>
+                      </Copy>
                         )}
                       </div>
+                      
                     </>
                   )}
                 </AccountControl>
@@ -373,7 +376,7 @@ export default function AccountDetails({
                             isENS={false}
                             href={getEtherscanLink(chainId, account, 'address')}
                           >
-                            <span>View on Moonbeam ↗</span>
+                            <span style={{marginLeft: '15px'}}>View on Moonbeam ↗</span>
                           </AddressLink>
                         )}
                       </div>
@@ -389,7 +392,9 @@ export default function AccountDetails({
         <LowerSection>
           <AutoRow mb={'1rem'} style={{ justifyContent: 'space-between' }}>
             <TYPE.body>Recent Transactions</TYPE.body>
-            <LinkStyledButton onClick={clearAllTransactionsCallback}>(clear all)</LinkStyledButton>
+            <ButtonPositionsMobile style={{width: 'auto', backgroundColor: 'transparent', border: '1px solid #503E66', padding: '9px 12px 10px'}} 
+              onClick={clearAllTransactionsCallback}>Clear all
+            </ButtonPositionsMobile>
           </AutoRow>
           {renderTransactions(pendingTransactions)}
           {renderTransactions(confirmedTransactions)}

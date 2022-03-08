@@ -116,7 +116,7 @@ function CurrencyRow({
       <Column>
         <Text title={currency.name} fontWeight={400} style={{display: 'flex', flexFlow: 'column'}}>
           <span>{currency.symbol}</span>
-          <span style={{color: 'gray'}}>{currency.name}</span>
+          <span style={{color: '#9D94AA', fontSize: '13px'}}>{currency.name}</span>
         </Text>
         <FadedSpan>
           {!isOnSelectedList && customAdded ? (

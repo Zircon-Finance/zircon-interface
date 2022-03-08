@@ -664,7 +664,7 @@ export default function RemoveProLiquidity({
                 {!account ? (
                     <ButtonLight onClick={toggleWalletModal}>Connect Wallet</ButtonLight>
                 ) : (
-                    <RowBetween>
+                    <RowBetween style={{paddingBottom: '10px'}}>
                       <ButtonConfirmed
                           onClick={() => approveCallback()}
                           confirmed={approval === ApprovalState.APPROVED || signatureData !== null}

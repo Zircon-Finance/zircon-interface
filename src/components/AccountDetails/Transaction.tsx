@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Check, Triangle } from 'react-feather'
+import { Triangle } from 'react-feather'
+import Check from '../CheckIcon'
 
 import { useActiveWeb3React } from '../../hooks'
 import { getEtherscanLink } from '../../utils'
@@ -54,7 +55,7 @@ export default function Transaction({ hash }: { hash: string }) {
           <TransactionStatusText style={{color: 'white'}}>{summary ?? hash} ↗</TransactionStatusText>
         </RowFixed>
         <IconWrapper pending={pending} success={success}>
-          {pending ? <Loader /> : success ? <Check size="16" stroke="white" /> : <Triangle size="16" stroke="white" />}
+          {pending ? <Loader /> : success ? <Check /> : <Triangle size="16" stroke="white" />}
         </IconWrapper>
       </TransactionState>
     </TransactionWrapper>

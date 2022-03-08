@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from 'react'
+import React, { Suspense } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import GoogleAnalyticsReporter from '../components/analytics/GoogleAnalyticsReporter'
@@ -26,6 +26,8 @@ import { RedirectPathToSwapOnly, RedirectToSwap } from './Swap/redirects'
 import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
 import {RedirectOldRemoveLiquidityProPathStructure} from "./RemoveProLiquidity/redirects";
 import RemoveProLiquidity from "./RemoveProLiquidity";
+import { useWindowDimensions } from '../hooks'
+import LearnIcon from '../components/LearnIcon'
 
 const AppWrapper = styled.div`
   display: flex;
@@ -57,7 +59,7 @@ const BodyWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding-top: 160px;
+  padding-top: 110px;
   align-items: center;
   flex: 1;
 
@@ -75,19 +77,7 @@ const Marginer = styled.div`
 `
 
 export default function App() {
-
-  const [isMobile, setIsMobile] = useState(false)
-
-  const handleResize = () => {
-    if (window.innerWidth < 800) {
-        setIsMobile(true)
-    } else {
-        setIsMobile(false)
-    }
-  }
-  useEffect(() => {
-    handleResize()
-  })
+  const { width } = useWindowDimensions();
   return (
     <Suspense fallback={null}>
       <HashRouter>
@@ -99,11 +89,11 @@ export default function App() {
         </MobileWrapper>} */}
         <Route component={GoogleAnalyticsReporter} />
         <Route component={DarkModeQueryParamReader} />
-        <AppWrapper style={{overflow: isMobile ? 'hidden' : 'auto'}}>
+        <AppWrapper>
           <HeaderWrapper>
             <Header />
           </HeaderWrapper>
-          <BodyWrapper>
+          <BodyWrapper style={{paddingTop: width > 700 ? '110px' : '0px'}}>
             <Popups />
             <Web3ReactManager>
               <Switch>
@@ -128,6 +118,7 @@ export default function App() {
               </Switch>
             </Web3ReactManager>
             <Marginer />
+            {(window.location.hash !== '#/pool') && (<LearnIcon />)}
           </BodyWrapper>
         </AppWrapper>
       </HashRouter>

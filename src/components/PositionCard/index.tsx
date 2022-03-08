@@ -1,16 +1,16 @@
 import {JSBI, Pair, Percent, Pylon, TokenAmount} from 'zircon-sdk'
 import React, { useState, useContext } from 'react'
-import { ChevronDown, ChevronUp, Plus } from 'react-feather'
+import { ChevronDown, ChevronUp } from 'react-feather'
 import { Link } from 'react-router-dom'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components'
 import { useTotalSupply } from '../../data/TotalSupply'
 
-import { useActiveWeb3React } from '../../hooks'
+import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import { currencyId } from '../../utils/currencyId'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
-import { ButtonOutlined, ButtonPrimary } from '../Button'
+import { ButtonPositionsMobile } from '../Button'
 
 import Card, { OutlineCard } from '../Card'
 import { AutoColumn } from '../Column'
@@ -25,6 +25,7 @@ import {
   useVirtualAnchorBalance,
   useVirtualFloatBalance
 } from "../../data/PylonData";
+import { Separator } from '../SearchModal/styleds'
 
 export const FixedHeightRow = styled(RowBetween)`
   height: 24px;
@@ -35,11 +36,15 @@ export const HoverCard = styled(Card)`
 `
 
 const BadgeSmall = styled.span`
-  background-color: #321f46;
+  background-color: #ffffff17;
   padding: 3px 5px;
   border-radius: 5px;
-  color: ${({ theme }) => theme.text2};
+  color: ${({ theme }) => theme.whiteHalf};
   margin-left: 5px;
+  font-size: 10px;
+  @media (min-width: 500px) {
+    font-size: 16px;
+  }
 `
 
 interface PositionCardProps {
@@ -98,7 +103,7 @@ export function MinimalPositionCard({ pair, showUnwrapped = false, border }: Pos
                 </Text>
               </RowFixed>
               <RowFixed>
-                <Text fontWeight={400} fontSize={16} color={theme.text2}>
+                <Text fontWeight={400} fontSize={16} color={theme.whiteHalf}>
                   {userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}
                 </Text>
               </RowFixed>
@@ -170,9 +175,12 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
         ]
       : [undefined, undefined]
 
+  const { width } = useWindowDimensions();
+
   return (
-    <HoverCard border={'none'} backgroundColor={showMore ? '#3C2955' : '#2B1840'}>
+    <HoverCard border={'none'} padding={showMore ? '0px' : '1.25rem'} backgroundColor={showMore ? '#3C2955' : '#2B1840'}>
       <AutoColumn gap="12px">
+      <div style={{ padding: showMore ? '1.25rem 1.25rem 0 1.25rem' : '0px'}}>
         <FixedHeightRow onClick={() => setShowMore(!showMore)} style={{ cursor: 'pointer' }}>
           <RowFixed>
             <DoubleCurrencyLogo currency0={currency0} currency1={currency1} margin={true} size={28} />
@@ -182,18 +190,39 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
             </Text>
           </RowFixed>
           <RowFixed>
-            <Text fontSize={16} fontWeight={400} color={theme.text2}>
+          { !showMore &&
+            <Text fontSize={width > 500 ? 16 : 10} fontWeight={400} color={theme.whiteHalf}>
                 {userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}
             </Text>
-            {showMore ? (
+            }
+            {
+            width > 500 &&
+            (showMore ? (
               <ChevronUp size="20" style={{ marginLeft: '10px' }} />
             ) : (
               <ChevronDown size="20" style={{ marginLeft: '10px' }} />
-            )}
+            ))
+            }
           </RowFixed>
         </FixedHeightRow>
+        </div>
+
         {showMore && (
           <AutoColumn gap="8px">
+            <div style={{padding: '0 1.25rem'}}>
+            <FixedHeightRow>
+              <RowFixed>
+                <Text fontSize={16} fontWeight={400}>
+                  Your pool tokens:
+                </Text>
+              </RowFixed>
+              <RowFixed>
+                <Text fontSize={16} fontWeight={400}>
+                  {userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}
+                </Text>
+              </RowFixed>
+            </FixedHeightRow>
+            <Separator style={{margin: '10px 0 10px 0'}} />
             <FixedHeightRow>
               <RowFixed>
                 <Text fontSize={13} fontWeight={400}>
@@ -236,17 +265,22 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
                 {poolTokenPercentage ? poolTokenPercentage.toFixed(2) + '%' : '-'}
               </Text>
             </FixedHeightRow>
-              <ButtonPrimary as={Link} to={`/remove/${currencyId(currency0)}/${currencyId(currency1)}`} style={{backgroundColor: '#5F299F'}}>
-                <Text fontSize={16} fontWeight={400}>
-                  Remove
+            </div>
+            <div style={{display: 'flex', flexFlow: 'row', padding: '5px'}}>
+              <ButtonPositionsMobile as={Link} to={`/remove/${currencyId(currency0)}/${currencyId(currency1)}`} 
+              style={{marginRight: '2.5px'}}>
+                <Text fontSize={width > 500 ? 16 : 13} fontWeight={400}>
+                  {'Remove'}
                 </Text>
-              </ButtonPrimary>
-              <ButtonOutlined as={Link} to={`/add/${currencyId(currency0)}/${currencyId(currency1)}`} padding={'6px'} >
-                <Plus strokeWidth={1} />
-                <Text fontSize={13} fontWeight={400}>
-                  Add liquidity
+              </ButtonPositionsMobile>
+              <ButtonPositionsMobile as={Link} to={`/add/${currencyId(currency0)}/${currencyId(currency1)}`} padding={'6px'} 
+              style={{marginLeft: '2.5px'}} >
+                {/* {width > 500 && <Plus strokeWidth={1} /> } */}
+                <Text fontSize={width > 500 ? 16 : 13} fontWeight={400}>
+                  {'Add'}
                 </Text>
-              </ButtonOutlined>
+              </ButtonPositionsMobile>
+              </div>
           </AutoColumn>
         )}
       </AutoColumn>
@@ -296,10 +330,13 @@ export function PylonPositionCard({ isFloat, border, pylon }: PylonPositionCardP
         ]
       : [undefined, undefined]
 
+  const { width } = useWindowDimensions();
+
   return (
-    <HoverCard border={'none'} backgroundColor={showMore ? '#3C2955' : '#2B1840'}>
+    <HoverCard border={'none'} padding={showMore ? '0px' : '1.25rem'} backgroundColor={showMore ? '#3C2955' : '#2B1840'}>
       <AutoColumn gap="12px">
-        <FixedHeightRow onClick={() => setShowMore(!showMore)} style={{ cursor: 'pointer' }}>
+      <div style={{ padding: showMore ? '1.25rem 1.25rem 0 1.25rem' : '0px'}}>
+      <FixedHeightRow onClick={() => setShowMore(!showMore)} style={{ cursor: 'pointer' }}>
           <RowFixed>
             <DoubleCurrencyLogo currency0={currency0} currency1={currency1} margin={true} size={28} />
             <Text fontWeight={400} fontSize={16} style={{display: 'flex', alignItems: 'center'}}>
@@ -309,18 +346,39 @@ export function PylonPositionCard({ isFloat, border, pylon }: PylonPositionCardP
             </Text>  
           </RowFixed>
           <RowFixed>
-            <Text fontSize={16} fontWeight={400} color={theme.text2}>
+            { !showMore &&
+            <Text fontSize={width > 500 ? 16 : 10} fontWeight={400} color={theme.whiteHalf}>
                 {userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}
             </Text>
-            {showMore ? (
+            }
+            {
+            width > 500 && (
+            showMore ? (
               <ChevronUp size="20" style={{ marginLeft: '10px' }} />
             ) : (
               <ChevronDown size="20" style={{ marginLeft: '10px' }} />
-            )}
+            ))
+            }
           </RowFixed>
         </FixedHeightRow>
+      </div>
+        
         {showMore && (
           <AutoColumn gap="8px">
+            <div style={{padding: '0 1.25rem'}}>
+            <FixedHeightRow>
+              <RowFixed>
+                <Text fontSize={16} fontWeight={400}>
+                  Your pool tokens:
+                </Text>
+              </RowFixed>
+              <RowFixed>
+                <Text fontSize={16} fontWeight={400}>
+                  {userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}
+                </Text>
+              </RowFixed>
+            </FixedHeightRow>
+            <Separator style={{margin: '10px 0 10px 0'}} />
             <FixedHeightRow>
               <RowFixed>
                 <Text fontSize={13} fontWeight={400}>
@@ -355,26 +413,30 @@ export function PylonPositionCard({ isFloat, border, pylon }: PylonPositionCardP
                 '-'
               )}
             </FixedHeightRow>
-            {/*<FixedHeightRow>*/}
+            </div>
+            {/* <FixedHeightRow>*/}
             {/*  <Text fontSize={13} fontWeight={400}>*/}
             {/*    Your pool share:*/}
             {/*  </Text>*/}
             {/*  <Text fontSize={13} fontWeight={400}>*/}
             {/*    {poolTokenPercentage ? poolTokenPercentage.toFixed(2) + '%' : '-'}*/}
             {/*  </Text>*/}
-            {/*</FixedHeightRow>*/}
-              <ButtonPrimary as={Link} to={`/remove-pro/${currencyId(currency0)}/${currencyId(currency1)}/${isFloat ? "FLOAT" : "ANCHOR"}`}
-              style={{backgroundColor: '#5F299F'}}>
-                <Text fontSize={16} fontWeight={400}>
-                  Remove
+            {/*</FixedHeightRow> */}
+            <div style={{display: 'flex', flexFlow: 'row', padding: '5px'}}>
+              <ButtonPositionsMobile as={Link} to={`/remove-pro/${currencyId(currency0)}/${currencyId(currency1)}/${isFloat ? "FLOAT" : "ANCHOR"}`}
+              style={{marginRight: '2.5px'}}>
+                <Text fontSize={width > 500 ? 16 : 13} fontWeight={400}>
+                  {'Remove'}
                 </Text>
-              </ButtonPrimary>
-              <ButtonOutlined as={Link} to={`/add-pro/${currencyId(currency0)}/${currencyId(currency1)}`} padding={'6px'} >
-                <Plus strokeWidth={1} />
-                <Text fontSize={13} fontWeight={400}>
-                  Add liquidity
+              </ButtonPositionsMobile>
+              <ButtonPositionsMobile as={Link} to={`/add-pro/${currencyId(currency0)}/${currencyId(currency1)}`} padding={'6px'}
+              style={{marginLeft: '2.5px'}} >
+                {/* {width > 500 && <Plus strokeWidth={1} /> } */}
+                <Text fontSize={width > 500 ? 16 : 13} fontWeight={400}>
+                  {'Add'}
                 </Text>
-              </ButtonOutlined>
+              </ButtonPositionsMobile>
+            </div>
           </AutoColumn>
         )}
       </AutoColumn>
@@ -423,6 +485,8 @@ export function MinimalPositionPylonCard({ pylon, showUnwrapped = false, border,
           ]
           : [undefined, undefined]
 
+  const { width } = useWindowDimensions();
+
   return (
       <>
         {userPoolBalance && (
@@ -443,7 +507,7 @@ export function MinimalPositionPylonCard({ pylon, showUnwrapped = false, border,
                     </Text>
                   </RowFixed>
                   <RowFixed>
-                    <Text fontWeight={400} fontSize={16}>
+                    <Text fontWeight={400} fontSize={width > 500 ? 16 : 10}>
                       {userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}
                     </Text>
                   </RowFixed>

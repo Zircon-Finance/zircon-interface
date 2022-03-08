@@ -20,15 +20,14 @@ const StyledMenuButton = styled.button`
   position: relative;
   width: 100%;
   height: 100%;
-  border: none;
+  border: 1px solid rgba(89, 73, 110, 0.4);
   background-color: transparent;
   margin: 0;
   padding: 0;
   background-color: ${({ theme }) => theme.bg1};
-  margin-right: 10px;
-  height: 100%;
-  padding: 15px;
-  border-radius: 20px;
+  margin-right: 5px;
+  padding: 15px 0 15px 0;
+  border-radius: 17px;
 
   :hover,
   :focus {

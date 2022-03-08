@@ -653,7 +653,7 @@ export default function RemoveLiquidity({
               {!account ? (
                 <ButtonLight onClick={toggleWalletModal}>Connect Wallet</ButtonLight>
               ) : (
-                <RowBetween>
+                <RowBetween style={{paddingBottom: '10px'}}>
                   <ButtonConfirmed
                     onClick={onAttemptToApprove}
                     confirmed={approval === ApprovalState.APPROVED || signatureData !== null}

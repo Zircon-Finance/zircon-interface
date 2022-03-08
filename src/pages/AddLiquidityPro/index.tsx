@@ -21,7 +21,7 @@ import {RowBetween, RowFlat} from '../../components/Row'
 // import { ArrowRight } from 'react-feather'
 import {PYLON_ROUTER_ADDRESS} from '../../constants'
 import {PylonState} from '../../data/PylonReserves'
-import {useActiveWeb3React} from '../../hooks'
+import {useActiveWeb3React, useWindowDimensions} from '../../hooks'
 import {useCurrency} from '../../hooks/Tokens'
 import {ApprovalState, useApproveCallback} from '../../hooks/useApproveCallback'
 import {useWalletModalToggle} from '../../state/application/hooks'
@@ -489,6 +489,7 @@ export default function AddLiquidityPro({
     setTxHash('')
   }, [onFieldAInput, txHash])
 
+  const { width } = useWindowDimensions();
 
 
   return (
@@ -631,22 +632,30 @@ export default function AddLiquidityPro({
               {/* Pylon condition */}
 
               {currencies[Field.CURRENCY_B] !== undefined && pylonState === PylonState.EXISTS && (
+                <div>
+                {width < 700 && 
+                  (<span style={{display: 'flex', alignSelf: 'center', fontSize: '13px', justifyContent: 'center', letterSpacing: '0.05em', marginBottom: '8px'}}>
+                    {'ADVANCED MODE'}
+                  </span>)
+                }
                   <div style={{display: 'flex', border: '1px solid #402D58', borderRadius: '17px', justifyContent: 'space-between'}}>
-                    <span style={{display: 'inline', alignSelf: 'center', fontSize: '13px', margin: 'auto', letterSpacing: '0.05em'}}>{'ADVANCED MODE'}</span>
-                    <div style={{display: 'flex', borderLeft: `1px solid ${theme.bg9}`, borderRadius: '17px', padding: '5px', fontSize: '13px'}}>
+                  {width > 700 && 
+                    (<span style={{display: 'inline', alignSelf: 'center', fontSize: '13px', margin: 'auto', letterSpacing: '0.05em'}}>{'ADVANCED MODE'}</span>)
+                  }
+                    <div style={{display: 'flex', borderLeft: `1px solid ${theme.bg9}`, borderRadius: '17px', padding: '5px', fontSize: '13px', width: width > 700 ? 'inherit' : '100%'}}>
 
                       <ButtonAnchor borderRadius={'12px'} padding={'10px'}
-                                    style={{backgroundColor: sync === 'off' ? theme.bg9 : 'transparent'}}
+                                    style={{backgroundColor: sync === 'off' ? theme.bg9 : 'transparent', width: width > 700 ? 'auto' : 'inherit'}}
                                     onClick={()=> {setSync('off')}}>
                         OFF
                       </ButtonAnchor>
                       <ButtonAnchor borderRadius={'12px'} padding={'10px'}
-                                    style={{backgroundColor: sync === 'full' ? theme.bg9 : 'transparent'}}
+                                    style={{backgroundColor: sync === 'full' ? theme.bg9 : 'transparent', width: width > 700 ? 'auto' : 'inherit'}}
                                     onClick={()=> {setSync('full')}}>
                         100% Async
                       </ButtonAnchor>
                       <ButtonAnchor borderRadius={'12px'} padding={'10px'}
-                                    style={{backgroundColor: sync === 'half' ? theme.bg9 : 'transparent'}}
+                                    style={{backgroundColor: sync === 'half' ? theme.bg9 : 'transparent', width: width > 700 ? 'auto' : 'inherit'}}
                                     onClick={()=> {
                                       setSync('half')
                                       setFloat({
@@ -657,6 +666,7 @@ export default function AddLiquidityPro({
                         50/50 Async
                       </ButtonAnchor>
                     </div>
+                  </div>
                   </div>)}
 
             </AutoColumn>

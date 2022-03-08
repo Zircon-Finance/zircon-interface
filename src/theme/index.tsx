@@ -40,6 +40,7 @@ export function colors(): Colors {
     // base
     white,
     black,
+    whiteHalf: 'rgba(255,255,255,0.5)',
 
     // text
     text1: '#FFFFFF',
@@ -204,6 +205,13 @@ html,
 body {
   margin: 0;
   padding: 0;
+  -ms-overflow-style: none; 
+  scrollbar-width: thin;
+  }
+}
+
+body::-webkit-scrollbar {
+  display: none; 
 }
 
 * {

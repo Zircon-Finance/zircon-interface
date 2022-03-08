@@ -8,11 +8,12 @@ import HistoryIcon from '../HistoryIcon'
 import { TransactionDetails } from '../../state/transactions/reducer'
 import Transaction from '../AccountDetails/Transaction'
 import { AutoRow } from '../Row'
-import { LinkStyledButton, TYPE } from '../../theme'
+import { TYPE } from '../../theme'
 import { useActiveWeb3React } from '../../hooks'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '../../state'
 import { clearAllTransactions } from '../../state/transactions/actions'
+import { ButtonPositionsMobile } from '../Button'
 
 const StyledMenuButton = styled.button`
   position: relative;
@@ -59,12 +60,11 @@ const MenuFlyout = styled.span`
   font-size: 1rem;
   position: absolute;
   top: 60px;
-  left: -15rem;
+  left: -270px;
   z-index: 100;
 
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     min-width: 18.125rem;
-    right: -46px;
   `};
 `
 
@@ -140,7 +140,9 @@ export default function HistoryTransactions() {
         <LowerSection>
           <AutoRow mb={'1rem'} style={{ justifyContent: 'space-between' }}>
             <TYPE.body>Recent Transactions</TYPE.body>
-            <LinkStyledButton onClick={clearAllTransactionsCallback}>(clear all)</LinkStyledButton>
+            <ButtonPositionsMobile style={{width: 'auto', backgroundColor: 'transparent', border: '1px solid rgba(255,255,255,0.3)', padding: '9px 12px 10px'}} 
+              onClick={clearAllTransactionsCallback}>Clear all
+            </ButtonPositionsMobile>
           </AutoRow>
           {renderTransactions(pendingTransactions)}
           {renderTransactions(confirmedTransactions)}

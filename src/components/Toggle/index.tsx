@@ -2,17 +2,17 @@ import React from 'react'
 import styled from 'styled-components'
 
 const ToggleElement = styled.span<{ isActive?: boolean; isOnSwitch?: boolean }>`
-  padding: 0.25rem 0.5rem;
-  border-radius: 14px;
+  padding: 5px 10px;
+  border-radius: 11px;
   background: ${({ theme, isActive, isOnSwitch }) => (isActive ? (isOnSwitch ? '#997AAF' : theme.text4) : 'none')};
   color: ${({ theme, isActive, isOnSwitch }) => (isActive ? (isOnSwitch ? theme.white : theme.text2) : theme.text3)};
-  font-size: 0.825rem;
+  font-size: 13px;
   font-weight: 400;
 `
 
 const StyledToggle = styled.button<{ isActive?: boolean; activeElement?: boolean }>`
-  border-radius: 16px;
-  border: 1px solid ${({ theme }) => theme.bg11};
+  border-radius: 11px;
+  border: 1px solid #604C7A;
   display: flex;
   width: fit-content;
   cursor: pointer;

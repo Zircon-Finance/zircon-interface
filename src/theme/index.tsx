@@ -217,7 +217,6 @@ body::-webkit-scrollbar {
 * {
   box-sizing: border-box;
   transition: all 0.1s ease-out;
-  ${window.innerWidth < 800 && 'overflow: hidden'}
 }
 
 button {

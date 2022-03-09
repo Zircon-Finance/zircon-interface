@@ -37,6 +37,7 @@ import { Dots, Wrapper } from '../Pool/styleds'
 import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 import { currencyId } from '../../utils/currencyId'
 import { PoolPriceBar } from './PoolPriceBar'
+import LearnIcon from '../../components/LearnIcon'
 
 export default function AddLiquidity({
   match: {
@@ -312,6 +313,7 @@ export default function AddLiquidity({
 
   return (
     <>
+    <LearnIcon />
       <AppBody>
         <AddRemoveTabsClassic adding={true} />
         <Wrapper>

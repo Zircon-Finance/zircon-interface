@@ -34,7 +34,7 @@ const SmallerBadge = styled.span`
   border-radius: 30px;
   color: ${({ theme }) => theme.white};
   cursor: pointer;
-  z-index: 100;
+  z-index: 10;
   &:hover {
       background-color: ${({ theme }) => theme.bg10};
   }

@@ -39,6 +39,7 @@ import {Dots, Wrapper} from '../Pool/styleds'
 import {ConfirmAddModalBottom} from './ConfirmAddModalBottom'
 import {currencyId} from '../../utils/currencyId'
 import { MobileWrapper } from '../App'
+import LearnIcon from '../../components/LearnIcon'
 // import { PoolPriceBar } from './PoolPriceBar'
 // import { ArrowDown } from 'react-feather'
 
@@ -494,6 +495,7 @@ export default function AddLiquidityPro({
 
   return (
       <>
+      <LearnIcon />
       {pylonState === PylonState.LOADING && account && <MobileWrapper style={{backgroundColor: 'rgba(12,12,12,0.5)', position: 'fixed'}}></MobileWrapper>}
         <AppBody>
           <AddRemoveTabs adding={true} />

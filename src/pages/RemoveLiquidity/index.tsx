@@ -42,6 +42,7 @@ import { Field } from '../../state/burn/actions'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
 import { BigNumber } from '@ethersproject/bignumber'
+import LearnIcon from '../../components/LearnIcon'
 
 export default function RemoveLiquidity({
   history,
@@ -470,6 +471,7 @@ export default function RemoveLiquidity({
   )
   return (
     <>
+    <LearnIcon />
       <AppBodySmaller>
         <AddRemoveTabs adding={false} />
         <WrapperWithPadding>

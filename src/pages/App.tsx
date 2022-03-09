@@ -27,7 +27,6 @@ import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redir
 import {RedirectOldRemoveLiquidityProPathStructure} from "./RemoveProLiquidity/redirects";
 import RemoveProLiquidity from "./RemoveProLiquidity";
 import { useWindowDimensions } from '../hooks'
-import LearnIcon from '../components/LearnIcon'
 
 const AppWrapper = styled.div`
   display: flex;
@@ -118,7 +117,6 @@ export default function App() {
               </Switch>
             </Web3ReactManager>
             <Marginer />
-            {(window.location.hash !== '#/pool') && (<LearnIcon />)}
           </BodyWrapper>
         </AppWrapper>
       </HashRouter>

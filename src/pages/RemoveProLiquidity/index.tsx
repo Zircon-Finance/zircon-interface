@@ -38,6 +38,7 @@ import {useWalletModalToggle} from '../../state/application/hooks'
 import {useUserDeadline, useUserSlippageTolerance} from '../../state/user/hooks'
 import {BigNumber} from '@ethersproject/bignumber'
 import {RouteComponentProps} from "react-router-dom";
+import LearnIcon from '../../components/LearnIcon'
 
 export default function RemoveProLiquidity({
                                              history,
@@ -464,6 +465,7 @@ export default function RemoveProLiquidity({
   )
   return (
       <>
+      <LearnIcon />
         <AppBodySmaller>
           <AddRemoveTabs adding={false} />
           <WrapperWithPadding>

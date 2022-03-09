@@ -31,7 +31,7 @@ import TriMenu from '../../components/TriMenu'
 import { ButtonOutlined, ButtonPrimary } from '../../components/Button'
 import { Link } from 'react-router-dom'
 import HistoryTransactions from '../../components/HistoryTransactions'
-import { SmallerQuestionmark } from '../../components/LearnIcon'
+import LearnIcon, { SmallerQuestionmark } from '../../components/LearnIcon'
 
 export default function Pool() {
   const theme = useContext(ThemeContext)
@@ -185,6 +185,7 @@ export default function Pool() {
               </div>
             </AutoRow>
           </AutoColumn>
+          {width > 700 && <LearnIcon />}
         </AppBody>
       </>
   )

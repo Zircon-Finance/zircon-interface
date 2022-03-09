@@ -201,12 +201,19 @@ html, input, textarea, button {
   }
 }
 
+::-webkit-scrollbar {
+  width: 0;  
+  background: transparent;  
+}
+::-webkit-scrollbar-thumb {
+  background: A9A0B4;
+}
+
 html,
 body {
   margin: 0;
   padding: 0;
   -ms-overflow-style: none; 
-  scrollbar-width: thin;
   }
 }
 
@@ -217,6 +224,7 @@ body::-webkit-scrollbar {
 * {
   box-sizing: border-box;
   transition: all 0.1s ease-out;
+  scrollbar-width: thin;
 }
 
 button {

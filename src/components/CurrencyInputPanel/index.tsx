@@ -229,16 +229,16 @@ export default function CurrencyInputPanel({
                            padding: showMaxButton ? '0px' : '10px 0 5px 5px'
                   }}
                 >
-                  <div style={{display: 'flex', alignItems: 'center', fontSize: '13px'}}>
+                  <div style={{display: 'flex', alignItems: 'center', fontSize: '13px', marginTop: showMaxButton ? '10px' : '0px'}}>
                   {account && currency && showMaxButton && label !== 'To' && (
-                  <StyledBalanceMax onClick={onMax} style={{marginTop: '10px'}}>MAX</StyledBalanceMax>
+                  <StyledBalanceMax onClick={onMax}>MAX</StyledBalanceMax>
                   )}
                   {!hideBalance && !!currency && selectedCurrencyBalance
                     ? 'Balance: ' + selectedCurrencyBalance?.toSignificant(6)
                     : ' -'}
                   </div>
                   {currency &&
-                  <div style={{paddingRight: '0.75rem', alignSelf: 'center'}}>
+                  <div style={{paddingRight: '0.75rem', alignSelf: 'center', marginTop: showMaxButton ? '10px' : '0px'}}>
                     {'0$' /* This was added, it's supposed to convert to $ */}
                   </div>
                   }

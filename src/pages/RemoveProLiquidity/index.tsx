@@ -544,7 +544,7 @@ export default function RemoveProLiquidity({
               {!showDetailed && (
                   <>
                     <ColumnCenter>
-                      <span style={{width: '100%', marginLeft: '20px'}}>You will receive</span>
+                      <span style={{width: '100%', marginLeft: '20px', fontSize: '13px'}}>You will receive</span>
                     </ColumnCenter>
                     <LightPinkCard>
                       <AutoColumn gap="10px">

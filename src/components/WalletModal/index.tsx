@@ -317,9 +317,6 @@ export default function WalletModal({
     }
     return (
       <UpperSection>
-        <CloseIcon onClick={toggleWalletModal}>
-          <CloseColor />
-        </CloseIcon>
         {walletView !== WALLET_VIEWS.ACCOUNT ? (
           <HeaderRow color="blue">
             <HoverText
@@ -334,6 +331,9 @@ export default function WalletModal({
         ) : (
           <HeaderRow>
             <HoverText>Connect to a wallet</HoverText>
+            <CloseIcon style={{top: 'auto'}} onClick={toggleWalletModal}>
+              <CloseColor />
+            </CloseIcon>
           </HeaderRow>
         )}
         <ContentWrapper style={{backgroundColor: 'transparent', width: '100%'}}>

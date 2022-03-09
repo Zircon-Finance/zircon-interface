@@ -40,7 +40,7 @@ export const MenuItem = styled(RowBetween)`
 export const SearchInput = styled.input`
   position: relative;
   display: flex;
-  padding: 18px 20px;
+  padding: 18px 40px 18px 20px;
   align-items: center;
   width: 100%;
   background: url(${SearchIcon});

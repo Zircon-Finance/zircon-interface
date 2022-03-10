@@ -7,8 +7,9 @@ import useHttpLocations from '../../hooks/useHttpLocations'
 import { WrappedTokenInfo } from '../../state/lists/hooks'
 import Logo from '../Logo'
 
-const getTokenLogoURL = (address: string) =>
-  `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`
+const getTokenLogoURL = (name: string) =>
+  //`https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`
+  `https://raw.githubusercontent.com/PureStake/moonbase-mintableERC20/main/mintableERC20-interface/public/logos/${name}.svg`
 
 const StyledEthereumLogo = styled.img<{ size: string }>`
   width: ${({ size }) => size};
@@ -38,10 +39,12 @@ export default function CurrencyLogo({
 
     if (currency instanceof Token) {
       if (currency instanceof WrappedTokenInfo) {
-        return [...uriLocations, getTokenLogoURL(currency.address)]
+        return [...uriLocations, getTokenLogoURL(currency.name?.toLowerCase() as string)]
       }
+      console.log('Currency object',currency.name?.toLowerCase())
 
-      return [getTokenLogoURL(currency.address)]
+      return [getTokenLogoURL(currency.name?.toLowerCase() as string)]
+      //return [getTokenLogoURL(currency.address)]
     }
     return []
   }, [currency, uriLocations])

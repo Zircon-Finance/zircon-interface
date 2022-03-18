@@ -243,6 +243,7 @@ export default function AddLiquidityPro({
         value: BigNumber | null
     const tokenBIsETH = float.currency_b === DEV
     if (sync === "off") {
+
       if (float.currency_a === DEV) {
         estimate = router.estimateGas.addSyncLiquidityETH
         method = router.addSyncLiquidityETH
@@ -268,6 +269,10 @@ export default function AddLiquidityPro({
         value = null
       }
     }else if (sync === "full") {
+      console.log(float)
+      console.log(DEV)
+      console.log(wrappedCurrency(currencies[Field.CURRENCY_A], chainId)?.address ?? '')
+      console.log(wrappedCurrency(currencies[Field.CURRENCY_B], chainId)?.address ?? '')
       if (float.currency_a === DEV) {
         estimate = router.estimateGas.addAsyncLiquidity100ETH
         method = router.addAsyncLiquidity100ETH

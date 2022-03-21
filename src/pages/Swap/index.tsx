@@ -22,7 +22,7 @@ import ProgressSteps from '../../components/ProgressSteps'
 import Settings from '../../components/Settings'
 
 import { INITIAL_ALLOWED_SLIPPAGE } from '../../constants'
-import { useActiveWeb3React } from '../../hooks'
+import { useActiveWeb3React, useSingleTokenSwapInfo } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
 import useENSAddress from '../../hooks/useENSAddress'
@@ -45,6 +45,7 @@ import AppBody from '../AppBody'
 import { ClickableText } from '../Pool/styleds'
 import Loader from '../../components/Loader'
 import LearnIcon from '../../components/LearnIcon'
+import PriceChartContainer from '../../components/Chart/PriceChartContainer'
 
 export default function Swap() {
   const { t } = useTranslation()
@@ -252,7 +253,12 @@ export default function Swap() {
   const handleOutputSelect = useCallback(outputCurrency => onCurrencySelection(Field.OUTPUT, outputCurrency), [
     onCurrencySelection
   ])
-  console.log(currencies[Field.OUTPUT]);
+  const [isChartExpanded, setIsChartExpanded] = useState(false)
+  const [isChartDisplayed] = useState(true)
+
+  const singleTokenPrice = useSingleTokenSwapInfo('0x29a609b399beaf39ed9c1bcf52102bab102d35d9', currencies[Field.INPUT], '0x4c945cd20dd13168bc87f30d55f12dc26512ca33', currencies[Field.OUTPUT])
+  console.log('Current token price: ', singleTokenPrice)
+
 
   return (
     <>
@@ -283,7 +289,20 @@ export default function Swap() {
             swapErrorMessage={swapErrorMessage}
             onDismiss={handleConfirmDismiss}
           />
-
+          <div style={{border: '1px solid red'}}>
+          <PriceChartContainer
+              inputCurrencyId={'0x29a609b399beaf39ed9c1bcf52102bab102d35d9'}
+              inputCurrency={currencies[Field.INPUT]}
+              outputCurrencyId={'0x4c945cd20dd13168bc87f30d55f12dc26512ca33'}
+              outputCurrency={currencies[Field.OUTPUT]}
+              isChartExpanded={isChartExpanded}
+              setIsChartExpanded={setIsChartExpanded}
+              isChartDisplayed={isChartDisplayed}
+              currentSwapPrice={singleTokenPrice}
+              isMobile={false}
+            />
+          </div>
+          
           <AutoColumn gap={'md'} style={{backgroundColor: theme.bg7, borderRadius: '27px', padding: '10px'}}>
             <CurrencyInputPanel
               label={independentField === Field.OUTPUT && !showWrap && trade ? 'From (estimated)' : 'From'}
@@ -324,7 +343,7 @@ export default function Swap() {
             <CurrencyInputPanel
               value={formattedAmounts[Field.OUTPUT]}
               onUserInput={handleTypeOutput}
-              label={independentField === Field.INPUT && !showWrap && trade ? 'To (estimated)' : 'To'}
+              label={independentField === Field.INPUT && !showWrap && trade ? 'To (estimated)a' : 'To'}
               showMaxButton={false}
               currency={currencies[Field.OUTPUT]}
               onCurrencySelect={handleOutputSelect}

@@ -492,6 +492,12 @@ export default function AddLiquidityPro({
 
   const { width } = useWindowDimensions();
 
+  console.log('The input of the currency a is: ', currencies[Field.CURRENCY_A])
+  console.log('The input of the currency b is: ', currencies[Field.CURRENCY_B])
+
+  console.log('The state of the currency a is: ', float.field_a)
+  console.log('The state of the currency b is: ', float.field_b)
+
 
   return (
       <>

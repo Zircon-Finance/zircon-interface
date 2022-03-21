@@ -1,11 +1,20 @@
 import { Web3Provider } from '@ethersproject/providers'
-import { ChainId } from 'zircon-sdk'
+import { ChainId, Currency, Pair, Token } from 'zircon-sdk'
 import { useWeb3React as useWeb3ReactCore } from '@web3-react/core'
 import { Web3ReactContextInterface } from '@web3-react/core/dist/types'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import { injected } from '../connectors'
 import { NetworkContextName } from '../constants'
+import { useDispatch, useSelector } from 'react-redux'
+import { derivedPairByDataIdSelector, pairByDataIdSelector } from '../components/Chart/selector'
+import { normalizeChartData, normalizePairDataByActiveToken } from '../pages/Swap/normalizers'
+import { updatePairData } from '../pages/Swap/actions'
+import fetchPairPriceData from '../pages/Swap/fetch/fetchPairPriceData'
+import { pairHasEnoughLiquidity } from '../pages/Swap/fetch/utils'
+import { getTokenAddress } from '../components/Chart/utils'
+import { tryParseAmount } from '../state/swap/hooks'
+import { useTradeExactIn } from './Trades'
 
 export function useActiveWeb3React(): Web3ReactContextInterface<Web3Provider> & { chainId?: ChainId } {
   const context = useWeb3ReactCore<Web3Provider>()
@@ -108,3 +117,129 @@ export const useWindowDimensions = () => {
 
   return windowDimensions;
 }
+
+type useFetchPairPricesParams = {
+  token0Address: string
+  token1Address: string
+  timeWindow: any
+  currentSwapPrice: {
+    [key: string]: number
+  }
+}
+
+export const useFetchPairPrices = ({
+  token0Address,
+  token1Address,
+  timeWindow,
+  currentSwapPrice,
+}: useFetchPairPricesParams) => {
+  const [pairId, setPairId] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const pairData = useSelector(pairByDataIdSelector({ pairId, timeWindow }))
+
+  console.log('Pair Data: ', pairData )
+  const derivedPairData = useSelector(derivedPairByDataIdSelector({ pairId, timeWindow }))
+  const dispatch = useDispatch()
+  useEffect(() => {
+    const fetchAndUpdatePairPrice = async () => {
+      setIsLoading(true)
+      const { data } = await fetchPairPriceData({ pairId, timeWindow })
+      if (data) {
+        // Find out if Liquidity Pool has enough liquidity
+        // low liquidity pool might mean that the price is incorrect
+        // in that case try to get derived price
+        const hasEnoughLiquidity = pairHasEnoughLiquidity(data, timeWindow)
+        const newPairData = normalizeChartData(data, timeWindow) || []
+        if (newPairData.length > 0 && hasEnoughLiquidity) {
+          dispatch(updatePairData({ pairData: newPairData, pairId, timeWindow }))
+          setIsLoading(false)
+        } else {
+          console.info(`[Price Chart]: Liquidity too low for ${pairId}`)
+          dispatch(updatePairData({ pairData: [], pairId, timeWindow }))
+        }
+      } else {
+        dispatch(updatePairData({ pairData: [], pairId, timeWindow }))
+      }
+    }
+    if (!pairData && !derivedPairData && pairId && !isLoading) {
+      fetchAndUpdatePairPrice()
+    }
+    fetchAndUpdatePairPrice()
+  }, [
+    pairId,
+    timeWindow,
+    pairData,
+    currentSwapPrice,
+    token0Address,
+    token1Address,
+    derivedPairData,
+    dispatch,
+    isLoading,
+  ])
+
+  useEffect(() => {
+    const updatePairId = () => {
+      try {
+        const token0AsTokenInstance = new Token(ChainId.MOONBASE, token0Address, 18)
+        console.log('Token 0 address: ', token0Address)
+        const token1AsTokenInstance = new Token(ChainId.MOONBASE, token1Address, 18)
+        console.log('Token 1 address: ', token1Address)
+        const pairAddress = Pair.getAddress(token0AsTokenInstance, token1AsTokenInstance).toLowerCase()
+        console.log('Pair address is: ', pairAddress)
+        if (pairAddress !== pairId) {
+          setPairId(pairAddress)
+        }
+      } catch (error) {
+        setPairId(null)
+      }
+    }
+
+    updatePairId()
+  }, [token0Address, token1Address, pairId])
+
+  const normalizedPairData = useMemo(
+    () => normalizePairDataByActiveToken({ activeToken: token0Address, pairData }),
+    [token0Address, pairData],
+  )
+
+  const hasSwapPrice = currentSwapPrice && currentSwapPrice[token0Address] > 0
+  
+  const normalizedPairDataWithCurrentSwapPrice =
+    normalizedPairData?.length > 0 && hasSwapPrice
+      ? [...normalizedPairData, { time: new Date(), value: currentSwapPrice[token0Address] }]
+      : normalizedPairData
+
+  // undefined is used for loading
+  let pairPrices
+  if (normalizedPairDataWithCurrentSwapPrice && normalizedPairDataWithCurrentSwapPrice?.length > 0) {
+    pairPrices = normalizedPairDataWithCurrentSwapPrice
+  }
+  console.log('THIS IS THE FINAL DATA: ', pairPrices, pairId)
+  return { pairPrices, pairId }
+}
+
+export function useSingleTokenSwapInfo(
+  inputCurrencyId: string | undefined,
+  inputCurrency: Currency | undefined,
+  outputCurrencyId: string | undefined,
+  outputCurrency: Currency | undefined,
+): { [key: string]: number } {
+  const token0Address = getTokenAddress(inputCurrencyId)
+  const token1Address = getTokenAddress(outputCurrencyId)
+
+  const parsedAmount = tryParseAmount('1', inputCurrency ?? undefined)
+
+  const bestTradeExactIn = useTradeExactIn(parsedAmount, outputCurrency ?? undefined)
+  if (!inputCurrency || !outputCurrency || !bestTradeExactIn) {
+    return null
+  }
+
+  const inputTokenPrice = parseFloat(bestTradeExactIn?.executionPrice?.toSignificant(6))
+  const outputTokenPrice = 1 / inputTokenPrice
+
+  return {
+    [token0Address]: inputTokenPrice,
+    [token1Address]: outputTokenPrice,
+  }
+}
+

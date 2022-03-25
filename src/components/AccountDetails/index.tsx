@@ -321,7 +321,7 @@ export default function AccountDetails({
                 </div>
               </AccountGroupingRow>
               <AccountGroupingRow id="web3-account-identifier-row" style={{border: '1px solid #604C7A', borderRadius: '12px', padding: '10px'}}>
-                <AccountControl>
+                <AccountControl style={{cursor: 'pointer'}}>
                   {ENSName ? (
                     <>
                       <div>

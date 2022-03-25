@@ -7,8 +7,10 @@ import SwapLineChart from './SwapLineChart'
 import NoChartAvailable from './NoChartAvailable'
 import PairPriceDisplay from './PairPriceDisplay'
 import { getTimeWindowChange } from './utils'
-import { useFetchPairPrices } from '../../hooks'
-import { ButtonLight } from '../Button'
+import { useFetchPairPrices } from '../../state/swap/hooks'
+import styled from 'styled-components'
+import DoubleCurrencyLogo from '../DoubleLogo'
+import CurrencyLogo from '../CurrencyLogo'
 
 export enum PairDataTimeWindowEnum {
   DAY,
@@ -16,6 +18,37 @@ export enum PairDataTimeWindowEnum {
   MONTH,
   YEAR,
 }
+
+const ButtonsContainer = styled.div`
+  border-radius: 17px;
+  border: 1px solid #3C225F;
+  display: flex;
+  padding: 5px;
+  font-size: 13px;
+`;
+
+const DateButtons = styled.div`
+  width: 100%;
+  justify-content: space-between;
+  display: flex;
+`;
+
+const TimeButton = styled.button`
+  border-radius: 12px;
+  text-align: center;
+  width: 44px;
+  height: 36px;
+  color: #fff;
+  border: none;
+`;
+
+const TopContainer = styled.div`
+  width: 100%;
+  display: flex;
+  padding: 30px;
+  justify-content: space-between;
+  background-color: #2b1645;
+`;
 
 interface ChartProps {
   token0Address: any,
@@ -37,21 +70,18 @@ const BasicChart = ({
   currentSwapPrice,
 }: ChartProps) => {
   const [timeWindow, setTimeWindow] = useState<PairDataTimeWindowEnum>(0)
-  console.log('Calling the hook useFetchPairPrices')
-  const { pairPrices = [], pairId } = useFetchPairPrices({
+  const { pairPrices = [] } = useFetchPairPrices({
     token0Address,
     token1Address,
     timeWindow,
     currentSwapPrice,
   })
-  console.log('Pair prices main data: ', pairPrices)
-  console.log('INPUTS: ', token0Address, token1Address, currentSwapPrice)
   const [hoverValue, setHoverValue] = useState<number | undefined>()
   const [hoverDate, setHoverDate] = useState<string | undefined>()
   const valueToDisplay = hoverValue || pairPrices[pairPrices.length - 1]?.value
   const { changePercentage, changeValue } = getTimeWindowChange(pairPrices)
   const isChangePositive = changeValue >= 0
-  const chartHeight = isChartExpanded ? 'calc(100% - 120px)' : '378px'
+  const chartHeight = isChartExpanded ? 'calc(100% - 120px)' : '289px'
   const currentDate = new Date().toLocaleString([], {
     year: 'numeric',
     month: 'short',
@@ -72,46 +102,54 @@ const BasicChart = ({
   if (isBadData) {
     return (
       <NoChartAvailable
-        token0Address={token0Address}
-        token1Address={token1Address}
-        pairAddress={pairId}
-        isMobile={isMobile}
+        hasOutputToken={true}
+        hasLiquidity={false}
       />
     )
   }
 
   return (
     <>
-      <Flex
-        flexDirection={['column', null, null, null, null, null, 'row']}
-        alignItems={['flex-start', null, null, null, null, null, 'center']}
-        justifyContent="space-between"
-        px="24px"
-      >
-        <Flex flexDirection="column" pt="12px">
-          <PairPriceDisplay
-            value={pairPrices?.length > 0 && valueToDisplay}
-            inputSymbol={inputCurrency?.symbol}
-            outputSymbol={outputCurrency?.symbol}
-          >
-            <Text color={isChangePositive ? 'success' : 'failure'} fontSize="20px" ml="4px">
-              {`${isChangePositive ? '+' : ''}${changeValue.toFixed(3)} (${changePercentage}%)`}
-            </Text>
-          </PairPriceDisplay>
-          <Text color="secondary">
+      <TopContainer>
+        <Flex justifyContent="space-between" width={'100%'}>
+          <Flex alignItems="center">
+            {outputCurrency ? (
+              <DoubleCurrencyLogo currency0={inputCurrency} currency1={outputCurrency} size={24} margin />
+            ) : (
+              inputCurrency && <CurrencyLogo currency={inputCurrency} size="24px" style={{ marginRight: '8px' }} />
+            )}
+            {inputCurrency && (
+              <Text color="text">
+                {outputCurrency ? `${inputCurrency.symbol}/${outputCurrency.symbol}` : inputCurrency.symbol}
+              </Text>
+            )}
+            </Flex >
+            <Flex flexDirection="column" alignItems="center">
+            <PairPriceDisplay
+              value={pairPrices?.length > 0 && valueToDisplay.toFixed(4)}
+              inputSymbol={inputCurrency?.symbol}
+              outputSymbol={outputCurrency?.symbol}
+            >
+              <Text color={isChangePositive ? 'green' : 'red'} fontSize="16" ml="4px">
+                {`${isChangePositive ? '+' : ''}${changeValue.toFixed(3)} (${changePercentage}%)`}
+              </Text>
+            </PairPriceDisplay>
+            </Flex>
+        </Flex>
+      </TopContainer>
+      <div style={{borderRadius: '27px', backgroundColor: '#331d4e', padding: '15px'}}>
+      <DateButtons>
+        <Text size={13} color="#9C90AC" style={{alignSelf: 'center', width: '100%', paddingLeft: '15px'}}>
             {hoverDate || currentDate}
           </Text>
-        </Flex>
-        <Box>
-          <Flex >
-            <ButtonLight onClick={()=> setTimeWindow(0)}>{'24H'}</ButtonLight>
-            <ButtonLight onClick={()=> setTimeWindow(1)}>{'1W'}</ButtonLight>
-            <ButtonLight onClick={()=> setTimeWindow(2)}>{'1M'}</ButtonLight>
-            <ButtonLight onClick={()=> setTimeWindow(3)}>{'1Y'}</ButtonLight>
-          </Flex>
-        </Box>
-      </Flex>
-      <Box height={isMobile ? '100%' : chartHeight} p={isMobile ? '0px' : '16px'} width="100%">
+          <ButtonsContainer >
+            <TimeButton style={{backgroundColor: timeWindow === 0 ? '#4D346C' : 'transparent'}} onClick={()=> setTimeWindow(0)}>{'24H'}</TimeButton>
+            <TimeButton style={{backgroundColor: timeWindow === 1 ? '#4D346C' : 'transparent'}} onClick={()=> setTimeWindow(1)}>{'1W'}</TimeButton>
+            {/* <TimeButton style={{backgroundColor: timeWindow === 2 ? '#4D346C' : 'transparent'}} onClick={()=> setTimeWindow(2)}>{'1M'}</TimeButton>
+            <TimeButton style={{backgroundColor: timeWindow === 3 ? '#4D346C' : 'transparent'}} onClick={()=> setTimeWindow(3)}>{'1Y'}</TimeButton> */}
+          </ButtonsContainer>
+        </DateButtons>
+      <Box height={isMobile ? '100%' : chartHeight}>
         <SwapLineChart
           data={pairPrices}
           setHoverValue={setHoverValue}
@@ -120,6 +158,7 @@ const BasicChart = ({
           timeWindow={timeWindow}
         />
       </Box>
+      </div>
     </>
   )
 }

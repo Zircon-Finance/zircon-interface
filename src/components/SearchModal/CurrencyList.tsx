@@ -141,7 +141,6 @@ function CurrencyRow({
                   if (currency instanceof Token) addToken(currency)
                 }}
               >
-                (Add)
               </LinkStyledButton>
             </TYPE.main>
           ) : null}

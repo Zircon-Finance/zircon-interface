@@ -118,7 +118,7 @@
     "graphql-request": "^4.1.0",
     "react-ga4": "^1.4.1",
     "recharts": "^2.1.9",
-    "zircon-protocol": "^1.0.0",
+    "zircon-protocol": "^1.0.1",
     "zircon-sdk": "^1.0.3-alpha.0"
   }
 }

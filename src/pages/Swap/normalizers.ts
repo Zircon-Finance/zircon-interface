@@ -1,6 +1,6 @@
 import { fromUnixTime } from 'date-fns'
 import { PairDayDatasResponse, PairHoursDatasResponse } from './fetch/types'
-import { PairDataNormalized, PairDataTimeWindowEnum, PairPricesNormalized } from './types'
+import { DerivedPairDataNormalized, PairDataNormalized, PairDataTimeWindowEnum, PairPricesNormalized } from './types'
 
 export const normalizeChartData = (
   data: PairHoursDatasResponse | PairDayDatasResponse | null,
@@ -30,6 +30,30 @@ export const normalizeChartData = (
   }
 }
 
+export const normalizeDerivedChartData = (data: any) => {
+  if (!data?.token0DerivedBnb || data?.token0DerivedBnb.length === 0) {
+    return []
+  }
+  return data?.token0DerivedBnb.reduce((acc, token0DerivedBnbEntry) => {
+    const token1DerivedBnbEntry = data?.token1DerivedBnb?.find(
+      (entry) => entry.timestamp === token0DerivedBnbEntry.timestamp,
+    )
+    if (!token1DerivedBnbEntry) {
+      return acc
+    }
+    return [
+      ...acc,
+      {
+        time: parseInt(token0DerivedBnbEntry.timestamp, 10),
+        token0Id: token0DerivedBnbEntry.tokenAddress,
+        token1Id: token1DerivedBnbEntry.tokenAddress,
+        token0DerivedBNB: token0DerivedBnbEntry.derivedBNB,
+        token1DerivedBNB: token1DerivedBnbEntry.derivedBNB,
+      },
+    ]
+  }, [])
+}
+
 type normalizePairDataByActiveTokenParams = {
   pairData: PairDataNormalized
   activeToken: string
@@ -48,3 +72,20 @@ export const normalizePairDataByActiveToken = ({
           : pairPrice.reserve0 / pairPrice.reserve1,
     }))
     .reverse()
+
+type normalizeDerivedPairDataByActiveTokenParams = {
+  pairData: DerivedPairDataNormalized
+  activeToken: string
+}
+
+export const normalizeDerivedPairDataByActiveToken = ({
+  pairData,
+  activeToken,
+}: normalizeDerivedPairDataByActiveTokenParams): PairPricesNormalized =>
+  pairData?.map((pairPrice) => ({
+    time: fromUnixTime(pairPrice.time),
+    value:
+      activeToken === pairPrice?.token0Id
+        ? pairPrice.token0DerivedBNB / pairPrice.token1DerivedBNB
+        : pairPrice.token1DerivedBNB / pairPrice.token0DerivedBNB,
+  }))

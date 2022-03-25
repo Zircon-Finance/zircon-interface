@@ -61,6 +61,7 @@ const ActiveText = styled.div`
 
 const StyledArrowLeft = styled(ArrowLeft)`
   color: ${({ theme }) => theme.text1};
+  margin: 12px;
 `
 
 export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' }) {

@@ -24,7 +24,6 @@ export const infoClient = new GraphQLClient(INFO_CLIENT)
 
 const fetchPairPriceData = async ({ pairId, timeWindow }: fetchPairDataParams) => {
   const client = new GraphQLClient(INFO_CLIENT)
-  console.log('Time window is: ', timeWindow)
 
   try {
     switch (timeWindow) {
@@ -33,7 +32,6 @@ const fetchPairPriceData = async ({ pairId, timeWindow }: fetchPairDataParams) =
           pairId,
           first: timeWindowIdsCountMapping[timeWindow],
         })
-        console.error('Data is: ', data);
         return { data, error: false }
       }
       case PairDataTimeWindowEnum.WEEK: {

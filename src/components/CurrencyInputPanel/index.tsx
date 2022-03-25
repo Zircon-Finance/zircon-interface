@@ -226,7 +226,7 @@ export default function CurrencyInputPanel({
                            cursor: 'pointer',
                            justifyContent: 'space-between',
                            width: '100%',
-                           padding: showMaxButton ? '0px' : '10px 0 5px 5px'
+                           padding: showMaxButton ? '0px' : !hideBalance && '10px 0 5px 5px'
                   }}
                 >
                   <div style={{display: 'flex', alignItems: 'center', fontSize: '13px', marginTop: showMaxButton ? '10px' : '0px'}}>
@@ -235,9 +235,9 @@ export default function CurrencyInputPanel({
                   )}
                   {!hideBalance && !!currency && selectedCurrencyBalance
                     ? 'Balance: ' + selectedCurrencyBalance?.toSignificant(6)
-                    : ' -'}
+                    : !hideBalance && ' -'}
                   </div>
-                  {currency &&
+                  {currency && !hideBalance &&
                   <div style={{paddingRight: '0.75rem', alignSelf: 'center', marginTop: showMaxButton ? '10px' : '0px'}}>
                     {'0$' /* This was added, it's supposed to convert to $ */}
                   </div>

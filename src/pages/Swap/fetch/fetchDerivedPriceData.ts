@@ -33,7 +33,7 @@ export const getBlocksFromTimestamps = async (
   const fetchedData: any = await multiQuery(
     blocksQueryConstructor,
     getBlockSubqueries(timestamps),
-    'https://api.thegraph.com/subgraphs/name/edoapp/moonbase-alpha-blocks/',
+    'https://api.thegraph.com/subgraphs/name/edoapp/moonbase-alpha-blocks',
     skipCount,
   )
 
@@ -58,7 +58,7 @@ const getTokenDerivedBnbPrices = async (tokenAddress: string, blocks: any) => {
   const prices: any | undefined = await multiQuery(
     getDerivedPricesQueryConstructor,
     getDerivedPrices(tokenAddress, blocks),
-    'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2',
+    'https://api.thegraph.com/subgraphs/name/reshyresh/zircon-alpha',
     200,
   )
 
@@ -126,7 +126,6 @@ const fetchDerivedPriceData = async (
   token1Address: string,
   timeWindow: PairDataTimeWindowEnum,
 ) => {
-  console.log('CAAAAAALLING')
   const interval = getInterval(timeWindow)
   const endTimestamp = getUnixTime(new Date())
   const startTimestamp = getUnixTime(startOfHour(sub(endTimestamp * 1000, { days: getSkipDaysToStart(timeWindow) })))

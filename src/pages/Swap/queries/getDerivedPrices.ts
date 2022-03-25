@@ -4,7 +4,7 @@ export const getDerivedPrices = (tokenAddress: string, blocks: any) =>
   blocks.map(
     (block: any) => `
     t${block.timestamp}:token(id:"${tokenAddress}", block: { number: ${block.number} }) { 
-        derivedBNB
+        derivedETH
       }
     `,
   )

@@ -138,7 +138,6 @@ export default function AddLiquidityPro({
       parsedAmounts[float.field_b],
       PYLON_ROUTER_ADDRESS[chainId ? chainId : '']
   )
-
   const addTransaction = useTransactionAdder()
   async function addPylon() {
     if (!chainId || !library || !account) return
@@ -251,7 +250,6 @@ export default function AddLiquidityPro({
         args = [
           wrappedCurrency(tokenBIsETH ? float.currency_a : float.currency_b, chainId)?.address ?? '', // token
           DEV === currencies[Field.CURRENCY_A],// second option is anchor so it should mint anchor when float.currency a is equal to b
-          float.currency_a === currencies[Field.CURRENCY_B],
           account,
           deadlineFromNow
         ]
@@ -276,7 +274,6 @@ export default function AddLiquidityPro({
         args = [
           wrappedCurrency(tokenBIsETH ? float.currency_a : float.currency_b, chainId)?.address ?? '', // token
           DEV === currencies[Field.CURRENCY_A],// second option is anchor so it should mint anchor when float.currency a is equal to b
-          float.currency_a === currencies[Field.CURRENCY_B],// second option is anchor so it should mint anchor when float.currency a is equal to b
           account,
           deadlineFromNow
         ]
@@ -313,8 +310,6 @@ export default function AddLiquidityPro({
       } else {
         estimate = router.estimateGas.addAsyncLiquidity
         method = router.addAsyncLiquidity
-        console.log("one", currencies[Field.CURRENCY_A]?.name)
-        console.log("two", currencies[Field.CURRENCY_B]?.name)
         args = [
           wrappedCurrency(currencies[Field.CURRENCY_A], chainId)?.address ?? '',
           wrappedCurrency(currencies[Field.CURRENCY_B], chainId)?.address ?? '',
@@ -388,7 +383,7 @@ export default function AddLiquidityPro({
         <AutoColumn gap="20px">
           <LightCard mt="20px" borderRadius="27px" style={{backgroundColor: theme.bg14}}>
             <RowFlat style={{flexFlow: 'column', alignItems: 'center'}}>
-              <Text fontSize="48px" fontWeight={300} lineHeight="42px" marginRight={10}>
+              <Text fontSize="36px" fontWeight={300} lineHeight="42px" style={{margin: 'auto'}}>
                 {currencies[Field.CURRENCY_A]?.symbol + '/' + currencies[Field.CURRENCY_B]?.symbol}
               </Text>
               <div style={{margin: '20px auto auto auto'}}>
@@ -408,7 +403,7 @@ export default function AddLiquidityPro({
             <Text fontSize="45px" fontWeight={300} lineHeight="42px" width={'100%'}>
               {liquidityMinted?.toSignificant(6)}
             </Text>
-            <Text fontSize="16px" width={'100%'} marginTop={15} display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
+            <Text fontSize="16px" width={'100%'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
               {currencies[Field.CURRENCY_A]?.symbol + '/' + currencies[Field.CURRENCY_B]?.symbol + 
               (sync !== "half" ? (float.field_a === Field.CURRENCY_A ? ' Float shares' : ' Anchor shares') : (' Pool tokens'))
               }
@@ -457,20 +452,29 @@ export default function AddLiquidityPro({
   const handleCurrencyASelect = useCallback(
       (currencyA: Currency) => {
         const newCurrencyIdA = currencyId(currencyA)
+        setFloat({
+          currency_a: currencyA ,field_a: Field.CURRENCY_A,
+          currency_b: currencies[Field.CURRENCY_B],field_b: Field.CURRENCY_B
+        })
         if (newCurrencyIdA === currencyIdB) {
           history.push(`/add-pro/${currencyIdB}/${currencyIdA}`)
         } else {
           history.push(`/add-pro/${newCurrencyIdA}/${currencyIdB}`)
         }
       },
-      [currencyIdB, history, currencyIdA]
+      [currencyIdB, history, currencyIdA, currencies]
   )
   const handleCurrencyBSelect = useCallback(
       (currencyB: Currency) => {
         const newCurrencyIdB = currencyId(currencyB)
+        setFloat({
+          currency_a: currencies[Field.CURRENCY_A],field_a: Field.CURRENCY_A,
+          currency_b: currencies[Field.CURRENCY_B],field_b: Field.CURRENCY_B
+        })
         if (currencyIdA === newCurrencyIdB) {
           if (currencyIdB) {
             history.push(`/add-pro/${currencyIdB}/${newCurrencyIdB}`)
+            
           } else {
             history.push(`/add-pro/${newCurrencyIdB}`)
           }
@@ -478,7 +482,7 @@ export default function AddLiquidityPro({
           history.push(`/add-pro/${currencyIdA ? currencyIdA : 'ETH'}/${newCurrencyIdB}`)
         }
       },
-      [currencyIdA, history, currencyIdB]
+      [currencyIdA, history, currencyIdB, currencies]
   )
 
   const handleDismissConfirmation = useCallback(() => {
@@ -491,13 +495,6 @@ export default function AddLiquidityPro({
   }, [onFieldAInput, txHash])
 
   const { width } = useWindowDimensions();
-
-  console.log('The input of the currency a is: ', currencies[Field.CURRENCY_A])
-  console.log('The input of the currency b is: ', currencies[Field.CURRENCY_B])
-
-  console.log('The state of the currency a is: ', float.field_a)
-  console.log('The state of the currency b is: ', float.field_b)
-
 
   return (
       <>
@@ -719,7 +716,8 @@ export default function AddLiquidityPro({
                                         )}
                                       </ButtonPrimary>
                                   )}
-                                  {sync === 'half' && approvalB !== ApprovalState.APPROVED && (
+                                  {((sync === 'half' && approvalB !== ApprovalState.APPROVED) || 
+                                  (pylonState !== PylonState.EXISTS && approvalB !== ApprovalState.APPROVED)) && (
                                       <ButtonPrimary
                                           onClick={approveBCallback}
                                           disabled={approvalB === ApprovalState.PENDING}

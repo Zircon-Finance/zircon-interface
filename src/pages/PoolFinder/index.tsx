@@ -149,7 +149,7 @@ export default function PoolFinder() {
 
 
             </AutoColumn>
-
+            <AutoColumn gap='10px'>
             {currency0 && currency1 ? (
                 pylonState === PylonState.EXISTS ? (
                     (hasPosition || hasPosition0 || hasPosition1) && pylon ? (
@@ -201,6 +201,7 @@ export default function PoolFinder() {
             ) : (
                 prerequisiteMessage
             )}
+            </AutoColumn>
 
             <CurrencySearchModal
                 isOpen={showSearch}

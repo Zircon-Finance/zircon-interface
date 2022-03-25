@@ -25,7 +25,7 @@ export const PaddedColumn = styled(AutoColumn)`
 
 export const MenuItem = styled(RowBetween)`
   padding: 4px 20px;
-  height: 56px;
+  height: auto;
   display: grid;
   grid-template-columns: auto minmax(auto, 1fr) auto minmax(0, 72px);
   grid-gap: 16px;

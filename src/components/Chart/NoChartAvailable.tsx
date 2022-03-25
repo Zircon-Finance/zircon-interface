@@ -1,48 +1,22 @@
 // import { Flex, Text } from '@pancakeswap/uikit'
-import { Flex, Text } from 'rebass'
-import React from 'react'
+import { Text } from 'rebass'
+import React, { useContext } from 'react'
+import { ThemeContext } from 'styled-components'
 
 interface NoChartAvailableProps {
-  token0Address: string
-  token1Address: string
-  pairAddress: string
-  isMobile: boolean
+  hasLiquidity?: boolean
+  hasOutputToken?: boolean
 }
 
-const NoChartAvailable: React.FC<NoChartAvailableProps> = ({ token0Address, token1Address, pairAddress, isMobile }) => {
+const NoChartAvailable: React.FC<NoChartAvailableProps> = ({ hasLiquidity, hasOutputToken }) => {
+  const theme = useContext(ThemeContext)
   return (
-    <>
-      <Flex justifyContent="center" alignItems="center" height="100%" flexDirection="column">
-        <Text mb={['8px', '8px', '0px']}>{'Failed to load price chart for this pair'}</Text>
-        <Text
-          textAlign={isMobile ? 'center' : 'left'}
-          mb={['8px', '8px', '0px']}
-          color="textSubtle"
-          
-          style={isMobile && { wordSpacing: '100vw' }}
-        >
-          Token0: {token0Address ?? 'null'}
-        </Text>
-        <Text
-          textAlign={isMobile ? 'center' : 'left'}
-          mb={['8px', '8px', '0px']}
-          color="textSubtle"
-          
-          style={isMobile && { wordSpacing: '100vw' }}
-        >
-          Token1: {token1Address ?? 'null'}
-        </Text>
-        <Text
-          textAlign={isMobile ? 'center' : 'left'}
-          mb={['8px', '8px', '0px']}
-          color="textSubtle"
-          
-          style={isMobile && { wordSpacing: '100vw' }}
-        >
-          Pair: {pairAddress ?? 'null'}
-        </Text>
-      </Flex>
-    </>
+        <div style={{margin: 'auto', textAlign: 'center', alignItems: 'center', display: 'flex', height: '100%'}}>
+          <Text color={theme.whiteHalf} style={{margin: 'auto'}}>
+          {!hasOutputToken && 'Please select a token to view the chart'}
+          {!hasLiquidity && 'Not enough data to display this chart!'}
+          </Text>
+        </div>
   )
 }
 

@@ -12,8 +12,8 @@ interface TokenDisplayProps {
 }
 
 const TextLabel = styled(Text)`
-  font-size: 32px;
-  line-height: 1.1;
+  font-size: 16px;
+  line-height: 19.5px;
 `
 
 const PairPriceDisplay: FC<TokenDisplayProps> = ({
@@ -25,16 +25,16 @@ const PairPriceDisplay: FC<TokenDisplayProps> = ({
   ...props
 }) => {
   return value ? (
-    <div style={{display: 'flex', alignItems: "baseline"}}>
+    <div style={{display: 'flex', alignItems: "center", height: '100%'}}>
       <Flex alignItems="inherit">
-        <TextLabel mr="8px" bold>
+        <TextLabel mr="8px">
           {value}
         </TextLabel>
-        {inputSymbol && outputSymbol && (
+        {/* {inputSymbol && outputSymbol && (
           <Text color="textSubtle" fontSize="20px" bold lineHeight={1.1}>
             {`${inputSymbol}/${outputSymbol}`}
           </Text>
-        )}
+        )} */}
       </Flex>
       {children}
     </div>

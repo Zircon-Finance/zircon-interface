@@ -221,7 +221,7 @@ export default function AddLiquidity({
       <AutoColumn gap="20px">
         <LightCard mt="20px" borderRadius="27px" style={{backgroundColor: theme.bg14}}>
           <RowFlat style={{flexFlow: 'column'}}>
-            <Text fontSize="48px" fontWeight={300} lineHeight="42px" marginRight={10}>
+            <Text fontSize="36px" fontWeight={300} lineHeight="42px" style={{margin: 'auto'}}>
               {currencies[Field.CURRENCY_A]?.symbol + '/' + currencies[Field.CURRENCY_B]?.symbol}
             </Text>
             <div style={{margin: '20px auto auto auto'}}>

@@ -54,7 +54,7 @@ const StyledBalanceMax = styled.button`
   border-radius: 0.9rem;
   font-size: 10px;
   outline: none;
-
+  border-radius: 27px;
   font-weight: 300;
   cursor: pointer;
   margin-right: 0.5rem;

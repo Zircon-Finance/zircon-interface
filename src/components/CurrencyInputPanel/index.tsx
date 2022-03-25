@@ -23,7 +23,8 @@ const InputRow = styled.div<{ selected: boolean }>`
 const CurrencySelect = styled.button<{ selected: boolean }>`
   align-items: center;
   height: 3rem;
-  width: max-content;
+  width: 100%;
+  padding-left: 10px;
   font-size: 16px;
   font-weight: 200;
   background-color: ${({ selected, theme }) => (selected ? theme.bg7 : '#A987C2')};

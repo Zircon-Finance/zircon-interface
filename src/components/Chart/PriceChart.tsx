@@ -41,7 +41,7 @@ const PriceChart = ({
     <StyledPriceChart
       height={ '100%'}
       overflow={ 'hidden'}
-      $isDark={isDark}
+      $isDark={false}
       $isExpanded={isChartExpanded}
       $isFullWidthContainer={isFullWidthContainer}
     >

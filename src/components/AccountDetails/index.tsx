@@ -376,7 +376,7 @@ export default function AccountDetails({
                             isENS={false}
                             href={getEtherscanLink(chainId, account, 'address')}
                           >
-                            <span style={{marginLeft: '15px'}}>View on Moonbeam ↗</span>
+                            <span style={{marginLeft: '5px'}}>View on Moonbeam ↗</span>
                           </AddressLink>
                         )}
                       </div>

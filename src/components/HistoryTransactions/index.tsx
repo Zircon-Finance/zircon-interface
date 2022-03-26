@@ -62,6 +62,7 @@ const MenuFlyout = styled.span`
   top: 60px;
   left: -270px;
   z-index: 100;
+  width: 325px;
 
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     min-width: 18.125rem;

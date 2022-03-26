@@ -23,7 +23,6 @@ const InputRow = styled.div<{ selected: boolean }>`
 const CurrencySelect = styled.button<{ selected: boolean }>`
   align-items: center;
   height: 3rem;
-  width: 100%;
   padding-left: 10px;
   font-size: 16px;
   font-weight: 200;

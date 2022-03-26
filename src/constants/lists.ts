@@ -2,7 +2,7 @@
 export const DEFAULT_TOKEN_LIST_URL =
   'https://raw.githubusercontent.com/PureStake/moonbeam-uniswap/main/uniswap-interface-moonbeam/src/tokens.json'
   
-export const INFO_CLIENT = 'https://api.thegraph.com/subgraphs/name/reshyresh/zircon-alpha'
+export const INFO_CLIENT = 'https://api.thegraph.com/subgraphs/name/reshyresh/zircon-finance'
 export const BLOCKS_CLIENT = 'https://api.thegraph.com/subgraphs/name/edoapp/moonbase-alpha-blocks'
 
 export const DEFAULT_LIST_OF_LISTS: string[] = [

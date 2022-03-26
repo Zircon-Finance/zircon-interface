@@ -58,7 +58,7 @@ const getTokenDerivedBnbPrices = async (tokenAddress: string, blocks: any) => {
   const prices: any | undefined = await multiQuery(
     getDerivedPricesQueryConstructor,
     getDerivedPrices(tokenAddress, blocks),
-    'https://api.thegraph.com/subgraphs/name/reshyresh/zircon-alpha',
+    'https://api.thegraph.com/subgraphs/name/reshyresh/zircon-finance',
     200,
   )
 

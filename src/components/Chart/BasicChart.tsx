@@ -143,8 +143,8 @@ const BasicChart = ({
             {hoverDate || currentDate}
           </Text>
           <ButtonsContainer >
-            <TimeButton style={{backgroundColor: timeWindow === 0 ? '#4D346C' : 'transparent'}} onClick={()=> setTimeWindow(0)}>{'24H'}</TimeButton>
-            <TimeButton style={{backgroundColor: timeWindow === 1 ? '#4D346C' : 'transparent'}} onClick={()=> setTimeWindow(1)}>{'1W'}</TimeButton>
+            <TimeButton style={{cursor: 'pointer', backgroundColor: timeWindow === 0 ? '#4D346C' : 'transparent'}} onClick={()=> setTimeWindow(0)}>{'24H'}</TimeButton>
+            <TimeButton style={{cursor: 'pointer', backgroundColor: timeWindow === 1 ? '#4D346C' : 'transparent'}} onClick={()=> setTimeWindow(1)}>{'1W'}</TimeButton>
             {/* <TimeButton style={{backgroundColor: timeWindow === 2 ? '#4D346C' : 'transparent'}} onClick={()=> setTimeWindow(2)}>{'1M'}</TimeButton>
             <TimeButton style={{backgroundColor: timeWindow === 3 ? '#4D346C' : 'transparent'}} onClick={()=> setTimeWindow(3)}>{'1Y'}</TimeButton> */}
           </ButtonsContainer>

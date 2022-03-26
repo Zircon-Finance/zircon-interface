@@ -187,11 +187,11 @@ export function useDerivedPylonMintInfo(
 
   const { [Field.CURRENCY_A]: currencyAAmount, [Field.CURRENCY_B]: currencyBAmount } = parsedAmounts
 
-  if ((sync === "half" || isFloat) && currencyAAmount && currencyBalances?.[Field.CURRENCY_A]?.lessThan(currencyAAmount)) {
+  if ((sync === "half" || isFloat || pylonState !== PylonState.EXISTS) && currencyAAmount && currencyBalances?.[Field.CURRENCY_A]?.lessThan(currencyAAmount)) {
     error = 'Insufficient ' + currencies[Field.CURRENCY_A]?.symbol + ' balance'
   }
 
-  if ((sync === "half" || !isFloat) && currencyBAmount && currencyBalances?.[Field.CURRENCY_B]?.lessThan(currencyBAmount)) {
+  if ((sync === "half" || !isFloat || pylonState !== PylonState.EXISTS) && currencyBAmount && currencyBalances?.[Field.CURRENCY_B]?.lessThan(currencyBAmount)) {
     error = 'Insufficient ' + currencies[Field.CURRENCY_B]?.symbol + ' balance'
   }
 

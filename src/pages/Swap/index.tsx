@@ -22,7 +22,7 @@ import ProgressSteps from '../../components/ProgressSteps'
 import Settings from '../../components/Settings'
 
 import { INITIAL_ALLOWED_SLIPPAGE } from '../../constants'
-import { useActiveWeb3React } from '../../hooks'
+import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
 import useENSAddress from '../../hooks/useENSAddress'
@@ -34,6 +34,7 @@ import { Field } from '../../state/swap/actions'
 import {
   useDefaultsFromURLSearch,
   useDerivedSwapInfo,
+  useSingleTokenSwapInfo,
   useSwapActionHandlers,
   useSwapState
 } from '../../state/swap/hooks'
@@ -44,6 +45,9 @@ import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import AppBody from '../AppBody'
 import { ClickableText } from '../Pool/styleds'
 import Loader from '../../components/Loader'
+import LearnIcon from '../../components/LearnIcon'
+import PriceChartContainer from '../../components/Chart/PriceChartContainer'
+import NoChartAvailable from '../../components/Chart/NoChartAvailable'
 
 export default function Swap() {
   const { t } = useTranslation()
@@ -78,13 +82,18 @@ export default function Swap() {
   const [allowedSlippage] = useUserSlippageTolerance()
 
   // swap state
-  const { independentField, typedValue, recipient } = useSwapState()
+  const { independentField, typedValue, recipient, 
+    [Field.INPUT]: { currencyId: inputCurrencyId }, 
+    [Field.OUTPUT]: { currencyId: outputCurrencyId}
+   } = useSwapState()
   const { v2Trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo()
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useWrapCallback(
     currencies[Field.INPUT],
     currencies[Field.OUTPUT],
     typedValue
   )
+  const inputCurrency = useCurrency(inputCurrencyId)
+  const outputCurrency = useCurrency(outputCurrencyId)
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
   const { address: recipientAddress } = useENSAddress(recipient)
   const toggledVersion = useToggledVersion()
@@ -244,6 +253,8 @@ export default function Swap() {
     [onCurrencySelection]
   )
 
+  const { width } = useWindowDimensions();
+
   const handleMaxInput = useCallback(() => {
     maxAmountInput && onUserInput(Field.INPUT, maxAmountInput.toExact())
   }, [maxAmountInput, onUserInput])
@@ -251,17 +262,57 @@ export default function Swap() {
   const handleOutputSelect = useCallback(outputCurrency => onCurrencySelection(Field.OUTPUT, outputCurrency), [
     onCurrencySelection
   ])
+  const [isChartExpanded, setIsChartExpanded] = useState(false)
+  const [isChartDisplayed] = useState(true)
+
+  const singleTokenPrice = useSingleTokenSwapInfo(inputCurrencyId, inputCurrency, outputCurrencyId, outputCurrency)
 
   return (
-    <>
+    <div style={{width: '100%', display: 'flex', justifyContent: width > 700 ? 'space-evenly' : 'center', alignItems: 'flex-start'}}>
+    { width > 1000 && (
+    <div style={{
+      height: '450px',
+      position: 'relative',
+      maxWidth: '480px',
+      width: '100%',
+      background: theme.bg1,
+      borderRadius: '27px',
+      boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04), 0px 24px 32px rgba(0, 0, 0, 0.01)'
+      }}>
+      <AutoColumn gap={'md'} style={{backgroundColor: '#2c1645', borderRadius: '27px', padding: '0px', height: '100%', width: '100%'}}>
+        <div style={{alignSelf: 'center'}}>
+        { outputCurrency ? (
+            <PriceChartContainer
+                inputCurrencyId={inputCurrencyId === 'ETH' ? '0x29a609b399beaf39ed9c1bcf52102bab102d35d9' : inputCurrencyId}
+                inputCurrency={currencies[Field.INPUT]}
+                outputCurrencyId={outputCurrencyId === 'ETH' ? '0x29a609b399beaf39ed9c1bcf52102bab102d35d9' : outputCurrencyId}
+                outputCurrency={currencies[Field.OUTPUT]}
+                isChartExpanded={isChartExpanded}
+                setIsChartExpanded={setIsChartExpanded}
+                isChartDisplayed={isChartDisplayed}
+                currentSwapPrice={singleTokenPrice}
+                isMobile={false}
+            />
+        ) : (
+          <NoChartAvailable hasOutputToken={false} hasLiquidity={true} />
+          
+        )}
+        </div>
+          </AutoColumn>
+        </div>
+        )}
+        <LearnIcon />
+      <AppBody>
+      
       {/* <SwapPoolTabs active={'swap'} /> */}
       <TokenWarningModal
         isOpen={urlLoadedTokens.length > 0 && !dismissTokenWarning}
         tokens={urlLoadedTokens}
         onConfirm={handleConfirmTokenWarning}
       />
-      <AppBody>
-        <div style={{display: 'flex', padding: '1rem', justifyContent: 'space-between'}}>
+        
+        <div>
+        <div style={{display: 'flex', padding: '25px', justifyContent: 'space-between'}}>
         <p>{'Swap'}</p>
         <Settings />
         </div>
@@ -280,8 +331,9 @@ export default function Swap() {
             swapErrorMessage={swapErrorMessage}
             onDismiss={handleConfirmDismiss}
           />
-
-          <AutoColumn gap={'md'} style={{backgroundColor: theme.bg7, borderRadius: '27px', padding: '25px 10px 10px 10px'}}>
+          
+          
+          <AutoColumn gap={'md'} style={{backgroundColor: theme.bg7, borderRadius: '27px', padding: '10px'}}>
             <CurrencyInputPanel
               label={independentField === Field.OUTPUT && !showWrap && trade ? 'From (estimated)' : 'From'}
               value={formattedAmounts[Field.INPUT]}
@@ -306,6 +358,7 @@ export default function Swap() {
                     onClick={() => {
                       setApprovalSubmitted(false) // reset 2 step UI for approvals
                       onSwitchTokens()
+                      
                     }}
                     style={{alignSelf: 'center'}}
                     color={currencies[Field.INPUT] && currencies[Field.OUTPUT] ? theme.primary1 : theme.text2}
@@ -321,7 +374,7 @@ export default function Swap() {
             <CurrencyInputPanel
               value={formattedAmounts[Field.OUTPUT]}
               onUserInput={handleTypeOutput}
-              label={independentField === Field.INPUT && !showWrap && trade ? 'To (estimated)' : 'To'}
+              label={independentField === Field.INPUT && !showWrap && trade ? 'To (estimated)a' : 'To'}
               showMaxButton={false}
               currency={currencies[Field.OUTPUT]}
               onCurrencySelect={handleOutputSelect}
@@ -350,12 +403,12 @@ export default function Swap() {
               </>
             )}
 
-            {showWrap ? null : (
+            {!showWrap && currencies[Field.OUTPUT] !== undefined && formattedAmounts[Field.INPUT] && formattedAmounts[Field.OUTPUT] &&  (
               <Card padding={'.25rem .75rem 0 .75rem'} borderRadius={'20px'}>
                 <AutoColumn gap="4px">
                   {Boolean(trade) && (
                     <RowBetween align="center">
-                      <Text fontWeight={500} fontSize={14} color={theme.text2}>
+                      <Text fontWeight={400} fontSize={14} color={theme.text2}>
                         {t('price')}
                       </Text>
                       <TradePrice
@@ -367,10 +420,10 @@ export default function Swap() {
                   )}
                   {allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE && (
                     <RowBetween align="center">
-                      <ClickableText fontWeight={500} fontSize={14} color={theme.text2} onClick={toggleSettings}>
+                      <ClickableText fontWeight={400} fontSize={14} color={theme.text2} onClick={toggleSettings}>
                         Slippage Tolerance
                       </ClickableText>
-                      <ClickableText fontWeight={500} fontSize={14} color={theme.text2} onClick={toggleSettings}>
+                      <ClickableText fontWeight={400} fontSize={14} color={theme.text2} onClick={toggleSettings}>
                         {allowedSlippage / 100}%
                       </ClickableText>
                     </RowBetween>
@@ -379,7 +432,7 @@ export default function Swap() {
               </Card>
             )}
           </AutoColumn>
-          <BottomGrouping>
+          <BottomGrouping style={{marginTop: '0'}}>
             {!account ? (
               <ButtonLight onClick={toggleWalletModal}>Connect Wallet</ButtonLight>
             ) : showWrap ? (
@@ -431,7 +484,7 @@ export default function Swap() {
                   }
                   error={isValid && priceImpactSeverity > 2}
                 >
-                  <Text fontSize={16} fontWeight={500}>
+                  <Text fontSize={16} fontWeight={400}>
                     {priceImpactSeverity > 3 && !isExpertMode
                       ? `Price Impact High`
                       : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
@@ -457,7 +510,7 @@ export default function Swap() {
                 disabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError}
                 error={isValid && priceImpactSeverity > 2 && !swapCallbackError}
               >
-                <Text fontSize={20} fontWeight={500}>
+                <Text fontSize={20} fontWeight={400}>
                   {swapInputError
                     ? swapInputError
                     : priceImpactSeverity > 3 && !isExpertMode
@@ -470,9 +523,11 @@ export default function Swap() {
             {isExpertMode && swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null}
           </BottomGrouping>
         </Wrapper>
+        </div>
+        {formattedAmounts[Field.INPUT] && formattedAmounts[Field.OUTPUT] && (<AdvancedSwapDetailsDropdown trade={trade} />)}
       </AppBody>
-      <AdvancedSwapDetailsDropdown trade={trade} />
-    </>
+      
+    </div>
   )
 }
 

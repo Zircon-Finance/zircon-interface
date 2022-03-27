@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { AutoColumn } from '../Column'
 import { RowBetween, RowFixed } from '../Row'
+import SearchIcon from '../../assets/svg/Search.svg'
 
 export const ModalInfo = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -24,7 +25,7 @@ export const PaddedColumn = styled(AutoColumn)`
 
 export const MenuItem = styled(RowBetween)`
   padding: 4px 20px;
-  height: 56px;
+  height: auto;
   display: grid;
   grid-template-columns: auto minmax(auto, 1fr) auto minmax(0, 72px);
   grid-gap: 16px;
@@ -39,20 +40,22 @@ export const MenuItem = styled(RowBetween)`
 export const SearchInput = styled.input`
   position: relative;
   display: flex;
-  padding: 18px 20px;
+  padding: 18px 40px 18px 20px;
   align-items: center;
   width: 100%;
+  background: url(${SearchIcon});
+  background-repeat: no-repeat;
+  background-position: right;
+  background-position-x: 95%;
   ::placeholder {
     color: white;
   }
   white-space: nowrap;
-  background-color: ${({ theme}) => theme.bg9};
-  border: none;
+  background-color: ${({ theme}) => theme.bg14};
+  border: 1px solid transparent;
   outline: none;
   border-radius: 17px;
   color: white;
-  border-style: solid;
-  border: 1px solid ${({ theme }) => theme.bg3};
   -webkit-appearance: none;
   transition: all 1s;
 

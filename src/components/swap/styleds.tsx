@@ -37,6 +37,7 @@ export const SectionBreak = styled.div`
 
 export const BottomGrouping = styled.div`
   margin-top: 1rem;
+  padding: 10px;
 `
 
 export const ErrorText = styled(Text)<{ severity?: 0 | 1 | 2 | 3 | 4 }>`
@@ -53,7 +54,7 @@ export const ErrorText = styled(Text)<{ severity?: 0 | 1 | 2 | 3 | 4 }>`
 export const StyledBalanceMaxMini = styled.button`
   height: 22px;
   width: 22px;
-  background-color: ${({ theme }) => theme.bg2};
+  background-color: ${({ theme }) => theme.bg14};
   border: none;
   border-radius: 50%;
   padding: 0.2rem;
@@ -118,7 +119,7 @@ const SwapCallbackErrorInner = styled.div`
   p {
     padding: 0;
     margin: 0;
-    font-weight: 500;
+    font-weight: 400;
   }
 `
 

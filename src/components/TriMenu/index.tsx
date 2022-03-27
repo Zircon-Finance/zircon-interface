@@ -20,15 +20,14 @@ const StyledMenuButton = styled.button`
   position: relative;
   width: 100%;
   height: 100%;
-  border: none;
+  border: 1px solid rgba(89, 73, 110, 0.4);
   background-color: transparent;
   margin: 0;
   padding: 0;
   background-color: ${({ theme }) => theme.bg1};
-  margin-right: 10px;
-
-  padding: 0.15rem 0.5rem;
-  border-radius: 12px;
+  margin-right: 5px;
+  padding: 15px 0 15px 0;
+  border-radius: 17px;
 
   :hover,
   :focus {
@@ -60,7 +59,7 @@ const MenuFlyout = styled.span`
   flex-direction: column;
   font-size: 1rem;
   position: absolute;
-  top: 3.5rem;
+  top: -100px;
   left: 0rem;
   z-index: 100;
 
@@ -113,9 +112,8 @@ export default function TriMenu() {
       {open && (
         <MenuFlyout>
           <AutoColumn gap="sm" style={{padding: '5px'}} >
-            <ButtonEmpty as={Link} to={'/find'} onClick={() => toggle()}> Import Pool</ButtonEmpty>
-            <ButtonEmpty as={Link} to={'/add/ETH'} onClick={() => toggle()}>Classic Liquidity</ButtonEmpty>
-            <ButtonEmpty as={Link} to={'/pool'}onClick={() => {
+            <ButtonEmpty style={{fontWeight: 400}} as={Link} to={'/add/ETH'} onClick={() => toggle()}>Classic Liquidity</ButtonEmpty>
+            <ButtonEmpty style={{fontWeight: 400}} as={Link} to={'/pool'}onClick={() => {
               toggle()
               window.open('https://docs.zircon.finance', '_blank');
             }}>Learn</ButtonEmpty>

@@ -18,14 +18,14 @@ import WalletConnectIcon from '../../assets/images/walletConnectIcon.svg'
 import FortmaticIcon from '../../assets/images/fortmaticIcon.png'
 import PortisIcon from '../../assets/images/portisIcon.png'
 import Identicon from '../Identicon'
-import { ButtonSecondary } from '../Button'
+import { ButtonPositionsMobile, ButtonSecondary } from '../Button'
 import { ExternalLink as LinkIcon } from 'react-feather'
-import { ExternalLink, LinkStyledButton, TYPE } from '../../theme'
+import { ExternalLink, TYPE } from '../../theme'
 
 const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
   padding: 1rem 1rem;
-  font-weight: 500;
+  font-weight: 400;
   color: ${props => (props.color === 'blue' ? ({ theme }) => theme.primary1 : 'inherit')};
   ${({ theme }) => theme.mediaWidth.upToMedium`
     padding: 1rem;
@@ -48,18 +48,17 @@ const UpperSection = styled.div`
 
   h4 {
     margin-top: 0;
-    font-weight: 500;
+    font-weight: 400;
   }
 `
 
 const InfoCard = styled.div`
-  padding: 1rem;
-  border: 1px solid ${({ theme }) => theme.bg3};
-  border-radius: 20px;
+  padding: 5px;
+  border-radius: 17px;
   position: relative;
   display: grid;
   grid-row-gap: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   background-color:${({ theme }) => theme.bg14};
 `
 
@@ -89,7 +88,7 @@ const YourAccount = styled.div`
 
   h4 {
     margin: 0;
-    font-weight: 500;
+    font-weight: 400;
   }
 `
 
@@ -114,7 +113,7 @@ const AccountControl = styled.div`
   min-width: 0;
   width: 100%;
 
-  font-weight: 500;
+  font-weight: 400;
   font-size: 1.25rem;
 
   a:hover {
@@ -158,8 +157,9 @@ const CloseColor = styled(Close)`
 
 const WalletName = styled.div`
   width: initial;
-  font-size: 0.825rem;
-  font-weight: 500;
+  margin-left: 10px;
+  font-size: 16px;
+  font-weight: 400;
   color: #FFF;
 `
 
@@ -311,7 +311,7 @@ export default function AccountDetails({
                     </WalletAction>
                   )}
                   <WalletAction
-                    style={{ fontSize: '.825rem', fontWeight: 400 }}
+                    style={{ fontSize: '13px', padding: '9px 12px 10px', fontWeight: 400, borderRadius: '12px' }}
                     onClick={() => {
                       openOptions()
                     }}
@@ -321,7 +321,7 @@ export default function AccountDetails({
                 </div>
               </AccountGroupingRow>
               <AccountGroupingRow id="web3-account-identifier-row" style={{border: '1px solid #604C7A', borderRadius: '12px', padding: '10px'}}>
-                <AccountControl>
+                <AccountControl style={{cursor: 'pointer'}}>
                   {ENSName ? (
                     <>
                       <div>
@@ -331,15 +331,18 @@ export default function AccountDetails({
                     </>
                   ) : (
                     <>
-                      <div >
-                        {getStatusIcon()}
-                        <p style={{fontSize: 30, fontWeight: 300}}> {account && shortenAddress(account)}</p>
-                        {account && (
-                          <Copy toCopy={account}>
-                            <span style={{ marginLeft: '4px' }}>Copy</span>
-                          </Copy>
+                      <div style={{width: '100%'}} >
+                      {account && (
+                      <Copy toCopy={account}>
+                        <div>
+                          {getStatusIcon()}
+                          < p style={{fontSize: 30, fontWeight: 300}}> {account && shortenAddress(account)}</p>
+                        </div>
+                        <span style={{ marginLeft: '4px', fontSize: '13px',  }}>Copy</span>
+                      </Copy>
                         )}
                       </div>
+                      
                     </>
                   )}
                 </AccountControl>
@@ -373,7 +376,7 @@ export default function AccountDetails({
                             isENS={false}
                             href={getEtherscanLink(chainId, account, 'address')}
                           >
-                            <span>View on Etherscan ↗</span>
+                            <span style={{marginLeft: '5px'}}>View on Moonbeam ↗</span>
                           </AddressLink>
                         )}
                       </div>
@@ -389,7 +392,9 @@ export default function AccountDetails({
         <LowerSection>
           <AutoRow mb={'1rem'} style={{ justifyContent: 'space-between' }}>
             <TYPE.body>Recent Transactions</TYPE.body>
-            <LinkStyledButton onClick={clearAllTransactionsCallback}>(clear all)</LinkStyledButton>
+            <ButtonPositionsMobile style={{width: 'auto', backgroundColor: 'transparent', border: '1px solid #503E66', padding: '9px 12px 10px'}} 
+              onClick={clearAllTransactionsCallback}>Clear all
+            </ButtonPositionsMobile>
           </AutoRow>
           {renderTransactions(pendingTransactions)}
           {renderTransactions(confirmedTransactions)}

@@ -47,7 +47,7 @@ export const LinkStyledButton = styled.button<{ disabled?: boolean }>`
 
   cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
   color: ${({ theme, disabled }) => (disabled ? theme.text2 : theme.primary1)};
-  font-weight: 500;
+  font-weight: 400;
 
   :hover {
     text-decoration: ${({ disabled }) => (disabled ? null : 'underline')};
@@ -75,7 +75,7 @@ export const LinkButtonLeftSide = styled.button<{ disabled?: boolean }>`
 
   cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
   color: ${({ theme, disabled }) => (disabled ? theme.text2 : '#FFF')};
-  font-weight: 500;
+  font-weight: 400;
 
   :hover {
     text-decoration: ${({ disabled }) => (disabled ? null : 'underline')};
@@ -96,7 +96,7 @@ export const StyledInternalLink = styled(Link)`
   text-decoration: none;
   cursor: pointer;
   color: ${({ theme }) => theme.primary1};
-  font-weight: 500;
+  font-weight: 400;
 
   :hover {
     text-decoration: underline;
@@ -116,7 +116,7 @@ const StyledLink = styled.a`
   text-decoration: none;
   cursor: pointer;
   color: ${({ theme }) => theme.primary1};
-  font-weight: 500;
+  font-weight: 400;
 
   :hover {
     text-decoration: underline;

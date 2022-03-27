@@ -18,6 +18,7 @@ import { currencyId } from '../../utils/currencyId'
 import AppBody from '../AppBody'
 import { Dots } from '../Pool/styleds'
 import {PylonState, usePylon} from "../../data/PylonReserves";
+import LearnIcon from '../../components/LearnIcon'
 // import { usePylon } from '../../data/PylonReserves'
 
 enum Fields {
@@ -89,6 +90,7 @@ export default function PoolFinder() {
 
     return (
         <AppBody>
+            <LearnIcon />
             <FindPoolTabs />
             <AutoColumn style={{padding: '10px',backgroundColor: '#3c2955', borderRadius: '17px', marginBottom: '10px'}} gap="md">
                 <ButtonDropdownLight
@@ -139,7 +141,7 @@ export default function PoolFinder() {
                     <ColumnCenter
                         style={{ justifyItems: 'center', backgroundColor: '', padding: '12px 0px', borderRadius: '12px' }}
                     >
-                        <Text textAlign="center" fontWeight={500}>
+                        <Text textAlign="center" fontWeight={400}>
                             Pool Found!
                         </Text>
                     </ColumnCenter>
@@ -147,7 +149,7 @@ export default function PoolFinder() {
 
 
             </AutoColumn>
-
+            <AutoColumn gap='10px'>
             {currency0 && currency1 ? (
                 pylonState === PylonState.EXISTS ? (
                     (hasPosition || hasPosition0 || hasPosition1) && pylon ? (
@@ -181,7 +183,7 @@ export default function PoolFinder() {
                 ) : pylonState === PylonState.INVALID ? (
                     <LightCardNoBorder padding="45px 10px">
                         <AutoColumn gap="sm" justify="center">
-                            <Text textAlign="center" fontWeight={500}>
+                            <Text textAlign="center" fontWeight={400}>
                                 Invalid pair.
                             </Text>
                         </AutoColumn>
@@ -199,6 +201,7 @@ export default function PoolFinder() {
             ) : (
                 prerequisiteMessage
             )}
+            </AutoColumn>
 
             <CurrencySearchModal
                 isOpen={showSearch}

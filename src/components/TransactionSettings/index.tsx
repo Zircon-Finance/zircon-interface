@@ -22,22 +22,22 @@ enum DeadlineError {
 const FancyButton = styled.button`
   color: ${({ theme }) => theme.text1};
   align-items: center;
-  height: 2rem;
-  border-radius: 36px;
-  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 11px;
+  font-size: 13px;
   width: auto;
   min-width: 3rem;
   border: none;
   outline: none;
-  background: #604C7A;
+  background: transparent;
 `
 
 const Option = styled(FancyButton)<{ active: boolean }>`
-  margin-right: 8px;
+  margin-right: 3px;
   :hover {
     cursor: pointer;
   }
-  background-color: ${({ active }) => active && '#997AAF'};
+  background-color: ${({ active }) => active ? '#997AAF' : '#604C7A'};
   color: ${({ active, theme }) => (active ? theme.white : theme.text1)};
 `
 
@@ -45,7 +45,8 @@ const Input = styled.input`
   background: transparent;
   font-size: 16px;
   width: auto;
-  border: ${({ theme }) => theme.bg2}
+  border: 1px solid #604C7A;
+  border-radius: 11px;
   outline: none;
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
@@ -56,9 +57,9 @@ const Input = styled.input`
 `
 
 const OptionCustom = styled(FancyButton)<{ active?: boolean; warning?: boolean }>`
-  height: 2rem;
+  padding: 2px 10px;
   position: relative;
-  padding: 0 0.75rem;
+  border-radius: 11px;
   flex: 1;
   border: ${({ theme, active, warning }) => active && `1px solid ${warning ? theme.red1 : theme.primary1}`};
   :hover {
@@ -178,7 +179,7 @@ export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, se
           >
             1%
           </Option>
-          <OptionCustom active={![10, 50, 100].includes(rawSlippage)} warning={!slippageInputIsValid} tabIndex={-1}>
+          <OptionCustom active={![10, 50, 100].includes(rawSlippage)} warning={!slippageInputIsValid} tabIndex={-1} style={{border: '1px solid #604C7A'}}>
             <RowBetween>
               {!!slippageInput &&
               (slippageError === SlippageError.RiskyLow || slippageError === SlippageError.RiskyHigh) ? (
@@ -228,7 +229,7 @@ export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, se
           <QuestionHelper text="Your transaction will revert if it is pending for more than this long." />
         </RowFixed>
         <RowFixed>
-          <OptionCustom style={{ width: '80px' }} tabIndex={-1}>
+          <OptionCustom style={{ width: '80px', padding: '5px 10px', fontSize: '13px', border: '1px solid #604C7A', borderRadius: '11px' }} tabIndex={-1}>
             <Input
               color={!!deadlineError ? 'red' : undefined}
               onBlur={() => {

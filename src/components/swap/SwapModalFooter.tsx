@@ -1,6 +1,5 @@
 import { Trade, TradeType } from 'zircon-sdk'
 import React, { useContext, useMemo, useState } from 'react'
-import { Repeat } from 'react-feather'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
 import { Field } from '../../state/swap/actions'
@@ -17,6 +16,7 @@ import QuestionHelper from '../QuestionHelper'
 import { AutoRow, RowBetween, RowFixed } from '../Row'
 import FormattedPriceImpact from './FormattedPriceImpact'
 import { StyledBalanceMaxMini, SwapCallbackError } from './styleds'
+import RepeatIcon from '../RepeatIcon'
 
 export default function SwapModalFooter({
   trade,
@@ -61,7 +61,7 @@ export default function SwapModalFooter({
           >
             {formatExecutionPrice(trade, showInverted)}
             <StyledBalanceMaxMini onClick={() => setShowInverted(!showInverted)}>
-              <Repeat size={14} style={{transform: 'rotate(90deg)'}} />
+              <RepeatIcon />
             </StyledBalanceMaxMini>
           </Text>
         </RowBetween>

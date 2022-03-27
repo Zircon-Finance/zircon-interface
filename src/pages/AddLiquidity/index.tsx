@@ -37,6 +37,7 @@ import { Dots, Wrapper } from '../Pool/styleds'
 import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 import { currencyId } from '../../utils/currencyId'
 import { PoolPriceBar } from './PoolPriceBar'
+import LearnIcon from '../../components/LearnIcon'
 
 export default function AddLiquidity({
   match: {
@@ -220,7 +221,7 @@ export default function AddLiquidity({
       <AutoColumn gap="20px">
         <LightCard mt="20px" borderRadius="27px" style={{backgroundColor: theme.bg14}}>
           <RowFlat style={{flexFlow: 'column'}}>
-            <Text fontSize="48px" fontWeight={300} lineHeight="42px" marginRight={10}>
+            <Text fontSize="36px" fontWeight={300} lineHeight="42px" style={{margin: 'auto'}}>
               {currencies[Field.CURRENCY_A]?.symbol + '/' + currencies[Field.CURRENCY_B]?.symbol}
             </Text>
             <div style={{margin: '20px auto auto auto'}}>
@@ -312,6 +313,7 @@ export default function AddLiquidity({
 
   return (
     <>
+    <LearnIcon />
       <AppBody>
         <AddRemoveTabsClassic adding={true} />
         <Wrapper>
@@ -335,7 +337,7 @@ export default function AddLiquidity({
               <ColumnCenter>
                 <BlueCard>
                   <AutoColumn gap="10px">
-                    <TYPE.link fontWeight={500} color={'primaryText1'}>
+                    <TYPE.link fontWeight={400} color={'primaryText1'}>
                       You are the first liquidity provider.
                     </TYPE.link>
                     <TYPE.link fontWeight={400} color={'primaryText1'}>
@@ -381,7 +383,7 @@ export default function AddLiquidity({
               <>
                 <GreyCard padding="0.5rem" borderRadius={'20px'} style={{backgroundColor: 'transparent'}}>
                   {/* <RowBetween padding="1rem">
-                    <TYPE.subHeader fontWeight={500} fontSize={14}>
+                    <TYPE.subHeader fontWeight={400} fontSize={14}>
                       {noLiquidity ? 'Initial prices' : 'Prices'} and pool share
                     </TYPE.subHeader>
                   </RowBetween>{' '} */}
@@ -440,7 +442,7 @@ export default function AddLiquidity({
                         disabled={!isValid || approvalA !== ApprovalState.APPROVED || approvalB !== ApprovalState.APPROVED}
                         error={!isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]}
                       >
-                        <Text fontSize={20} fontWeight={500}>
+                        <Text fontSize={20} fontWeight={400}>
                           {error ?? 'Supply'}
                         </Text>
                       </ButtonError>

@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next'
 const CurrencySelect = styled.button<{ selected: boolean }>`
   align-items: center;
   height: 3rem;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 200;
   background-color: ${({ selected, theme }) => (selected ? theme.bg7 : '#A987C2')};
   color: ${({ selected, theme }) => (selected ? theme.text1 : theme.white)};
@@ -25,8 +25,8 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
   cursor: pointer;
   user-select: none;
   border: none;
-  width: 100%
-  padding: 0 0.5rem;
+  width: 100%;
+  padding-left: 10px;
 
   :focus,
   :hover {
@@ -81,7 +81,8 @@ const Container = styled.div<{ hideInput: boolean }>`
 
 const StyledTokenName = styled.span<{ active?: boolean }>`
   ${({ active }) => (active ? '  margin: 0 0.75rem 0 0.75rem;' : '  margin: 0 0.25rem 0 0.25rem;')}
-  font-size:  ${({ active }) => (active ? '18px' : '16px')};
+  font-size:  16px;
+  align-self: center;
 
 `
 
@@ -130,7 +131,7 @@ export default function CurrencyInputPanel({
         {!hideInput && (
           <LabelRow>
             <RowBetween style={{display: 'flex', flexFlow: 'column'}}>
-              <span style={{alignSelf: 'start',padding: '5px 5px 5px 10px', fontSize: '12px'}}>{anchor ? 'ANCHOR' : 'FLOAT'}</span>
+              <span style={{alignSelf: 'start',padding: '5px 5px 5px 10px', fontSize: '10px', letterSpacing: '0.05em'}}>{anchor ? 'ANCHOR' : 'FLOAT'}</span>
               <div style={{display: 'flex', width: '100%'}}>
                 <CurrencySelect
                 selected={!!currency}

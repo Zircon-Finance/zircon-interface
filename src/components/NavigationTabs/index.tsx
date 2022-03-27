@@ -8,15 +8,16 @@ import { ArrowLeft } from 'react-feather'
 import { RowBetween } from '../Row'
 import QuestionHelper from '../QuestionHelper'
 import Settings from '../Settings'
+import { useWindowDimensions } from '../../hooks'
 
 const Tabs = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
   align-items: center;
-  border-radius: 15px;
+  border-radius: 17px;
   justify-content: space-evenly;
-  padding: 0.2em;
+  padding: 5px;
   margin: auto;
-  border: 1px solid ${({ theme }) => theme.bg6};
+  border: 1px solid #413055;
 `
 
 const activeClassName = 'ACTIVE'
@@ -29,39 +30,45 @@ const StyledNavLink = styled(NavLink).attrs({
   font-weight: 400;
   justify-content: center;
   height: 3rem;
-  border-radius: 3rem;
+  border-radius: 12px;
   outline: none;
   cursor: pointer;
   text-decoration: none;
   color: ${({ theme }) => theme.text3};
-  font-size: 20px;
-  padding: 1rem;
+  font-size: 16px;
+  padding: 10px 12px;
+  width: 50%;
 
   &.${activeClassName} {
     border-radius: 12px;
     color: ${({ theme }) => theme.text1};
-    background-color: ${({ theme }) => theme.bg6};
+    background-color: #402D54;
   }
 
   :hover,
   :focus {
     color: ${({ theme }) => darken(0.1, theme.text1)};
   }
+  @media (min-width: 700px) {
+    width: auto;
+  }
 `
 
 const ActiveText = styled.div`
   font-weight: 200;
-  font-size: 20px;
+  font-size: 16px;
 `
 
 const StyledArrowLeft = styled(ArrowLeft)`
   color: ${({ theme }) => theme.text1};
+  margin: 12px;
 `
 
 export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
+  const { width } = useWindowDimensions();
   return (
-    <Tabs style={{ marginBottom: '20px' }}>
+    <Tabs style={{ marginBottom: '20px', width: width > 700 ? 'auto' : '100%' }}>
       <StyledNavLink id={`swap-nav-link`} to={'/swap'} isActive={() => active === 'swap'}>
         {t('swap')}
       </StyledNavLink>

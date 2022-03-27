@@ -45,7 +45,7 @@ const Wrapper = styled.div`
 const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
   padding: 2rem;
-  font-weight: 500;
+  font-weight: 400;
   color: white;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     padding: 1rem;
@@ -77,7 +77,7 @@ const UpperSection = styled.div`
 
   h4 {
     margin-top: 0;
-    font-weight: 500;
+    font-weight: 400;
   }
 `
 
@@ -317,9 +317,6 @@ export default function WalletModal({
     }
     return (
       <UpperSection>
-        <CloseIcon onClick={toggleWalletModal}>
-          <CloseColor />
-        </CloseIcon>
         {walletView !== WALLET_VIEWS.ACCOUNT ? (
           <HeaderRow color="blue">
             <HoverText
@@ -334,6 +331,9 @@ export default function WalletModal({
         ) : (
           <HeaderRow>
             <HoverText>Connect to a wallet</HoverText>
+            <CloseIcon style={{top: 'auto'}} onClick={toggleWalletModal}>
+              <CloseColor />
+            </CloseIcon>
           </HeaderRow>
         )}
         <ContentWrapper style={{backgroundColor: 'transparent', width: '100%'}}>

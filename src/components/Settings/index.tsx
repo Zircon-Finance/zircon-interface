@@ -50,12 +50,9 @@ const StyledMenuButton = styled.button`
   border: none;
   background-color: transparent;
   margin: 0;
-  padding: 0;
-  height: 35px;
+  padding: 12px;
   background-color: ${({ theme }) => theme.bg1};
-
-  padding: 0.15rem 0.5rem;
-  border-radius: 0.5rem;
+  border-radius: 12px;
 
   :hover,
   :focus {
@@ -70,7 +67,7 @@ const StyledMenuButton = styled.button`
 `
 const EmojiWrapper = styled.div`
   position: absolute;
-  bottom: -6px;
+  bottom: -4px;
   right: 0px;
   font-size: 14px;
 `
@@ -93,13 +90,12 @@ const MenuFlyout = styled.span`
   flex-direction: column;
   font-size: 1rem;
   position: absolute;
-  top: 3rem;
+  top: 3.4rem;
   right: 0rem;
   z-index: 100;
 
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     min-width: 18.125rem;
-    right: -46px;
   `};
 `
 
@@ -146,17 +142,17 @@ export default function SettingsTab() {
           <AutoColumn gap="lg">
             <RowBetween style={{ padding: '0 2rem' }}>
               <div />
-              <Text fontWeight={500} fontSize={20}>
+              <Text fontWeight={400} fontSize={20}>
               {t('areYouSure')}
               </Text>
               <StyledCloseIcon onClick={() => setShowConfirmation(false)} />
             </RowBetween>
             <Break />
             <AutoColumn gap="lg" style={{ padding: '0 2rem' }}>
-              <Text fontWeight={500} fontSize={20}>
+              <Text fontWeight={400} fontSize={20}>
               {t('expertModeTips1')}
               </Text>
-              <Text fontWeight={500} fontSize={20}>
+              <Text fontWeight={400} fontSize={20}>
               {t('expertModeTips2')}
               </Text>
               <ButtonError
@@ -169,7 +165,7 @@ export default function SettingsTab() {
                   }
                 }}
               >
-                <Text fontSize={20} fontWeight={500} id="confirm-expert-mode">
+                <Text fontSize={20} fontWeight={400} id="confirm-expert-mode">
                 {t('turnOnExpertMode')}
                 </Text>
               </ButtonError>

@@ -40,6 +40,7 @@ export function colors(): Colors {
     // base
     white,
     black,
+    whiteHalf: 'rgba(255,255,255,0.5)',
 
     // text
     text1: '#FFFFFF',
@@ -145,13 +146,13 @@ const TextWrapper = styled(Text)<{ color: keyof Colors }>`
 
 export const TYPE = {
   main(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'text2'} {...props} />
+    return <TextWrapper fontWeight={400} color={'text2'} {...props} />
   },
   link(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'primary1'} {...props} />
+    return <TextWrapper fontWeight={400} color={'primary1'} {...props} />
   },
   black(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'text1'} {...props} />
+    return <TextWrapper fontWeight={400} color={'text1'} {...props} />
   },
   body(props: TextProps) {
     return <TextWrapper fontWeight={400} fontSize={16} color={'text1'} {...props} />
@@ -163,28 +164,28 @@ export const TYPE = {
     return <TextWrapper fontWeight={600} fontSize={24} {...props} />
   },
   mediumHeader(props: TextProps) {
-    return <TextWrapper fontWeight={500} fontSize={20} {...props} />
+    return <TextWrapper fontWeight={400} fontSize={20} {...props} />
   },
   subHeader(props: TextProps) {
     return <TextWrapper fontWeight={400} fontSize={14} {...props} />
   },
   blue(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'primary1'} {...props} />
+    return <TextWrapper fontWeight={400} color={'primary1'} {...props} />
   },
   yellow(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'yellow1'} {...props} />
+    return <TextWrapper fontWeight={400} color={'yellow1'} {...props} />
   },
   darkGray(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'text3'} {...props} />
+    return <TextWrapper fontWeight={400} color={'text3'} {...props} />
   },
   gray(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'bg3'} {...props} />
+    return <TextWrapper fontWeight={400} color={'bg3'} {...props} />
   },
   italic(props: TextProps) {
-    return <TextWrapper fontWeight={500} fontSize={12} fontStyle={'italic'} color={'text2'} {...props} />
+    return <TextWrapper fontWeight={400} fontSize={12} fontStyle={'italic'} color={'text2'} {...props} />
   },
   error({ error, ...props }: { error: boolean } & TextProps) {
-    return <TextWrapper fontWeight={500} color={error ? 'red1' : 'text2'} {...props} />
+    return <TextWrapper fontWeight={400} color={error ? 'red1' : 'text2'} {...props} />
   }
 }
 
@@ -200,16 +201,30 @@ html, input, textarea, button {
   }
 }
 
+::-webkit-scrollbar {
+  width: 0;  
+  background: transparent;  
+}
+::-webkit-scrollbar-thumb {
+  background: A9A0B4;
+}
+
 html,
 body {
   margin: 0;
   padding: 0;
+  -ms-overflow-style: none; 
+  }
+}
+
+body::-webkit-scrollbar {
+  display: none; 
 }
 
 * {
   box-sizing: border-box;
   transition: all 0.1s ease-out;
-  ${window.innerWidth < 800 && 'overflow: hidden'}
+  scrollbar-width: thin;
 }
 
 button {

@@ -1,5 +1,5 @@
-import React, { Suspense, useEffect, useState } from 'react'
-import { HashRouter, Redirect, Route, Switch } from 'react-router-dom'
+import React, { Suspense } from 'react'
+import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import GoogleAnalyticsReporter from '../components/analytics/GoogleAnalyticsReporter'
 import Header from '../components/Header'
@@ -8,7 +8,7 @@ import Web3ReactManager from '../components/Web3ReactManager'
 import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader'
 import AddLiquidity from './AddLiquidity'
 import AddLiquidityPro from './AddLiquidityPro'
-import MobileView from './MobileView'
+// import MobileView from './MobileView'
 import {
   RedirectDuplicateTokenIdsPro,
   RedirectOldAddLiquidityProPathStructure,
@@ -26,6 +26,7 @@ import { RedirectPathToSwapOnly, RedirectToSwap } from './Swap/redirects'
 import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
 import {RedirectOldRemoveLiquidityProPathStructure} from "./RemoveProLiquidity/redirects";
 import RemoveProLiquidity from "./RemoveProLiquidity";
+import { useWindowDimensions } from '../hooks'
 
 const AppWrapper = styled.div`
   display: flex;
@@ -33,7 +34,7 @@ const AppWrapper = styled.div`
   align-items: flex-start;
 `
 
-const MobileWrapper = styled.div`
+export const MobileWrapper = styled.div`
   display: flex;
   flex-flow: column;
   align-items: flex-start;
@@ -57,7 +58,7 @@ const BodyWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding-top: 160px;
+  padding-top: 110px;
   align-items: center;
   flex: 1;
 
@@ -75,31 +76,23 @@ const Marginer = styled.div`
 `
 
 export default function App() {
-
-  const [isMobile, setIsMobile] = useState(false)
-
-  const handleResize = () => {
-    if (window.innerWidth < 800) {
-        setIsMobile(true)
-    } else {
-        setIsMobile(false)
-    }
-  }
-  useEffect(() => {
-    handleResize()
-  })
+  const { width } = useWindowDimensions();
   return (
     <Suspense fallback={null}>
       <HashRouter>
-        {isMobile && <Redirect to="/mobile" />}
-        {isMobile && <MobileWrapper><MobileView /></MobileWrapper>}
+        {/* {isMobile && <Redirect to="/mobile" />}
+        {isMobile && <MobileWrapper><MobileView 
+          icon='laptop'
+          upperText='Please use your desktop to try the Zircon Beta'
+          lowerText='Our app will be available on your phone soon'  />
+        </MobileWrapper>} */}
         <Route component={GoogleAnalyticsReporter} />
         <Route component={DarkModeQueryParamReader} />
-        <AppWrapper style={{overflow: isMobile ? 'hidden' : 'auto'}}>
+        <AppWrapper>
           <HeaderWrapper>
             <Header />
           </HeaderWrapper>
-          <BodyWrapper>
+          <BodyWrapper style={{paddingTop: width > 700 ? '110px' : '0px'}}>
             <Popups />
             <Web3ReactManager>
               <Switch>

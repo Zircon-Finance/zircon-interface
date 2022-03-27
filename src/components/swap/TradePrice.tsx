@@ -1,7 +1,7 @@
 import React from 'react'
 import { Price } from 'zircon-sdk'
 import { useContext } from 'react'
-import { Repeat } from 'react-feather'
+import RepeatIcon from '../RepeatIcon'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
 import { StyledBalanceMaxMini } from './styleds'
@@ -24,7 +24,7 @@ export default function TradePrice({ price, showInverted, setShowInverted }: Tra
 
   return (
     <Text
-      fontWeight={500}
+      fontWeight={400}
       fontSize={14}
       color={theme.text2}
       style={{ justifyContent: 'center', alignItems: 'center', display: 'flex' }}
@@ -33,7 +33,7 @@ export default function TradePrice({ price, showInverted, setShowInverted }: Tra
         <>
           {formattedPrice ?? '-'} {label}
           <StyledBalanceMaxMini onClick={() => setShowInverted(!showInverted)}>
-            <Repeat size={14} />
+            <RepeatIcon />
           </StyledBalanceMaxMini>
         </>
       ) : (

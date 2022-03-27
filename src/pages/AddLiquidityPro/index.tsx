@@ -21,7 +21,7 @@ import {RowBetween, RowFlat} from '../../components/Row'
 // import { ArrowRight } from 'react-feather'
 import {PYLON_ROUTER_ADDRESS} from '../../constants'
 import {PylonState} from '../../data/PylonReserves'
-import {useActiveWeb3React} from '../../hooks'
+import {useActiveWeb3React, useWindowDimensions} from '../../hooks'
 import {useCurrency} from '../../hooks/Tokens'
 import {ApprovalState, useApproveCallback} from '../../hooks/useApproveCallback'
 import {useWalletModalToggle} from '../../state/application/hooks'
@@ -38,6 +38,8 @@ import AppBody from '../AppBody'
 import {Dots, Wrapper} from '../Pool/styleds'
 import {ConfirmAddModalBottom} from './ConfirmAddModalBottom'
 import {currencyId} from '../../utils/currencyId'
+import { MobileWrapper } from '../App'
+import LearnIcon from '../../components/LearnIcon'
 // import { PoolPriceBar } from './PoolPriceBar'
 // import { ArrowDown } from 'react-feather'
 
@@ -129,14 +131,13 @@ export default function AddLiquidityPro({
 
   // check whether the user has approved the router on the tokens
   const [approvalA, approveACallback] = useApproveCallback(
-      parsedAmounts[Field.CURRENCY_A],
+      parsedAmounts[float.field_a],
       PYLON_ROUTER_ADDRESS[chainId ? chainId : '']
   )
   const [approvalB, approveBCallback] = useApproveCallback(
-      parsedAmounts[Field.CURRENCY_B],
+      parsedAmounts[float.field_b],
       PYLON_ROUTER_ADDRESS[chainId ? chainId : '']
   )
-
   const addTransaction = useTransactionAdder()
   async function addPylon() {
     if (!chainId || !library || !account) return
@@ -250,7 +251,6 @@ export default function AddLiquidityPro({
         args = [
           wrappedCurrency(tokenBIsETH ? float.currency_a : float.currency_b, chainId)?.address ?? '', // token
           DEV === currencies[Field.CURRENCY_A],// second option is anchor so it should mint anchor when float.currency a is equal to b
-          float.currency_a === currencies[Field.CURRENCY_B],
           account,
           deadlineFromNow
         ]
@@ -279,7 +279,6 @@ export default function AddLiquidityPro({
         args = [
           wrappedCurrency(tokenBIsETH ? float.currency_a : float.currency_b, chainId)?.address ?? '', // token
           DEV === currencies[Field.CURRENCY_A],// second option is anchor so it should mint anchor when float.currency a is equal to b
-          float.currency_a === currencies[Field.CURRENCY_B],// second option is anchor so it should mint anchor when float.currency a is equal to b
           account,
           deadlineFromNow
         ]
@@ -316,8 +315,6 @@ export default function AddLiquidityPro({
       } else {
         estimate = router.estimateGas.addAsyncLiquidity
         method = router.addAsyncLiquidity
-        console.log("one", currencies[Field.CURRENCY_A]?.name)
-        console.log("two", currencies[Field.CURRENCY_B]?.name)
         args = [
           wrappedCurrency(currencies[Field.CURRENCY_A], chainId)?.address ?? '',
           wrappedCurrency(currencies[Field.CURRENCY_B], chainId)?.address ?? '',
@@ -346,25 +343,22 @@ export default function AddLiquidityPro({
                 addTransaction(response, {
                   summary:
                       'Add ' +
-                      parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
+                      parsedAmounts[float.field_a]?.toSignificant(3) +
                       ' ' +
-                      currencies[Field.CURRENCY_A]?.symbol +
+                      float.currency_a?.symbol +
                       ' and ' +
-                      parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
+                      parsedAmounts[float.field_b]?.toSignificant(3) +
                       ' ' +
-                      currencies[Field.CURRENCY_B]?.symbol
+                      float.currency_b?.symbol
 
                 })
               }else{
                 addTransaction(response, {
                   summary:
-                      sync === "off" ? 'Add sync ' : 'Add Async-100' +
-                      isFloat ? (parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
-                          ' ' +
-                          currencies[Field.CURRENCY_A]?.symbol)  : (
-                          parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
-                          ' ' +
-                          currencies[Field.CURRENCY_B]?.symbol)
+                      (sync === "off" ? 'Add sync ' : 'Add Async-100 ') +
+                      parsedAmounts[float.field_a]?.toSignificant(3) +
+                      ' ' +
+                      currencies[float.field_a]?.symbol
 
 
                 })
@@ -394,7 +388,7 @@ export default function AddLiquidityPro({
         <AutoColumn gap="20px">
           <LightCard mt="20px" borderRadius="27px" style={{backgroundColor: theme.bg14}}>
             <RowFlat style={{flexFlow: 'column', alignItems: 'center'}}>
-              <Text fontSize="48px" fontWeight={300} lineHeight="42px" marginRight={10}>
+              <Text fontSize="36px" fontWeight={300} lineHeight="42px" style={{margin: 'auto'}}>
                 {currencies[Field.CURRENCY_A]?.symbol + '/' + currencies[Field.CURRENCY_B]?.symbol}
               </Text>
               <div style={{margin: '20px auto auto auto'}}>
@@ -414,8 +408,10 @@ export default function AddLiquidityPro({
             <Text fontSize="45px" fontWeight={300} lineHeight="42px" width={'100%'}>
               {liquidityMinted?.toSignificant(6)}
             </Text>
-            <Text fontSize="16px" width={'100%'} marginTop={15} display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
-              {currencies[Field.CURRENCY_A]?.symbol + '/' + currencies[Field.CURRENCY_B]?.symbol + ' Pool Tokens'}
+            <Text fontSize="16px" width={'100%'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
+              {currencies[Field.CURRENCY_A]?.symbol + '/' + currencies[Field.CURRENCY_B]?.symbol + 
+              (sync !== "half" ? (float.field_a === Field.CURRENCY_A ? ' Float shares' : ' Anchor shares') : (' Pool tokens'))
+              }
               <DoubleCurrencyLogo
                   currency0={currencies[Field.CURRENCY_A]}
                   currency1={currencies[Field.CURRENCY_B]}
@@ -461,20 +457,29 @@ export default function AddLiquidityPro({
   const handleCurrencyASelect = useCallback(
       (currencyA: Currency) => {
         const newCurrencyIdA = currencyId(currencyA)
+        setFloat({
+          currency_a: currencyA ,field_a: Field.CURRENCY_A,
+          currency_b: currencies[Field.CURRENCY_B],field_b: Field.CURRENCY_B
+        })
         if (newCurrencyIdA === currencyIdB) {
           history.push(`/add-pro/${currencyIdB}/${currencyIdA}`)
         } else {
           history.push(`/add-pro/${newCurrencyIdA}/${currencyIdB}`)
         }
       },
-      [currencyIdB, history, currencyIdA]
+      [currencyIdB, history, currencyIdA, currencies]
   )
   const handleCurrencyBSelect = useCallback(
       (currencyB: Currency) => {
         const newCurrencyIdB = currencyId(currencyB)
+        setFloat({
+          currency_a: currencies[Field.CURRENCY_A],field_a: Field.CURRENCY_A,
+          currency_b: currencies[Field.CURRENCY_B],field_b: Field.CURRENCY_B
+        })
         if (currencyIdA === newCurrencyIdB) {
           if (currencyIdB) {
             history.push(`/add-pro/${currencyIdB}/${newCurrencyIdB}`)
+            
           } else {
             history.push(`/add-pro/${newCurrencyIdB}`)
           }
@@ -482,7 +487,7 @@ export default function AddLiquidityPro({
           history.push(`/add-pro/${currencyIdA ? currencyIdA : 'ETH'}/${newCurrencyIdB}`)
         }
       },
-      [currencyIdA, history, currencyIdB]
+      [currencyIdA, history, currencyIdB, currencies]
   )
 
   const handleDismissConfirmation = useCallback(() => {
@@ -494,10 +499,12 @@ export default function AddLiquidityPro({
     setTxHash('')
   }, [onFieldAInput, txHash])
 
-
+  const { width } = useWindowDimensions();
 
   return (
       <>
+      <LearnIcon />
+      {pylonState === PylonState.LOADING && account && <MobileWrapper style={{backgroundColor: 'rgba(12,12,12,0.5)', position: 'fixed'}}></MobileWrapper>}
         <AppBody>
           <AddRemoveTabs adding={true} />
           <Wrapper>
@@ -516,7 +523,7 @@ export default function AddLiquidityPro({
                 )}
                 pendingText={pendingText()}
             />
-            <AutoColumn gap="20px" style={{backgroundColor: theme.bg1, padding: '10px', borderRadius: '20px'}}>
+            <AutoColumn gap="10px" style={{backgroundColor: theme.bg1, borderRadius: '20px'}}>
 
               {/* Pylon condition, previously noPylon && */}
 
@@ -524,7 +531,7 @@ export default function AddLiquidityPro({
                   <ColumnCenter>
                     <BlueCard>
                       <AutoColumn gap="10px">
-                        <TYPE.link fontWeight={500} color={'primaryText1'}>
+                        <TYPE.link fontWeight={400} color={'primaryText1'}>
                           You are the first liquidity provider.
                         </TYPE.link>
                         <TYPE.link fontWeight={400} color={'primaryText1'}>
@@ -540,7 +547,7 @@ export default function AddLiquidityPro({
 
               {/* Condition that triggers pylov view */}
 
-              <div style={{display: 'flex', border: '1px solid #402D58', borderRadius: '17px'}}>
+              <div style={{display: 'flex', border: '1px solid #402D58', borderRadius: '17px', margin: '0px 10px'}}>
                 <CurrencyInputPanelInputOnly
                     onCurrencySelect={handleCurrencyASelect}
                     currency={currencies[Field.CURRENCY_A]} id="add-liquidity-input-tokena" showCommonBases
@@ -556,7 +563,7 @@ export default function AddLiquidityPro({
               {currencies[Field.CURRENCY_B] !== undefined ? (
                   <div style={{backgroundColor: theme.bg10, padding: '10px', borderRadius: '27px'}}>
                     <div style={{display: 'flex', justifyContent: 'space-evenly', marginBottom: '10px'}}>
-                <span style={{display: 'inline', alignSelf: 'center', fontSize: '16px'}}>
+                <span style={{display: 'inline', alignSelf: 'center', fontSize: '16px'}} id="pylon-check">
 
                   {/* Pylon condition */}
                   {pylonState === PylonState.EXISTS ? 'Token used for investment' : pylonState === PylonState.ONLY_PAIR ? 'Create Pylon' :'Create Pair & Pylon'}
@@ -573,7 +580,7 @@ export default function AddLiquidityPro({
                                         })}}>
                           <CurrencyInputPanelPicOnly
                               currency={currencies[Field.CURRENCY_A]} id="add-liquidity-input-tokena_pic" showCommonBases />
-                          <span style={{marginLeft: '5px'}}>{'FLOAT'}</span>
+                          <span style={{marginLeft: '5px', fontSize: '13px', letterSpacing: '0.05em' }}>{'FLOAT'}</span>
                         </ButtonAnchor>
 
                         <ButtonAnchor borderRadius={'12px'} padding={'5px 8px 5px 8px'}
@@ -586,7 +593,7 @@ export default function AddLiquidityPro({
                                         })}}>
                           <CurrencyInputPanelPicOnly
                               currency={currencies[Field.CURRENCY_B]} id="add-liquidity-input-tokenb_pic" showCommonBases />
-                          <span style={{marginLeft: '5px'}}>{'ANCHOR'}</span>
+                          <span style={{marginLeft: '5px', fontSize: '13px', letterSpacing: '0.05em'}}>{'ANCHOR'}</span>
                         </ButtonAnchor>
                       </div>}
                     </div>
@@ -598,7 +605,9 @@ export default function AddLiquidityPro({
                           value={ formattedAmounts[float.field_a] }
                           onUserInput={float.field_a === Field.CURRENCY_A ? onFieldAInput : onFieldBInput}
                           onMax={() => {
-                            onFieldAInput(maxAmounts[float.field_a]?.toExact() ?? '')
+                            float.field_a === Field.CURRENCY_A ?
+                            onFieldAInput(maxAmounts[float.field_a as Field]?.toExact() ?? '') :
+                            onFieldBInput(maxAmounts[float.field_a as Field]?.toExact() ?? '')
                           }}
                           onCurrencySelect={handleCurrencyASelect}
                           showMaxButton={!atMaxAmounts[float.field_a]}
@@ -614,9 +623,11 @@ export default function AddLiquidityPro({
                               onUserInput={onFieldBInput}
                               onCurrencySelect={handleCurrencyBSelect}
                               onMax={() => {
+                                float.field_a === Field.CURRENCY_B ?
+                                onFieldAInput(maxAmounts[float.field_b as Field]?.toExact() ?? '') :
                                 onFieldBInput(maxAmounts[float.field_b as Field]?.toExact() ?? '')
                               }}
-                              showMaxButton={!atMaxAmounts[float.field_b as Field]}
+                              showMaxButton={!atMaxAmounts[float.field_b as Field] && sync !== 'half'}
                               currency={currencies[float.field_b as Field]}
                               id="add-liquidity-input-tokenb_bal"
                               showCommonBases
@@ -631,22 +642,30 @@ export default function AddLiquidityPro({
               {/* Pylon condition */}
 
               {currencies[Field.CURRENCY_B] !== undefined && pylonState === PylonState.EXISTS && (
+                <div>
+                {width < 700 && 
+                  (<span style={{display: 'flex', alignSelf: 'center', fontSize: '13px', justifyContent: 'center', letterSpacing: '0.05em', marginBottom: '8px'}}>
+                    {'ADVANCED MODE'}
+                  </span>)
+                }
                   <div style={{display: 'flex', border: '1px solid #402D58', borderRadius: '17px', justifyContent: 'space-between'}}>
-                    <span style={{display: 'inline', alignSelf: 'center', fontSize: '16px', margin: 'auto'}}>{'ADVANCED MODE'}</span>
-                    <div style={{display: 'flex', borderLeft: `1px solid ${theme.bg9}`, borderRadius: '17px', padding: '5px'}}>
+                  {width > 700 && 
+                    (<span style={{display: 'inline', alignSelf: 'center', fontSize: '13px', margin: 'auto', letterSpacing: '0.05em'}}>{'ADVANCED MODE'}</span>)
+                  }
+                    <div style={{display: 'flex', borderLeft: `1px solid ${theme.bg9}`, borderRadius: '17px', padding: '5px', fontSize: '13px', width: width > 700 ? 'inherit' : '100%'}}>
 
                       <ButtonAnchor borderRadius={'12px'} padding={'10px'}
-                                    style={{backgroundColor: sync === 'off' ? theme.bg9 : 'transparent'}}
+                                    style={{backgroundColor: sync === 'off' ? theme.bg9 : 'transparent', width: width > 700 ? 'auto' : 'inherit'}}
                                     onClick={()=> {setSync('off')}}>
                         OFF
                       </ButtonAnchor>
                       <ButtonAnchor borderRadius={'12px'} padding={'10px'}
-                                    style={{backgroundColor: sync === 'full' ? theme.bg9 : 'transparent'}}
+                                    style={{backgroundColor: sync === 'full' ? theme.bg9 : 'transparent', width: width > 700 ? 'auto' : 'inherit'}}
                                     onClick={()=> {setSync('full')}}>
                         100% Async
                       </ButtonAnchor>
                       <ButtonAnchor borderRadius={'12px'} padding={'10px'}
-                                    style={{backgroundColor: sync === 'half' ? theme.bg9 : 'transparent'}}
+                                    style={{backgroundColor: sync === 'half' ? theme.bg9 : 'transparent', width: width > 700 ? 'auto' : 'inherit'}}
                                     onClick={()=> {
                                       setSync('half')
                                       setFloat({
@@ -657,6 +676,7 @@ export default function AddLiquidityPro({
                         50/50 Async
                       </ButtonAnchor>
                     </div>
+                  </div>
                   </div>)}
 
             </AutoColumn>
@@ -664,11 +684,11 @@ export default function AddLiquidityPro({
                 <>
                   <GreyCard padding="0.5rem" borderRadius={'20px'} style={{backgroundColor: 'transparent'}}>
                     {/* <RowBetween padding="1rem">
-                    <TYPE.subHeader fontWeight={500} fontSize={14}>
+                    <TYPE.subHeader fontWeight={400} fontSize={14}>
                       {noPylon ? 'Initial prices' : 'Prices'} and pool share
                     </TYPE.subHeader>
                   </RowBetween>{' '} */}
-                    <LightCard padding="0" borderRadius={'20px'} style={{marginTop: '10px', border: 'none'}} >
+                    <LightCard padding="0" borderRadius={'20px'} style={{ border: 'none'}} >
                       {/* <div style={{padding: '1rem'}}>
                       <PoolPriceBar
                         currencies={currencies}
@@ -692,25 +712,26 @@ export default function AddLiquidityPro({
                                       <ButtonPrimary
                                           onClick={approveACallback}
                                           disabled={approvalA === ApprovalState.PENDING}
-                                          width={approvalB !== ApprovalState.APPROVED ? '48%' : '100%'}
+                                          width={sync === 'half' ? (approvalB !== ApprovalState.APPROVED ? '48%' : '100%') : '100%'}
                                       >
                                         {approvalA === ApprovalState.PENDING ? (
-                                            <Dots>Approving {currencies[Field.CURRENCY_A]?.symbol}</Dots>
+                                            <Dots>Approving {currencies[float.field_a]?.symbol}</Dots>
                                         ) : (
-                                            'Approve ' + currencies[Field.CURRENCY_A]?.symbol
+                                            'Approve ' + currencies[float.field_a]?.symbol
                                         )}
                                       </ButtonPrimary>
                                   )}
-                                  {approvalB !== ApprovalState.APPROVED && (
+                                  {((sync === 'half' && approvalB !== ApprovalState.APPROVED) || 
+                                  (pylonState !== PylonState.EXISTS && approvalB !== ApprovalState.APPROVED)) && (
                                       <ButtonPrimary
                                           onClick={approveBCallback}
                                           disabled={approvalB === ApprovalState.PENDING}
                                           width={approvalA !== ApprovalState.APPROVED ? '48%' : '100%'}
                                       >
                                         {approvalB === ApprovalState.PENDING ? (
-                                            <Dots>Approving {currencies[Field.CURRENCY_B]?.symbol}</Dots>
+                                            <Dots>Approving {currencies[float.field_b]?.symbol}</Dots>
                                         ) : (
-                                            'Approve ' + currencies[Field.CURRENCY_B]?.symbol
+                                            'Approve ' + currencies[float.field_b]?.symbol
                                         )}
                                       </ButtonPrimary>
                                   )}
@@ -720,10 +741,10 @@ export default function AddLiquidityPro({
                                 onClick={() => {
                                   expertMode ? onAdd() : setShowConfirm(true)
                                 }}
-                                disabled={!isValid || approvalA !== ApprovalState.APPROVED || approvalB !== ApprovalState.APPROVED}
+                                disabled={!isValid || approvalA !== ApprovalState.APPROVED || (sync === 'half' && approvalB !== ApprovalState.APPROVED)}
                                 error={ sync === 'half' && (!isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]) }
                             >
-                              <Text fontSize={20} fontWeight={500}>
+                              <Text fontSize={20} fontWeight={400}>
                                 {error ?? (pylonState === PylonState.EXISTS ? "Add Liquidity" :pylonState === PylonState.ONLY_PAIR ? 'Create Pylon' :'Create Pair & Pylon')}
                               </Text>
                             </ButtonError>

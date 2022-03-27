@@ -114,13 +114,13 @@ function CurrencyRow({
     >
       <CurrencyLogo currency={currency} size={'42px'} />
       <Column>
-        <Text title={currency.name} fontWeight={500} style={{display: 'flex', flexFlow: 'column'}}>
+        <Text title={currency.name} fontWeight={400} style={{display: 'flex', flexFlow: 'column'}}>
           <span>{currency.symbol}</span>
-          <span style={{color: 'gray'}}>{currency.name}</span>
+          <span style={{color: '#9D94AA', fontSize: '13px'}}>{currency.name}</span>
         </Text>
         <FadedSpan>
           {!isOnSelectedList && customAdded ? (
-            <TYPE.main fontWeight={500}>
+            <TYPE.main fontWeight={400}>
               Added by user
               <LinkStyledButton
                 onClick={event => {
@@ -133,7 +133,7 @@ function CurrencyRow({
             </TYPE.main>
           ) : null}
           {!isOnSelectedList && !customAdded ? (
-            <TYPE.main fontWeight={500}>
+            <TYPE.main fontWeight={400}>
               Found by address
               <LinkStyledButton
                 onClick={event => {
@@ -141,7 +141,6 @@ function CurrencyRow({
                   if (currency instanceof Token) addToken(currency)
                 }}
               >
-                (Add)
               </LinkStyledButton>
             </TYPE.main>
           ) : null}

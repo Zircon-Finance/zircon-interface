@@ -121,6 +121,6 @@
     "react-ga4": "^1.4.1",
     "recharts": "^2.1.9",
     "zircon-protocol": "^1.0.2",
-    "zircon-sdk": "^1.0.4"
+    "zircon-sdk": "^1.0.5"
   }
 }

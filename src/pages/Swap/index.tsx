@@ -283,9 +283,9 @@ export default function Swap() {
         <div style={{alignSelf: 'center'}}>
         { outputCurrency ? (
             <PriceChartContainer
-                inputCurrencyId={inputCurrencyId === 'ETH' ? '0x29a609b399beaf39ed9c1bcf52102bab102d35d9' : inputCurrencyId}
+                inputCurrencyId={inputCurrencyId === 'ETH' ? '0xC9Eb4433B8a053b0ed3bf8de419C0f58b37b6eD1' : inputCurrencyId}
                 inputCurrency={currencies[Field.INPUT]}
-                outputCurrencyId={outputCurrencyId === 'ETH' ? '0x29a609b399beaf39ed9c1bcf52102bab102d35d9' : outputCurrencyId}
+                outputCurrencyId={outputCurrencyId === 'ETH' ? '0xC9Eb4433B8a053b0ed3bf8de419C0f58b37b6eD1' : outputCurrencyId}
                 outputCurrency={currencies[Field.OUTPUT]}
                 isChartExpanded={isChartExpanded}
                 setIsChartExpanded={setIsChartExpanded}

@@ -707,7 +707,7 @@ export default function AddLiquidityPro({
                                       <ButtonPrimary
                                           onClick={approveACallback}
                                           disabled={approvalA === ApprovalState.PENDING}
-                                          width={sync === 'half' ? (approvalB !== ApprovalState.APPROVED ? '48%' : '100%') : '100%'}
+                                          width={approvalB !== ApprovalState.APPROVED ? '48%' : '100%'}
                                       >
                                         {approvalA === ApprovalState.PENDING ? (
                                             <Dots>Approving {currencies[float.field_a]?.symbol}</Dots>

@@ -382,6 +382,7 @@ export default function AddLiquidityPro({
           }
         })
   }
+  const formattedLiquidity = liquidityMinted?.toSignificant(6) as unknown as number
 
   const modalHeader = () => {
     return noPylon ? (
@@ -406,7 +407,7 @@ export default function AddLiquidityPro({
         <AutoColumn gap="20px">
           <RowFlat style={{ marginTop: '20px', display: 'flex', flexFlow: 'column', backgroundColor: theme.bg14, borderRadius: '20px', padding: '20px 10px' }}>
             <Text fontSize="45px" fontWeight={300} lineHeight="42px" width={'100%'}>
-              {liquidityMinted?.toSignificant(6)}
+              {formattedLiquidity < 0.00000001 ? '0.000...'+String(formattedLiquidity).slice(-4) : formattedLiquidity}
             </Text>
             <Text fontSize="16px" width={'100%'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
               {currencies[Field.CURRENCY_A]?.symbol + '/' + currencies[Field.CURRENCY_B]?.symbol + 

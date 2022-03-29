@@ -51,7 +51,7 @@ export default function Transaction({ hash }: { hash: string }) {
   return (
     <TransactionWrapper>
       <TransactionState href={getEtherscanLink(chainId, hash, 'transaction')} pending={pending} success={success}>
-        <RowFixed>
+        <RowFixed style={{maxWidth: '240px'}}>
           <TransactionStatusText style={{color: 'white'}}>{summary ?? hash} ↗</TransactionStatusText>
         </RowFixed>
         <IconWrapper pending={pending} success={success}>

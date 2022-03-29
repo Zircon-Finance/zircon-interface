@@ -176,6 +176,8 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
       : [undefined, undefined]
 
   const { width } = useWindowDimensions();
+  const formattedPoolBalance = userPoolBalance.toSignificant(4) as unknown as number
+
 
   return (
     <HoverCard border={'none'} padding={showMore ? '0px' : '1.25rem'} backgroundColor={showMore ? '#3C2955' : '#2B1840'}>
@@ -192,7 +194,7 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
           <RowFixed>
           { !showMore &&
             <Text fontSize={width > 500 ? 16 : 10} fontWeight={400} color={theme.whiteHalf}>
-                {userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}
+                {userPoolBalance ?  formattedPoolBalance < 0.000000001 ? '0.000...'+String(formattedPoolBalance).slice(-4) : formattedPoolBalance : '-'}
             </Text>
             }
             {
@@ -305,6 +307,8 @@ export function PylonPositionCard({ isFloat, border, pylon }: PylonPositionCardP
   const lastK = useLastK(pylon.address)
   const gamma = useGamma(pylon.address)
   const lpt = useLastPoolTokens(pylon.address)
+
+  const formattedPoolBalance = userPoolBalance.toSignificant(4) as unknown as number
   // const poolTokenPercentage =
   //   !!userPoolBalance && !!totalPoolTokens && JSBI.greaterThanOrEqual(totalPoolTokens.raw, userPoolBalance.raw)
   //     ? new Percent(userPoolBalance.raw, totalPoolTokens.raw)
@@ -348,7 +352,7 @@ export function PylonPositionCard({ isFloat, border, pylon }: PylonPositionCardP
           <RowFixed>
             { !showMore &&
             <Text fontSize={width > 500 ? 16 : 10} fontWeight={400} color={theme.whiteHalf}>
-                {userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}
+                {userPoolBalance ?  formattedPoolBalance < 0.000000001 ? '0.000...'+String(formattedPoolBalance).slice(-4) : formattedPoolBalance : '-'}
             </Text>
             }
             {

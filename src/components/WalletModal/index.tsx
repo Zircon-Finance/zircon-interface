@@ -169,12 +169,6 @@ const connectNet = async (network) => {
   }
 };
 
-if (provider) {
-  provider.on('chainChanged', () => {
-    window.location.reload();
-  });
-}
-
 const WALLET_VIEWS = {
   OPTIONS: 'options',
   OPTIONS_SECONDARY: 'options_secondary',

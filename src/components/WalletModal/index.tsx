@@ -18,6 +18,8 @@ import { injected, fortmatic, portis } from '../../connectors'
 import { OVERLAY_READY } from '../../connectors/Fortmatic'
 // import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { AbstractConnector } from '@web3-react/abstract-connector'
+import { ButtonPrimary } from '../Button'
+import { Text } from 'rebass'
 
 const CloseIcon = styled.div`
   position: absolute;
@@ -107,6 +109,71 @@ const HoverText = styled.div`
     cursor: pointer;
   }
 `
+
+
+const provider = window.ethereum
+const moonbeamChainId = '0x504';
+const moonriverChainId = '0x505';
+const moonbaseAlphaChainId = '0x507';
+
+const supportedNetworks = {
+  moonbeam: {
+    chainId: moonbeamChainId,
+    chainName: 'Moonbeam',
+    rpcUrls: ['https://rpc.api.moonbeam.network'],
+    blockExplorerUrls: ['https://moonbeam.moonscan.io/'],
+    nativeCurrency: {
+      name: 'Glimmer',
+      symbol: 'GLMR',
+      decimals: 18,
+    },
+  },
+  moonriver: {
+    chainId: moonriverChainId,
+    chainName: 'Moonriver',
+    rpcUrls: ['https://rpc.api.moonriver.moonbeam.network'],
+    blockExplorerUrls: ['https://moonriver.moonscan.io/'],
+    nativeCurrency: {
+      name: 'Moonriver',
+      symbol: 'MOVR',
+      decimals: 18,
+    },
+  },
+  moonbase: {
+    chainId: moonbaseAlphaChainId,
+    chainName: 'Moonbase Alpha',
+    rpcUrls: ['https://rpc.api.moonbase.moonbeam.network'],
+    blockExplorerUrls: ['https://moonbase.moonscan.io/'],
+    nativeCurrency: {
+      name: 'DEV',
+      symbol: 'DEV',
+      decimals: 18,
+    },
+  },
+};
+
+const connectNet = async (network) => {
+  if (provider) {
+    try {
+      const targetNetwork = supportedNetworks[network];
+      await (provider as any).request({ method: 'eth_requestAccounts' });
+      await (provider as any).request({
+        method: 'wallet_addEthereumChain',
+        params: [targetNetwork],
+      });
+    } catch (e) {
+      console.error('Error: ',e)
+    }
+  } else {
+    window.alert('Please install Metamask first!')
+  }
+};
+
+if (provider) {
+  provider.on('chainChanged', () => {
+    window.location.reload();
+  });
+}
 
 const WALLET_VIEWS = {
   OPTIONS: 'options',
@@ -290,13 +357,19 @@ export default function WalletModal({
     if (error) {
       return (
         <UpperSection>
-          <CloseIcon onClick={toggleWalletModal}>
-            <CloseColor />
-          </CloseIcon>
-          <HeaderRow>{error instanceof UnsupportedChainIdError ? 'Wrong Network' : 'Error connecting'}</HeaderRow>
+          
+          <HeaderRow style={{display: 'flex', justifyContent: 'space-between'}}>
+            <Text style={{alignSelf: 'center'}}>{error instanceof UnsupportedChainIdError ? 'Wrong Network' : 'Error connecting'}</Text>
+            <CloseIcon style={{position: 'inherit'}} onClick={toggleWalletModal}>
+              <CloseColor />
+            </CloseIcon>
+          </HeaderRow>
           <ContentWrapper>
             {error instanceof UnsupportedChainIdError ? (
-              <h5>Please connect to the appropriate Moonbase Alpha network.</h5>
+              <>
+              <h5 style={{textAlign: 'center'}}>{'Please connect to the appropriate Moonbase Alpha network.'}</h5>
+              <ButtonPrimary mt={'30px'} onClick={() => connectNet('moonbase')} >{'Click to connect'}</ButtonPrimary>
+              </>
             ) : (
               'Error connecting. Try refreshing the page.'
             )}

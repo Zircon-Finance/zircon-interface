@@ -22,3 +22,10 @@ jobs:
         with:
           build: yarn build
           start: yarn start
+      - name: report to slack
+        if: ${{ failure() }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_TITLE: Test Failed on Zircon Interface
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}

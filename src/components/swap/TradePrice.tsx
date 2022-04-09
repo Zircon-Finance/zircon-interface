@@ -1,9 +1,8 @@
 import React from 'react'
 import { Price } from 'zircon-sdk'
-import { useContext } from 'react'
 import RepeatIcon from '../RepeatIcon'
 import { Text } from 'rebass'
-import { ThemeContext } from 'styled-components'
+import { useTheme } from 'styled-components'
 import { StyledBalanceMaxMini } from './styleds'
 
 interface TradePriceProps {
@@ -13,7 +12,7 @@ interface TradePriceProps {
 }
 
 export default function TradePrice({ price, showInverted, setShowInverted }: TradePriceProps) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   const formattedPrice = showInverted ? price?.toSignificant(6) : price?.invert()?.toSignificant(6)
 

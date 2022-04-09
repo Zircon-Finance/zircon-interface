@@ -1,4 +1,4 @@
-import React, { useRef, useContext, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { X } from 'react-feather'
 import styled from 'styled-components'
 import Settingsicon from '../SettingsIcon'
@@ -14,7 +14,7 @@ import { RowFixed, RowBetween } from '../Row'
 import { TYPE } from '../../theme'
 import QuestionHelper from '../QuestionHelper'
 import Toggle from '../Toggle'
-import { ThemeContext } from 'styled-components'
+import { useTheme } from 'styled-components'
 import { AutoColumn } from '../Column'
 import { ButtonError } from '../Button'
 import { useSettingsMenuOpen, useToggleSettingsMenu } from '../../state/application/hooks'
@@ -120,7 +120,7 @@ export default function SettingsTab() {
   const toggle = useToggleSettingsMenu()
   const { t } = useTranslation()
 
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   const [userSlippageTolerance, setUserslippageTolerance] = useUserSlippageTolerance()
 
   const [deadline, setDeadline] = useUserDeadline()
@@ -221,7 +221,7 @@ export default function SettingsTab() {
                 }
               />
             </RowBetween>
-            
+
           </AutoColumn>
         </MenuFlyout>
       )}

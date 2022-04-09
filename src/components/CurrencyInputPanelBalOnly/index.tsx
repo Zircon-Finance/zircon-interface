@@ -1,6 +1,6 @@
 import { Currency, Pair } from 'zircon-sdk'
-import React, { useState, useContext, useCallback } from 'react'
-import styled, { ThemeContext } from 'styled-components'
+import React, { useState, useCallback } from 'react'
+import styled, { useTheme } from 'styled-components'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
 import { RowBetween } from '../Row'
@@ -112,7 +112,7 @@ export default function CurrencyInputPanel({
 
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
 
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)

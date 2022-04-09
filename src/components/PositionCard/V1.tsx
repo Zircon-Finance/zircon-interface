@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React  from 'react'
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
 import { Token, TokenAmount, WDEV } from 'zircon-sdk'
 
@@ -9,7 +9,7 @@ import { RowBetween, RowFixed } from '../Row'
 import { FixedHeightRow, HoverCard } from './index'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { useActiveWeb3React } from '../../hooks'
-import { ThemeContext } from 'styled-components'
+import { useTheme } from 'styled-components'
 
 interface PositionCardProps extends RouteComponentProps<{}> {
   token: Token
@@ -17,7 +17,7 @@ interface PositionCardProps extends RouteComponentProps<{}> {
 }
 
 function V1PositionCard({ token, V1LiquidityBalance }: PositionCardProps) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   const { chainId } = useActiveWeb3React()
 

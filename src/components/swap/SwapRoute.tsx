@@ -1,13 +1,13 @@
 import { Trade } from 'zircon-sdk'
-import React, { Fragment, memo, useContext } from 'react'
+import React, { Fragment, memo } from 'react'
 import { ChevronRight } from 'react-feather'
 import { Flex } from 'rebass'
-import { ThemeContext } from 'styled-components'
+import { useTheme } from 'styled-components'
 import { TYPE } from '../../theme'
 import CurrencyLogo from '../CurrencyLogo'
 
 export default memo(function SwapRoute({ trade }: { trade: Trade }) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   return (
     <Flex
       px="1rem"

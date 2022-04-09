@@ -1,6 +1,6 @@
-import React, { useCallback, useContext } from 'react'
+import React, { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
-import styled, { ThemeContext } from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch } from '../../state'
 import { clearAllTransactions } from '../../state/transactions/actions'
@@ -224,7 +224,7 @@ export default function AccountDetails({
   openOptions
 }: AccountDetailsProps) {
   const { chainId, account, connector } = useActiveWeb3React()
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   const dispatch = useDispatch<AppDispatch>()
 
   function formatConnectorName() {
@@ -342,7 +342,7 @@ export default function AccountDetails({
                       </Copy>
                         )}
                       </div>
-                      
+
                     </>
                   )}
                 </AccountControl>
@@ -392,7 +392,7 @@ export default function AccountDetails({
         <LowerSection>
           <AutoRow mb={'1rem'} style={{ justifyContent: 'space-between' }}>
             <TYPE.body>Recent Transactions</TYPE.body>
-            <ButtonPositionsMobile style={{width: 'auto', backgroundColor: 'transparent', border: '1px solid #503E66', padding: '9px 12px 10px'}} 
+            <ButtonPositionsMobile style={{width: 'auto', backgroundColor: 'transparent', border: '1px solid #503E66', padding: '9px 12px 10px'}}
               onClick={clearAllTransactionsCallback}>Clear all
             </ButtonPositionsMobile>
           </AutoRow>

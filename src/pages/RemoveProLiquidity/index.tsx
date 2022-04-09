@@ -1,10 +1,10 @@
 import {TransactionResponse} from '@ethersproject/providers'
 import {Currency, currencyEquals, DEV, Percent, WDEV} from 'zircon-sdk'
-import React, {useCallback, useContext, useMemo, useState} from 'react'
+import React, {useCallback, useMemo, useState} from 'react'
 import {ArrowDown, Plus} from 'react-feather'
 import ReactGA from 'react-ga4'
 import {Flex, Text} from 'rebass'
-import {ThemeContext} from 'styled-components'
+import {useTheme} from 'styled-components'
 import {ButtonAnchor, ButtonConfirmed, ButtonError, ButtonLight, ButtonPrimary} from '../../components/Button'
 import {LightPinkCard, TransparentCard} from '../../components/Card'
 import {AutoColumn, ColumnCenter} from '../../components/Column'
@@ -55,7 +55,7 @@ export default function RemoveProLiquidity({
     currencyB,
     chainId
   ])
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle()

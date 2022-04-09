@@ -1,8 +1,8 @@
 //import { stringify } from 'qs'
-import React, { useContext } from 'react'
+import React  from 'react'
 //import { useLocation } from 'react-router'
 import { Text } from 'rebass'
-import { ThemeContext } from 'styled-components'
+import { useTheme } from 'styled-components'
 //import useParsedQueryString from '../../hooks/useParsedQueryString'
 import { Version } from '../../hooks/useToggledVersion'
 
@@ -10,7 +10,7 @@ import { YellowCard } from '../Card'
 import { AutoColumn } from '../Column'
 
 export default function BetterTradeLink({ version }: { version: Version }) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   return (
     <YellowCard style={{ marginTop: '12px', padding: '8px 4px' }}>

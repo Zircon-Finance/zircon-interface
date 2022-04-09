@@ -63,7 +63,7 @@ export function colors(): Colors {
     bg8: '#4a207c',
     // max button - very light purple
     bg9: '#443455',
-    //modal bg 
+    //modal bg
     bg10: '#3c2955',
     //button bg
     bg11: '#604C7A',
@@ -137,6 +137,7 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
 
   const themeObject = theme()
 
+  // @ts-ignore
   return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
 }
 

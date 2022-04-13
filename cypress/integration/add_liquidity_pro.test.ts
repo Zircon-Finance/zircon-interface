@@ -1,5 +1,3 @@
-
-
 describe('Add Liquidity with Pylon mode', () => {
   beforeEach(() => {
     cy.select_moons()

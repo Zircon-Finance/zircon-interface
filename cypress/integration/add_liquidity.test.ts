@@ -1,5 +1,3 @@
-
-
 describe('Add Liquidity', () => {
   beforeEach(() => {
     cy.select_moons()

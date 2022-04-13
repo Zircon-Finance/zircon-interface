@@ -106,7 +106,7 @@ export default function TriMenu() {
   return (
     // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451
     <StyledMenu ref={node as any}>
-      <StyledMenuButton onClick={toggle} id="open-settings-dialog-button">
+      <StyledMenuButton onClick={toggle} id="open-settings-dialog-button" className="tri-menu">
         <StyledMenuIcon strokeWidth={2} />
       </StyledMenuButton>
       {open && (

@@ -422,10 +422,16 @@ export default function RemoveProLiquidity({
   )
 
   const oneCurrencyIsETH = currencyA === DEV || currencyB === DEV
+  const firstCurrencyIsETH = currencyA === DEV
   const oneCurrencyIsWDEV = Boolean(
-      chainId &&
+    chainId &&
       ((currencyA && currencyEquals(WDEV[chainId], currencyA)) ||
-          (currencyB && currencyEquals(WDEV[chainId], currencyB)))
+        (currencyB && currencyEquals(WDEV[chainId], currencyB)))
+  )
+  const firstCurrencyIsWDEV = Boolean(
+    chainId &&
+      ((currencyA && currencyEquals(WDEV[chainId], currencyA)) 
+    )
   )
 
   const handleSelectCurrencyA = useCallback(
@@ -577,7 +583,7 @@ export default function RemoveProLiquidity({
                           </Text>
 
                         </RowBetween>}
-                        {chainId && (oneCurrencyIsWDEV || oneCurrencyIsETH) ? (
+                        {chainId && (firstCurrencyIsETH || firstCurrencyIsWDEV || ((oneCurrencyIsETH || oneCurrencyIsWDEV) && !sync)) ? (
                             <RowBetween style={{ justifyContent: 'flex-end' }}>
                               {oneCurrencyIsETH ? (
                                   <StyledInternalLink

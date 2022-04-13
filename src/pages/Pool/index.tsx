@@ -181,7 +181,7 @@ export default function Pool() {
               </div>
               <div style={{width: '85%',display: 'flex', justifyContent: 'center'}}>
                 <ButtonOutlined style={{marginRight: '5px', padding: '0px'}} as={Link} to={'/find'}>{'Import'}</ButtonOutlined>
-                <ButtonPrimary as={Link} to={'/add-pro/ETH'} style={{padding: '18px 0 18px 0'}}>{'Add liquidity'}</ButtonPrimary>
+                <ButtonPrimary id="add-liquidity-button" as={Link} to={'/add-pro/ETH'} style={{padding: '18px 0 18px 0'}}>{'Add liquidity'}</ButtonPrimary>
               </div>
             </AutoRow>
           </AutoColumn>

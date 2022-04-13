@@ -87,13 +87,24 @@ export const CUSTOM_BASES: { [chainId in ChainId]?: { [tokenAddress: string]: To
 // used for display in the default list when adding liquidity
 export const SUGGESTED_BASES: ChainTokenList = {
   ...WDEV_ONLY,
-  [ChainId.MAINNET]: [...WDEV_ONLY[ChainId.MAINNET], DAI, USDC, USDT],
+  [ChainId.MOONBASE]: [...WDEV_ONLY[ChainId.MAINNET], DAI, USDC, USDT],
 }
 
 // used to construct the list of all pairs we consider by default in the frontend
 export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
   ...WDEV_ONLY,
-  [ChainId.MAINNET]: [...WDEV_ONLY[ChainId.MAINNET], DAI, USDC, USDT],
+  [ChainId.MOONBASE]: [
+      new Token(ChainId.MOONBASE, '0x9959f8e45351f78abafbf46ae00e7a87e2b66023', 18, 'WETH', 'Wrapped Ether'),
+      new Token(ChainId.MOONBASE, '0xed13b028697febd70f34cf9a9e280a8f1e98fd29', 18, 'NEPT', 'Neptune'),
+      new Token(ChainId.MOONBASE, '0x4c945cd20dd13168bc87f30d55f12dc26512ca33', 18, 'PLUT', 'Pluto'),
+      new Token(ChainId.MOONBASE, '0x08b40414525687731c23f430cebb424b332b3d35', 18, 'ERTH', 'Earth'),
+      new Token(ChainId.MOONBASE, '0x1fc56b105c4f0a1a8038c2b429932b122f6b631f', 18, 'MARS', 'Mars'),
+      new Token(ChainId.MOONBASE, '0x37822de108affdd5cdcfdaaa2e32756da284db85', 18, 'MERC', 'Mercury'),
+      new Token(ChainId.MOONBASE, '0x9aac6fb41773af877a2be73c99897f3ddfacf576', 18, 'JUP', 'Jupiter'),
+      new Token(ChainId.MOONBASE, '0xcdf746c5c86df2c2772d2d36e227b4c0203cba25', 18, 'VEN', 'Venus'),
+      new Token(ChainId.MOONBASE, '0xd9224c102a73e5941abfcd645e08623dc4d182bc', 18, 'UNS', 'Uranus'),
+      new Token(ChainId.MOONBASE, '0xe75f9ae61926ff1d27d16403c938b4cd15c756d5', 18, 'SAT', 'Saturn')
+  ]
 }
 
 export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } = {

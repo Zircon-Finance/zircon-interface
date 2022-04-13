@@ -16449,10 +16449,10 @@ yauzl@^2.10.0:
     buffer-crc32 "~0.2.3"
     fd-slicer "~1.1.0"
 
-zircon-protocol@^1.0.0, zircon-protocol@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/zircon-protocol/-/zircon-protocol-1.0.2.tgz#e6391c331fdfc97848e8c7ba68238986c84b5223"
-  integrity sha512-iRNMuxJ/6Zr1gA+CwmtT/ngvv015e9JCKDxIkrLhTPJOfUa2KpgaqXy4wjti5t86T5hIcsOTY8ofVOOnhFIChg==
+zircon-protocol@1.0.3-alpha.0:
+  version "1.0.3-alpha.0"
+  resolved "https://registry.yarnpkg.com/zircon-protocol/-/zircon-protocol-1.0.3-alpha.0.tgz#b4c9099e2da5a73ee7fe6e1c831fe16be4158c4b"
+  integrity sha512-pSKPSIN18cGBjl1rwo4noi4ZuIsfy4R/dx3cGbVjG8Ynwuu718gkOjNcHk3I2N3+UBkaxFnSrcL3QZg4BLapNg==
   dependencies:
     "@openzeppelin/contracts" "2.5.0"
     "@uniswap/lib" "^4.0.1-alpha"
@@ -16461,10 +16461,22 @@ zircon-protocol@^1.0.0, zircon-protocol@^1.0.2:
     dotenv "^10.0.0"
     hardhat-watcher "^2.1.1"
 
-zircon-sdk@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/zircon-sdk/-/zircon-sdk-1.0.5.tgz#270f388b54b506a34a9ced5f2b0ff77471d02c6e"
-  integrity sha512-/BoOrzkYA0mddy8wCTocyKgWGy6vhkAMb/lG4qy6zTz002Lv7cLzOFL24GMPk/G5x7QFqL1AvCOZVPZyS4Zldw==
+zircon-protocol@1.0.3-alpha.1:
+  version "1.0.3-alpha.1"
+  resolved "https://registry.yarnpkg.com/zircon-protocol/-/zircon-protocol-1.0.3-alpha.1.tgz#d0c5cba070a7fd0d362010baf576e681aa4e6732"
+  integrity sha512-+6t+0KWHZcSprn3an7+IvELAkyjJJX08YuW38f5H+yULXstxMeXueNUpEQrcZaTbjbocYwWEAjF/xkFZsvnI7g==
+  dependencies:
+    "@openzeppelin/contracts" "2.5.0"
+    "@uniswap/lib" "^4.0.1-alpha"
+    "@uniswap/v2-core" "^1.0.1"
+    "@uniswap/v2-periphery" "^1.1.0-beta.0"
+    dotenv "^10.0.0"
+    hardhat-watcher "^2.1.1"
+
+zircon-sdk@1.0.6-alpha.1:
+  version "1.0.6-alpha.1"
+  resolved "https://registry.yarnpkg.com/zircon-sdk/-/zircon-sdk-1.0.6-alpha.1.tgz#0b19a8d010fdaf0504e0483f2544ef2b47598df0"
+  integrity sha512-AaDPJ+HwY4X7D+lF2biAmYBiQK6pz39ADTA3b0QlGyv4OYaBECQUUXILcVgNMgEblKX43cLo/2B9CV9px2o/dA==
   dependencies:
     "@uniswap/v2-core" "^1.0.0"
     big.js "^5.2.2"
@@ -16473,4 +16485,4 @@ zircon-sdk@^1.0.5:
     tiny-invariant "^1.1.0"
     tiny-warning "^1.0.3"
     toformat "^2.0.0"
-    zircon-protocol "^1.0.0"
+    zircon-protocol "1.0.3-alpha.0"

@@ -1,10 +1,10 @@
 import { CurrencyAmount, JSBI, Token, Trade } from 'zircon-sdk'
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { ArrowDown } from 'react-feather'
 import ReactGA from 'react-ga4'
 import { Text } from 'rebass'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from 'styled-components'
+import { useTheme } from 'styled-components'
 import AddressInputPanel from '../../components/AddressInputPanel'
 import { ButtonError, ButtonLight, ButtonPrimary, ButtonConfirmed } from '../../components/Button'
 import Card, { GreyCard } from '../../components/Card'
@@ -68,7 +68,7 @@ export default function Swap() {
   }, [])
 
   const { account } = useActiveWeb3React()
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle()
@@ -82,8 +82,8 @@ export default function Swap() {
   const [allowedSlippage] = useUserSlippageTolerance()
 
   // swap state
-  const { independentField, typedValue, recipient, 
-    [Field.INPUT]: { currencyId: inputCurrencyId }, 
+  const { independentField, typedValue, recipient,
+    [Field.INPUT]: { currencyId: inputCurrencyId },
     [Field.OUTPUT]: { currencyId: outputCurrencyId}
    } = useSwapState()
   const { v2Trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo()
@@ -295,7 +295,7 @@ export default function Swap() {
             />
         ) : (
           <NoChartAvailable hasOutputToken={false} hasLiquidity={true} />
-          
+
         )}
         </div>
           </AutoColumn>
@@ -303,14 +303,14 @@ export default function Swap() {
         )}
         <LearnIcon />
       <AppBody>
-      
+
       {/* <SwapPoolTabs active={'swap'} /> */}
       <TokenWarningModal
         isOpen={urlLoadedTokens.length > 0 && !dismissTokenWarning}
         tokens={urlLoadedTokens}
         onConfirm={handleConfirmTokenWarning}
       />
-        
+
         <div>
         <div style={{display: 'flex', padding: '25px', justifyContent: 'space-between'}}>
         <p>{'Swap'}</p>
@@ -331,8 +331,8 @@ export default function Swap() {
             swapErrorMessage={swapErrorMessage}
             onDismiss={handleConfirmDismiss}
           />
-          
-          
+
+
           <AutoColumn gap={'md'} style={{backgroundColor: theme.bg7, borderRadius: '27px', padding: '10px'}}>
             <CurrencyInputPanel
               label={independentField === Field.OUTPUT && !showWrap && trade ? 'From (estimated)' : 'From'}
@@ -358,7 +358,7 @@ export default function Swap() {
                     onClick={() => {
                       setApprovalSubmitted(false) // reset 2 step UI for approvals
                       onSwitchTokens()
-                      
+
                     }}
                     style={{alignSelf: 'center'}}
                     color={currencies[Field.INPUT] && currencies[Field.OUTPUT] ? theme.primary1 : theme.text2}
@@ -526,7 +526,7 @@ export default function Swap() {
         </div>
         {formattedAmounts[Field.INPUT] && formattedAmounts[Field.OUTPUT] && (<AdvancedSwapDetailsDropdown trade={trade} />)}
       </AppBody>
-      
+
     </div>
   )
 }

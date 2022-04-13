@@ -1,6 +1,5 @@
 import React from 'react'
-import { useContext } from 'react'
-import { ThemeContext } from 'styled-components'
+import { useTheme } from 'styled-components'
 import LaptopIcon from '../../components/LaptopIcon'
 import { Text } from 'rebass'
 
@@ -15,7 +14,7 @@ export default function MobileView({
         upperText,
         lowerText
     } : MobileView) {
-    const theme = useContext(ThemeContext)
+    const theme = useTheme()
 
     return (
         <div style={{
@@ -33,7 +32,7 @@ export default function MobileView({
         <span style={{width: '100%', display: 'flex', justifyContent: 'center'}}>
             {icon === 'laptop' ? <LaptopIcon /> : 'Loading placeholder'}
         </span>
-                
+
         <Text fontWeight={400} fontSize={18} padding={'40px 40px 10px 40px'} textAlign={'center'} >{upperText} </Text>
         <Text fontWeight={400} fontSize={13} color={theme.text2} textAlign={'center'}>{lowerText} </Text>
         </div>

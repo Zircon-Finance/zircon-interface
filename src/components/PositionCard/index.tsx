@@ -1,9 +1,9 @@
 import {JSBI, Pair, Percent, Pylon, TokenAmount} from 'zircon-sdk'
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import { ChevronDown, ChevronUp } from 'react-feather'
 import { Link } from 'react-router-dom'
 import { Text } from 'rebass'
-import styled, { ThemeContext } from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { useTotalSupply } from '../../data/TotalSupply'
 
 import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
@@ -60,7 +60,7 @@ interface PylonPositionCardProps {
 }
 
 export function MinimalPositionCard({ pair, showUnwrapped = false, border }: PositionCardProps) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   const { account } = useActiveWeb3React()
 
   const currency0 = showUnwrapped ? pair.token0 : unwrappedToken(pair.token0)
@@ -148,7 +148,7 @@ export function MinimalPositionCard({ pair, showUnwrapped = false, border }: Pos
 
 
 export default function FullPositionCard({ pair, border }: PositionCardProps) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   const { account } = useActiveWeb3React()
   const currency0 = unwrappedToken(pair.token0)
   const currency1 = unwrappedToken(pair.token1)
@@ -269,13 +269,13 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
             </FixedHeightRow>
             </div>
             <div style={{display: 'flex', flexFlow: 'row', padding: '5px'}}>
-              <ButtonPositionsMobile as={Link} to={`/remove/${currencyId(currency0)}/${currencyId(currency1)}`} 
+              <ButtonPositionsMobile as={Link} to={`/remove/${currencyId(currency0)}/${currencyId(currency1)}`}
               style={{marginRight: '2.5px'}}>
                 <Text fontSize={width > 500 ? 16 : 13} fontWeight={400}>
                   {'Remove'}
                 </Text>
               </ButtonPositionsMobile>
-              <ButtonPositionsMobile as={Link} to={`/add/${currencyId(currency0)}/${currencyId(currency1)}`} padding={'6px'} 
+              <ButtonPositionsMobile as={Link} to={`/add/${currencyId(currency0)}/${currencyId(currency1)}`} padding={'6px'}
               style={{marginLeft: '2.5px'}} >
                 {/* {width > 500 && <Plus strokeWidth={1} /> } */}
                 <Text fontSize={width > 500 ? 16 : 13} fontWeight={400}>
@@ -291,7 +291,7 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
 }
 
 export function PylonPositionCard({ isFloat, border, pylon }: PylonPositionCardProps) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   const { account } = useActiveWeb3React()
   const currency0 = unwrappedToken(pylon.token0)
   const currency1 = unwrappedToken(pylon.token1)
@@ -344,10 +344,10 @@ export function PylonPositionCard({ isFloat, border, pylon }: PylonPositionCardP
           <RowFixed>
             <DoubleCurrencyLogo currency0={currency0} currency1={currency1} margin={true} size={28} />
             <Text fontWeight={400} fontSize={16} style={{display: 'flex', alignItems: 'center'}}>
-              {!currency0 || !currency1 ? <Dots>Loading</Dots> : 
+              {!currency0 || !currency1 ? <Dots>Loading</Dots> :
               `${currency0.symbol}/${currency1.symbol}`}
               <BadgeSmall>{isFloat? 'FLOAT' : 'ANCHOR'}</BadgeSmall>
-            </Text>  
+            </Text>
           </RowFixed>
           <RowFixed>
             { !showMore &&
@@ -366,7 +366,7 @@ export function PylonPositionCard({ isFloat, border, pylon }: PylonPositionCardP
           </RowFixed>
         </FixedHeightRow>
       </div>
-        
+
         {showMore && (
           <AutoColumn gap="8px">
             <div style={{padding: '0 1.25rem'}}>

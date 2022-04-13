@@ -1,5 +1,5 @@
-import React, { useState, useRef, useContext } from 'react'
-import styled, { ThemeContext } from 'styled-components'
+import React, { useState, useRef } from 'react'
+import styled, { useTheme } from 'styled-components'
 import { useTranslation } from 'react-i18next'
 
 import QuestionHelper from '../QuestionHelper'
@@ -90,7 +90,7 @@ export interface SlippageTabsProps {
 }
 
 export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, setDeadline }: SlippageTabsProps) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   const { t } = useTranslation()
 
   const inputRef = useRef<HTMLInputElement>()

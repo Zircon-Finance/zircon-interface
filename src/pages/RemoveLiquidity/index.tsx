@@ -2,12 +2,12 @@ import { splitSignature } from '@ethersproject/bytes'
 import { Contract } from '@ethersproject/contracts'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, currencyEquals, DEV, Percent, WDEV } from 'zircon-sdk'
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { ArrowDown, Plus } from 'react-feather'
 import ReactGA from 'react-ga4'
 import { RouteComponentProps } from 'react-router'
 import { Flex, Text } from 'rebass'
-import { ThemeContext } from 'styled-components'
+import { useTheme } from 'styled-components'
 import { ButtonPrimary, ButtonLight, ButtonError, ButtonConfirmed, ButtonAnchor } from '../../components/Button'
 import { LightPinkCard, TransparentCard } from '../../components/Card'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
@@ -58,7 +58,7 @@ export default function RemoveLiquidity({
     chainId
   ])
 
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle()
@@ -507,7 +507,7 @@ export default function RemoveLiquidity({
                         Detailed
                       </ButtonAnchor>
                     </div>
-                    
+
                   </Flex>
                 <Row style={{ alignItems: 'flex-end' }}>
                   <Text fontSize={30} style={{width: '100%', textAlign: 'center'}}>

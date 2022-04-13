@@ -1,5 +1,5 @@
-import React, { useContext, useMemo, useState } from 'react'
-import { ThemeContext } from 'styled-components'
+import React, { useMemo, useState } from 'react'
+import { useTheme } from 'styled-components'
 import {Token, Pylon} from 'zircon-sdk'
 // import { Link } from 'react-router-dom'
 // import { SwapPoolTabs } from '../../components/NavigationTabs'
@@ -34,7 +34,7 @@ import HistoryTransactions from '../../components/HistoryTransactions'
 import LearnIcon, { SmallerQuestionmark } from '../../components/LearnIcon'
 
 export default function Pool() {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   const { t } = useTranslation()
   const { account } = useActiveWeb3React()
   const [filter, setFilter] = useState('ALL')
@@ -107,12 +107,12 @@ export default function Pool() {
             <div style={{display: 'flex', padding: '15px 15px 0px 15px', justifyContent: 'space-between', boxShadow: `inset 1px -10px 2px -10px ${theme.bg14}`}}>
               <div style={{display: 'grid', gridAutoFlow: 'column', columnGap: '20px', alignItems: 'center'}}>
                 {filterOptions.map(option => (
-                  <Text color={filter === option ? theme.white : theme.text2} 
+                  <Text color={filter === option ? theme.white : theme.text2}
                         fontSize={13}
-                        key = {option} 
+                        key = {option}
                         onClick={() => setFilter(option)}
-                        style={{borderBottom: `${filter === option ? ('1px solid'+theme.bg5) : 'none'}`, 
-                              cursor: 'pointer', 
+                        style={{borderBottom: `${filter === option ? ('1px solid'+theme.bg5) : 'none'}`,
+                              cursor: 'pointer',
                               height: '50px',
                               display: 'flex',
                               alignItems: 'center'}}>{option}</Text>

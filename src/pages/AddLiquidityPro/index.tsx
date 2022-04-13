@@ -1,11 +1,11 @@
 import {BigNumber} from '@ethersproject/bignumber'
 import {TransactionResponse} from '@ethersproject/providers'
 import {Currency, currencyEquals, DEV, TokenAmount, WDEV} from 'zircon-sdk'
-import React, {useCallback, useContext, useState} from 'react'
+import React, {useCallback, useState} from 'react'
 import ReactGA from 'react-ga4'
 import {RouteComponentProps} from 'react-router-dom'
 import {Text} from 'rebass'
-import {ThemeContext} from 'styled-components'
+import {useTheme} from 'styled-components'
 import {ButtonAnchor, ButtonError, ButtonLight, ButtonPrimary} from '../../components/Button'
 import {BlueCard, GreyCard, LightCard} from '../../components/Card'
 import {AutoColumn, ColumnCenter} from '../../components/Column'
@@ -50,7 +50,7 @@ export default function AddLiquidityPro({
                                           history
                                         }: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
   const { account, chainId, library } = useActiveWeb3React()
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   const currencyA = useCurrency(currencyIdA)
   const currencyB = useCurrency(currencyIdB)
@@ -410,7 +410,7 @@ export default function AddLiquidityPro({
               {formattedLiquidity < 0.00000001 ? '0.000...'+String(formattedLiquidity).slice(-4) : formattedLiquidity}
             </Text>
             <Text fontSize="16px" width={'100%'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
-              {currencies[Field.CURRENCY_A]?.symbol + '/' + currencies[Field.CURRENCY_B]?.symbol + 
+              {currencies[Field.CURRENCY_A]?.symbol + '/' + currencies[Field.CURRENCY_B]?.symbol +
               (sync !== "half" ? (float.field_a === Field.CURRENCY_A ? ' Float shares' : ' Anchor shares') : (' Pool tokens'))
               }
               <DoubleCurrencyLogo
@@ -480,7 +480,7 @@ export default function AddLiquidityPro({
         if (currencyIdA === newCurrencyIdB) {
           if (currencyIdB) {
             history.push(`/add-pro/${currencyIdB}/${newCurrencyIdB}`)
-            
+
           } else {
             history.push(`/add-pro/${newCurrencyIdB}`)
           }
@@ -644,13 +644,13 @@ export default function AddLiquidityPro({
 
               {currencies[Field.CURRENCY_B] !== undefined && pylonState === PylonState.EXISTS && (
                 <div>
-                {width < 700 && 
+                {width < 700 &&
                   (<span style={{display: 'flex', alignSelf: 'center', fontSize: '13px', justifyContent: 'center', letterSpacing: '0.05em', marginBottom: '8px'}}>
                     {'ADVANCED MODE'}
                   </span>)
                 }
                   <div style={{display: 'flex', border: '1px solid #402D58', borderRadius: '17px', justifyContent: 'space-between'}}>
-                  {width > 700 && 
+                  {width > 700 &&
                     (<span style={{display: 'inline', alignSelf: 'center', fontSize: '13px', margin: 'auto', letterSpacing: '0.05em'}}>{'ADVANCED MODE'}</span>)
                   }
                     <div style={{display: 'flex', borderLeft: `1px solid ${theme.bg9}`, borderRadius: '17px', padding: '5px', fontSize: '13px', width: width > 700 ? 'inherit' : '100%'}}>
@@ -722,7 +722,7 @@ export default function AddLiquidityPro({
                                         )}
                                       </ButtonPrimary>
                                   )}
-                                  {((sync === 'half' && approvalB !== ApprovalState.APPROVED) || 
+                                  {((sync === 'half' && approvalB !== ApprovalState.APPROVED) ||
                                   (pylonState !== PylonState.EXISTS && approvalB !== ApprovalState.APPROVED)) && (
                                       <ButtonPrimary
                                           onClick={approveBCallback}

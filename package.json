@@ -87,8 +87,7 @@
     "build": "react-scripts build",
     "test": "cypress open",
     "eject": "react-scripts eject",
-    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
-    "preinstall": "npx npm-force-resolutions"
+    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'"
   },
   "eslintConfig": {
     "extends": "react-app"

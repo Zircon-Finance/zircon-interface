@@ -1,10 +1,10 @@
 import {TransactionResponse} from '@ethersproject/providers'
 import {Currency, currencyEquals, DEV, Percent, WDEV} from 'zircon-sdk'
-import React, {useCallback, useContext, useMemo, useState} from 'react'
+import React, {useCallback, useMemo, useState} from 'react'
 import {ArrowDown, Plus} from 'react-feather'
 import ReactGA from 'react-ga4'
 import {Flex, Text} from 'rebass'
-import {ThemeContext} from 'styled-components'
+import {useTheme} from 'styled-components'
 import {ButtonAnchor, ButtonConfirmed, ButtonError, ButtonLight, ButtonPrimary} from '../../components/Button'
 import {LightPinkCard, TransparentCard} from '../../components/Card'
 import {AutoColumn, ColumnCenter} from '../../components/Column'
@@ -55,7 +55,7 @@ export default function RemoveProLiquidity({
     currencyB,
     chainId
   ])
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle()
@@ -234,7 +234,6 @@ export default function RemoveProLiquidity({
             tokenB.address,
             liquidityAmount.raw.toString(),
             "1", //amountsMin[Field.CURRENCY_A].toString(),
-            "1", //amountsMin[Field.CURRENCY_B].toString(),
             !isFloat,
             account,
             deadlineFromNow
@@ -244,12 +243,13 @@ export default function RemoveProLiquidity({
       // we have a signataure, use permit versions of remove liquidity
       else {
         if (oneCurrencyIsETH) {
+
           methodNames = ['removeLiquidityAsyncETH']
           args = [
             currencyBIsETH ? tokenA.address : tokenB.address,
             liquidityAmount.raw.toString(),
-            amountsMin[currencyBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(),
-            amountsMin[currencyBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(),
+            '1',//amountsMin[currencyBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(),
+            '1',//amountsMin[currencyBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(),
             !currencyBIsETH,
             !isFloat,
             account,
@@ -507,7 +507,7 @@ export default function RemoveProLiquidity({
                         Detailed
                       </ButtonAnchor>
                     </div>
-                    
+
                   </Flex>
                   <Row style={{ alignItems: 'flex-end' }}>
                     <Text fontSize={30} style={{width: '100%', textAlign: 'center'}}>

@@ -583,7 +583,7 @@ export default function RemoveProLiquidity({
                           </Text>
 
                         </RowBetween>}
-                        {chainId && (firstCurrencyIsETH || firstCurrencyIsWDEV || ((oneCurrencyIsETH || oneCurrencyIsWDEV) && !sync)) ? (
+                        {chainId && (firstCurrencyIsETH || firstCurrencyIsWDEV || ((oneCurrencyIsETH || oneCurrencyIsWDEV) && !sync )) ? (
                             <RowBetween style={{ justifyContent: 'flex-end' }}>
                               {oneCurrencyIsETH ? (
                                   <StyledInternalLink

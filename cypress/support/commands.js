@@ -91,7 +91,7 @@ Cypress.Commands.overwrite('visit', (original, url, options) => {
 })
 
 Cypress.Commands.add('select_moons', () => {
-    cy.visit('#/add/ETH/')
+    cy.visit('/add/ETH/')
     cy.get('#add-liquidity-input-tokenb').contains('token').click()
     cy.get('#list-introduction-choose-a-list').contains('list').click()
     cy.get('.select-button').contains('Select').click()

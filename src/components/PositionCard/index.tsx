@@ -180,7 +180,7 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
 
 
   return (
-    <HoverCard border={'none'} padding={showMore ? '0px' : '1.25rem'} backgroundColor={showMore ? '#3C2955' : '#2B1840'}>
+    <HoverCard border={'none'} padding={showMore ? '0px' : '1.25rem'} backgroundColor={showMore ? theme.cardExpanded : theme.cardSmall}>
       <AutoColumn gap="12px">
       <div style={{ padding: showMore ? '1.25rem 1.25rem 0 1.25rem' : '0px'}}>
         <FixedHeightRow onClick={() => setShowMore(!showMore)} style={{ cursor: 'pointer' }}>
@@ -337,7 +337,7 @@ export function PylonPositionCard({ isFloat, border, pylon }: PylonPositionCardP
   const { width } = useWindowDimensions();
 
   return (
-    <HoverCard border={'none'} padding={showMore ? '0px' : '1.25rem'} backgroundColor={showMore ? '#3C2955' : '#2B1840'}>
+    <HoverCard border={'none'} padding={showMore ? '0px' : '1.25rem'} backgroundColor={showMore ? theme.cardExpanded : theme.cardSmall}>
       <AutoColumn gap="12px">
       <div style={{ padding: showMore ? '1.25rem 1.25rem 0 1.25rem' : '0px'}}>
       <FixedHeightRow onClick={() => setShowMore(!showMore)} style={{ cursor: 'pointer' }}>

@@ -535,7 +535,7 @@ export default function RemoveProLiquidity({
                   )}
                 </AutoColumn>
               </TransparentCard>
-              <div style={{display: 'flex', border: '1px solid #402D58', borderRadius: '17px', justifyContent: 'space-between'}}>
+              <div style={{display: 'flex', border: `1px solid ${theme.navigationBorder}`, borderRadius: '17px', justifyContent: 'space-between'}}>
                 <span style={{display: 'inline', alignSelf: 'center', fontSize: '13px', margin: 'auto', fontWeight: 400}}>{'Withdrawal Mode'}</span>
                 <div style={{display: 'flex', borderLeft: `1px solid ${theme.bg9}`, borderRadius: '17px', padding: '5px'}}>
 

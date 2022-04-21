@@ -17,7 +17,7 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
   height: 3rem;
   font-size: 16px;
   font-weight: 200;
-  background-color: ${({ selected, theme }) => (selected ? theme.bg7 : '#A987C2')};
+  background-color: ${({ selected, theme }) => (selected ? theme.bg7 : theme.inputSelect1)};
   color: ${({ selected, theme }) => (selected ? theme.text1 : theme.white)};
   border-radius: 12px;
   box-shadow: ${({ selected }) => (selected ? 'none' : '0px 6px 10px rgba(0, 0, 0, 0.075)')};
@@ -75,7 +75,7 @@ const InputPanel = styled.div<{ hideInput?: boolean }>`
 
 const Container = styled.div<{ hideInput: boolean }>`
   border-radius: ${({ hideInput }) => (hideInput ? '8px' : '12px')};
-  background-color: #311F48};
+  background-color: ${({ theme }) => theme.anchorFloatBadge};
   width: 100%;
 `
 

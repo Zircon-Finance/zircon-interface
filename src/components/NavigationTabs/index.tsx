@@ -9,6 +9,9 @@ import { RowBetween } from '../Row'
 import QuestionHelper from '../QuestionHelper'
 import Settings from '../Settings'
 import { useWindowDimensions } from '../../hooks'
+import { connectNet } from '../WalletModal'
+import MoonbeamLogo from '../MoonbeamLogo'
+import MoonriverLogo from '../MoonriverLogo'
 
 const Tabs = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -17,7 +20,7 @@ const Tabs = styled.div`
   justify-content: space-evenly;
   padding: 5px;
   margin: auto;
-  border: 1px solid #413055;
+  border: 1px solid ${({ theme }) => theme.navigationBorder};
 `
 
 const activeClassName = 'ACTIVE'
@@ -42,7 +45,7 @@ const StyledNavLink = styled(NavLink).attrs({
   &.${activeClassName} {
     border-radius: 12px;
     color: ${({ theme }) => theme.text1};
-    background-color: #402D54;
+    background-color: ${({ theme }) => theme.navigationTabs};
   }
 
   :hover,
@@ -74,6 +77,20 @@ export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' }) {
       </StyledNavLink>
       <StyledNavLink id={`pool-nav-link`} to={'/pool'} isActive={() => active === 'pool'}>
         {t('pool')}
+      </StyledNavLink>
+    </Tabs>
+  )
+}
+
+export function ChainPoolTab({ active }: { active: 'moonbeam' | 'moonriver' }) {
+  const { width } = useWindowDimensions();
+  return (
+    <Tabs style={{ marginRight: '20px', width: width > 700 ? 'auto' : '100%' }}>
+      <StyledNavLink id={`swap-nav-link`} to={'#'} onClick={()=> {connectNet('moonbase')}} isActive={() => active === 'moonbeam'}>
+        <MoonbeamLogo />
+      </StyledNavLink>
+      <StyledNavLink id={`pool-nav-link`}to={'#'} onClick={()=> {connectNet('moonriver')}} isActive={() => active === 'moonriver'}>
+        <MoonriverLogo />
       </StyledNavLink>
     </Tabs>
   )

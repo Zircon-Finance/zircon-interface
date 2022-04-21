@@ -152,7 +152,7 @@ const supportedNetworks = {
   },
 };
 
-const connectNet = async (network) => {
+export const connectNet = async (network) => {
   if (provider) {
     try {
       const targetNetwork = supportedNetworks[network];

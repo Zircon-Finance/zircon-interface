@@ -1,15 +1,16 @@
 //import { transparentize } from 'polished'
 //import React, { useMemo } from 'react
-import React from 'react'
+import React, { useMemo } from 'react'
 import styled, {
   ThemeProvider as StyledComponentsThemeProvider,
   createGlobalStyle,
   css,
   DefaultTheme
 } from 'styled-components'
-//import { useIsDarkMode } from '../state/user/hooks'
 import { Text, TextProps } from 'rebass'
 import { Colors } from './styled'
+import { useIsDarkMode } from '../state/user/hooks'
+import { useActiveWeb3React } from '../hooks'
 
 export * from './components'
 
@@ -35,8 +36,10 @@ const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } 
 const white = '#FFFFFF'
 const black = '#000000'
 
-export function colors(): Colors {
+export function colors(chainId: any, darkMode: boolean): Colors {
   return {
+    chainId,
+    darkMode,
     // base
     white,
     black,
@@ -50,28 +53,28 @@ export function colors(): Colors {
     text5: '#2C2F36',
 
     // backgrounds / greys
-    bg1: '#221237', // Dark purple
-    bg2: '#020202', //Black
+    bg1: chainId === 1287 ? '#221237' : '#2E1621', // Dark purple
+    bg2: chainId === 1287 ? '#020202' : '#FFFFFF', //Black
     bg3: '#40444F', // Dark gray
     bg4: '#565A69', // Lighter gray
     bg5: '#6C7284',
     // light purple - inputs
-    bg6: '#534169',
+    bg6: chainId === 1287 ? '#534169' : '#492F3D',
     // darker purple - container
-    bg7: '#402d58',
+    bg7: chainId === 1287 ? '#402d58' : '#3c2330',
     // connect wallet button - dark purple
-    bg8: '#4a207c',
+    bg8: chainId === 1287 ? '#4a207c' : '#874955',
     // max button - very light purple
-    bg9: '#443455',
+    bg9: chainId === 1287 ? '#443455' : '#634d58',
     //modal bg
-    bg10: '#3c2955',
+    bg10: chainId === 1287 ? '#3c2955' : '#492F3D',
     //button bg
-    bg11: '#604C7A',
+    bg11: chainId === 1287 ? '#604C7A' : '#5b4450',
     // hover button
-    bg12: '#5B4874',
+    bg12: chainId === 1287 ? '#5B4874' : '#634d58',
     // button purple
     bg13: '#5F299F',
-    bg14: '#4E386B',
+    bg14: chainId === 1287 ? '#4E386B' : '#523946',
     //specialty colors
     modalBG: 'rgba(0,0,0,.425)',
     advancedBG: 'rgba(0,0,0,0.1)',
@@ -82,6 +85,27 @@ export function colors(): Colors {
     primary3: '#BA73ED',
     primary4: '#A548E970',
     primary5: '#BA73ED70',
+
+    disabled1: chainId === 1287 ? '#36195A' : '#44232E',
+
+    inputSelect1: chainId === 1287 ? '#A987C2' : '#7D5F77',
+
+    navigationTabs: chainId === 1287 ? '#402D54' : '#66393D',
+
+    navigationBorder: chainId === 1287 ? '#413055' : '#66393D',
+
+    anchorFloatBadge: chainId === 1287 ? '#311f48' : '#4A303E',
+
+    questionMarks: chainId === 1287 ? '#604C7A' : '#5b434f',
+
+    slippageActive: chainId === 1287 ? '#997aaf' : '#7d5f76',
+
+    walletActive: chainId === 1287 ? '#25123C' : '#4e3430',
+
+    cardSmall: chainId === 1287 ? '#2B1840' : '#361E2A' ,
+    cardExpanded: chainId === 1287 ? '#3C2955' : '#3c2330',
+
+    positionsButtons: chainId === 1287 ? '#7a628c' : '#503945',
 
     // color text
     primaryText1: '#ffffff',
@@ -104,9 +128,9 @@ export function colors(): Colors {
   }
 }
 
-export function theme(): DefaultTheme {
+export function theme(chainId: any,darkMode: boolean): DefaultTheme {
   return {
-    ...colors(),
+    ...colors(chainId, darkMode),
 
     grids: {
       sm: 8,
@@ -133,9 +157,10 @@ export function theme(): DefaultTheme {
 }
 
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
-  //const darkMode = useIsDarkMode()
+  const darkMode = useIsDarkMode()
+  const { chainId } = useActiveWeb3React()
 
-  const themeObject = theme()
+  const themeObject = useMemo(() => theme(chainId, darkMode), [chainId,darkMode])
 
   // @ts-ignore
   return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
@@ -252,7 +277,13 @@ body {
   min-height: 100vh;
   background-repeat: no-repeat;
   background-size: cover;
-  background: radial-gradient(42.57% 42.57% at 50% 50%, rgba(44, 9, 90, 0.95) 0%, rgba(29, 8, 51, 0.95) 99.19%);
+  background: ${ ({ theme }) => theme.chainId === 1287 ? 
+    (theme.darkMode ? 
+      'radial-gradient(42.57% 42.57% at 50% 50%, rgba(44, 9, 90, 0.95) 0%, rgba(29, 8, 51, 0.95) 99.19%);' :
+      '#FFFFFF;') : 
+    (theme.darkMode ? 
+      'linear-gradient(180deg, #3C2320 0%, #261715 100%);' :
+      '#FFFFFF;')}
   background-attachment: fixed;
 
 }

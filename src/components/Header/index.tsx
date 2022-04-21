@@ -11,12 +11,14 @@ import ZirconSmall from '../ZirconSmall';
 import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
 //import { useDarkModeManager } from '../../state/user/hooks'
 import { useETHBalances } from '../../state/wallet/hooks'
-import { SwapPoolTabs } from '../../components/NavigationTabs'
+import { ChainPoolTab, SwapPoolTabs } from '../../components/NavigationTabs'
 
 // import { YellowCard } from '../Card'
 
 import { RowBetween } from '../Row'
 import Web3Status from '../Web3Status'
+import SunLogo from '../SunLogo';
+import { useDarkModeManager } from '../../state/user/hooks';
 // import VersionSwitch from './VersionSwitch'
 
 const HeaderFrame = styled.div`
@@ -64,14 +66,14 @@ const Title = styled.a`
     cursor: pointer;
   }
   @media (min-width: 700px) {
-    width: 250px;
+    width: 442px;
 `
 
 const AccountElement = styled.div<{ active: boolean }>`
   display: flex;
   flex-direction: row;
   align-items: center;
-  background-color: ${({ theme, active }) => (!active ? theme.bg1 : '#25123C')};
+  background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.walletActive)};
   border-radius: 17px;
   white-space: nowrap;
   :focus {
@@ -79,6 +81,7 @@ const AccountElement = styled.div<{ active: boolean }>`
   }
   @media (min-width: 700px) {
     width: 250px;
+    height: 60px;
   }
 
   
@@ -139,6 +142,9 @@ export default function Header() {
   const location = useLocation();
   const { width } = useWindowDimensions();
 
+  const { chainId } = useActiveWeb3React();
+  const [darkMode, toggleSetDarkMode] = useDarkModeManager();
+
   return (
     <HeaderFrame>
       <RowBetween style={{ alignItems: 'flex-start', flexWrap: width > 700 ? 'nowrap' : 'wrap' }} padding="1rem 1rem 0 1rem">
@@ -154,6 +160,16 @@ export default function Header() {
         <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : 'pool'} />
         <HeaderControls>
           <HeaderElement>
+            <button  style={{border: 'none', 
+              outline: 'none', 
+              backgroundColor: 'transparent', 
+              cursor: 'pointer',
+            marginRight: '20px'}} 
+              onClick={() => darkMode ? toggleSetDarkMode() : toggleSetDarkMode()}>
+            <SunLogo  />
+            </button>
+          
+          <ChainPoolTab active={chainId === 1287 ? 'moonbeam' : 'moonriver'} />
             <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
               {account && userEthBalance ? (
                 <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={400}>

@@ -40,7 +40,7 @@ const InputPanel = styled.div<{ hideInput?: boolean }>`
 `
 
 const Container = styled.div<{ hideInput: boolean }>`
-  border-radius: ${({ hideInput }) => (hideInput ? '8px' : '17px')};
+  border-radius: ${({ hideInput }) => (hideInput ? '8px' : '14px')};
   background-color: ${({ theme }) => theme.bg6};
 `
 

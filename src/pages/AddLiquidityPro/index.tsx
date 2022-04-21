@@ -548,7 +548,7 @@ export default function AddLiquidityPro({
 
               {/* Condition that triggers pylov view */}
 
-              <div style={{display: 'flex', border: '1px solid #402D58', borderRadius: '17px', margin: '0px 10px'}}>
+              <div style={{display: 'flex', border: `1px solid ${theme.navigationBorder}`, borderRadius: '17px', margin: '0px 10px'}}>
                 <CurrencyInputPanelInputOnly
                     onCurrencySelect={handleCurrencyASelect}
                     currency={currencies[Field.CURRENCY_A]} id="add-liquidity-input-tokena" showCommonBases
@@ -643,13 +643,13 @@ export default function AddLiquidityPro({
               {/* Pylon condition */}
 
               {currencies[Field.CURRENCY_B] !== undefined && pylonState === PylonState.EXISTS && (
-                <div>
+                <div style={{padding: '0 10px 0 10px'}}>
                 {width < 700 &&
                   (<span style={{display: 'flex', alignSelf: 'center', fontSize: '13px', justifyContent: 'center', letterSpacing: '0.05em', marginBottom: '8px'}}>
                     {'ADVANCED MODE'}
                   </span>)
                 }
-                  <div style={{display: 'flex', border: '1px solid #402D58', borderRadius: '17px', justifyContent: 'space-between'}}>
+                  <div style={{display: 'flex', border: `1px solid ${theme.navigationBorder}`, borderRadius: '17px', justifyContent: 'space-between'}}>
                   {width > 700 &&
                     (<span style={{display: 'inline', alignSelf: 'center', fontSize: '13px', margin: 'auto', letterSpacing: '0.05em'}}>{'ADVANCED MODE'}</span>)
                   }

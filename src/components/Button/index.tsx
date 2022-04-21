@@ -45,13 +45,13 @@ export const ButtonPrimary = styled(Base)`
     background-color: ${({ theme }) => darken(0.05, theme.primary1)};
   }
   &:hover {
-    background-color: #5F299F;
+    background-color: ${({ theme }) => theme.navigationTabs};
   }
   &:active {
-    background-color: #411C6D;
+    background-color: ${({ theme }) => theme.navigationBorder};
   }
   &:disabled {
-    background-color: ${({ theme, altDisabledStyle }) => (altDisabledStyle ? theme.primary1 : '#36195A')};
+    background-color: ${({ theme, altDisabledStyle }) => (altDisabledStyle ? theme.primary1 : theme.disabled1)};
     color: ${({ theme, altDisabledStyle }) => (altDisabledStyle ? 'white' : theme.text3)};
     cursor: auto;
     box-shadow: none;
@@ -62,20 +62,21 @@ export const ButtonPrimary = styled(Base)`
 `
 
 export const ButtonPositionsMobile = styled(Base)`
-  background-color: #7A628C;
+  background-color: ${({ theme }) => theme.positionsButtons};
   padding: 10px;
   color: white;
   width: 90%;
+  height: 50px;
   font-size: 13px;
   border-radius: 12px;
   &:focus {
     background-color: ${({ theme }) => darken(0.05, theme.primary1)};
   }
   &:hover {
-    background-color: ${({ theme }) => theme.bg12};
+    background-color: ${({ theme }) => theme.navigationTabs};
   }
   &:active {
-    background-color: #411C6D;
+    background-color: ${({ theme }) => theme.navigationBorder};
   }
   &:disabled {
     background-color: ${({ theme, altDisabledStyle }) => (altDisabledStyle ? theme.primary1 : '#36195A')};
@@ -87,7 +88,7 @@ export const ButtonPositionsMobile = styled(Base)`
     opacity: ${({ altDisabledStyle }) => (altDisabledStyle ? '0.7' : '1')};
   }
   @media (min-width: 500px) {
-    background-color: #7A628C;
+    background-color: ${({ theme }) => theme.positionsButtons};
     font-size: 16px;
     border-radius: 12px;
   }

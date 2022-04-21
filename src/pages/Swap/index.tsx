@@ -92,6 +92,9 @@ export default function Swap() {
     currencies[Field.OUTPUT],
     typedValue
   )
+  const { chainId } = useActiveWeb3React()
+
+  console.log('Chain id is: ', chainId)
   const inputCurrency = useCurrency(inputCurrencyId)
   const outputCurrency = useCurrency(outputCurrencyId)
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
@@ -279,7 +282,7 @@ export default function Swap() {
       borderRadius: '27px',
       boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04), 0px 24px 32px rgba(0, 0, 0, 0.01)'
       }}>
-      <AutoColumn gap={'md'} style={{backgroundColor: '#2c1645', borderRadius: '27px', padding: '0px', height: '100%', width: '100%'}}>
+      <AutoColumn gap={'md'} style={{backgroundColor: theme.bg1, borderRadius: '27px', padding: '0px', height: '100%', width: '100%'}}>
         <div style={{alignSelf: 'center'}}>
         { outputCurrency ? (
             <PriceChartContainer

@@ -37,7 +37,7 @@ const Option = styled(FancyButton)<{ active: boolean }>`
   :hover {
     cursor: pointer;
   }
-  background-color: ${({ active }) => active ? '#997AAF' : '#604C7A'};
+  background-color: ${({ active, theme }) => active ? theme.slippageActive : theme.questionMarks};
   color: ${({ active, theme }) => (active ? theme.white : theme.text1)};
 `
 
@@ -45,7 +45,7 @@ const Input = styled.input`
   background: transparent;
   font-size: 16px;
   width: auto;
-  border: 1px solid #604C7A;
+  border: 1px solid ${({ theme }) => theme.questionMarks};
   border-radius: 11px;
   outline: none;
   &::-webkit-outer-spin-button,
@@ -179,7 +179,7 @@ export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, se
           >
             1%
           </Option>
-          <OptionCustom active={![10, 50, 100].includes(rawSlippage)} warning={!slippageInputIsValid} tabIndex={-1} style={{border: '1px solid #604C7A'}}>
+          <OptionCustom active={![10, 50, 100].includes(rawSlippage)} warning={!slippageInputIsValid} tabIndex={-1} style={{border: `1px solid ${theme.questionMarks}`}}>
             <RowBetween>
               {!!slippageInput &&
               (slippageError === SlippageError.RiskyLow || slippageError === SlippageError.RiskyHigh) ? (
@@ -229,7 +229,7 @@ export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, se
           <QuestionHelper text="Your transaction will revert if it is pending for more than this long." />
         </RowFixed>
         <RowFixed>
-          <OptionCustom style={{ width: '80px', padding: '5px 10px', fontSize: '13px', border: '1px solid #604C7A', borderRadius: '11px' }} tabIndex={-1}>
+          <OptionCustom style={{ width: '80px', padding: '5px 10px', fontSize: '13px', border: `1px solid ${theme.questionMarks}`, borderRadius: '11px' }} tabIndex={-1}>
             <Input
               color={!!deadlineError ? 'red' : undefined}
               onBlur={() => {

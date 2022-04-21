@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import QuestionMarkIcon from '../QuestionMarkIcon'
 
 const LearnBadge = styled.span`
-  background-color: #37234A;
+  background-color: ${({ theme }) => theme.bg7};
   display: flex;
   position: fixed;
   bottom: 20px;
@@ -24,7 +24,7 @@ const LearnBadge = styled.span`
 `
 
 const SmallerBadge = styled.span`
-  background-color: #37234A;
+  background-color: ${({ theme }) => theme.bg7};
   display: flex;
   font-size: 23px;
   position: absolute;

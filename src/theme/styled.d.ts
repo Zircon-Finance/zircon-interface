@@ -2,6 +2,8 @@ import { FlattenSimpleInterpolation, ThemedCssFunction } from 'styled-components
 
 export type Color = string
 export interface Colors {
+  chainId: any
+  darkMode: boolean
   // base
   white: Color
   black: Color
@@ -43,6 +45,27 @@ export interface Colors {
   primary3: Color
   primary4: Color
   primary5: Color
+
+  disabled1: Color
+
+  inputSelect1: Color
+
+  navigationTabs: Color
+
+  navigationBorder: Color
+
+  anchorFloatBadge: Color
+
+  questionMarks : Color
+
+  slippageActive: Color
+
+  walletActive: Color
+
+  cardSmall: Color
+  cardExpanded: Color
+
+  positionsButtons: Color
 
   primaryText1: Color
 

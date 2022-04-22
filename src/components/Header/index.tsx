@@ -4,7 +4,7 @@ import React from 'react'
 import { Text } from 'rebass'
 import { useLocation } from 'react-router-dom';
 
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
 import Logo from '../../assets/images/mainlogo.png'
 import ZirconSmall from '../ZirconSmall';
@@ -19,6 +19,7 @@ import { RowBetween } from '../Row'
 import Web3Status from '../Web3Status'
 import SunLogo from '../SunLogo';
 import { useDarkModeManager } from '../../state/user/hooks';
+import { connectNet } from '../WalletModal';
 // import VersionSwitch from './VersionSwitch'
 
 const HeaderFrame = styled.div`
@@ -62,10 +63,11 @@ const Title = styled.a`
   pointer-events: auto;
   text-decoration: none;
   text-decoration-style: unset;
+  width: 250px;
   :hover {
     cursor: pointer;
   }
-  @media (min-width: 700px) {
+  @media (min-width: 1100px) {
     width: 442px;
 `
 
@@ -108,6 +110,18 @@ const UniIcon = styled.div`
   }
 `
 
+const BadgeSmall = styled.span`
+  background-color: #ffffff17;
+  padding: 3px 5px;
+  border-radius: 5px;
+  color: ${({ theme }) => theme.whiteHalf};
+  margin-left: 5px;
+  font-size: 10px;
+  @media (min-width: 500px) {
+    font-size: 16px;
+  }
+`
+
 const HeaderControls = styled.div`
   display: flex;
   flex-direction: row;
@@ -144,9 +158,33 @@ export default function Header() {
 
   const { chainId } = useActiveWeb3React();
   const [darkMode, toggleSetDarkMode] = useDarkModeManager();
+  const theme = useTheme();
 
   return (
     <HeaderFrame>
+      {width < 1100 &&
+        <div style={{display: 'flex', paddingLeft: '15px', justifyContent: 'space-between', boxShadow: `inset 1px -10px 2px -10px ${theme.bg14}`,
+                    alignSelf: 'start'}}>
+              <div style={{display: 'grid', gridAutoFlow: 'column', columnGap: '20px', alignItems: 'center'}}>
+                  <Text color={chainId !== 1287 ? theme.white : theme.text2}
+                        fontSize={13}
+                        onClick={() => connectNet('moonbase')}
+                        style={{borderBottom: `${chainId !== 1287 ? ('1px solid'+theme.bg5) : 'none'}`,
+                              cursor: 'pointer',
+                              height: '50px',
+                              display: 'flex',
+                              alignItems: 'center'}}>{'NORMAL'}</Text>
+                  <Text color={chainId === 1287 ? theme.white : theme.text2}
+                        fontSize={13}
+                        onClick={() => connectNet('moonriver')}
+                        style={{borderBottom: `${chainId === 1287 ? ('1px solid'+theme.bg5) : 'none'}`,
+                              cursor: 'pointer',
+                              height: '50px',
+                              display: 'flex',
+                              alignItems: 'center'}}>{'GAMMA'}</Text>
+            </div>
+          </div>
+      }
       <RowBetween style={{ alignItems: 'flex-start', flexWrap: width > 700 ? 'nowrap' : 'wrap' }} padding="1rem 1rem 0 1rem">
         {width > 700 ?
         <>
@@ -155,11 +193,13 @@ export default function Header() {
             <UniIcon id="z-logo">
               <img style={{ height: 50 }} src={Logo} alt="logo" />
             </UniIcon>
+            {chainId === 1287 && <BadgeSmall>{'GAMMA'}</BadgeSmall>}
           </Title>
         </HeaderElement>
         <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : 'pool'} />
         <HeaderControls>
           <HeaderElement>
+          {width > 1100 && <>
             <button  style={{border: 'none', 
               outline: 'none', 
               backgroundColor: 'transparent', 
@@ -169,7 +209,7 @@ export default function Header() {
             <SunLogo  />
             </button>
           
-          <ChainPoolTab active={chainId === 1287 ? 'moonbeam' : 'moonriver'} />
+           <ChainPoolTab active={chainId !== 1287 ? 'moonbeam' : 'moonriver'} /> </>}
             <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
               {account && userEthBalance ? (
                 <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={400}>
@@ -190,6 +230,7 @@ export default function Header() {
               <UniIcon id="z-logo">
                 <ZirconSmall />
               </UniIcon>
+              {chainId === 1287 && <BadgeSmall>{'GAMMA'}</BadgeSmall>}
             </Title>
           </HeaderElement>
           <HeaderControls>

@@ -51,7 +51,7 @@ export const SearchInput = styled.input`
     color: white;
   }
   white-space: nowrap;
-  background-color: ${({ theme}) => theme.bg14};
+  background-color: ${({ theme}) => theme.bg9};
   border: 1px solid transparent;
   outline: none;
   border-radius: 17px;
@@ -64,7 +64,7 @@ export const SearchInput = styled.input`
   :focus {
     border: 1px solid ${({ theme }) => theme.bg6};
     outline: none;
-    background-color: ${({ theme}) => theme.bg10}
+    background-color: ${({ theme}) => theme.bg1}
   }
 `
 export const Separator = styled.div`

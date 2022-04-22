@@ -8,7 +8,7 @@ import NoChartAvailable from './NoChartAvailable'
 import PairPriceDisplay from './PairPriceDisplay'
 import { getTimeWindowChange } from './utils'
 import { useFetchPairPrices } from '../../state/swap/hooks'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import CurrencyLogo from '../CurrencyLogo'
 
@@ -47,7 +47,7 @@ const TopContainer = styled.div`
   display: flex;
   padding: 30px;
   justify-content: space-between;
-  background-color: #2b1645;
+  background-color: ${({ theme }) => theme.bg1};
 `;
 
 interface ChartProps {
@@ -98,7 +98,7 @@ const BasicChart = ({
     pairPrices.every(
       (price: any) => !price.value || price.value === 0 || price.value === Infinity || Number.isNaN(price.value),
     )
-
+  const theme = useTheme();
   if (isBadData) {
     return (
       <NoChartAvailable
@@ -137,7 +137,7 @@ const BasicChart = ({
             </Flex>
         </Flex>
       </TopContainer>
-      <div style={{borderRadius: '27px', backgroundColor: '#331d4e', padding: '15px'}}>
+      <div style={{borderRadius: '27px', backgroundColor: theme.bg7, padding: '15px'}}>
       <DateButtons>
         <Text size={13} color="#9C90AC" style={{alignSelf: 'center', width: '100%', paddingLeft: '15px'}}>
             {hoverDate || currentDate}

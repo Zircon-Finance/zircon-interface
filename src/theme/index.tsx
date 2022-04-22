@@ -53,28 +53,28 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     text5: '#2C2F36',
 
     // backgrounds / greys
-    bg1: chainId === 1287 ? '#221237' : '#2E1621', // Dark purple
-    bg2: chainId === 1287 ? '#020202' : '#FFFFFF', //Black
+    bg1: chainId !== 1287 ? '#221237' : '#2E1621', // Dark purple
+    bg2: '#020202', //Black
     bg3: '#40444F', // Dark gray
     bg4: '#565A69', // Lighter gray
     bg5: '#6C7284',
     // light purple - inputs
-    bg6: chainId === 1287 ? '#534169' : '#492F3D',
+    bg6: chainId !== 1287 ? '#534169' : '#492F3D',
     // darker purple - container
-    bg7: chainId === 1287 ? '#402d58' : '#3c2330',
+    bg7: chainId !== 1287 ? '#402d58' : '#3c2330',
     // connect wallet button - dark purple
-    bg8: chainId === 1287 ? '#4a207c' : '#874955',
+    bg8: chainId !== 1287 ? '#4a207c' : '#874955',
     // max button - very light purple
-    bg9: chainId === 1287 ? '#443455' : '#634d58',
+    bg9: chainId !== 1287 ? '#443455' : '#634d58',
     //modal bg
-    bg10: chainId === 1287 ? '#3c2955' : '#492F3D',
+    bg10: chainId !== 1287 ? '#3c2955' : '#492F3D',
     //button bg
-    bg11: chainId === 1287 ? '#604C7A' : '#5b4450',
+    bg11: chainId !== 1287 ? '#604C7A' : '#5b4450',
     // hover button
-    bg12: chainId === 1287 ? '#5B4874' : '#634d58',
+    bg12: chainId !== 1287 ? '#5B4874' : '#634d58',
     // button purple
     bg13: '#5F299F',
-    bg14: chainId === 1287 ? '#4E386B' : '#523946',
+    bg14: chainId !== 1287 ? '#4E386B' : '#523946',
     //specialty colors
     modalBG: 'rgba(0,0,0,.425)',
     advancedBG: 'rgba(0,0,0,0.1)',
@@ -86,26 +86,26 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     primary4: '#A548E970',
     primary5: '#BA73ED70',
 
-    disabled1: chainId === 1287 ? '#36195A' : '#44232E',
+    disabled1: chainId !== 1287 ? '#36195A' : '#44232E',
 
-    inputSelect1: chainId === 1287 ? '#A987C2' : '#7D5F77',
+    inputSelect1: chainId !== 1287 ? '#A987C2' : '#7D5F77',
 
-    navigationTabs: chainId === 1287 ? '#402D54' : '#66393D',
+    navigationTabs: chainId !== 1287 ? '#402D54' : '#66393D',
 
-    navigationBorder: chainId === 1287 ? '#413055' : '#66393D',
+    navigationBorder: chainId !== 1287 ? '#413055' : '#66393D',
 
-    anchorFloatBadge: chainId === 1287 ? '#311f48' : '#4A303E',
+    anchorFloatBadge: chainId !== 1287 ? '#311f48' : '#4A303E',
 
-    questionMarks: chainId === 1287 ? '#604C7A' : '#5b434f',
+    questionMarks: chainId !== 1287 ? '#604C7A' : '#5b434f',
 
-    slippageActive: chainId === 1287 ? '#997aaf' : '#7d5f76',
+    slippageActive: chainId !== 1287 ? '#997aaf' : '#7d5f76',
 
-    walletActive: chainId === 1287 ? '#25123C' : '#4e3430',
+    walletActive: chainId !== 1287 ? '#25123C' : '#4e3430',
 
-    cardSmall: chainId === 1287 ? '#2B1840' : '#361E2A' ,
-    cardExpanded: chainId === 1287 ? '#3C2955' : '#3c2330',
+    cardSmall: chainId !== 1287 ? '#2B1840' : '#361E2A' ,
+    cardExpanded: chainId !== 1287 ? '#3C2955' : '#3c2330',
 
-    positionsButtons: chainId === 1287 ? '#7a628c' : '#503945',
+    positionsButtons: chainId !== 1287 ? '#7a628c' : '#503945',
 
     // color text
     primaryText1: '#ffffff',
@@ -277,13 +277,13 @@ body {
   min-height: 100vh;
   background-repeat: no-repeat;
   background-size: cover;
-  background: ${ ({ theme }) => theme.chainId === 1287 ? 
+  background: ${ ({ theme }) => theme.chainId !== 1287 ? 
     (theme.darkMode ? 
       'radial-gradient(42.57% 42.57% at 50% 50%, rgba(44, 9, 90, 0.95) 0%, rgba(29, 8, 51, 0.95) 99.19%);' :
-      '#FFFFFF;') : 
+      '#371057;') : 
     (theme.darkMode ? 
       'linear-gradient(180deg, #3C2320 0%, #261715 100%);' :
-      '#FFFFFF;')}
+      '#372E0B;')}
   background-attachment: fixed;
 
 }

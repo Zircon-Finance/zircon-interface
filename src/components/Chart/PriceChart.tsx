@@ -4,6 +4,7 @@ import React from 'react'
 // import BasicChart from './BasicChart'
 import { StyledPriceChart } from './styles'
 import BasicChart from './BasicChart'
+import { useTheme } from 'styled-components'
 // import TradingViewChart from './TradingViewChart'
 // import PairPriceDisplay from '../../../../components/PairPriceDisplay'
 
@@ -36,7 +37,7 @@ const PriceChart = ({
   token1Address,
   currentSwapPrice,
 }: PriceChartProps) => {
-
+const theme = useTheme();
   return (
     <StyledPriceChart
       height={ '100%'}
@@ -45,7 +46,7 @@ const PriceChart = ({
       $isExpanded={isChartExpanded}
       $isFullWidthContainer={isFullWidthContainer}
     >
-      <div style={{backgroundColor: '#2b1645', borderRadius: '27px'}}>
+      <div style={{backgroundColor: theme.bg1, borderRadius: '27px'}}>
         <BasicChart
           token0Address={token0Address}
           token1Address={token1Address}

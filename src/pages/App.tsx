@@ -58,11 +58,13 @@ const BodyWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding-top: 110px;
+  padding-top: 180px;
   align-items: center;
   flex: 1;
-
   z-index: 10;
+  @media (min-width: 1100px) {
+    padding-top: 110px;
+  }
 
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
       padding: 16px;
@@ -92,7 +94,7 @@ export default function App() {
           <HeaderWrapper>
             <Header />
           </HeaderWrapper>
-          <BodyWrapper style={{paddingTop: width > 700 ? '110px' : '0px'}}>
+          <BodyWrapper style={{paddingTop: width > 700 ? width > 1100 ? '180px' : '170px' : '0px'}}>
             <Popups />
             <Web3ReactManager>
               <Switch>

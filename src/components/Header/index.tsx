@@ -4,7 +4,7 @@ import React from 'react'
 import { Text } from 'rebass'
 import { useLocation } from 'react-router-dom';
 
-import styled, { useTheme } from 'styled-components'
+import styled from 'styled-components'
 
 import Logo from '../../assets/images/mainlogo.png'
 import ZirconSmall from '../ZirconSmall';
@@ -19,7 +19,7 @@ import { RowBetween } from '../Row'
 import Web3Status from '../Web3Status'
 import SunLogo from '../SunLogo';
 import { useDarkModeManager } from '../../state/user/hooks';
-import { connectNet } from '../WalletModal';
+// import { connectNet } from '../WalletModal';
 // import VersionSwitch from './VersionSwitch'
 
 const HeaderFrame = styled.div`
@@ -46,6 +46,10 @@ const HeaderFrame = styled.div`
 const HeaderElement = styled.div`
   display: flex;
   align-items: center;
+  @media (max-width: 700px) {
+    width: 100%;
+    margin-top: 20px;
+  }
 `
 
 const HeaderElementWrap = styled.div`
@@ -73,6 +77,7 @@ const Title = styled.a`
 
 const AccountElement = styled.div<{ active: boolean }>`
   display: flex;
+  justify-content: space-between;
   flex-direction: row;
   align-items: center;
   background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.walletActive)};
@@ -85,8 +90,9 @@ const AccountElement = styled.div<{ active: boolean }>`
     width: 250px;
     height: 60px;
   }
-
-  
+  @media (max-width: 700px) {
+    width: 100%;
+  }
 `
 
 // const TestnetWrapper = styled.div`
@@ -158,11 +164,11 @@ export default function Header() {
 
   const { chainId } = useActiveWeb3React();
   const [darkMode, toggleSetDarkMode] = useDarkModeManager();
-  const theme = useTheme();
+  // const theme = useTheme();
 
   return (
     <HeaderFrame>
-      {width < 1100 &&
+      {/* {width < 1100 &&
         <div style={{display: 'flex', paddingLeft: '15px', justifyContent: 'space-between', boxShadow: `inset 1px -10px 2px -10px ${theme.bg14}`,
                     alignSelf: 'start'}}>
               <div style={{display: 'grid', gridAutoFlow: 'column', columnGap: '20px', alignItems: 'center'}}>
@@ -184,7 +190,7 @@ export default function Header() {
                               alignItems: 'center'}}>{'GAMMA'}</Text>
             </div>
           </div>
-      }
+      } */}
       <RowBetween style={{ alignItems: 'flex-start', flexWrap: width > 700 ? 'nowrap' : 'wrap' }} padding="1rem 1rem 0 1rem">
         {width > 700 ?
         <>
@@ -196,10 +202,57 @@ export default function Header() {
             {chainId === 1287 && <BadgeSmall>{'GAMMA'}</BadgeSmall>}
           </Title>
         </HeaderElement>
+        {width > 1100 ? 
+        <>
         <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : 'pool'} />
-        <HeaderControls>
           <HeaderElement>
-          {width > 1100 && <>
+            <button  style={{border: 'none', 
+              outline: 'none', 
+              backgroundColor: 'transparent', 
+              cursor: 'pointer',
+            marginRight: '20px'}} 
+              onClick={() => darkMode ? toggleSetDarkMode() : toggleSetDarkMode()}>
+            <SunLogo  />
+            </button>
+           <ChainPoolTab active={chainId !== 1287 ? 'moonbeam' : 'moonriver'} />
+          </HeaderElement> </> :
+          <div style={{display: 'grid', gridGap: '15px'}}>
+          <HeaderElement>
+            <button  style={{border: 'none', 
+              outline: 'none', 
+              backgroundColor: 'transparent', 
+              cursor: 'pointer',
+            marginRight: '20px'}} 
+              onClick={() => darkMode ? toggleSetDarkMode() : toggleSetDarkMode()}>
+            <SunLogo  />
+            </button>
+           <ChainPoolTab active={chainId !== 1287 ? 'moonbeam' : 'moonriver'} />
+           </HeaderElement>
+           <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : 'pool'} />
+          </div>}
+          <HeaderControls>
+          <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
+              {account && userEthBalance ? (
+                <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={400}>
+                  {userEthBalance?.toSignificant(4)} DEV
+                </BalanceText>
+              ) : null}
+              <Web3Status />
+            </AccountElement>
+          <HeaderElementWrap>
+          </HeaderElementWrap>
+        </HeaderControls>
+        </> :
+        <>
+          <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between', marginBottom: '20px', flexFlow: 'column'}}>
+          <HeaderElement>
+            <Title href=".">
+              <UniIcon id="z-logo">
+                <ZirconSmall />
+              </UniIcon>
+              {chainId === 1287 && <BadgeSmall>{'GAMMA'}</BadgeSmall>}
+            </Title>
+             <>
             <button  style={{border: 'none', 
               outline: 'none', 
               backgroundColor: 'transparent', 
@@ -209,29 +262,7 @@ export default function Header() {
             <SunLogo  />
             </button>
           
-           <ChainPoolTab active={chainId !== 1287 ? 'moonbeam' : 'moonriver'} /> </>}
-            <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
-              {account && userEthBalance ? (
-                <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={400}>
-                  {userEthBalance?.toSignificant(4)} DEV
-                </BalanceText>
-              ) : null}
-              <Web3Status />
-            </AccountElement>
-          </HeaderElement>
-          <HeaderElementWrap>
-          </HeaderElementWrap>
-        </HeaderControls>
-        </> :
-        <>
-          <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between', marginBottom: '20px'}}>
-          <HeaderElement>
-            <Title href=".">
-              <UniIcon id="z-logo">
-                <ZirconSmall />
-              </UniIcon>
-              {chainId === 1287 && <BadgeSmall>{'GAMMA'}</BadgeSmall>}
-            </Title>
+           <ChainPoolTab active={chainId !== 1287 ? 'moonbeam' : 'moonriver'} /> </>
           </HeaderElement>
           <HeaderControls>
             <HeaderElement>

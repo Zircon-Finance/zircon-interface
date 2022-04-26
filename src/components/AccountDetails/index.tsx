@@ -16,8 +16,9 @@ import { injected, walletconnect, walletlink, fortmatic, portis } from '../../co
 import CoinbaseWalletIcon from '../../assets/images/coinbaseWalletIcon.svg'
 import WalletConnectIcon from '../../assets/images/walletConnectIcon.svg'
 import FortmaticIcon from '../../assets/images/fortmaticIcon.png'
+import MetamaskIcon from '../../assets/images/metamask.png'
 import PortisIcon from '../../assets/images/portisIcon.png'
-import Identicon from '../Identicon'
+// import Identicon from '../Identicon'
 import { ButtonPositionsMobile, ButtonSecondary } from '../Button'
 import { ExternalLink as LinkIcon } from 'react-feather'
 import { ExternalLink, TYPE } from '../../theme'
@@ -243,7 +244,7 @@ export default function AccountDetails({
     if (connector === injected) {
       return (
         <IconWrapper size={28}>
-          <Identicon />
+          <img src={MetamaskIcon} alt={'Metamask logo'} />
         </IconWrapper>
       )
     } else if (connector === walletconnect) {

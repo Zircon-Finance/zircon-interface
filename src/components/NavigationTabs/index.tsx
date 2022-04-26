@@ -85,7 +85,7 @@ export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' }) {
 export function ChainPoolTab({ active }: { active: 'moonbeam' | 'moonriver' }) {
   const { width } = useWindowDimensions();
   return (
-    <Tabs style={{ marginRight: '20px', width: width > 700 ? 'auto' : '100%' }}>
+    <Tabs style={{ marginRight: '10px', width: width > 700 ? 'auto' : '100%' }}>
       <StyledNavLink id={`swap-nav-link`} to={'#'} onClick={()=> {connectNet('moonbase')}} isActive={() => active === 'moonbeam'}>
         <MoonbeamLogo />
       </StyledNavLink>

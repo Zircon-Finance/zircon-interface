@@ -234,7 +234,6 @@ export default function RemoveProLiquidity({
             tokenB.address,
             liquidityAmount.raw.toString(),
             "1", //amountsMin[Field.CURRENCY_A].toString(),
-            "1", //amountsMin[Field.CURRENCY_B].toString(),
             !isFloat,
             account,
             deadlineFromNow
@@ -244,12 +243,13 @@ export default function RemoveProLiquidity({
       // we have a signataure, use permit versions of remove liquidity
       else {
         if (oneCurrencyIsETH) {
+
           methodNames = ['removeLiquidityAsyncETH']
           args = [
             currencyBIsETH ? tokenA.address : tokenB.address,
             liquidityAmount.raw.toString(),
-            amountsMin[currencyBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(),
-            amountsMin[currencyBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(),
+            '1',//amountsMin[currencyBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(),
+            '1',//amountsMin[currencyBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(),
             !currencyBIsETH,
             !isFloat,
             account,
@@ -507,7 +507,7 @@ export default function RemoveProLiquidity({
                         Detailed
                       </ButtonAnchor>
                     </div>
-                    
+
                   </Flex>
                   <Row style={{ alignItems: 'flex-end' }}>
                     <Text fontSize={30} style={{width: '100%', textAlign: 'center'}}>

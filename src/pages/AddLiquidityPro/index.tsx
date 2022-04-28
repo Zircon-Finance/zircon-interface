@@ -564,10 +564,11 @@ export default function AddLiquidityPro({
               {currencies[Field.CURRENCY_B] !== undefined ? (
                   <div style={{backgroundColor: theme.bg10, padding: '10px', borderRadius: '27px'}}>
                     <div style={{display: 'flex', justifyContent: 'space-evenly', marginBottom: '10px'}}>
-                <span style={{display: 'inline', alignSelf: 'center', fontSize: '16px'}} id="pylon-check">
+                <span style={{display: 'inline', alignSelf: 'center', textAlign: 'center', fontSize: sync === 'half' ? '15px' : '16px'}} id="pylon-check">
 
                   {/* Pylon condition */}
-                  {pylonState === PylonState.EXISTS ? 'Token used for investment' : pylonState === PylonState.ONLY_PAIR ? 'Create Pylon' :'Create Pair & Pylon'}
+                  {pylonState === PylonState.EXISTS ? sync === 'half' ? 'Shares received from investment' : 'Token used for investment' 
+                  : pylonState === PylonState.ONLY_PAIR ? 'Create Pylon' :'Create Pair & Pylon'}
 
                 </span>
                       {pylonState === PylonState.EXISTS && <div style={{display: 'flex', border: `1px solid ${theme.bg11}`, borderRadius: '17px', padding: '5px'}}>
@@ -615,7 +616,7 @@ export default function AddLiquidityPro({
                           currency={currencies[float.field_a]}
                           id="add-liquidity-input-tokena_bal"
                           showCommonBases
-                          isFloat={false}
+                          isFloat={float.field_a === Field.CURRENCY_A}
                           sync={sync}
                       />
                       {sync === 'half' || pylonState !== PylonState.EXISTS ? (
@@ -632,7 +633,7 @@ export default function AddLiquidityPro({
                               currency={currencies[float.field_b as Field]}
                               id="add-liquidity-input-tokenb_bal"
                               showCommonBases
-                              isFloat={true}
+                              isFloat={float.field_b === Field.CURRENCY_A}
                               sync={sync}
                               exists={(pylonState === PylonState.EXISTS)}
                           />) : null}

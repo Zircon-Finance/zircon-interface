@@ -27,6 +27,7 @@ import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redir
 import {RedirectOldRemoveLiquidityProPathStructure} from "./RemoveProLiquidity/redirects";
 import RemoveProLiquidity from "./RemoveProLiquidity";
 import { useWindowDimensions } from '../hooks'
+import Farms from '../views/Farms/Farms'
 
 const AppWrapper = styled.div`
   display: flex;
@@ -110,6 +111,7 @@ export default function App() {
                 <Route exact path="/add-pro" component={AddLiquidityPro} />
                 <Route exact path="/add-pro/:currencyIdA" component={RedirectOldAddLiquidityProPathStructure} />
                 <Route exact path="/add-pro/:currencyIdA/:currencyIdB" component={RedirectDuplicateTokenIdsPro} />
+                <Route exact path="/farm" component={Farms} />
                 <Route exact strict path="/remove/:tokens" component={RedirectOldRemoveLiquidityPathStructure} />
                 <Route exact strict path="/remove/:currencyIdA/:currencyIdB" component={RemoveLiquidity} />
                 <Route exact strict path="/remove-pro/:tokens" component={RedirectOldRemoveLiquidityProPathStructure} />

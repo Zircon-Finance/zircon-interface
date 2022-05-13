@@ -116,7 +116,7 @@ const UniIcon = styled.div`
   }
 `
 
-const BadgeSmall = styled.span`
+export const BadgeSmall = styled.span`
   background-color: #ffffff17;
   padding: 3px 5px;
   border-radius: 5px;

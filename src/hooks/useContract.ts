@@ -12,8 +12,9 @@ import { MIGRATOR_ABI, MIGRATOR_ADDRESS } from '../constants/abis/migrator'
 import UNISOCKS_ABI from '../constants/abis/unisocks.json'
 import WDEV_ABI from '../constants/abis/weth.json'
 import { MULTICALL_ABI, MULTICALL_NETWORKS } from '../constants/multicall'
-import { getContract } from '../utils'
+import { getContract, getProviderOrSigner } from '../utils'
 import { useActiveWeb3React } from './index'
+import { getBep20Contract, getCakeContract, getFarmAuctionContract, getMasterchefContract } from '../utils/contractHelpers'
 
 // returns null on errors
 function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
@@ -28,6 +29,38 @@ function useContract(address: string | undefined, ABI: any, withSignerIfPossible
       return null
     }
   }, [address, ABI, library, withSignerIfPossible, account])
+}
+
+export const useERC20 = (address: string, withSignerIfPossible = true) => {
+  const { library, account } = useActiveWeb3React()
+  return useMemo(
+    () => getBep20Contract(address, withSignerIfPossible ? getProviderOrSigner(library, account) : null),
+    [account, address, library, withSignerIfPossible],
+  )
+}
+
+export const useMasterchef = () => {
+  const { library } = useActiveWeb3React()
+  return useMemo(() => getMasterchefContract(library.getSigner()), [library])
+}
+
+export const useFarmAuctionContract = (withSignerIfPossible = true) => {
+  const { account, library } = useActiveWeb3React()
+  return useMemo(
+    () => getFarmAuctionContract(withSignerIfPossible ? getProviderOrSigner(library, account) : null),
+    [library, account, withSignerIfPossible],
+  )
+}
+
+export const useCake = (): { reader; signer } => {
+  const { account, library } = useActiveWeb3React()
+  return useMemo(
+    () => ({
+      reader: getCakeContract(null),
+      signer: getCakeContract(getProviderOrSigner(library, account)),
+    }),
+    [account, library],
+  )
 }
 
 export function useV2MigratorContract(): Contract | null {

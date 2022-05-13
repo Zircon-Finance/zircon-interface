@@ -13,11 +13,43 @@ export interface SerializedPair {
   token1: SerializedToken
 }
 
+export enum FarmStakedOnly {
+  ON_FINISHED = 'onFinished',
+  TRUE = 'true',
+  FALSE = 'false',
+}
+
+export enum ViewMode {
+  TABLE = 'TABLE',
+  CARD = 'CARD',
+}
+
+export enum FarmFilter {
+  CLASSIC = 'CLASSIC',
+  PYLON = 'PYLON',
+}
+
+export enum FarmFilterAnchorFloat {
+  ALL = 'ALL',
+  ANCHOR = 'ANCHOR',
+  FLOAT = 'FLOAT',
+}
+
 export const updateMatchesDarkMode = createAction<{ matchesDarkMode: boolean }>('user/updateMatchesDarkMode')
 export const updateUserDarkMode = createAction<{ userDarkMode: boolean }>('user/updateUserDarkMode')
 export const updateUserExpertMode = createAction<{ userExpertMode: boolean }>('user/updateUserExpertMode')
 export const updateUserSlippageTolerance = createAction<{ userSlippageTolerance: number }>(
   'user/updateUserSlippageTolerance'
+)
+export const updateUserFarmsViewMode = createAction<{ userFarmsViewMode: ViewMode }>('user/updateUserFarmsViewMode')
+export const updateuserFarmsFilterPylonClassic = createAction<{ userFarmsFilterPylonClassic: FarmFilter }>(
+  'user/updateuserFarmsFilterPylonClassic'
+  )
+export const updateuserFarmsFilterAnchorFloat = createAction<{ userFarmsFilterAnchorFloat: FarmFilterAnchorFloat }>(
+  'user/updateuserFarmsFilterAnchorFloat'
+  )
+export const updateUserFarmStakedOnly = createAction<{ userFarmStakedOnly: FarmStakedOnly }>(
+  'user/updateUserFarmStakedOnly',
 )
 export const updateUserDeadline = createAction<{ userDeadline: number }>('user/updateUserDeadline')
 export const addSerializedToken = createAction<{ serializedToken: SerializedToken }>('user/addSerializedToken')

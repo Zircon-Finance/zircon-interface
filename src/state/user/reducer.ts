@@ -12,7 +12,15 @@ import {
   updateUserDarkMode,
   updateUserExpertMode,
   updateUserSlippageTolerance,
-  updateUserDeadline
+  updateUserDeadline,
+  updateUserFarmStakedOnly,
+  updateUserFarmsViewMode,
+  updateuserFarmsFilterPylonClassic,
+  ViewMode,
+  FarmStakedOnly,
+  FarmFilter,
+  updateuserFarmsFilterAnchorFloat,
+  FarmFilterAnchorFloat
 } from './actions'
 
 const currentTimestamp = () => new Date().getTime()
@@ -46,6 +54,10 @@ export interface UserState {
   }
 
   timestamp: number
+  userFarmStakedOnly: FarmStakedOnly
+  userFarmsViewMode: ViewMode
+  userFarmsFilterPylonClassic: FarmFilter
+  userFarmsFilterAnchorFloat: FarmFilterAnchorFloat
 }
 
 function pairKey(token0Address: string, token1Address: string) {
@@ -60,7 +72,11 @@ export const initialState: UserState = {
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
   tokens: {},
   pairs: {},
-  timestamp: currentTimestamp()
+  timestamp: currentTimestamp(),
+  userFarmStakedOnly: FarmStakedOnly.ON_FINISHED,
+  userFarmsViewMode: ViewMode.TABLE,
+  userFarmsFilterPylonClassic: FarmFilter.PYLON,
+  userFarmsFilterAnchorFloat: FarmFilterAnchorFloat.ALL
 }
 
 export default createReducer(initialState, builder =>
@@ -95,6 +111,18 @@ export default createReducer(initialState, builder =>
     .addCase(updateUserSlippageTolerance, (state, action) => {
       state.userSlippageTolerance = action.payload.userSlippageTolerance
       state.timestamp = currentTimestamp()
+    })
+    .addCase(updateUserFarmsViewMode, (state, { payload: { userFarmsViewMode } }) => {
+      state.userFarmsViewMode = userFarmsViewMode
+    })
+    .addCase(updateuserFarmsFilterPylonClassic, (state, { payload: { userFarmsFilterPylonClassic } }) => {
+      state.userFarmsFilterPylonClassic = userFarmsFilterPylonClassic
+    })
+    .addCase(updateUserFarmStakedOnly, (state, { payload: { userFarmStakedOnly } }) => {
+      state.userFarmStakedOnly = userFarmStakedOnly
+    })
+    .addCase(updateuserFarmsFilterAnchorFloat, (state, { payload: { userFarmsFilterAnchorFloat } }) => {
+      state.userFarmsFilterAnchorFloat = userFarmsFilterAnchorFloat
     })
     .addCase(updateUserDeadline, (state, action) => {
       state.userDeadline = action.payload.userDeadline

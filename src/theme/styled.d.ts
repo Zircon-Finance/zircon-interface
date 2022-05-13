@@ -80,6 +80,21 @@ export interface Colors {
   green1: Color
   yellow1: Color
   yellow2: Color
+
+  colors: {
+    [key: string]: Color
+  }
+  mediaQueries: {
+    [key: string]: string
+  }
+  radii: {
+    [key: string]: string
+  }
+  tooltip: string
+  shadows: {
+    [key: string]: string
+  }
+  toggle: string
 }
 
 export interface Grids {

@@ -120,11 +120,55 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     red2: '#702BC4',
     green1: '#572CEE',
     yellow1: '#EEE065',
-    yellow2: '#D75FA3'
+    yellow2: '#D75FA3',
 
     // dont wanna forget these blue yet
     // blue4: darkMode ? '#153d6f70' : '#C4D9F8',
     // blue5: darkMode ? '#153d6f70' : '#EBF4FF',
+    colors: {
+      backgroundDisabled: "#E9EAEB",
+      backgroundAlt: "#FFFFFF",
+      backgroundAlt2: "rgba(255, 255, 255, 0.7)",
+      cardBorder: "#E7E3EB",
+      contrast: "#191326",
+      dropdown: "#F6F6F6",
+      dropdownDeep: "#EEEEEE",
+      invertedContrast: "#FFFFFF",
+      input: "#eeeaf4",
+      inputSecondary: "#d7caec",
+      tertiary: "#EFF4F5",
+      text: "#FFFFFF",
+      textDisabled: "#BDC2C4",
+      textSubtle: "#7A6EAA",
+      disabled: "#E9EAEB",
+    },
+
+    mediaQueries: {
+      xs: `@media screen and (min-width: 370 px)`,
+      sm: `@media screen and (min-width: 576 px)`,
+      md: `@media screen and (min-width: 852 px)`,
+      lg: `@media screen and (min-width: 968 px)`,
+      xl: `@media screen and (min-width: 1080px)`,
+      xxl: `@media screen and (min-width: 1200 px)`,
+      nav: `@media screen and (min-width: 968 px)`,
+    },
+    radii: {
+      small: "4px",
+      default: "16px",
+      card: "24px",
+      circle: "50%",
+    },
+    tooltip: "0px 0px 2px rgba(0, 0, 0, 0.2), 0px 4px 12px -8px rgba(14, 14, 44, 0.1)",
+    shadows: {
+      level1: "0px 2px 12px -8px rgba(25, 19, 38, 0.1), 0px 1px 1px rgba(25, 19, 38, 0.05)",
+      active: "0px 0px 0px 1px #0098A1, 0px 0px 4px 8px rgba(31, 199, 212, 0.4)",
+      success: "0px 0px 0px 1px #31D0AA, 0px 0px 0px 4px rgba(49, 208, 170, 0.2)",
+      warning: "0px 0px 0px 1px #ED4B9E, 0px 0px 0px 4px rgba(237, 75, 158, 0.2)",
+      focus: "0px 0px 0px 1px #7645D9, 0px 0px 0px 4px rgba(118, 69, 217, 0.6)",
+      inset: "inset 0px 2px 2px -1px rgba(74, 74, 104, 0.1)",
+      tooltip: "0px 0px 2px rgba(0, 0, 0, 0.2), 0px 4px 12px -8px rgba(14, 14, 44, 0.1)",
+    },
+    toggle: '#0098A1',
   }
 }
 

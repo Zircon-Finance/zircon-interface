@@ -10,16 +10,24 @@ import { AppDispatch, AppState } from '../index'
 import {
   addSerializedPair,
   addSerializedToken,
+  FarmFilter,
+  FarmStakedOnly,
   removeSerializedToken,
   SerializedPair,
   SerializedToken,
   updateUserDarkMode,
   updateUserDeadline,
   updateUserExpertMode,
-  updateUserSlippageTolerance
+  updateUserFarmStakedOnly,
+  updateUserFarmsViewMode,
+  updateuserFarmsFilterPylonClassic,
+  updateUserSlippageTolerance,
+  ViewMode,
+  FarmFilterAnchorFloat,
+  updateuserFarmsFilterAnchorFloat
 } from './actions'
 
-function serializeToken(token: Token): SerializedToken {
+export function serializeToken(token: Token): SerializedToken {
   return {
     chainId: token.chainId,
     address: token.address,
@@ -29,7 +37,7 @@ function serializeToken(token: Token): SerializedToken {
   }
 }
 
-function deserializeToken(serializedToken: SerializedToken): Token {
+export function deserializeToken(serializedToken: SerializedToken): Token {
   return new Token(
     serializedToken.chainId,
     serializedToken.address,
@@ -53,6 +61,73 @@ export function useIsDarkMode(): boolean {
 
   return userDarkMode === null ? matchesDarkMode : userDarkMode
 }
+
+export function useUserFarmStakedOnly(isActive: boolean): [boolean, (stakedOnly: boolean) => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const userFarmStakedOnly = useSelector<AppState, AppState['user']['userFarmStakedOnly']>((state) => {
+    return state.user.userFarmStakedOnly
+  })
+
+  const setUserFarmStakedOnly = useCallback(
+    (stakedOnly: boolean) => {
+      const farmStakedOnly = stakedOnly ? FarmStakedOnly.TRUE : FarmStakedOnly.FALSE
+      dispatch(updateUserFarmStakedOnly({ userFarmStakedOnly: farmStakedOnly }))
+    },
+    [dispatch],
+  )
+
+  return [
+    userFarmStakedOnly === FarmStakedOnly.ON_FINISHED ? !isActive : userFarmStakedOnly === FarmStakedOnly.TRUE,
+    setUserFarmStakedOnly,
+  ]
+}
+
+export function useUserFarmsViewMode(): [ViewMode, (viewMode: ViewMode) => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const userFarmsViewMode = useSelector<AppState, AppState['user']['userFarmsViewMode']>((state) => {
+    return state.user.userFarmsViewMode
+  })
+
+  const setUserFarmsViewMode = useCallback(
+    (viewMode: ViewMode) => {
+      dispatch(updateUserFarmsViewMode({ userFarmsViewMode: viewMode }))
+    },
+    [dispatch],
+  )
+
+  return [userFarmsViewMode, setUserFarmsViewMode]
+}
+
+export function useUserFarmsFilterPylonClassic(): [FarmFilter, (filter: FarmFilter) => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const userFarmsFilterPylonClassic = useSelector<AppState, AppState['user']['userFarmsFilterPylonClassic']>((state) => {
+    return state.user.userFarmsFilterPylonClassic
+  })
+
+  const setuserFarmsFilterPylonClassic = useCallback(
+    (filter: FarmFilter) => {
+      dispatch(updateuserFarmsFilterPylonClassic({ userFarmsFilterPylonClassic: filter }))
+    },
+    [dispatch],
+  )
+
+  return [userFarmsFilterPylonClassic, setuserFarmsFilterPylonClassic]
+}
+
+export function useUserFarmsFilterAnchorFloat(): [FarmFilterAnchorFloat, (filter: FarmFilterAnchorFloat) => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const userFarmsFilterAnchorFloat = useSelector<AppState, AppState['user']['userFarmsFilterAnchorFloat']>((state) => {
+    return state.user.userFarmsFilterAnchorFloat
+  })
+  const setUserFarmsFilterAnchorFloat = useCallback(
+    (filter: FarmFilterAnchorFloat) => {
+      dispatch(updateuserFarmsFilterAnchorFloat({ userFarmsFilterAnchorFloat: filter }))
+    },
+    [dispatch],
+  )
+  return [userFarmsFilterAnchorFloat, setUserFarmsFilterAnchorFloat]
+}
+
 
 export function useDarkModeManager(): [boolean, () => void] {
   const dispatch = useDispatch<AppDispatch>()

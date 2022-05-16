@@ -16,7 +16,7 @@ const Tabs = styled.div`
   justify-content: space-evenly;
   padding: 5px;
   margin: auto;
-  border: 1px solid ${({ theme }) => theme.navigationBorder};
+  background: ${({ theme }) => theme.anchorFloatBadge};
 `
 
 const activeClassName = 'ACTIVE'
@@ -28,7 +28,7 @@ const StyledNavLink = styled(NavLink).attrs({
   align-items: center;
   font-weight: 400;
   justify-content: center;
-  height: 3rem;
+  height: auto;
   border-radius: 12px;
   outline: none;
   cursor: pointer;
@@ -41,7 +41,7 @@ const StyledNavLink = styled(NavLink).attrs({
   &.${activeClassName} {
     border-radius: 12px;
     color: ${({ theme }) => theme.text1};
-    background-color: ${({ theme }) => theme.navigationTabs};
+    background-color: ${({ theme }) => theme.positionsButtons};
   }
 
   :hover,
@@ -59,7 +59,7 @@ export function PylonClassicTab({ active }: { active: 'PYLON' | 'CLASSIC' }) {
   const [filter, setuserFarmsFilterPylonClassic] = useUserFarmsFilterPylonClassic()
 
   return (
-    <Tabs style={{ marginBottom: '20px', width: width > 700 ? 'auto' : '100%' }}>
+    <Tabs style={{ marginRight: '20px', width: width > 700 ? 'auto' : '100%' }}>
       <StyledNavLink id={`pylon-select-tab`} to={'#'} 
         onClick={()=> {setuserFarmsFilterPylonClassic(FarmFilter.PYLON)}} 
         isActive={() => filter === FarmFilter.PYLON}>
@@ -80,7 +80,7 @@ export function AnchorFloatTab({ active }: { active: 'ALL' | 'ANCHOR' | 'FLOAT' 
   const [filter, setuserFarmsFilterAnchorFloat] = useUserFarmsFilterAnchorFloat()
 
   return (
-    <Tabs style={{ marginBottom: '20px', width: width > 700 ? 'auto' : '100%' }}>
+    <Tabs style={{ width: width > 700 ? 'auto' : '100%' }}>
       <StyledNavLink id={`all-select-tab`} to={'#'} 
         onClick={()=> {setuserFarmsFilterAnchorFloat(FarmFilterAnchorFloat.ALL)}} 
         isActive={() => filter === FarmFilterAnchorFloat.ALL}>
@@ -105,8 +105,9 @@ export function ViewModeTabs({ active }: { active: 'TABLE' | 'CARD'}) {
 
   return (
     <div style={{width: '100%'}}>
-      <Tabs style={{ width: '100px', margin: '10px 0 0 10px' }}>
-        <StyledNavLink id={`anchor-select-tab`} to={'#'} 
+      <Tabs style={{ width: '100px', margin: '10px' }}>
+        <StyledNavLink
+          id={`anchor-select-tab`} to={'#'}
           onClick={()=> {setViewMode(ViewMode.TABLE)}} 
           isActive={() => viewMode === ViewMode.TABLE}>
           <TableIcon />
@@ -129,7 +130,7 @@ export function FarmTabButtons({ active }: { active: 'Active' | 'Finished'}) {
   const { hash } = window.location
 
   return (
-    <Tabs style={{ marginBottom: '20px', width: width > 700 ? 'auto' : '100%' }}>
+    <Tabs style={{padding: '5px',  width: width > 700 ? 'auto' : '100%' }}>
       <StyledNavLink id={`live-farms-select`} to={'/farm'} 
         isActive={() => hash === '#/farm'}>
         {t('Active')}

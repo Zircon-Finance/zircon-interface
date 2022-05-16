@@ -1,5 +1,5 @@
 import React from 'react'
-import { AddIcon, Button, IconButton, MinusIcon, Skeleton, Text, useModal } from '@pancakeswap/uikit'
+import { Button, IconButton, Skeleton, Text, useModal } from '@pancakeswap/uikit'
 import { useWeb3React } from '@web3-react/core'
 // import ConnectWalletButton from 'components/ConnectWalletButton'
 import { ToastDescriptionWithTx } from '../../../../../components/Toast'
@@ -25,6 +25,8 @@ import WithdrawModal from '../../WithdrawModal'
 import { ActionContainer, ActionContent, ActionTitles } from './styles'
 import { FarmWithStakedValue } from '../../types'
 import StakedLP from '../../StakedLP'
+import PlusIcon from '../../PlusIcon'
+import MinusIcon from '../../MinusIcon'
 
 const IconButtonWrapper = styled.div`
   display: flex;
@@ -171,15 +173,16 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
               quoteTokenAmountTotal={quoteTokenAmountTotal}
             />
             <IconButtonWrapper>
-              <IconButton variant="secondary" onClick={onPresentWithdraw} mr="6px">
-                <MinusIcon color="primary" width="14px" />
-              </IconButton>
+            <IconButton style={{background: 'transparent', width: 'auto'}} variant="tertiary" onClick={onPresentWithdraw} mr="6px">
+              <MinusIcon />
+            </IconButton>
               <IconButton
+                style={{background: 'transparent', width: 'auto', border:'none'}} 
                 variant="secondary"
                 onClick={onPresentDeposit}
                 disabled={['history', 'archived'].some((item) => window.location.pathname.includes(item))}
               >
-                <AddIcon color="primary" width="14px" />
+                <PlusIcon/>
               </IconButton>
             </IconButtonWrapper>
           </ActionContent>

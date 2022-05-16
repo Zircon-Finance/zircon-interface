@@ -1,23 +1,33 @@
 import React from 'react'
-import { Button, Flex, Text } from '@pancakeswap/uikit'
+import { Text } from '@pancakeswap/uikit'
 import { ToastDescriptionWithTx } from '../../../../components/Toast'
 import { useTranslation } from 'react-i18next'
-
 import { useERC20 } from '../../../../hooks/useContract'
 import useToast from '../../../../hooks/useToast'
 import useCatchTxError from '../../../../hooks/useCatchTxError'
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { fetchFarmUserDataAsync } from '../../../../state/farms'
-import styled from 'styled-components'
+import styled, {useTheme} from 'styled-components'
 import { getAddress } from '../../../../utils/addressHelpers'
 import { FarmWithStakedValue } from '../types'
 import useApproveFarm from '../../hooks/useApproveFarm'
 import HarvestAction from './HarvestAction'
 import StakeAction from './StakeAction'
+import StakeAdd from './StakeAdd'
+import BigNumber from 'bignumber.js'
+import { ButtonOutlined } from '../../../../components/Button'
 
 const Action = styled.div`
-  padding-top: 16px;
+  padding: 0px;
+`
+
+const ActionContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  border-radius: 7px;
+  margin-bottom: 10px;
+  padding: 10px;
 `
 
 interface FarmCardActionsProps {
@@ -30,6 +40,7 @@ interface FarmCardActionsProps {
 
 const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidityUrl, lpLabel, displayApr }) => {
   const { t } = useTranslation()
+  const theme = useTheme()
   const { toastSuccess } = useToast()
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
   const { pid, lpAddresses } = farm
@@ -54,34 +65,33 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
 
   const renderApprovalOrStakeButton = () => {
     return isApproved ? (
-      <StakeAction {...farm} lpLabel={lpLabel} addLiquidityUrl={addLiquidityUrl} displayApr={displayApr} />
+      <ActionContainer style={{backgroundColor: theme.cardExpanded}}>
+          <Text  fontSize="13px" fontWeight={300}>
+            {t('Staked')}
+          </Text>
+          <StakeAction {...farm} lpLabel={lpLabel} addLiquidityUrl={addLiquidityUrl} displayApr={displayApr} />
+        </ActionContainer>
     ) : (
-      <Button mt="8px" width="100%" disabled={pendingTx} onClick={handleApprove}>
+      <ButtonOutlined mt='10px' mb='50px' width="100%" disabled={pendingTx} onClick={handleApprove}>
         {t('Enable Contract')}
-      </Button>
+      </ButtonOutlined>
     )
   }
 
   return (
     <Action>
-      <Flex>
-        <Text bold textTransform="uppercase" color="secondary" fontSize="12px" pr="4px">
-          CAKE
-        </Text>
-        <Text bold textTransform="uppercase" color="textSubtle" fontSize="12px">
+      {allowance <= new BigNumber(0) ? (
+        <StakeAdd />
+      ) : (
+        <>
+        <ActionContainer style={{backgroundColor: theme.cardExpanded}}>
+        <Text fontSize="13px" fontWeight={300}>
           {t('Earned')}
         </Text>
-      </Flex>
-      <HarvestAction earnings={earnings} pid={pid} />
-      <Flex>
-        <Text bold textTransform="uppercase" color="secondary" fontSize="12px" pr="4px">
-          {farm.lpSymbol}
-        </Text>
-        <Text bold textTransform="uppercase" color="textSubtle" fontSize="12px">
-          {t('Staked')}
-        </Text>
-      </Flex>
-      {!account ? <p>{'Connect wallet pls'}</p> : renderApprovalOrStakeButton()}
+        <HarvestAction earnings={earnings} pid={pid} />
+        </ActionContainer>
+        </>)}
+      {!account ? <p>{'Connect wallet placeholder'}</p> : renderApprovalOrStakeButton()}
     </Action>
   )
 }

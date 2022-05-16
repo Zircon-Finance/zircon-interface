@@ -1,9 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Tag, Flex, Heading, Skeleton } from '@pancakeswap/uikit'
+import { Flex, Heading } from '@pancakeswap/uikit'
 import { Token } from 'zircon-sdk'
-import { FarmAuctionTag, CoreTag } from '../../../../components/Tags'
 import DoubleCurrencyLogo from '../../../../components/DoubleLogo'
+import { BadgeSmall } from '../../../../components/Header'
+import { SpaceBetween } from '../FarmTable/Actions/ActionPanel'
 
 export interface ExpandableSectionProps {
   lpLabel?: string
@@ -19,26 +20,28 @@ const Wrapper = styled(Flex)`
   }
 `
 
-const MultiplierTag = styled(Tag)`
-  margin-left: 4px;
-`
-
 const CardHeading: React.FC<ExpandableSectionProps> = ({ lpLabel, multiplier, isCommunityFarm, token, quoteToken }) => {
   return (
-    <Wrapper justifyContent="space-between" alignItems="center" mb="12px">
-      <DoubleCurrencyLogo currency0={token} currency1={quoteToken} size={64} />
+    <div>
+      <Wrapper justifyContent="space-between" alignItems="center" mb="12px">
       <Flex flexDirection="column" alignItems="flex-end">
-        <Heading mb="4px">{lpLabel.split(' ')[0]}</Heading>
-        <Flex justifyContent="center">
-          {isCommunityFarm ? <FarmAuctionTag /> : <CoreTag />}
+        <Heading style={{fontSize:'16px', fontWeight:'300'}} mb="0px">{lpLabel.split(' ')[0]}</Heading>
+        {/* <Flex justifyContent="center">
           {multiplier ? (
             <MultiplierTag variant="secondary">{multiplier}</MultiplierTag>
           ) : (
             <Skeleton ml="4px" width={42} height={28} />
           )}
-        </Flex>
+        </Flex> */}
       </Flex>
-    </Wrapper>
+      <DoubleCurrencyLogo currency0={token} currency1={quoteToken} size={32} />
+      </Wrapper>
+      <SpaceBetween>
+          <BadgeSmall style={{margin: '0', fontSize: '14px'}}>{'ANCHOR'}</BadgeSmall>
+          <p style={{margin: '10px 0'}}>{'254.15'}</p>
+      </SpaceBetween>
+    </div>
+    
   )
 }
 

@@ -1,28 +1,11 @@
 import React from 'react'
 import { useState, useMemo } from 'react'
 // import { Input } from '@pancakeswap/uikit'
-import styled from 'styled-components'
 import debounce from 'lodash/debounce'
 import { useTranslation } from 'react-i18next'
+import { SearchInput } from '../SearchModal/styleds'
 
-const StyledInput = styled.input`
-  border-radius: 16px;
-  margin-left: auto;
-`
-
-const InputWrapper = styled.div`
-  position: relative;
-  @media (max-width: 768px) {
-    display: block;
-  }
-`
-
-// interface Props {
-//   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-//   placeholder?: string
-// }
-
-const SearchInput = ({ onChange: onChangeCallback, placeholder = 'Search' }) => {
+const SearchInputFarm = ({ onChange: onChangeCallback, placeholder = 'Search' }) => {
   const [searchText, setSearchText] = useState('')
 
   const { t } = useTranslation()
@@ -38,10 +21,9 @@ const SearchInput = ({ onChange: onChangeCallback, placeholder = 'Search' }) => 
   }
 
   return (
-    <InputWrapper>
-      <StyledInput value={searchText} onChange={onChange} placeholder={t(placeholder)} />
-    </InputWrapper>
+      <SearchInput style={{height: '50px', borderRadius: '12px'}}
+      value={searchText} onChange={onChange} placeholder={t(placeholder)} />
   )
 }
 
-export default SearchInput
+export default SearchInputFarm

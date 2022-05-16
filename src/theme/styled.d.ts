@@ -84,6 +84,9 @@ export interface Colors {
   colors: {
     [key: string]: Color
   }
+  card: {
+    [key: string]: Color
+  }
   mediaQueries: {
     [key: string]: string
   }

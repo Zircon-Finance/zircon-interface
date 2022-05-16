@@ -38,7 +38,7 @@ const StyledTable = styled.table`
 
 const TableBody = styled.tbody`
   display: block;
-  padding: 10px;
+  padding: 0 10px;
   & tr {
     td {
       font-size: 16px;

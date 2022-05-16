@@ -139,8 +139,11 @@ export function colors(chainId: any, darkMode: boolean): Colors {
       tertiary: "#EFF4F5",
       text: "#FFFFFF",
       textDisabled: "#BDC2C4",
-      textSubtle: "#7A6EAA",
+      textSubtle: 'rgba(255,255,255,0.5)',
       disabled: "#E9EAEB",
+    },
+    card: {
+      background: chainId !== 1287 ? '#2B1840' : '#361E2A' ,
     },
 
     mediaQueries: {

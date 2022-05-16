@@ -23,6 +23,7 @@ import { RowProps, TableData } from './components/FarmTable/Row'
 import { DesktopColumnSchema, FarmWithStakedValue } from './components/types'
 import { AnchorFloatTab, FarmTabButtons, PylonClassicTab, ViewModeTabs } from '../../components/FarmSelectTabs'
 import FarmRepeatIcon from '../../components/FarmRepeatIcon'
+import FarmsPage from '../../pages/Farm/'
 
 const Loading = styled.div`
   border: 8px solid #f3f3f3;
@@ -55,12 +56,11 @@ const Loading = styled.div`
 
 const FlexLayout = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   flex-wrap: wrap;
   & > * {
     min-width: 280px;
-    max-width: 31.5%;
-    width: 100%;
+    width: 31.5%;
     margin: 0 8px;
     margin-bottom: 32px;
   }
@@ -79,7 +79,7 @@ const ControlContainer = styled.div`
   @media (min-width: 992px) {
     flex-direction: row;
     flex-wrap: wrap;
-    padding: 16px 32px;
+    padding: 16px 0px;
     margin-bottom: 0;
   }
 `
@@ -365,25 +365,25 @@ const Farms: React.FC = ({ children }) => {
         },
         sortable: column.sortable,
       }))
-
       return <Table data={rowData} columns={columns} userDataReady={userDataReady} />
     }
+    console.log('Children are ', children)
 
-    return <FlexLayout>{children}</FlexLayout>
+    return <FlexLayout><FarmsPage /></FlexLayout>
   }
 
   return (
     <FarmsContext.Provider value={{ chosenFarmsMemoized }}>
       <Page>
         <ControlContainer>
-          <Flex>
+          <Flex m={'0px'}>
             <PylonClassicTab active={filter} />
             <AnchorFloatTab active={filterAnchorFloat} />
           </Flex>
           <Flex>
             <ViewControls>
-              <ToggleWrapper> 
-                <Text> {t('Staked only')}</Text>
+              <ToggleWrapper style={{marginRight: '20px'}}> 
+                <Text mr={'10px'}> {t('Staked only')}</Text>
                 <Toggle
                   id="staked-only-farms"
                   checked={stakedOnly}
@@ -395,7 +395,6 @@ const Farms: React.FC = ({ children }) => {
             </ViewControls>
             <FilterContainer>
               <LabelWrapper style={{ marginLeft: 16 }}>
-                <Text textTransform="uppercase">{t('Search')}</Text>
                 <SearchInput onChange={handleChangeQuery} placeholder="Search Farms" />
               </LabelWrapper>
             </FilterContainer>
@@ -407,7 +406,7 @@ const Farms: React.FC = ({ children }) => {
               <TableData style={{width: '25%'}}>
                 <ViewModeTabs active={viewMode} />
               </TableData>
-              {options.map((option) => (
+              {viewMode === ViewMode.TABLE && options.map((option) => (
                 <TableData key={option} style={{cursor: 'pointer'}} onClick={() => setSortOption(option.toLowerCase())}>
                   <div style={{display: 'flex', alignItems: 'center'}}>
                     <p style={{marginRight: '10px'}}>{option}</p>

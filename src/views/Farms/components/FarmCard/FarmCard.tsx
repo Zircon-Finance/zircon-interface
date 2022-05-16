@@ -1,35 +1,37 @@
-import React, { useState } from 'react'
+import React from 'react'
 import BigNumber from 'bignumber.js'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { Card, Flex, Text, Skeleton } from '@pancakeswap/uikit'
 import { useTranslation } from 'react-i18next'
-
-import ExpandableSectionButton from '../../../../components/ExpandableSectionButton'
 // import { BASE_ADD_LIQUIDITY_URL } from 'config'
-import { getAddress } from '../../../../utils/addressHelpers'
 // import getLiquidityUrlPathParts from 'utils/getLiquidityUrlPathParts'
-import DetailsSection from './DetailsSection'
 import CardHeading from './CardHeading'
 import { FarmWithStakedValue } from '../types'
 import CardActionsContainer from './CardActionsContainer'
 import ApyButton from './ApyButton'
-// import ApyButton from './ApyButton'
+import { ButtonOutlined } from '../../../../components/Button'
+import { SpaceBetween, StyledLinkExternal } from '../FarmTable/Actions/ActionPanel'
 
 const StyledCard = styled(Card)`
   align-self: baseline;
+  max-width: 100%;
+  margin: 0 0 24px 0;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  ${({ theme }) => theme.mediaQueries.sm} {
+    max-width: 350px;
+    margin: 0 12px 46px;
+  }
 `
 
 const FarmCardInnerContainer = styled(Flex)`
   flex-direction: column;
   justify-content: space-around;
-  padding: 24px;
+  padding: 10px;
 `
 
-const ExpandingWrapper = styled.div`
-  padding: 24px;
-  border-top: 2px solid ${({ theme }) => theme.colors.cardBorder};
-  overflow: hidden;
-`
+
 
 interface FarmCardProps {
   farm: FarmWithStakedValue
@@ -41,19 +43,15 @@ interface FarmCardProps {
 
 const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePrice, account }) => {
   const { t } = useTranslation()
+  const theme = useTheme()
 
-  const [showExpandableSection, setShowExpandableSection] = useState(false)
-
-  const totalValueFormatted =
-    farm.liquidity && farm.liquidity.gt(0)
-      ? `$${farm.liquidity.toNumber().toLocaleString(undefined, { maximumFractionDigits: 0 })}`
-      : ''
+  // const totalValueFormatted =
+  //   farm.liquidity && farm.liquidity.gt(0)
+  //     ? `$${farm.liquidity.toNumber().toLocaleString(undefined, { maximumFractionDigits: 0 })}`
+  //     : ''
 
   const lpLabel = farm.lpSymbol && farm.lpSymbol.toUpperCase().replace('PANCAKE', '')
-  const earnLabel = farm.dual ? farm.dual.earnLabel : t('CAKE + Fees')
-
   const addLiquidityUrl = `placeholder`
-  const lpAddress = getAddress(farm.lpAddresses)
   const isPromotedFarm = farm.token.symbol === 'CAKE'
 
   return (
@@ -66,10 +64,17 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
           token={farm.token}
           quoteToken={farm.quoteToken}
         />
+        <CardActionsContainer
+          farm={farm}
+          lpLabel={lpLabel}
+          account={account}
+          addLiquidityUrl={addLiquidityUrl}
+          displayApr={displayApr}
+        />
         {!removed && (
           <Flex justifyContent="space-between" alignItems="center">
-            <Text>{t('APR')}:</Text>
-            <Text bold style={{ display: 'flex', alignItems: 'center' }}>
+            <Text fontSize='13px'>{t('APR')}:</Text>
+            <Text fontSize='13px' style={{ display: 'flex', alignItems: 'center' }}>
               {farm.apr ? (
                 <ApyButton
                   variant="text-and-button"
@@ -88,35 +93,16 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
             </Text>
           </Flex>
         )}
-        <Flex justifyContent="space-between">
-          <Text>{t('Earn')}:</Text>
-          <Text bold>{earnLabel}</Text>
+        <Flex mt='10px' justifyContent="space-between">
+          <Text fontSize='13px'>{t('Liquidity')}:</Text>
+          <Text fontSize='13px'>{farm.liquidity.toNumber()}</Text>
         </Flex>
-        <CardActionsContainer
-          farm={farm}
-          lpLabel={lpLabel}
-          account={account}
-          addLiquidityUrl={addLiquidityUrl}
-          displayApr={displayApr}
-        />
+        <ButtonOutlined mt='20px' style={{padding: '10px', fontSize: '13px'}}>{`Get ${farm.token.name} - ${farm.quoteToken.name} Anchor LP`}</ButtonOutlined>
+        <SpaceBetween style={{marginTop:'20px'}}>
+            <StyledLinkExternal color={theme.whiteHalf} href={'Placeholder'}>{t('View Contract ↗')}</StyledLinkExternal>
+            <StyledLinkExternal color={theme.whiteHalf} href={'Placeholder'}>{t('See Pair Info ↗')}</StyledLinkExternal>
+          </SpaceBetween>
       </FarmCardInnerContainer>
-
-      <ExpandingWrapper>
-        <ExpandableSectionButton
-          onClick={() => setShowExpandableSection(!showExpandableSection)}
-          expanded={showExpandableSection}
-        />
-        {showExpandableSection && (
-          <DetailsSection
-            removed={removed}
-            bscScanAddress={'placeholder'}
-            infoAddress={`/info/pool/${lpAddress}`}
-            totalValueFormatted={totalValueFormatted}
-            lpLabel={lpLabel}
-            addLiquidityUrl={addLiquidityUrl}
-          />
-        )}
-      </ExpandingWrapper>
     </StyledCard>
   )
 }

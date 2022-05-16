@@ -1,6 +1,7 @@
+import React from 'react'
 import { useWeb3React } from '@web3-react/core'
 import styled from 'styled-components'
-import { Button, Flex, IconButton, AddIcon, MinusIcon, useModal } from '@pancakeswap/uikit'
+import { Button, Flex, IconButton, useModal } from '@pancakeswap/uikit'
 import useToast from '../../../../hooks/useToast'
 import useCatchTxError from '../../../../hooks/useCatchTxError'
 import { ToastDescriptionWithTx } from '../../../../components/Toast'
@@ -15,6 +16,8 @@ import useUnstakeFarms from '../../hooks/useUnstakeFarms'
 import useStakeFarms from '../../hooks/useStakeFarms'
 import { FarmWithStakedValue } from '../types'
 import StakedLP from '../StakedLP'
+import MinusIcon from '../MinusIcon'
+import PlusIcon from '../PlusIcon'
 
 interface FarmCardActionsProps extends FarmWithStakedValue {
   lpLabel?: string
@@ -24,9 +27,6 @@ interface FarmCardActionsProps extends FarmWithStakedValue {
 
 const IconButtonWrapper = styled.div`
   display: flex;
-  svg {
-    width: 20px;
-  }
 `
 
 const StakeAction: React.FC<FarmCardActionsProps> = ({
@@ -113,15 +113,16 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
       </Button>
     ) : (
       <IconButtonWrapper>
-        <IconButton variant="tertiary" onClick={onPresentWithdraw} mr="6px">
-          <MinusIcon color="primary" width="14px" />
+        <IconButton style={{background: 'transparent', width: 'auto'}} variant="tertiary" onClick={onPresentWithdraw} mr="6px">
+          <MinusIcon />
         </IconButton>
         <IconButton
+          style={{background: 'transparent', width: 'auto'}} 
           variant="tertiary"
           onClick={onPresentDeposit}
           disabled={['history', 'archived'].some((item) => window.location.pathname.includes(item))}
         >
-          <AddIcon color="primary" width="14px" />
+          <PlusIcon/>
         </IconButton>
       </IconButtonWrapper>
     )

@@ -65,7 +65,7 @@ const Container = styled.div<{ expanded }>`
   gap: 10px;
 `
 
-const StyledLinkExternal = styled.a`
+export const StyledLinkExternal = styled.a`
   font-weight: 300;
   font-size: 13px;
   text-decoration: none;
@@ -113,7 +113,7 @@ const ValueWrapper = styled.div`
   margin: 4px 0px;
 `
 
-const SpaceBetween = styled.div`
+export const SpaceBetween = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;

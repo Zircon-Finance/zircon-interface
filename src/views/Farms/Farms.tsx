@@ -140,12 +140,12 @@ const ViewControls = styled.div`
     }
   }
 `
-const SelectedOptionDiv = styled.div`
-  position: relative;
-  top: 20px;
-  background: ${({ theme }) => theme.cardExpanded};
-  height: 10px;
-`
+// const SelectedOptionDiv = styled.div`
+//   position: relative;
+//   top: 20px;
+//   background: ${({ theme }) => theme.cardExpanded};
+//   height: 10px;
+// `
 
 const NUMBER_OF_FARMS_VISIBLE = 12
 
@@ -421,7 +421,7 @@ const Farms: React.FC = ({ children }) => {
                     <p style={{marginRight: '5px', fontSize: '13px', color: theme.whiteHalf}}>{option}</p>
                     <FarmRepeatIcon />
                   </div>
-                  {sortOption === option.toLowerCase() && <SelectedOptionDiv />}
+                  {/* {sortOption === option.toLowerCase() && <SelectedOptionDiv />} */}
                 </TableData>)) :
                 (
                   <TableData style={{display: 'flex', width: '200px'}}>

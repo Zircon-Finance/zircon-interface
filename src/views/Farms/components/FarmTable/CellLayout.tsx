@@ -15,12 +15,13 @@ const ContentContainer = styled.div`
 
 interface CellLayoutProps {
   label?: string
+  hovered?: boolean
 }
 
-const CellLayout: React.FC<CellLayoutProps> = ({ label = '', children }) => {
+const CellLayout: React.FC<CellLayoutProps> = ({ label = '', children, hovered }) => {
   return (
     <div>
-      {label && <Label>{label}</Label>}
+      {label && <Label style={{color: hovered ? 'rgba(255,255,255,0.5)' : 'transparent'}}>{label}</Label>}
       <ContentContainer>{children}</ContentContainer>
     </div>
   )

@@ -12,7 +12,7 @@ import TableIcon from '../ViewTableIcon'
 const Tabs = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
   align-items: center;
-  border-radius: 17px;
+  border-radius: 12px;
   justify-content: space-evenly;
   padding: 5px;
   margin: auto;
@@ -29,17 +29,17 @@ const StyledNavLink = styled(NavLink).attrs({
   font-weight: 400;
   justify-content: center;
   height: auto;
-  border-radius: 12px;
+  border-radius: 7px;
   outline: none;
   cursor: pointer;
   text-decoration: none;
-  color: ${({ theme }) => theme.text3};
-  font-size: 16px;
-  padding: 10px 12px;
+  color: ${({ theme }) => theme.text1};
+  font-size: 13px;
+  padding: 6px 10px;
   width: 50%;
 
   &.${activeClassName} {
-    border-radius: 12px;
+    border-radius: 7px;
     color: ${({ theme }) => theme.text1};
     background-color: ${({ theme }) => theme.positionsButtons};
   }
@@ -105,7 +105,7 @@ export function ViewModeTabs({ active }: { active: 'TABLE' | 'CARD'}) {
 
   return (
     <div style={{width: '100%'}}>
-      <Tabs style={{ width: '100px', margin: '10px' }}>
+      <Tabs style={{ width: '100px', margin: viewMode === ViewMode.TABLE ? '10px 0 0 10px' : '10px 0 10px 10px' }}>
         <StyledNavLink
           id={`anchor-select-tab`} to={'#'}
           onClick={()=> {setViewMode(ViewMode.TABLE)}} 

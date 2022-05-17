@@ -20,6 +20,10 @@ import { ButtonOutlined } from '../../../../components/Button'
 
 const Action = styled.div`
   padding: 0px;
+  height: 270px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `
 
 const ActionContainer = styled.div`

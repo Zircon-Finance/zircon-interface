@@ -67,7 +67,7 @@ const StyledArrowLeft = styled(ArrowLeft)`
   margin: 12px;
 `
 
-export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' }) {
+export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' }) {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
   return (
@@ -77,6 +77,9 @@ export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' }) {
       </StyledNavLink>
       <StyledNavLink id={`pool-nav-link`} to={'/pool'} isActive={() => active === 'pool'}>
         {t('pool')}
+      </StyledNavLink>
+      <StyledNavLink id={`farm-nav-link`} to={'/farm'} isActive={() => active === 'farm'}>
+        {t('Farm')}
       </StyledNavLink>
     </Tabs>
   )

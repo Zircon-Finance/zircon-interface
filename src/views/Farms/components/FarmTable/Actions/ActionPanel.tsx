@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import styled, { keyframes, css, useTheme } from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { Text } from '@pancakeswap/uikit'
@@ -26,23 +26,24 @@ export interface ActionPanelProps {
   details: FarmWithStakedValue
   userDataReady: boolean
   expanded: boolean
+  clickAction: Dispatch<SetStateAction<boolean>>
 }
 
 const expandAnimation = keyframes`
   from {
-    max-height: 0px;
+    opacity: 0;
   }
   to {
-    max-height: 500px;
+    opacity: 1;
   }
 `
 
 const collapseAnimation = keyframes`
   from {
-    max-height: 500px;
+    opacity: 1;
   }
   to {
-    max-height: 0px;
+    opacity: 0;
   }
 `
 
@@ -61,7 +62,7 @@ const Container = styled.div<{ expanded }>`
   width: 100%;
   padding: 5px;
   border-radius: 17px;
-  grid-template-columns: auto auto auto auto 40px;
+  grid-template-columns: 22% 22% 22% auto 40px;
   gap: 10px;
 `
 
@@ -126,6 +127,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   staked,
   liquidity,
   userDataReady,
+  clickAction,
   expanded,
 }) => {
   const farm = details
@@ -152,7 +154,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
             <DoubleCurrencyLogo currency0={token} currency1={quoteToken} size={30} />
           </SpaceBetween>
           <SpaceBetween>
-            <BadgeSmall>{'ANCHOR'}</BadgeSmall>
+            <BadgeSmall style={{margin: '0'}}>{'ANCHOR'}</BadgeSmall>
             <span>{'High risk'}</span>
           </SpaceBetween>
           <SpaceBetween>
@@ -191,8 +193,8 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           <ButtonOutlined style={{padding: '10px', fontSize: '13px'}}>{`Get ${token.name} - ${quoteToken.name} Anchor LP`}</ButtonOutlined>
         </ValueContainer>
       </QuarterContainer>
-      <QuarterContainer style={{justifyContent: 'center', alignItems: 'center'}}>
-        <ArrowUp color={theme.whiteHalf} />
+      <QuarterContainer onClick={() => clickAction(false)} style={{justifyContent: 'center', alignItems: 'center', cursor: 'pointer'}}>
+        <ArrowUp color={theme.whiteHalf}  />
       </QuarterContainer>
 
     </Container>

@@ -7,7 +7,6 @@ import { SearchInput } from '../SearchModal/styleds'
 
 const SearchInputFarm = ({ onChange: onChangeCallback, placeholder = 'Search' }) => {
   const [searchText, setSearchText] = useState('')
-
   const { t } = useTranslation()
 
   const debouncedOnChange = useMemo(
@@ -21,7 +20,7 @@ const SearchInputFarm = ({ onChange: onChangeCallback, placeholder = 'Search' })
   }
 
   return (
-      <SearchInput style={{height: '50px', borderRadius: '12px'}}
+      <SearchInput style={{height: '30px', borderRadius: '12px'}}
       value={searchText} onChange={onChange} placeholder={t(placeholder)} />
   )
 }

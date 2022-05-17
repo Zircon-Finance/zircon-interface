@@ -204,7 +204,7 @@ export default function Header() {
         </HeaderElement>
         {width > 1100 ? 
         <>
-        <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : 'pool'} />
+        <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : location.pathname === '/pool' ? 'pool' : 'farm'} />
           <HeaderElement>
             <button  style={{border: 'none', 
               outline: 'none', 

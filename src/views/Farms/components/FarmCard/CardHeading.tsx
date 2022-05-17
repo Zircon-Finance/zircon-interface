@@ -22,10 +22,10 @@ const Wrapper = styled(Flex)`
 
 const CardHeading: React.FC<ExpandableSectionProps> = ({ lpLabel, multiplier, isCommunityFarm, token, quoteToken }) => {
   return (
-    <div>
+    <div style={{padding: '10px'}}>
       <Wrapper justifyContent="space-between" alignItems="center" mb="12px">
       <Flex flexDirection="column" alignItems="flex-end">
-        <Heading style={{fontSize:'16px', fontWeight:'300'}} mb="0px">{lpLabel.split(' ')[0]}</Heading>
+        <Heading style={{fontSize:'16px', fontWeight:'300', margin: '0'}} mb="0px">{lpLabel.split(' ')[0]}</Heading>
         {/* <Flex justifyContent="center">
           {multiplier ? (
             <MultiplierTag variant="secondary">{multiplier}</MultiplierTag>
@@ -34,7 +34,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({ lpLabel, multiplier, is
           )}
         </Flex> */}
       </Flex>
-      <DoubleCurrencyLogo currency0={token} currency1={quoteToken} size={32} />
+      <DoubleCurrencyLogo currency0={token} currency1={quoteToken} size={26} />
       </Wrapper>
       <SpaceBetween>
           <BadgeSmall style={{margin: '0', fontSize: '14px'}}>{'ANCHOR'}</BadgeSmall>

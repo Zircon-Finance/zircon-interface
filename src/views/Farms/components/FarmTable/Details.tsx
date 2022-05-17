@@ -12,7 +12,7 @@ const Container = styled.div`
   display: flex;
   width: 100%;
   justify-content: flex-end;
-  padding-right: 8px;
+  padding-right: 10px;
   color: ${({ theme }) => theme.text1};
 `
 

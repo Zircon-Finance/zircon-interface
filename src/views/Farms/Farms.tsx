@@ -4,7 +4,7 @@ import { useWeb3React } from '@web3-react/core'
 import { RowType, Toggle, Text, Flex } from '@pancakeswap/uikit'
 import { ChainId } from 'zircon-sdk'
 // import { NextLinkFromReactRouter } from 'components/NextLink'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import Page from '../../components/Layout/Page'
 import { useFarms, usePriceCakeBusd } from '../../state/farms/hooks'
 import useIntersectionObserver from '../../hooks/useIntersectionObserver'
@@ -24,6 +24,7 @@ import { DesktopColumnSchema, FarmWithStakedValue } from './components/types'
 import { AnchorFloatTab, FarmTabButtons, PylonClassicTab, ViewModeTabs } from '../../components/FarmSelectTabs'
 import FarmRepeatIcon from '../../components/FarmRepeatIcon'
 import FarmsPage from '../../pages/Farm/'
+import Select from '../../components/Select/Select'
 
 const Loading = styled.div`
   border: 8px solid #f3f3f3;
@@ -60,7 +61,7 @@ const FlexLayout = styled.div`
   flex-wrap: wrap;
   & > * {
     min-width: 280px;
-    width: 31.5%;
+    width: 25%;
     margin: 0 8px;
     margin-bottom: 32px;
   }
@@ -139,6 +140,13 @@ const ViewControls = styled.div`
     }
   }
 `
+const SelectedOptionDiv = styled.div`
+  position: relative;
+  top: 20px;
+  background: ${({ theme }) => theme.cardExpanded};
+  height: 10px;
+`
+
 const NUMBER_OF_FARMS_VISIBLE = 12
 
 export const getDisplayApr = (cakeRewardsApr?: number, lpRewardsApr?: number) => {
@@ -154,6 +162,7 @@ export const getDisplayApr = (cakeRewardsApr?: number, lpRewardsApr?: number) =>
 const Farms: React.FC = ({ children }) => {
   const { pathname } = window.location
   const { t } = useTranslation()
+  const theme = useTheme()
   const { data: farmsLP, userDataLoaded, poolLength } = useFarms()
   const cakePrice = usePriceCakeBusd()
   const [query, setQuery] = useState('')
@@ -395,25 +404,60 @@ const Farms: React.FC = ({ children }) => {
             </ViewControls>
             <FilterContainer>
               <LabelWrapper style={{ marginLeft: 16 }}>
-                <SearchInput onChange={handleChangeQuery} placeholder="Search Farms" />
+                <SearchInput onChange={() => handleChangeQuery} placeholder="Search Farms" />
               </LabelWrapper>
             </FilterContainer>
           </Flex>
         </ControlContainer>
         <MainContainer>
           <table style={{width: '100%'}}>
-            <tr>
-              <TableData style={{width: '25%'}}>
+            <tr style={viewMode === ViewMode.CARD ? ({display: 'flex', justifyContent: 'space-between', alignItems: 'center'}) : null}>
+              <TableData style={{width: '300px'}}>
                 <ViewModeTabs active={viewMode} />
               </TableData>
-              {viewMode === ViewMode.TABLE && options.map((option) => (
+              {viewMode === ViewMode.TABLE ? options.map((option) => (
                 <TableData key={option} style={{cursor: 'pointer'}} onClick={() => setSortOption(option.toLowerCase())}>
                   <div style={{display: 'flex', alignItems: 'center'}}>
-                    <p style={{marginRight: '10px'}}>{option}</p>
+                    <p style={{marginRight: '5px', fontSize: '13px', color: theme.whiteHalf}}>{option}</p>
                     <FarmRepeatIcon />
                   </div>
-                </TableData>))}
-              <TableData></TableData>
+                  {sortOption === option.toLowerCase() && <SelectedOptionDiv />}
+                </TableData>)) :
+                (
+                  <TableData style={{display: 'flex', width: '200px'}}>
+                    <Text style={{width: '100px', alignSelf: 'center'}} color={theme.whiteHalf} fontSize={'15px'} >{t('Sort by')}</Text>
+                    <Select
+                      options={[
+                        {
+                          label: t('Hot'),
+                          value: 'hot',
+                        },
+                        {
+                          label: t('APR'),
+                          value: 'apr',
+                        },
+                        {
+                          label: t('Multiplier'),
+                          value: 'multiplier',
+                        },
+                        {
+                          label: t('Earned'),
+                          value: 'earned',
+                        },
+                        {
+                          label: t('Liquidity'),
+                          value: 'liquidity',
+                        },
+                        {
+                          label: t('Latest'),
+                          value: 'latest',
+                        },
+                      ]}
+                      onOptionChange={(option) => setSortOption(option.value)}
+                    />
+                  </TableData>
+                )}
+              {viewMode === ViewMode.TABLE && (<TableData></TableData>)}
             </tr>
           </table>
             {renderContent()}

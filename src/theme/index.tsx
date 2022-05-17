@@ -127,16 +127,16 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     // blue5: darkMode ? '#153d6f70' : '#EBF4FF',
     colors: {
       backgroundDisabled: "#E9EAEB",
-      backgroundAlt: "#FFFFFF",
+      backgroundAlt: chainId !== 1287 ? '#311f48' : '#4A303E',
       backgroundAlt2: "rgba(255, 255, 255, 0.7)",
       cardBorder: "#E7E3EB",
       contrast: "#191326",
       dropdown: "#F6F6F6",
       dropdownDeep: "#EEEEEE",
-      invertedContrast: "#FFFFFF",
-      input: "#eeeaf4",
-      inputSecondary: "#d7caec",
-      tertiary: "#EFF4F5",
+      invertedContrast: chainId !== 1287 ? '#311f48' : '#4A303E',
+      input: chainId !== 1287 ? '#311f48' : '#4A303E',
+      inputSecondary: chainId !== 1287 ? '#311f48' : '#4A303E',
+      tertiary: chainId !== 1287 ? '#311f48' : '#4A303E',
       text: "#FFFFFF",
       textDisabled: "#BDC2C4",
       textSubtle: 'rgba(255,255,255,0.5)',
@@ -171,7 +171,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
       inset: "inset 0px 2px 2px -1px rgba(74, 74, 104, 0.1)",
       tooltip: "0px 0px 2px rgba(0, 0, 0, 0.2), 0px 4px 12px -8px rgba(14, 14, 44, 0.1)",
     },
-    toggle: '#0098A1',
+    toggle: chainId !== 1287 ? '#311f48' : '#4A303E',
   }
 }
 

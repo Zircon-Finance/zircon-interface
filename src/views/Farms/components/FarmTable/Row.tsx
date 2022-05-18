@@ -1,6 +1,6 @@
 import React, { useEffect, useState, createElement } from 'react'
 import styled, { css, keyframes, useTheme } from 'styled-components'
-import { useMatchBreakpoints } from '@pancakeswap/uikit'
+import { HelpIcon, useMatchBreakpoints, useTooltip } from '@pancakeswap/uikit'
 import { useTranslation } from 'react-i18next'
 // import { useFarmUser } from '../../../../state/farms/hooks'
 
@@ -14,6 +14,9 @@ import ActionPanel from './Actions/ActionPanel'
 import CellLayout from './CellLayout'
 import { DesktopColumnSchema, MobileColumnSchema, FarmWithStakedValue } from '../types'
 import StakedBalance, { StakedProps } from './StakedBalance'
+import { Flex, Text } from 'rebass'
+import RiskHealthIcon from '../../../../components/RiskHealthIcon'
+import TrendingHealthIcon from '../../../../components/TrendingHealthIcon'
 
 export interface RowProps {
   apr: AprProps
@@ -78,7 +81,11 @@ const FarmMobileCell = styled.td`
 `
 
 export const TableData = styled.td`
-  width: 15%;
+  width: 16.5%;
+`
+
+const ReferenceElement = styled.div`
+  display: inline-block;
 `
 
 const expandAnimation = keyframes`
@@ -109,6 +116,16 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const [hovered, setHovered] = useState(false)
   const shouldRenderChild = actionPanelExpanded
   const { t } = useTranslation()
+  const theme = useTheme()
+  const tooltipContent = (
+    <div style={{background: theme.bg3, borderRadius: '17px', padding: '10px'}}>
+      <Text>
+        {t(
+          'This will be text regarding informations about the farm-s risk and health',
+        )}
+      </Text>
+    </div>
+  )
 
   const toggleActionPanel = () => {
     setActionPanelExpanded(!actionPanelExpanded)
@@ -121,9 +138,12 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
 
   const { isDesktop, isMobile } = useMatchBreakpoints()
   const isSmallerScreen = !isDesktop
-  const theme = useTheme()
   const tableSchema = isSmallerScreen ? MobileColumnSchema : DesktopColumnSchema
   const columnNames = tableSchema.map((column) => column.name)
+  const { targetRef, tooltip, tooltipVisible } = useTooltip(tooltipContent, {
+    placement: 'top-end',
+    tooltipOffset: [20, 10],
+  })
   const handleRenderRow = () => {
     if (!isMobile) {
       return (
@@ -148,11 +168,23 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                   </TableData>
                 )
               case 'farm':
+                const risk = props[key].farmHealth && props[key].farmHealth > 300
                 return (
-                  <TableData style={{minWidth: '300px'}} key={key}>
-                    <CellInner style={{justifyContent: 'flex-start'}}>
+                  <TableData style={{minWidth: '380px'}} key={key}>
+                    <CellInner style={{width: '100%',justifyContent: 'flex-start'}}>
                       <CellLayout hovered={hovered} label={hovered && t(tableSchema[columnIndex].label)}>
+                        <Flex width={'100%'} justifyContent={'space-between'}>
                         {createElement(cells[key], { ...props[key] })}
+                            <div style={{width: '40%', display: 'flex', marginRight: '20px', alignItems: 'center'}}>
+                            {risk ?
+                            <RiskHealthIcon /> : <TrendingHealthIcon /> }
+                            <Text ml={'10px'}>{risk ? 'High Risk' : props[key].farmHealth}</Text>
+                            <ReferenceElement ref={targetRef}>
+                            <HelpIcon ml={'10px'} color="textSubtle" />
+                            </ReferenceElement>
+                            {tooltipVisible && tooltip}
+                              </div>                            
+                        </Flex>
                       </CellLayout>
                     </CellInner>
                   </TableData>

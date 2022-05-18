@@ -105,14 +105,17 @@ export function ViewModeTabs({ active }: { active: 'TABLE' | 'CARD'}) {
 
   return (
     <div style={{width: '100%'}}>
-      <Tabs style={{ width: '100px', margin: viewMode === ViewMode.TABLE ? '10px 0 0 10px' : '10px 0 10px 10px' }}>
+      <Tabs style={{ width: '70px', margin: '0'}}>
         <StyledNavLink
+          style={{padding: '5px'}}
           id={`anchor-select-tab`} to={'#'}
           onClick={()=> {setViewMode(ViewMode.TABLE)}} 
           isActive={() => viewMode === ViewMode.TABLE}>
           <TableIcon />
         </StyledNavLink>
-        <StyledNavLink id={`all-select-tab`} to={'#'} 
+        <StyledNavLink 
+          style={{padding: '5px'}}
+          id={`all-select-tab`} to={'#'} 
           onClick={()=> {setViewMode(ViewMode.CARD)}} 
           isActive={() => viewMode === ViewMode.CARD}>
           <CardIcon />

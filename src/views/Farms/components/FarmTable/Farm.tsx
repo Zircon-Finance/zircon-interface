@@ -14,6 +14,7 @@ export interface FarmProps {
   pid: number
   token: Token
   quoteToken: Token
+  farmHealth: number
 }
 
 const Container = styled.div`

@@ -20,7 +20,7 @@ interface CellLayoutProps {
 
 const CellLayout: React.FC<CellLayoutProps> = ({ label = '', children, hovered }) => {
   return (
-    <div>
+    <div style={{width: '100%'}}>
       {label && <Label style={{color: hovered ? 'rgba(255,255,255,0.5)' : 'transparent'}}>{label}</Label>}
       <ContentContainer>{children}</ContentContainer>
     </div>

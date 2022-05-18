@@ -19,7 +19,7 @@ import { useUserFarmsFilterAnchorFloat, useUserFarmsFilterPylonClassic, useUserF
 import { ViewMode } from '../../state/user/actions'
 import SearchInput from '../../components/SearchInput'
 import Table from './components/FarmTable/FarmTable'
-import { RowProps, TableData } from './components/FarmTable/Row'
+import { RowProps } from './components/FarmTable/Row'
 import { DesktopColumnSchema, FarmWithStakedValue } from './components/types'
 import { AnchorFloatTab, FarmTabButtons, PylonClassicTab, ViewModeTabs } from '../../components/FarmSelectTabs'
 import FarmRepeatIcon from '../../components/FarmRepeatIcon'
@@ -59,10 +59,11 @@ const FlexLayout = styled.div`
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
+  margin-top: 5px;
   & > * {
     min-width: 280px;
     width: 25%;
-    margin: 0 8px;
+    margin-right: 8px;
     margin-bottom: 32px;
   }
 `
@@ -106,6 +107,7 @@ const MainContainer = styled.div`
   flex-direction: column;
   background: ${({ theme }) => theme.bg1};
   border-radius: 17px;
+  padding: 5px;
 `
 
 const FilterContainer = styled.div`
@@ -140,12 +142,19 @@ const ViewControls = styled.div`
     }
   }
 `
-// const SelectedOptionDiv = styled.div`
-//   position: relative;
-//   top: 20px;
-//   background: ${({ theme }) => theme.cardExpanded};
-//   height: 10px;
-// `
+const TableData = styled.td`
+  width: 15%;
+  position: relative;
+`
+const SelectedOptionDiv = styled.div`
+  position: absolute;
+  top: 54px;
+  width: 50%;
+  background: ${({ theme }) => theme.cardExpanded};
+  height: 5px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+`
 
 const NUMBER_OF_FARMS_VISIBLE = 12
 
@@ -328,6 +337,8 @@ const Farms: React.FC = ({ children }) => {
         pid: farm.pid,
         token: farm.token,
         quoteToken: farm.quoteToken,
+        farmHealth: Math.floor(Math.random() * (500 - 100 + 1)) + 100,
+        // This will be the function to get the health of the farm
       },
       earned: {
         earnings: getBalanceNumber(new BigNumber(farm.userData.earnings)),
@@ -344,7 +355,7 @@ const Farms: React.FC = ({ children }) => {
       },
       details: farm,
     }
-
+    console.log('farm', farm.farmHealth)
     return row
   })
 
@@ -364,7 +375,6 @@ const Farms: React.FC = ({ children }) => {
               if (a.original.apr.value && b.original.apr.value) {
                 return Number(a.original.apr.value) - Number(b.original.apr.value)
               }
-
               return 0
             case 'earned':
               return a.original.earned.earnings - b.original.earned.earnings
@@ -376,8 +386,6 @@ const Farms: React.FC = ({ children }) => {
       }))
       return <Table data={rowData} columns={columns} userDataReady={userDataReady} />
     }
-    console.log('Children are ', children)
-
     return <FlexLayout><FarmsPage /></FlexLayout>
   }
 
@@ -396,6 +404,8 @@ const Farms: React.FC = ({ children }) => {
                 <Toggle
                   id="staked-only-farms"
                   checked={stakedOnly}
+                  checkedColor={'cardBorder'}
+                  defaultColor={'cardBorder'}
                   onChange={() => setStakedOnly(!stakedOnly)}
                   scale="sm"
                 />
@@ -412,19 +422,19 @@ const Farms: React.FC = ({ children }) => {
         <MainContainer>
           <table style={{width: '100%'}}>
             <tr style={viewMode === ViewMode.CARD ? ({display: 'flex', justifyContent: 'space-between', alignItems: 'center'}) : null}>
-              <TableData style={{width: '300px'}}>
+              <TableData style={{minWidth: '380px'}}>
                 <ViewModeTabs active={viewMode} />
               </TableData>
               {viewMode === ViewMode.TABLE ? options.map((option) => (
                 <TableData key={option} style={{cursor: 'pointer'}} onClick={() => setSortOption(option.toLowerCase())}>
                   <div style={{display: 'flex', alignItems: 'center'}}>
-                    <p style={{marginRight: '5px', fontSize: '13px', color: theme.whiteHalf}}>{option}</p>
+                    <p style={{fontSize: '13px', color: theme.whiteHalf}}>{option}</p>
                     <FarmRepeatIcon />
                   </div>
-                  {/* {sortOption === option.toLowerCase() && <SelectedOptionDiv />} */}
+                  {sortOption === option.toLowerCase() && <SelectedOptionDiv />}
                 </TableData>)) :
                 (
-                  <TableData style={{display: 'flex', width: '200px'}}>
+                  <TableData style={{display: 'flex', width: '200px', paddingRight: '5px'}}>
                     <Text style={{width: '100px', alignSelf: 'center'}} color={theme.whiteHalf} fontSize={'15px'} >{t('Sort by')}</Text>
                     <Select
                       options={[

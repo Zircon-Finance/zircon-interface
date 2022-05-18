@@ -11,7 +11,7 @@ interface DetailsProps {
 const Container = styled.div`
   display: flex;
   width: 100%;
-  justify-content: flex-end;
+  justify-content: center;
   padding-right: 10px;
   color: ${({ theme }) => theme.text1};
 `

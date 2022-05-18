@@ -45,7 +45,7 @@ const initialState: SerializedFarmsState = {
     quoteToken: new Token(1,'0x365c3F921b2915a480308D0b1C04aEF7B99c2876',18, 'ERTH', 'Earth'),
     isCommunity: false,
     userData: {
-      stakedBalance: '10',
+      stakedBalance: '0',
       earnings: '0',
       allowance: '0',
       tokenBalance: '0',
@@ -70,10 +70,10 @@ const initialState: SerializedFarmsState = {
     quoteToken: new Token(1,'0x365c3F921b2915a480308D0b1C04aEF7B99c2876',18, 'MARS', 'Mars'),
     isCommunity: false,
     userData: {
-      stakedBalance: '2',
-      earnings: '3',
-      allowance: '1',
-      tokenBalance: '2',
+      stakedBalance: '1342.45',
+      earnings: '114',
+      allowance: '32',
+      tokenBalance: '112.4',
       },
     multiplier: '4X',
     dual: {
@@ -83,7 +83,8 @@ const initialState: SerializedFarmsState = {
     },
     quoteTokenPriceBusd: 'quoteTokenPriceBusd',
     tokenPriceBusd: 'tokenPriceBusd',
-  }],
+  }
+  ],
   loadArchivedFarmsData: false,
   userDataLoaded: false,
   loadingKeys: {},

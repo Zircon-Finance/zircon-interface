@@ -129,7 +129,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
       backgroundDisabled: "#E9EAEB",
       backgroundAlt: chainId !== 1287 ? '#311f48' : '#4A303E',
       backgroundAlt2: "rgba(255, 255, 255, 0.7)",
-      cardBorder: "#E7E3EB",
+      cardBorder: "#311f48",
       contrast: "#191326",
       dropdown: "#F6F6F6",
       dropdownDeep: "#EEEEEE",
@@ -141,9 +141,16 @@ export function colors(chainId: any, darkMode: boolean): Colors {
       textDisabled: "#BDC2C4",
       textSubtle: 'rgba(255,255,255,0.5)',
       disabled: "#E9EAEB",
+      success: "#2ECC71",
     },
     card: {
       background: chainId !== 1287 ? '#2B1840' : '#361E2A' ,
+    },
+    lightColors: {
+      card: chainId !== 1287 ? '#2B1840' : '#361E2A' ,
+    },
+    darkColors: {
+      card: chainId !== 1287 ? '#2B1840' : '#361E2A' ,
     },
 
     mediaQueries: {
@@ -167,11 +174,14 @@ export function colors(chainId: any, darkMode: boolean): Colors {
       active: "0px 0px 0px 1px #0098A1, 0px 0px 4px 8px rgba(31, 199, 212, 0.4)",
       success: "0px 0px 0px 1px #31D0AA, 0px 0px 0px 4px rgba(49, 208, 170, 0.2)",
       warning: "0px 0px 0px 1px #ED4B9E, 0px 0px 0px 4px rgba(237, 75, 158, 0.2)",
-      focus: "0px 0px 0px 1px #7645D9, 0px 0px 0px 4px rgba(118, 69, 217, 0.6)",
+      focus: "0px 0px 0px 1px #311f48, 0px 0px 0px 4px rgba(118, 69, 217, 0.6)",
       inset: "inset 0px 2px 2px -1px rgba(74, 74, 104, 0.1)",
       tooltip: "0px 0px 2px rgba(0, 0, 0, 0.2), 0px 4px 12px -8px rgba(14, 14, 44, 0.1)",
     },
-    toggle: chainId !== 1287 ? '#311f48' : '#4A303E',
+    // toggle: chainId !== 1287 ? '#311f48' : '#4A303E',
+    toggle: {
+      handleBackground: chainId !== 1287 ? '#644a7c' : '#4A303E',
+    }
   }
 }
 

@@ -97,7 +97,15 @@ export interface Colors {
   shadows: {
     [key: string]: string
   }
-  toggle: string
+  toggle: {
+    [key: string]: string
+  }
+  lightColors: {
+    [key: string]: string
+  }
+  darkColors: {
+    [key: string]: string
+  }
 }
 
 export interface Grids {

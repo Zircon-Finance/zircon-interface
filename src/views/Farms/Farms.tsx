@@ -191,7 +191,7 @@ const Farms: React.FC = ({ children }) => {
 
   // Users with no wallet connected should see 0 as Earned amount
   // Connected users should see loading indicator until first userData has loaded
-  const userDataReady = !account || (!!account && userDataLoaded)
+  const userDataReady = !!account || (!!account && !userDataLoaded)
 
   const [stakedOnly, setStakedOnly] = useUserFarmStakedOnly(isActive)
 
@@ -220,7 +220,8 @@ const Farms: React.FC = ({ children }) => {
         if (!farm.lpTotalInQuoteToken || !farm.quoteTokenPriceBusd) {
           return farm
         }
-        const totalLiquidity = new BigNumber(farm.lpTotalInQuoteToken).times(farm.quoteTokenPriceBusd)
+        // const totalLiquidity = new BigNumber(farm.lpTotalInQuoteToken).times(farm.quoteTokenPriceBusd)
+        const totalLiquidity = new BigNumber(Math.floor(Math.random() * (10000 - 100 + 1)) + 100)
         const { cakeRewardsApr, lpRewardsApr } = isActive
           ? getFarmApr(new BigNumber(farm.poolWeight), cakePrice, totalLiquidity, farm.lpAddresses[ChainId.MAINNET])
           : { cakeRewardsApr: 0, lpRewardsApr: 0 }
@@ -244,7 +245,7 @@ const Farms: React.FC = ({ children }) => {
   }
 
   const [numberOfFarmsVisible, setNumberOfFarmsVisible] = useState(NUMBER_OF_FARMS_VISIBLE)
-  const options = ['Earned', 'APR', 'Liquidty', 'Multiplier']
+  const options = ['Earned', 'Staked', 'APR', 'Liquidty']
 
   const chosenFarmsMemoized = useMemo(() => {
     let chosenFarms = []
@@ -343,19 +344,21 @@ const Farms: React.FC = ({ children }) => {
       earned: {
         earnings: getBalanceNumber(new BigNumber(farm.userData.earnings)),
         pid: farm.pid,
+        hovered: false,
       },
       liquidity: {
         liquidity: farm.liquidity,
+        hovered: false,
       },
       multiplier: {
         multiplier: farm.multiplier,
       },
       staked: {
         staked: farm.userData.stakedBalance,
+        hovered: false,
       },
       details: farm,
     }
-    console.log('farm', farm.farmHealth)
     return row
   })
 
@@ -422,7 +425,7 @@ const Farms: React.FC = ({ children }) => {
         <MainContainer>
           <table style={{width: '100%'}}>
             <tr style={viewMode === ViewMode.CARD ? ({display: 'flex', justifyContent: 'space-between', alignItems: 'center'}) : null}>
-              <TableData style={{minWidth: '380px'}}>
+              <TableData style={{minWidth: '500px'}}>
                 <ViewModeTabs active={viewMode} />
               </TableData>
               {viewMode === ViewMode.TABLE ? options.map((option) => (

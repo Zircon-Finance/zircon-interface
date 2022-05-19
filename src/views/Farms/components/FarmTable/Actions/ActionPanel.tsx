@@ -12,11 +12,11 @@ import StakedAction from './StakedAction'
 import Apr, { AprProps } from '../Apr'
 import { MultiplierProps } from '../Multiplier'
 import Liquidity, { LiquidityProps } from '../Liquidity'
-import { StakedProps } from '../StakedBalance'
+import { StakedProps } from '../Staked'
 import DoubleCurrencyLogo from '../../../../../components/DoubleLogo'
 import { BadgeSmall } from '../../../../../components/Header'
 import { ButtonOutlined } from '../../../../../components/Button'
-import { ArrowUp } from 'react-feather'
+import { ArrowIcon } from '../Details'
 
 export interface ActionPanelProps {
   apr: AprProps
@@ -63,7 +63,8 @@ const Container = styled.div<{ expanded }>`
   padding: 5px;
   border-radius: 17px;
   grid-template-columns: 22% 22% 22% auto 40px;
-  gap: 10px;
+  gap: 5px;
+  position: relative;
 `
 
 export const StyledLinkExternal = styled.a`
@@ -123,8 +124,6 @@ export const SpaceBetween = styled.div`
 const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   details,
   apr,
-  multiplier,
-  staked,
   liquidity,
   userDataReady,
   clickAction,
@@ -151,10 +150,10 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
         <ActionContainer style={{padding: '0 10px'}}>
           <SpaceBetween>
             <span>{token.name + '-' + quoteToken.name}</span>
-            <DoubleCurrencyLogo currency0={token} currency1={quoteToken} size={30} />
+            <DoubleCurrencyLogo currency0={token} currency1={quoteToken} size={25} />
           </SpaceBetween>
           <SpaceBetween>
-            <BadgeSmall style={{margin: '0'}}>{'ANCHOR'}</BadgeSmall>
+            <BadgeSmall style={{fontSize: '13px',margin: '0'}}>{'ANCHOR'}</BadgeSmall>
             <span>{'High risk'}</span>
           </SpaceBetween>
           <SpaceBetween>
@@ -180,7 +179,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
         </ActionContainer>
       </QuarterContainer>
 
-      <QuarterContainer>
+      <QuarterContainer style={{paddingLeft: '10px'}}>
         <ValueContainer>
           <ValueWrapper>
             <Text fontSize='13px' fontWeight={300}>{t('APR')}</Text>
@@ -194,7 +193,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
         </ValueContainer>
       </QuarterContainer>
       <QuarterContainer onClick={() => clickAction(false)} style={{justifyContent: 'center', alignItems: 'center', cursor: 'pointer'}}>
-        <ArrowUp color={theme.whiteHalf}  />
+        <ArrowIcon toggled={expanded}  />
       </QuarterContainer>
 
     </Container>

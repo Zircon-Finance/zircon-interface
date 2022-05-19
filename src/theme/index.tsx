@@ -140,7 +140,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
       text: "#FFFFFF",
       textDisabled: "#BDC2C4",
       textSubtle: 'rgba(255,255,255,0.5)',
-      disabled: "#E9EAEB",
+      disabled: chainId !== 1287 ? '#311f48' : '#4A303E',
       success: "#2ECC71",
     },
     card: {

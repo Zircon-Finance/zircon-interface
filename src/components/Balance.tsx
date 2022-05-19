@@ -29,7 +29,7 @@ const Balance: React.FC<BalanceProps> = ({
   }, [value])
 
   return (
-    <Text color={isDisabled ? 'textDisabled' : color} onClick={onClick} {...props}>
+    <Text fontWeight={400} color={isDisabled ? 'textDisabled' : color} onClick={onClick} {...props}>
       <CountUp
         start={previousValue.current}
         end={value}

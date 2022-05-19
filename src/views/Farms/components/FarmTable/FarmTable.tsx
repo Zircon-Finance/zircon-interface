@@ -54,7 +54,6 @@ const TableContainer = styled.div`
 const FarmTable: React.FC<ITableProps> = (props) => {
   const tableWrapperEl = useRef<HTMLDivElement>(null)
   const { data, columns, userDataReady } = props
-  console.log('Row props are', props)
   const { rows } = useTable(columns, data, { sortable: true, sortColumn: 'farm' })
 
   return (

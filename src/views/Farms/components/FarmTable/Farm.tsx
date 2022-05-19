@@ -7,6 +7,8 @@ import { Text } from '@pancakeswap/uikit'
 import { Token } from 'zircon-sdk'
 import { getBalanceNumber } from '../../../../utils/formatBalance'
 import DoubleCurrencyLogo from '../../../../components/DoubleLogo'
+import { useFarmUser } from '../../../../state/farms/hooks'
+import { BadgeSmall } from '../../../../components/Header'
 import BigNumber from 'bignumber.js'
 
 export interface FarmProps {
@@ -30,8 +32,7 @@ const TokenWrapper = styled.div`
 `
 
 const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pid }) => {
-  // const { stakedBalance } = useFarmUser(pid)
-  const stakedBalance = 1 as unknown as BigNumber
+  const { stakedBalance } = useFarmUser(pid)
   const { t } = useTranslation()
   const rawStakedBalance = getBalanceNumber(stakedBalance)
 
@@ -54,8 +55,11 @@ const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pi
       </TokenWrapper>
       <div>
         {handleRenderFarming()}
-        <Text fontWeight={300}>{label}</Text>
+        <Text fontWeight={400}>{label}</Text>
       </div>
+      <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '10px'}}>
+      {stakedBalance > new BigNumber(0) ? 'ANCHOR' : 'FLOAT'}
+      </BadgeSmall>
     </Container>
   )
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, createElement } from 'react'
 import styled, { css, keyframes, useTheme } from 'styled-components'
-import { HelpIcon, useMatchBreakpoints, useTooltip } from '@pancakeswap/uikit'
+import { useMatchBreakpoints, useTooltip } from '@pancakeswap/uikit'
 import { useTranslation } from 'react-i18next'
 // import { useFarmUser } from '../../../../state/farms/hooks'
 
@@ -13,10 +13,12 @@ import Liquidity, { LiquidityProps } from './Liquidity'
 import ActionPanel from './Actions/ActionPanel'
 import CellLayout from './CellLayout'
 import { DesktopColumnSchema, MobileColumnSchema, FarmWithStakedValue } from '../types'
-import StakedBalance, { StakedProps } from './StakedBalance'
+import Staked, { StakedProps } from './Staked'
 import { Flex, Text } from 'rebass'
 import RiskHealthIcon from '../../../../components/RiskHealthIcon'
 import TrendingHealthIcon from '../../../../components/TrendingHealthIcon'
+import QuestionMarkIcon from '../../../../components/QuestionMarkIcon'
+// import { useFarmUser } from '../../../../state/farms/hooks'
 
 export interface RowProps {
   apr: AprProps
@@ -34,11 +36,11 @@ interface RowPropsWithLoading extends RowProps {
 
 const cells = {
   apr: Apr,
+  details: Details,
   farm: Farm,
   multiplier: Multiplier,
   earned: Earned,
-  details: Details,
-  staked: StakedBalance,
+  staked: Staked,
   liquidity: Liquidity,
 }
 
@@ -62,8 +64,9 @@ animation: ${({ expanded }) =>
   cursor: pointer;
   margin: 10px 0 10px 0;
   display: table;
+  position: relative;
   width: 100%;
-  background: ${({ theme }) => theme.anchorFloatBadge};
+  background: ${({ theme }) => theme.cardSmall};
   border-radius: 17px;
 `
 
@@ -81,7 +84,7 @@ const FarmMobileCell = styled.td`
 `
 
 export const TableData = styled.td`
-  width: 16.5%;
+  width: 16%;
 `
 
 const ReferenceElement = styled.div`
@@ -109,7 +112,11 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const [isVisible, setIsVisible] = useState(false)
   const { 
     // details,
-     userDataReady } = props
+     userDataReady,
+    //farm 
+  } = props
+  console.log('props', props)
+  // const { stakedBalance } = useFarmUser(farm.pid)  
   // const hasStakedAmount = !!useFarmUser(details.pid).stakedBalance.toNumber()
   const hasStakedAmount = false;
   const [actionPanelExpanded, setActionPanelExpanded] = useState(hasStakedAmount)
@@ -170,17 +177,17 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
               case 'farm':
                 const risk = props[key].farmHealth && props[key].farmHealth > 300
                 return (
-                  <TableData style={{minWidth: '380px'}} key={key}>
+                  <TableData style={{minWidth: '500px'}} key={key}>
                     <CellInner style={{width: '100%',justifyContent: 'flex-start'}}>
                       <CellLayout hovered={hovered} label={hovered && t(tableSchema[columnIndex].label)}>
                         <Flex width={'100%'} justifyContent={'space-between'}>
                         {createElement(cells[key], { ...props[key] })}
-                            <div style={{width: '40%', display: 'flex', marginRight: '20px', alignItems: 'center'}}>
+                            <div style={{width: '40%', display: 'flex', marginLeft: '20px', alignItems: 'center'}}>
                             {risk ?
                             <RiskHealthIcon /> : <TrendingHealthIcon /> }
                             <Text ml={'10px'}>{risk ? 'High Risk' : props[key].farmHealth}</Text>
                             <ReferenceElement ref={targetRef}>
-                            <HelpIcon ml={'10px'} color="textSubtle" />
+                            <div style={{marginLeft: '10px'}}><QuestionMarkIcon /></div>
                             </ReferenceElement>
                             {tooltipVisible && tooltip}
                               </div>                            
@@ -204,7 +211,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                   <TableData key={key}>
                     <CellInner>
                       <CellLayout hovered={hovered} label={t(tableSchema[columnIndex].label)}>
-                        {createElement(cells[key], { ...props[key], userDataReady })}
+                        {createElement(cells[key], { ...props[key], userDataReady, hovered })}
                       </CellLayout>
                     </CellInner>
                   </TableData>

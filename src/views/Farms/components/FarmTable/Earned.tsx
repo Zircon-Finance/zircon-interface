@@ -1,10 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Skeleton } from '@pancakeswap/uikit'
+import { IconButton, Skeleton } from '@pancakeswap/uikit'
+import MinusIcon from '../MinusIcon'
 
 export interface EarnedProps {
   earnings: number
   pid: number
+  hovered: boolean
 }
 
 interface EarnedPropsWithLoading extends EarnedProps {
@@ -17,9 +19,16 @@ const Amount = styled.span<{ earned: number }>`
   align-items: center;
 `
 
-const Earned: React.FunctionComponent<EarnedPropsWithLoading> = ({ earnings, userDataReady }) => {
+const Earned: React.FunctionComponent<EarnedPropsWithLoading> = ({ earnings, userDataReady, hovered }) => {
   if (userDataReady) {
-    return <Amount earned={earnings}>{earnings.toLocaleString()}</Amount>
+    return <div style={{position: 'relative', display: 'flex', alignItems: 'center'}}>
+    <Amount earned={earnings}>{earnings.toLocaleString()}</Amount>
+    { earnings > 0 && hovered && 
+      <div style={{position: 'absolute', left: '50px'}}>
+        <IconButton style={{background: 'transparent', width: 'auto'}} variant="tertiary">
+        <MinusIcon />
+        </IconButton>
+      </div>}</div>
   }
   return (
     <Amount earned={0}>

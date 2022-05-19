@@ -48,12 +48,12 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ pid, userD
   return (
     <ActionContainer style={{background: theme.bg6}}>
       <ActionContent>
-        <div style={{display: 'flex', justifyContent: 'space-between', width: '100%', height: '100%', alignItems: 'center'}}>
+        <div style={{display: 'flex', justifyContent: 'space-between', width: '100%', height: '115%', alignItems: 'center'}}>
           <div style={{display: 'flex', flexFlow: 'column', height: '100%', justifyContent: 'space-between'}}>
             <Text fontSize="13px">
               {t('Earned')}
             </Text>
-            <Heading style={{margin: '0'}} fontWeight={300}>{displayBalance}</Heading>
+            <Heading style={{margin: '0', fontWeight: '400'}}>{displayBalance}</Heading>
             {earningsBusd > 0 && (
               <Balance fontSize="13px" color={theme.whiteHalf} decimals={2} value={earningsBusd} unit=" USD" prefix="~" />
             )}

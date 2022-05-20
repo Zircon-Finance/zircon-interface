@@ -18,6 +18,7 @@ import { Flex, Text } from 'rebass'
 import RiskHealthIcon from '../../../../components/RiskHealthIcon'
 import TrendingHealthIcon from '../../../../components/TrendingHealthIcon'
 import QuestionMarkIcon from '../../../../components/QuestionMarkIcon'
+import StakeAdd from '../FarmCard/StakeAdd'
 // import { useFarmUser } from '../../../../state/farms/hooks'
 
 export interface RowProps {
@@ -50,6 +51,7 @@ const CellInner = styled.div`
   width: 100%;
   align-items: center;
   justify-content: flex-start;
+  position: relative;
 `
 
 const StyledTr = styled.tr<{ expanded }>`
@@ -62,7 +64,7 @@ animation: ${({ expanded }) =>
         ${collapseAnimation} 300ms linear forwards
       `};
   cursor: pointer;
-  margin: 10px 0 10px 0;
+  margin: ${({ expanded }) => expanded ? '5px 0 5px 0' : '10px 0 10px 0'};
   display: table;
   position: relative;
   width: 100%;
@@ -84,7 +86,7 @@ const FarmMobileCell = styled.td`
 `
 
 export const TableData = styled.td`
-  width: 16%;
+  width: 12%;
 `
 
 const ReferenceElement = styled.div`
@@ -177,7 +179,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
               case 'farm':
                 const risk = props[key].farmHealth && props[key].farmHealth > 300
                 return (
-                  <TableData style={{minWidth: '500px'}} key={key}>
+                  <TableData style={{minWidth: '502px'}} key={key}>
                     <CellInner style={{width: '100%',justifyContent: 'flex-start'}}>
                       <CellLayout hovered={hovered} label={hovered && t(tableSchema[columnIndex].label)}>
                         <Flex width={'100%'} justifyContent={'space-between'}>
@@ -206,6 +208,31 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                     </CellInner>
                   </TableData>
                 )
+              case 'earned':
+                return (
+                  <TableData key={key}>
+                    {props.staked.staked.gt(0) && (
+                      <CellInner>
+                        <CellLayout hovered={hovered} label={t('Earned')}>
+                          {createElement(cells[key], { ...props[key], userDataReady, hovered })}
+                        </CellLayout>
+                      </CellInner>
+                    )}
+                  </TableData>
+                )
+              case 'staked':
+                return (
+                  <TableData key={key}>
+                    {props.staked.staked.gt(0) ? (
+                      <CellInner>
+                        <CellLayout hovered={hovered} label={t('Staked')}>
+                          {createElement(cells[key], { ...props[key], hovered })}
+                        </CellLayout>
+                      </CellInner>) : (
+                      <StakeAdd row={true} margin={true} width={'75%'} />)}
+                  </TableData>
+                )
+
               default:
                 return (
                   <TableData key={key}>

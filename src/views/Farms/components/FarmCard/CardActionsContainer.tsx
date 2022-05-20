@@ -85,7 +85,7 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
   return (
     <Action>
       {allowance <= new BigNumber(0) ? (
-        <StakeAdd />
+        <StakeAdd row={false} width={'70%'} />
       ) : (
         <>
         <ActionContainer style={{backgroundColor: theme.cardExpanded}}>

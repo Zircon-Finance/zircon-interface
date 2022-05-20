@@ -18,6 +18,7 @@ export interface AprProps {
   cakePrice: BigNumber
   originalValue: number
   hideButton?: boolean
+  left?: boolean
 }
 
 const Container = styled.div`
@@ -44,6 +45,7 @@ const AprWrapper = styled.div`
 
 const Apr: React.FC<AprProps> = ({
   value,
+  left,
   pid,
   lpLabel,
   lpSymbol,
@@ -79,7 +81,7 @@ const Apr: React.FC<AprProps> = ({
     </Container>
   ) : (
     <Container>
-      <AprWrapper>{originalValue}%</AprWrapper>
+      <AprWrapper style={left ? {textAlign: 'right'} : null}>{originalValue}%</AprWrapper>
     </Container>
   )
 }

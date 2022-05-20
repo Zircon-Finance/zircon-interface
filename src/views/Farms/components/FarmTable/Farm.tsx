@@ -1,11 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 // import { useFarmUser } from '../../../../state/farms/hooks'
-import { useTranslation } from 'react-i18next'
+// import { useTranslation } from 'react-i18next'
 
 import { Text } from '@pancakeswap/uikit'
 import { Token } from 'zircon-sdk'
-import { getBalanceNumber } from '../../../../utils/formatBalance'
+// import { getBalanceNumber } from '../../../../utils/formatBalance'
 import DoubleCurrencyLogo from '../../../../components/DoubleLogo'
 import { useFarmUser } from '../../../../state/farms/hooks'
 import { BadgeSmall } from '../../../../components/Header'
@@ -33,17 +33,17 @@ const TokenWrapper = styled.div`
 
 const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pid }) => {
   const { stakedBalance } = useFarmUser(pid)
-  const { t } = useTranslation()
-  const rawStakedBalance = getBalanceNumber(stakedBalance)
+  // const { t } = useTranslation()
+  // const rawStakedBalance = getBalanceNumber(stakedBalance)
 
   const handleRenderFarming = (): JSX.Element => {
-    if (rawStakedBalance) {
-      return (
-        <Text color="secondary" fontWeight={300} fontSize="12px" bold textTransform="uppercase">
-          {t('Farming')}
-        </Text>
-      )
-    }
+    // if (rawStakedBalance) {
+    //   return (
+    //     <Text color="secondary" fontWeight={300} fontSize="12px" bold textTransform="uppercase">
+    //       {t('Farming')}
+    //     </Text>
+    //   )
+    // }
 
     return null
   }

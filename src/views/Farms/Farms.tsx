@@ -62,9 +62,9 @@ const FlexLayout = styled.div`
   margin-top: 5px;
   & > * {
     min-width: 280px;
-    width: 25%;
+    width: 24.3%;
     margin-right: 8px;
-    margin-bottom: 32px;
+    margin-bottom: 8px;
   }
 `
 
@@ -143,7 +143,7 @@ const ViewControls = styled.div`
   }
 `
 const TableData = styled.td`
-  width: 15%;
+  width: 12%;
   position: relative;
 `
 const SelectedOptionDiv = styled.div`

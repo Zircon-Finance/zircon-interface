@@ -17,6 +17,7 @@ import DoubleCurrencyLogo from '../../../../../components/DoubleLogo'
 import { BadgeSmall } from '../../../../../components/Header'
 import { ButtonOutlined } from '../../../../../components/Button'
 import { ArrowIcon } from '../Details'
+import StakeAdd from '../../FarmCard/StakeAdd'
 
 export interface ActionPanelProps {
   apr: AprProps
@@ -47,7 +48,7 @@ const collapseAnimation = keyframes`
   }
 `
 
-const Container = styled.div<{ expanded }>`
+const Container = styled.div<{ expanded, staked }>`
   animation: ${({ expanded }) =>
     expanded
       ? css`
@@ -62,7 +63,8 @@ const Container = styled.div<{ expanded }>`
   width: 100%;
   padding: 5px;
   border-radius: 17px;
-  grid-template-columns: 22% 22% 22% auto 40px;
+  margin-top: 5px;
+  grid-template-columns: ${({ staked }) => staked ? '22% 22% 22% auto 40px' : '22% 44% auto 40px'};
   gap: 5px;
   position: relative;
 `
@@ -130,6 +132,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   expanded,
 }) => {
   const farm = details
+  const staked = details.userData.stakedBalance.gt(0)
 
   const { t } = useTranslation()
   const { quoteToken, token } = farm
@@ -145,7 +148,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const theme = useTheme()
 
   return (
-    <Container expanded={expanded}>
+    <Container expanded={expanded} staked={staked}>
       <QuarterContainer>
         <ActionContainer style={{padding: '0 10px'}}>
           <SpaceBetween>
@@ -167,7 +170,9 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
         </ActionContainer>
       </QuarterContainer>
 
-      <QuarterContainer>
+    {staked ? (
+      <>
+       <QuarterContainer>
         <ActionContainer>
           <HarvestAction {...farm} userDataReady={userDataReady} />
         </ActionContainer>
@@ -178,12 +183,19 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           <StakedAction {...farm} userDataReady={userDataReady} lpLabel={lpLabel} displayApr={apr.value} />
         </ActionContainer>
       </QuarterContainer>
+      </>
+    ) : (
+      <QuarterContainer>
+        <StakeAdd row={true} margin={false} width={'30%'} />
+      </QuarterContainer>
+    )}
+     
 
       <QuarterContainer style={{paddingLeft: '10px'}}>
         <ValueContainer>
           <ValueWrapper>
             <Text fontSize='13px' fontWeight={300}>{t('APR')}</Text>
-            <Apr {...apr} />
+            <Apr left={true} {...apr} />
           </ValueWrapper>
           <ValueWrapper>
             <Text fontSize='13px' fontWeight={300}>{t('Liquidity')}</Text>

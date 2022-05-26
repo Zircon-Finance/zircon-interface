@@ -62,6 +62,11 @@ export function useIsDarkMode(): boolean {
   return userDarkMode === null ? matchesDarkMode : userDarkMode
 }
 
+export function useGasPrice(): string {
+  const userGas = useSelector<AppState, AppState['user']['gasPrice']>((state) => state.user.gasPrice)
+  return userGas
+}
+
 export function useUserFarmStakedOnly(isActive: boolean): [boolean, (stakedOnly: boolean) => void] {
   const dispatch = useDispatch<AppDispatch>()
   const userFarmStakedOnly = useSelector<AppState, AppState['user']['userFarmStakedOnly']>((state) => {

@@ -66,10 +66,10 @@ const DepositModal: React.FC<DepositModalProps> = ({
   const interestBreakdown = getInterestBreakdown({
     principalInUSD: !lpTokensToStake.isNaN() ? usdToStake.toNumber() : 0,
     apr,
-    earningTokenPrice: cakePrice.toNumber(),
+    earningTokenPrice: 1,
   })
-
-  const annualRoi = cakePrice.times(interestBreakdown[3])
+  const two = new BigNumber(2)
+  const annualRoi = two.times(interestBreakdown[3])
   const annualRoiAsNumber = annualRoi.toNumber()
   const formattedAnnualRoi = formatNumber(annualRoiAsNumber, annualRoi.gt(10000) ? 0 : 2, annualRoi.gt(10000) ? 0 : 2)
 
@@ -89,7 +89,7 @@ const DepositModal: React.FC<DepositModalProps> = ({
   if (showRoiCalculator) {
     return (
       <RoiCalculatorModal
-        linkLabel={t('Get %symbol%', { symbol: lpLabel })}
+        linkLabel={t('Get ', lpLabel)}
         stakingTokenBalance={stakedBalance.plus(max)}
         stakingTokenSymbol={tokenName}
         stakingTokenPrice={lpPrice.toNumber()}
@@ -106,7 +106,7 @@ const DepositModal: React.FC<DepositModalProps> = ({
   }
 
   return (
-    <Modal title={t('Stake LP tokens')} onDismiss={onDismiss}>
+    <Modal style={{position: 'absolute', width: 'auto'}} title={t('Stake LP tokens')} onDismiss={onDismiss}>
       <ModalInput
         value={val}
         onSelectMax={handleSelectMax}
@@ -156,7 +156,7 @@ const DepositModal: React.FC<DepositModalProps> = ({
         </Button>
       </ModalActions>
       <LinkExternal href={addLiquidityUrl} style={{ alignSelf: 'center' }}>
-        {t('Get %symbol%', { symbol: tokenName })}
+        {t('Get ', tokenName )}
       </LinkExternal>
     </Modal>
   )

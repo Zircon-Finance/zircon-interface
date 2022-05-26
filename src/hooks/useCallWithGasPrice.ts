@@ -1,12 +1,12 @@
 import { useCallback } from 'react'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Contract, CallOverrides } from '@ethersproject/contracts'
-// import { useGasPrice } from '../state/user/hooks'
+import { useGasPrice } from '../state/user/hooks'
 import get from 'lodash/get'
 import * as Sentry from '@sentry/react'
 
 export function useCallWithGasPrice() {
-  const gasPrice = 'placeholder'
+  const gasPrice = useGasPrice()
 
   /**
    * Perform a contract call with a gas price returned from useGasPrice

@@ -6,7 +6,7 @@ import { ChainId } from 'zircon-sdk'
 // import { NextLinkFromReactRouter } from 'components/NextLink'
 import styled, { useTheme } from 'styled-components'
 import Page from '../../components/Layout/Page'
-import { useFarms, usePriceCakeBusd } from '../../state/farms/hooks'
+import { useFarms, usePollFarmsWithUserData, usePriceCakeBusd } from '../../state/farms/hooks'
 import useIntersectionObserver from '../../hooks/useIntersectionObserver'
 import { DeserializedFarm } from '../../state/types'
 import { useTranslation } from 'react-i18next'
@@ -156,6 +156,19 @@ const SelectedOptionDiv = styled.div`
   border-top-right-radius: 20px;
 `
 
+export const ModalContainer = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
 const NUMBER_OF_FARMS_VISIBLE = 12
 
 export const getDisplayApr = (cakeRewardsApr?: number, lpRewardsApr?: number) => {
@@ -187,7 +200,7 @@ const Farms: React.FC = ({ children }) => {
   const isInactive = pathname.includes('history')
   const isActive = !isInactive && !isArchived
 
-  // usePollFarmsWithUserData(isArchived)
+  usePollFarmsWithUserData()
 
   // Users with no wallet connected should see 0 as Earned amount
   // Connected users should see loading indicator until first userData has loaded
@@ -220,10 +233,10 @@ const Farms: React.FC = ({ children }) => {
         if (!farm.lpTotalInQuoteToken || !farm.quoteTokenPriceBusd) {
           return farm
         }
-        // const totalLiquidity = new BigNumber(farm.lpTotalInQuoteToken).times(farm.quoteTokenPriceBusd)
-        const totalLiquidity = new BigNumber(Math.floor(Math.random() * (10000 - 100 + 1)) + 100)
+        const totalLiquidity = new BigNumber(farm.lpTotalInQuoteToken)
+        // const totalLiquidity = new BigNumber(Math.floor(Math.random() * (10000 - 100 + 1)) + 100)
         const { cakeRewardsApr, lpRewardsApr } = isActive
-          ? getFarmApr(new BigNumber(farm.poolWeight), cakePrice, totalLiquidity, farm.lpAddresses[ChainId.MAINNET])
+          ? getFarmApr(new BigNumber(farm.poolWeight), cakePrice, totalLiquidity, farm.lpAddresses[ChainId.MOONBASE])
           : { cakeRewardsApr: 0, lpRewardsApr: 0 }
 
         return { ...farm, apr: cakeRewardsApr, lpRewardsApr, liquidity: totalLiquidity }
@@ -359,6 +372,7 @@ const Farms: React.FC = ({ children }) => {
       },
       details: farm,
     }
+    console.log('Liquidity', farm.liquidity)
     return row
   })
 

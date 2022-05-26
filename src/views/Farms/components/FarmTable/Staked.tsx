@@ -47,7 +47,7 @@ const Staked: React.FunctionComponent<StakedProps> = ({ staked, hovered }) => {
       <LiquidityWrapper>
         <Text textAlign={'left'}>{displayBalance}</Text>
         {staked > new BigNumber(0) && hovered && 
-        <div style={{position: 'absolute', left: '50px'}}>
+        <div style={{position: 'absolute', left: '50px', pointerEvents: 'none'}}>
           <IconButton style={{background: 'transparent', width: 'auto'}} variant="tertiary">
           <MinusIcon />
           </IconButton>

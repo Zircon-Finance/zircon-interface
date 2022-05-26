@@ -38,14 +38,16 @@ export default function useCatchTxError(): CatchTxErrorReturn {
       logError(error)
 
       if (tx) {
-        toastError(
-          t('Error'),
-          <ToastDescriptionWithTx txHash={tx.hash}>
-            {t('Please try again. Confirm the transaction and make sure you are paying enough gas!')}
-          </ToastDescriptionWithTx>,
-        )
+        // toastError(
+        //   t('Error'),
+        //   <ToastDescriptionWithTx txHash={tx.hash}>
+        //     {t('Please try again. Confirm the transaction and make sure you are paying enough gas!')}
+        //   </ToastDescriptionWithTx>,
+        // )
+        console.log('Error with tx', tx)
       } else {
-        toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
+        // toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
+        console.log('Second tx error')
       }
     },
     [t, toastError],

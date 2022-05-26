@@ -181,7 +181,13 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     // toggle: chainId !== 1287 ? '#311f48' : '#4A303E',
     toggle: {
       handleBackground: chainId !== 1287 ? '#644a7c' : '#4A303E',
-    }
+    },
+    modal: {
+      background: chainId !== 1287 ? '#2B1840' : '#361E2A' ,
+    },
+    zIndices: {
+      modal: 1000,
+    },
   }
 }
 

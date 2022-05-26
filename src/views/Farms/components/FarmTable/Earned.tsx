@@ -24,7 +24,7 @@ const Earned: React.FunctionComponent<EarnedPropsWithLoading> = ({ earnings, use
     return <div style={{position: 'relative', display: 'flex', alignItems: 'center'}}>
     <Amount earned={earnings}>{earnings.toLocaleString()}</Amount>
     { earnings > 0 && hovered && 
-      <div style={{position: 'absolute', left: '50px'}}>
+      <div style={{position: 'absolute', left: '50px', pointerEvents: 'none'}}>
         <IconButton style={{background: 'transparent', width: 'auto'}} variant="tertiary">
         <MinusIcon />
         </IconButton>

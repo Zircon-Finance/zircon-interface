@@ -1,3 +1,4 @@
+// import farmsConfig from '../../constants/farms'
 import type {
   UnknownAsyncThunkFulfilledAction,
   UnknownAsyncThunkPendingAction,
@@ -6,12 +7,8 @@ import type {
 } from '@reduxjs/toolkit/dist/matchers'
 import { createAsyncThunk, createSlice, isAnyOf } from '@reduxjs/toolkit'
 import stringify from 'fast-json-stable-stringify'
-import farmsConfig from '../../constants/farms'
-import isArchivedPid from '../../utils/farmHelpers'
 import type { AppState } from '../../state'
-import priceHelperLpsConfig from '../../constants/priceHelperLps'
 import fetchFarms from './fetchFarms'
-import getFarmsPrices from './getFarmsPrices'
 import {
   fetchFarmUserEarnings,
   fetchFarmUserAllowances,
@@ -21,176 +18,41 @@ import {
 import { SerializedFarmsState, SerializedFarm } from '../types'
 import { fetchMasterChefFarmPoolLength } from './fetchMasterChefData'
 import { resetUserState } from '../global/actions'
-import { Token } from 'zircon-sdk'
+import { ChainId, Token } from 'zircon-sdk'
 
-// const noAccountFarmConfig = farmsConfig.map((farm) => ({
-//   ...farm,
-//   userData: {
-//     allowance: '0',
-//     tokenBalance: '0',
-//     stakedBalance: '0',
-//     earnings: '0',
-//   },
-// }))
+const { MOONBASE } = ChainId
+
+
+const farmsConfig = [
+  {
+    pid: 2,
+    lpSymbol: 'PLUT-SAT LP',
+    lpAddresses: {
+      97: '0x88b236730bBf3761fc9f78356eaA9ec28514975a',
+      56: '0x88b236730bBf3761fc9f78356eaA9ec28514975a',
+    },
+    token: new Token(MOONBASE, '0x4c945cD20DD13168BC87f30D55f12dC26512ca33', 18, 'PLUT', 'Pluto'),
+    quoteToken: new Token(MOONBASE, '0xe75F9ae61926FF1d27d16403C938b4cd15c756d5', 18, 'SAT', 'Saturn'),
+    isCommunity: true,
+  },
+]
+
+const noAccountFarmConfig = farmsConfig.map((farm) => ({
+  ...farm,
+  userData: {
+    allowance: '0',
+    tokenBalance: '0',
+    stakedBalance: '0',
+    earnings: '0',
+  },
+}))
 
 const initialState: SerializedFarmsState = {
-  data: [{
-    pid: 438,
-    lpSymbol: 'UNS-ERTH LP',
-    lpAddresses: {
-      97: '',
-      56: '0x37Ff7D4459ad96E0B01275E5efffe091f33c2CAD',
-    },
-    token: new Token(1,'0x37Ff7D4459ad96E0B01275E5efffe091f33c2CAD',18, 'UNS', 'Uranus'),
-    quoteToken: new Token(1,'0x365c3F921b2915a480308D0b1C04aEF7B99c2876',18, 'ERTH', 'Earth'),
-    isCommunity: false,
-    userData: {
-      stakedBalance: '0',
-      earnings: '0',
-      allowance: '0',
-      tokenBalance: '0',
-      },
-    multiplier: '2X',
-    dual: {
-      rewardPerBlock: 2,
-      earnLabel: 'test',
-      endBlock: 5,
-    },
-    quoteTokenPriceBusd: 'quoteTokenPriceBusd',
-    tokenPriceBusd: 'tokenPriceBusd',
-  },
-  {
-    pid: 428,
-    lpSymbol: 'JUP-MARS LP',
-    lpAddresses: {
-      97: '',
-      56: '0x37Ff7D4459ad96E0B01275E5efffe091f33c2CAD',
-    },
-    token: new Token(1,'0x37Ff7D4459ad96E0B01275E5efffe091f33c2CAD',18, 'JUP', 'Jupiter'),
-    quoteToken: new Token(1,'0x365c3F921b2915a480308D0b1C04aEF7B99c2876',18, 'MARS', 'Mars'),
-    isCommunity: false,
-    userData: {
-      stakedBalance: '134',
-      earnings: '11436728837278978789',
-      allowance: '32',
-      tokenBalance: '112.4',
-      },
-    multiplier: '4X',
-    dual: {
-      rewardPerBlock: 2,
-      earnLabel: 'test',
-      endBlock: 5,
-    },
-    quoteTokenPriceBusd: 'quoteTokenPriceBusd',
-    tokenPriceBusd: 'tokenPriceBusd',
-  },
-  {
-    pid: 458,
-    lpSymbol: 'JUP-PLUT LP',
-    lpAddresses: {
-      97: '',
-      56: '0x37Ff7D4459ad96E0B01275E5efffe091f33c2CAD',
-    },
-    token: new Token(1,'0x37Ff7D4459ad96E0B01275E5efffe091f33c2CAD',18, 'JUP', 'Jupiter'),
-    quoteToken: new Token(1,'0x365c3F921b2915a480308D0b1C04aEF7B99c2876',18, 'PLUT', 'Pluto'),
-    isCommunity: false,
-    userData: {
-      stakedBalance: '225',
-      earnings: '9753987458934758345',
-      allowance: '1112',
-      tokenBalance: '2343.2',
-      },
-    multiplier: '5X',
-    dual: {
-      rewardPerBlock: 2,
-      earnLabel: 'test',
-      endBlock: 5,
-    },
-    quoteTokenPriceBusd: 'quoteTokenPriceBusd',
-    tokenPriceBusd: 'tokenPriceBusd',
-  },
-  {
-    pid: 4114,
-    lpSymbol: 'MERC-MARS LP',
-    lpAddresses: {
-      97: '',
-      56: '0x37Ff7D4459ad96E0B01275E5efffe091f33c2CAD',
-    },
-    token: new Token(1,'0x37Ff7D4459ad96E0B01275E5efffe091f33c2CAD',18, 'MERC', 'Mercury'),
-    quoteToken: new Token(1,'0x365c3F921b2915a480308D0b1C04aEF7B99c2876',18, 'MARS', 'Mars'),
-    isCommunity: false,
-    userData: {
-      stakedBalance: '0',
-      earnings: '0',
-      allowance: '0',
-      tokenBalance: '0',
-      },
-    multiplier: '2X',
-    dual: {
-      rewardPerBlock: 2,
-      earnLabel: 'test',
-      endBlock: 5,
-    },
-    quoteTokenPriceBusd: 'quoteTokenPriceBusd',
-    tokenPriceBusd: 'tokenPriceBusd',
-  },
-  {
-    pid: 432,
-    lpSymbol: 'NEPT-PLUT LP',
-    lpAddresses: {
-      97: '',
-      56: '0x37Ff7D4459ad96E0B01275E5efffe091f33c2CAD',
-    },
-    token: new Token(1,'0x37Ff7D4459ad96E0B01275E5efffe091f33c2CAD',18, 'NEPT', 'Neptune'),
-    quoteToken: new Token(1,'0x365c3F921b2915a480308D0b1C04aEF7B99c2876',18, 'PLUT', 'Pluto'),
-    isCommunity: false,
-    userData: {
-      stakedBalance: '117',
-      earnings: '1188293902991828829',
-      allowance: '422',
-      tokenBalance: '1221',
-      },
-    multiplier: '2X',
-    dual: {
-      rewardPerBlock: 2,
-      earnLabel: 'test',
-      endBlock: 5,
-    },
-    quoteTokenPriceBusd: 'quoteTokenPriceBusd',
-    tokenPriceBusd: 'tokenPriceBusd',
-  },
-  {
-    pid: 411,
-    lpSymbol: 'VEN-ERTH LP',
-    lpAddresses: {
-      97: '',
-      56: '0x37Ff7D4459ad96E0B01275E5efffe091f33c2CAD',
-    },
-    token: new Token(1,'0x37Ff7D4459ad96E0B01275E5efffe091f33c2CAD',18, 'VEN', 'Venus'),
-    quoteToken: new Token(1,'0x365c3F921b2915a480308D0b1C04aEF7B99c2876',18, 'ERTH', 'Earth'),
-    isCommunity: false,
-    userData: {
-      stakedBalance: '782',
-      earnings: '188291882919829',
-      allowance: '112221',
-      tokenBalance: '1221',
-      },
-    multiplier: '2X',
-    dual: {
-      rewardPerBlock: 2,
-      earnLabel: 'test',
-      endBlock: 5,
-    },
-    quoteTokenPriceBusd: 'quoteTokenPriceBusd',
-    tokenPriceBusd: 'tokenPriceBusd',
-  },
-  ],
+  data: noAccountFarmConfig,
   loadArchivedFarmsData: false,
-  userDataLoaded: true,
+  userDataLoaded: false,
   loadingKeys: {},
 }
-
-export const nonArchivedFarms = farmsConfig.filter(({ pid }) => !isArchivedPid(pid))
 
 // Async thunks
 export const fetchFarmsPublicDataAsync = createAsyncThunk<
@@ -204,18 +66,15 @@ export const fetchFarmsPublicDataAsync = createAsyncThunk<
   async (pids) => {
     const poolLength = await fetchMasterChefFarmPoolLength()
     const farmsToFetch = farmsConfig.filter((farmConfig) => pids.includes(farmConfig.pid))
-    const farmsCanFetch = farmsToFetch.filter((f) => poolLength.gt(f.pid))
-
-    // Add price helper farms
-    const farmsWithPriceHelpers = farmsCanFetch.concat(priceHelperLpsConfig)
-
-    const farms = await fetchFarms(farmsWithPriceHelpers)
-    const farmsWithPrices = getFarmsPrices(farms)
+    
+    const farms = await fetchFarms(farmsToFetch)
 
     // Filter out price helper LP config farms
-    const farmsWithoutHelperLps = farmsWithPrices.filter((farm: SerializedFarm) => {
+    const farmsWithoutHelperLps = farms.filter((farm: SerializedFarm) => {
       return farm.pid || farm.pid === 0
     })
+    console.log('Farm data from fetchFarmsPublicDataAsync', farmsWithoutHelperLps)
+
     return [farmsWithoutHelperLps, poolLength.toNumber()]
   },
   {
@@ -253,8 +112,12 @@ export const fetchFarmUserDataAsync = createAsyncThunk<
     const userFarmAllowances = await fetchFarmUserAllowances(account, farmsCanFetch)
     const userFarmTokenBalances = await fetchFarmUserTokenBalances(account, farmsCanFetch)
     const userStakedBalances = await fetchFarmUserStakedBalances(account, farmsCanFetch)
+    console.log('userStakedBalances', userStakedBalances)
     const userFarmEarnings = await fetchFarmUserEarnings(account, farmsCanFetch)
-
+    console.log('userFarmEarnings', userFarmEarnings)
+    farmsCanFetch.map((farmAllowance, index) => {
+      console.log('Balance token at index',userFarmTokenBalances[index], index)
+    })
     return userFarmAllowances.map((farmAllowance, index) => {
       return {
         pid: farmsCanFetch[index].pid,

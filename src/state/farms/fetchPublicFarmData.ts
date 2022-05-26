@@ -1,7 +1,7 @@
 import erc20 from '../../constants/abis/erc20.json'
 import chunk from 'lodash/chunk'
 import { getAddress, getMasterChefAddress } from '../../utils/addressHelpers'
-import { multicallv2 } from '../../utils/multicall'
+import multicall from '../../utils/multicall'
 import { SerializedFarm } from '../types'
 import { SerializedFarmConfig } from '../../constants/types'
 
@@ -47,7 +47,9 @@ const fetchFarmCalls = (farm: SerializedFarm) => {
 
 export const fetchPublicFarmsData = async (farms: SerializedFarmConfig[]): Promise<any[]> => {
   const farmCalls = farms.flatMap((farm) => fetchFarmCalls(farm))
+  console.log('calls', farmCalls)
   const chunkSize = farmCalls.length / farms.length
-  const farmMultiCallResult = await multicallv2(erc20, farmCalls)
+  const farmMultiCallResult = await multicall(erc20, farmCalls)
+  console.log('Multicall result', farmMultiCallResult)
   return chunk(farmMultiCallResult, chunkSize)
 }

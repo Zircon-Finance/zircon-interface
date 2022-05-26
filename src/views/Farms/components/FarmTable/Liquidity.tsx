@@ -1,17 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
 import { 
-  IconButton,
-  Skeleton,
-  // HelpIcon, 
+  HelpIcon, 
   Text, useTooltip } from '@pancakeswap/uikit'
 import { useTranslation } from 'react-i18next'
 import BigNumber from 'bignumber.js'
-import PlusIcon from '../PlusIcon'
+// import PlusIcon from '../PlusIcon'
 
-// const ReferenceElement = styled.div`
-//   display: inline-block;
-// `
+const ReferenceElement = styled.div`
+  display: inline-block;
+`
 
 export interface LiquidityProps {
   liquidity: BigNumber
@@ -35,14 +33,14 @@ const Container = styled.div`
 `
 
 const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered }) => {
-  const displayLiquidity = liquidity && liquidity.gt(0) ? (
-      `$${Number(liquidity).toLocaleString(undefined, { maximumFractionDigits: 0 })}`
-    ) : (
-      <Skeleton width={60} />
-    )
+  // const displayLiquidity = liquidity && liquidity.gt(0) ? (
+  //     `$${Number(liquidity).toLocaleString(undefined, { maximumFractionDigits: 0 })}` 
+  //   ) : (
+  //     <Skeleton width={60} />
+  //   )
   const { t } = useTranslation()
   const { 
-    // targetRef, 
+    targetRef, 
     tooltip, tooltipVisible } = useTooltip(
     t('Total value of the funds in this farm’s liquidity pool'),
     { placement: 'top-end', tooltipOffset: [20, 10] },
@@ -51,17 +49,17 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
   return (
     <Container>
       <LiquidityWrapper>
-        <Text>{displayLiquidity}</Text>
-        { liquidity.gt(0) && hovered && 
-        <div style={{position: 'absolute', left: '60px'}}>
+        <Text>{'displayLiquidity'}</Text>
+        {/* { liquidity.gt(0) && hovered && 
+        <div style={{position: 'absolute', left: '60px', pointerEvents: 'none'}}>
           <IconButton style={{background: 'transparent', width: 'auto'}} variant="tertiary">
           <PlusIcon />
           </IconButton>
-        </div>}
+        </div>} */}
       </LiquidityWrapper>
-      {/* <ReferenceElement ref={targetRef}>
+      <ReferenceElement ref={targetRef}>
         <HelpIcon color="textSubtle" />
-      </ReferenceElement> */}
+      </ReferenceElement>
       {tooltipVisible && tooltip}
     </Container>
   )

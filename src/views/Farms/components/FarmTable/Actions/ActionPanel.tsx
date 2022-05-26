@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react'
+import React, { Dispatch, SetStateAction, useCallback, useState } from 'react'
 import styled, { keyframes, css, useTheme } from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { Text } from '@pancakeswap/uikit'
@@ -18,6 +18,19 @@ import { BadgeSmall } from '../../../../../components/Header'
 import { ButtonOutlined } from '../../../../../components/Button'
 import { ArrowIcon } from '../Details'
 import StakeAdd from '../../FarmCard/StakeAdd'
+import DepositModal from '../../DepositModal'
+import { useFarmUser, useLpTokenPrice } from '../../../../../state/farms/hooks'
+import useStakeFarms from '../../../hooks/useStakeFarms'
+import useToast from '../../../../../hooks/useToast'
+import useCatchTxError from '../../../../../hooks/useCatchTxError'
+import { ToastDescriptionWithTx } from '../../../../../components/Toast'
+import { fetchFarmUserDataAsync } from '../../../../../state/farms'
+import { useDispatch } from 'react-redux'
+import { useWeb3React } from '@web3-react/core'
+import BigNumber from 'bignumber.js'
+import useApproveFarm from '../../../hooks/useApproveFarm'
+import { useERC20 } from '../../../../../hooks/useContract'
+import { ModalContainer } from '../../../Farms'
 
 export interface ActionPanelProps {
   apr: AprProps
@@ -123,6 +136,8 @@ export const SpaceBetween = styled.div`
   justify-content: space-between;
 `
 
+// const ModalBehind = {position: 'absolute', top: '0', left: '0', width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)', zIndex: '1'}
+
 const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   details,
   apr,
@@ -147,7 +162,66 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const info = `/info/pool/${lpAddress}`
   const theme = useTheme()
 
+  const lpPrice = useLpTokenPrice(farm.lpSymbol)
+  const { tokenBalance, stakedBalance } = useFarmUser(farm.pid)
+  const [showModal, setShowModal] = useState(false)
+
+  const { onStake } = useStakeFarms(farm.pid)
+  const { toastSuccess } = useToast()
+  const { account } = useWeb3React()
+  const dispatch = useDispatch()
+  const { allowance } = farm.userData || {}
+  const isApproved = account && allowance && allowance.isGreaterThan(0)
+  const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
+  const lpContract = useERC20(lpAddress)
+  const { onApprove } = useApproveFarm(lpContract)
+
+
+  const handleApprove = useCallback(async () => {
+    const receipt = await fetchWithCatchTxError(() => {
+      return onApprove()
+    })
+    if (receipt?.status) {
+      toastSuccess(t('Contract Enabled'), <ToastDescriptionWithTx txHash={receipt.transactionHash} />)
+      dispatch(fetchFarmUserDataAsync({ account, pids: [farm.pid] }))
+    }
+  }, [onApprove, dispatch, account, farm.pid, t, toastSuccess, fetchWithCatchTxError])
+
+  const handleStake = async (amount: string) => {
+    const receipt = await fetchWithCatchTxError(() => {
+      return onStake(amount)
+    })
+    if (receipt?.status) {
+      toastSuccess(
+        `${t('Staked')}!`,
+        <ToastDescriptionWithTx txHash={receipt.transactionHash}>
+          {t('Your funds have been staked in the farm')}
+        </ToastDescriptionWithTx>,
+      )
+      dispatch(fetchFarmUserDataAsync({ account, pids: [farm.pid] }))
+    }
+  }
+
   return (
+    <>
+    {showModal && (
+      <ModalContainer>
+        <DepositModal
+        max={tokenBalance}
+        lpPrice={lpPrice}
+        lpLabel={lpLabel}
+        apr={farm.apr}
+        onDismiss={() => setShowModal(false)}
+        displayApr={'111'}
+        stakedBalance={stakedBalance}
+        onConfirm={handleStake}
+        tokenName={farm.lpSymbol}
+        multiplier={farm.multiplier}
+        addLiquidityUrl={'Placeholder'}
+        cakePrice={112 as unknown as BigNumber}
+      />
+      </ModalContainer>
+    )}
     <Container expanded={expanded} staked={staked}>
       <QuarterContainer>
         <ActionContainer style={{padding: '0 10px'}}>
@@ -185,8 +259,14 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
       </QuarterContainer>
       </>
     ) : (
-      <QuarterContainer>
-        <StakeAdd row={true} margin={false} width={'30%'} />
+      <QuarterContainer >
+        {isApproved ? (
+        <StakeAdd clickAction={() => {setShowModal(true)}} row={true} margin={false} width={'30%'} />)
+        : (
+          <ButtonOutlined mt='10px' mb='50px' width="100%" disabled={pendingTx} onClick={handleApprove}>
+            {t('Enable Contract')}
+          </ButtonOutlined>
+        )}
       </QuarterContainer>
     )}
      
@@ -209,6 +289,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
       </QuarterContainer>
 
     </Container>
+    </>
   )
 }
 

@@ -19,6 +19,7 @@ import RiskHealthIcon from '../../../../components/RiskHealthIcon'
 import TrendingHealthIcon from '../../../../components/TrendingHealthIcon'
 import QuestionMarkIcon from '../../../../components/QuestionMarkIcon'
 import StakeAdd from '../FarmCard/StakeAdd'
+import { useFarmUser } from '../../../../state/farms/hooks'
 // import { useFarmUser } from '../../../../state/farms/hooks'
 
 export interface RowProps {
@@ -113,14 +114,10 @@ const collapseAnimation = keyframes`
 const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const [isVisible, setIsVisible] = useState(false)
   const { 
-    // details,
-     userDataReady,
-    //farm 
+    details,
+     userDataReady, 
   } = props
-  console.log('props', props)
-  // const { stakedBalance } = useFarmUser(farm.pid)  
-  // const hasStakedAmount = !!useFarmUser(details.pid).stakedBalance.toNumber()
-  const hasStakedAmount = false;
+  const hasStakedAmount = !!useFarmUser(details.pid).stakedBalance.toNumber()
   const [actionPanelExpanded, setActionPanelExpanded] = useState(hasStakedAmount)
   const [hovered, setHovered] = useState(false)
   const shouldRenderChild = actionPanelExpanded

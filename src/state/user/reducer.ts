@@ -20,8 +20,10 @@ import {
   FarmStakedOnly,
   FarmFilter,
   updateuserFarmsFilterAnchorFloat,
-  FarmFilterAnchorFloat
+  FarmFilterAnchorFloat,
+  updateGasPrice
 } from './actions'
+import { GAS_PRICE_GWEI } from '../../utils/getGasPrice'
 
 const currentTimestamp = () => new Date().getTime()
 
@@ -58,6 +60,7 @@ export interface UserState {
   userFarmsViewMode: ViewMode
   userFarmsFilterPylonClassic: FarmFilter
   userFarmsFilterAnchorFloat: FarmFilterAnchorFloat
+  gasPrice: string
 }
 
 function pairKey(token0Address: string, token1Address: string) {
@@ -76,7 +79,8 @@ export const initialState: UserState = {
   userFarmStakedOnly: FarmStakedOnly.ON_FINISHED,
   userFarmsViewMode: ViewMode.TABLE,
   userFarmsFilterPylonClassic: FarmFilter.PYLON,
-  userFarmsFilterAnchorFloat: FarmFilterAnchorFloat.ALL
+  userFarmsFilterAnchorFloat: FarmFilterAnchorFloat.ALL,
+  gasPrice: GAS_PRICE_GWEI.default,
 }
 
 export default createReducer(initialState, builder =>
@@ -148,6 +152,9 @@ export default createReducer(initialState, builder =>
         state.pairs[chainId][pairKey(serializedPair.token0.address, serializedPair.token1.address)] = serializedPair
       }
       state.timestamp = currentTimestamp()
+    })
+    .addCase(updateGasPrice, (state, action) => {
+      state.gasPrice = action.payload.gasPrice
     })
     .addCase(removeSerializedPair, (state, { payload: { chainId, tokenAAddress, tokenBAddress } }) => {
       if (state.pairs[chainId]) {

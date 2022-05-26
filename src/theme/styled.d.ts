@@ -106,6 +106,12 @@ export interface Colors {
   darkColors: {
     [key: string]: string
   }
+  modal: {
+    [key: string]: string
+  }
+  zIndices: {
+    [key: string]: number
+  }
 }
 
 export interface Grids {

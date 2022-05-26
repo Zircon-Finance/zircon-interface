@@ -1,5 +1,5 @@
-import React from 'react'
-import { Button, IconButton, Skeleton, Text, useModal } from '@pancakeswap/uikit'
+import React, { useState } from 'react'
+import { Button, IconButton, Skeleton, Text } from '@pancakeswap/uikit'
 import { useWeb3React } from '@web3-react/core'
 // import ConnectWalletButton from 'components/ConnectWalletButton'
 import { ToastDescriptionWithTx } from '../../../../../components/Toast'
@@ -13,7 +13,7 @@ import useCatchTxError from '../../../../../hooks/useCatchTxError'
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { fetchFarmUserDataAsync } from '../../../../../state/farms'
-import { useFarmUser, useLpTokenPrice, usePriceCakeBusd } from '../../../../../state/farms/hooks'
+import { useFarmUser, useLpTokenPrice } from '../../../../../state/farms/hooks'
 import styled, { useTheme } from 'styled-components'
 import { getAddress } from '../../../../../utils/addressHelpers'
 // import getLiquidityUrlPathParts from 'utils/getLiquidityUrlPathParts'
@@ -27,6 +27,8 @@ import { FarmWithStakedValue } from '../../types'
 import StakedLP from '../../StakedLP'
 import PlusIcon from '../../PlusIcon'
 import MinusIcon from '../../MinusIcon'
+import BigNumber from 'bignumber.js'
+import { ModalContainer } from '../../../Farms'
 
 const IconButtonWrapper = styled.div`
   display: flex;
@@ -62,7 +64,8 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
   const { onUnstake } = useUnstakeFarms(pid)
   // const router = useRouter()
   const lpPrice = useLpTokenPrice(lpSymbol)
-  const cakePrice = usePriceCakeBusd()
+  const [showModalDeposit, setshowModalDeposit] = useState(false)
+  const [showModalWithdraw, setshowModalWithdraw] = useState(false)
 
   const isApproved = account && allowance && allowance.isGreaterThan(0)
 
@@ -72,7 +75,6 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
   //   quoteTokenAddress: quoteToken.address,
   //   tokenAddress: token.address,
   // })
-  const addLiquidityUrl = 'placeholder'
   // `${BASE_ADD_LIQUIDITY_URL}/${liquidityUrlPathParts}`
 
   const handleStake = async (amount: string) => {
@@ -104,25 +106,6 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
       dispatch(fetchFarmUserDataAsync({ account, pids: [pid] }))
     }
   }
-
-  const [onPresentDeposit] = useModal(
-    <DepositModal
-      max={tokenBalance}
-      lpPrice={lpPrice}
-      lpLabel={lpLabel}
-      apr={apr}
-      displayApr={displayApr}
-      stakedBalance={stakedBalance}
-      onConfirm={handleStake}
-      tokenName={lpSymbol}
-      multiplier={multiplier}
-      addLiquidityUrl={addLiquidityUrl}
-      cakePrice={cakePrice}
-    />,
-  )
-  const [onPresentWithdraw] = useModal(
-    <WithdrawModal max={stakedBalance} onConfirm={handleUnstake} tokenName={lpSymbol} />,
-  )
   const lpContract = useERC20(lpAddress)
   const dispatch = useDispatch()
   const { onApprove } = useApproveFarm(lpContract)
@@ -156,6 +139,32 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
   if (isApproved) {
     if (stakedBalance.gt(0)) {
       return (
+        <>
+        {(showModalDeposit || showModalWithdraw) && 
+          <ModalContainer>
+        
+      
+        {showModalDeposit &&
+          <DepositModal
+          max={tokenBalance}
+          lpPrice={lpPrice}
+          lpLabel={lpLabel}
+          apr={apr}
+          onDismiss={() => setshowModalDeposit(false)}
+          displayApr={'111'}
+          stakedBalance={stakedBalance}
+          onConfirm={handleStake}
+          tokenName={lpSymbol}
+          multiplier={multiplier}
+          addLiquidityUrl={'Placeholder'}
+          cakePrice={112 as unknown as BigNumber}/>
+        }
+
+        {showModalWithdraw &&
+          <WithdrawModal max={stakedBalance} onConfirm={handleUnstake} tokenName={lpSymbol} onDismiss={()=>setshowModalWithdraw(false)} />
+        }
+        </ModalContainer>
+        }
         <ActionContainer style={{background: theme.bg6}}>
           <ActionTitles>
             <Text fontSize="13px">
@@ -173,13 +182,13 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
               quoteTokenAmountTotal={quoteTokenAmountTotal}
             />
             <IconButtonWrapper>
-            <IconButton style={{background: 'transparent', width: 'auto'}} variant="tertiary" onClick={onPresentWithdraw} mr="6px">
+            <IconButton style={{background: 'transparent', width: 'auto'}} variant="tertiary" onClick={()=>setshowModalWithdraw(true)} mr="6px">
               <MinusIcon />
             </IconButton>
               <IconButton
                 style={{background: 'transparent', width: 'auto', border:'none'}} 
                 variant="secondary"
-                onClick={onPresentDeposit}
+                onClick={()=>{setshowModalDeposit(true)}}
                 disabled={['history', 'archived'].some((item) => window.location.pathname.includes(item))}
               >
                 <PlusIcon/>
@@ -187,6 +196,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
             </IconButtonWrapper>
           </ActionContent>
         </ActionContainer>
+        </>
       )
     }
 
@@ -203,7 +213,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
         <ActionContent>
           <Button
             width="100%"
-            onClick={onPresentDeposit}
+            onClick={()=>{setshowModalDeposit(true)}}
             variant="secondary"
             disabled={['history', 'archived'].some((item) => window.location.pathname.includes(item))}
           >

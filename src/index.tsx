@@ -1,3 +1,4 @@
+import { ModalProvider } from '@pancakeswap/uikit'
 import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
 import 'inter-ui'
 import React, { StrictMode } from 'react'
@@ -54,6 +55,7 @@ ReactDOM.render(
           <Updaters />
           <ThemeProvider>
             <ThemedGlobalStyle />
+            <ModalProvider />
             <App />
           </ThemeProvider>
         </Provider>

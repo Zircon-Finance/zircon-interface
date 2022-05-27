@@ -1,11 +1,9 @@
-import React, { useCallback, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useCallback, useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { TransactionReceipt, TransactionResponse } from '@ethersproject/providers'
-import { ToastDescriptionWithTx } from '../components/Toast'
 
-import useToast from '../hooks/useToast'
 import { logError, isUserRejected } from '../utils/sentry'
+import { useAddPopup } from '../state/application/hooks'
 
 export type TxResponse = TransactionResponse | null
 
@@ -29,28 +27,37 @@ const isGasEstimationError = (err: TxError): boolean => err?.data?.code === -320
 
 export default function useCatchTxError(): CatchTxErrorReturn {
   const { library } = useWeb3React()
-  const { t } = useTranslation()
-  const { toastError, toastSuccess } = useToast()
   const [loading, setLoading] = useState(false)
+  const addPopup = useAddPopup()
 
   const handleNormalError = useCallback(
     (error, tx?: TxResponse) => {
       logError(error)
 
       if (tx) {
-        // toastError(
-        //   t('Error'),
-        //   <ToastDescriptionWithTx txHash={tx.hash}>
-        //     {t('Please try again. Confirm the transaction and make sure you are paying enough gas!')}
-        //   </ToastDescriptionWithTx>,
-        // )
-        console.log('Error with tx', tx)
+        addPopup(
+          {
+            txn: {
+              hash: tx.hash,
+              success: false,
+              summary: 'Please try again. Confirm the transaction and make sure you are paying enough gas!'
+            }
+          },
+          tx.hash
+        )
       } else {
-        // toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
-        console.log('Second tx error')
-      }
+        addPopup(
+          {
+            txn: {
+              hash: tx.hash,
+              success: false,
+              summary: 'Please try again. Confirm the transaction and make sure you are paying enough gas!'
+            }
+          },
+          tx.hash
+        )      }
     },
-    [t, toastError],
+    [addPopup],
   )
 
   const fetchWithCatchTxError = useCallback(
@@ -67,8 +74,16 @@ export default function useCatchTxError(): CatchTxErrorReturn {
          */
         tx = await callTx()
 
-        toastSuccess(`${t('Transaction Submitted')}!`, <ToastDescriptionWithTx txHash={tx.hash} />)
-
+        addPopup(
+          {
+            txn: {
+              hash: tx.hash,
+              success: true,
+              summary: 'Transaction submitted'
+            }
+          },
+          tx.hash
+        )
         const receipt = await tx.wait()
 
         return receipt
@@ -111,13 +126,17 @@ export default function useCatchTxError(): CatchTxErrorReturn {
 
                   if (isRevertedError) reason = reason.substring(indexInfo + REVERT_STR.length)
 
-                  toastError(
-                    'Failed',
-                    <ToastDescriptionWithTx txHash={tx.hash}>
-                      {isRevertedError
-                        ? `Transaction failed with error: ${reason}`
-                        : 'Transaction failed. For detailed error message:'}
-                    </ToastDescriptionWithTx>,
+
+                  addPopup(
+                    {
+                      txn: {
+                        hash: tx.hash,
+                        success: false,
+                        summary: isRevertedError ? `Transaction failed with error: ${reason}`
+                          : 'Transaction failed. For detailed error message:'
+                      }
+                    },
+                    tx.hash
                   )
                 }
               })
@@ -129,7 +148,7 @@ export default function useCatchTxError(): CatchTxErrorReturn {
 
       return null
     },
-    [handleNormalError, toastError, library, toastSuccess, t],
+    [handleNormalError, addPopup, library],
   )
 
   return {

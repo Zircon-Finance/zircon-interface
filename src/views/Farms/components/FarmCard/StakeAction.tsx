@@ -2,9 +2,7 @@ import React from 'react'
 import { useWeb3React } from '@web3-react/core'
 import styled from 'styled-components'
 import { Button, Flex, IconButton, useModal } from '@pancakeswap/uikit'
-import useToast from '../../../../hooks/useToast'
 import useCatchTxError from '../../../../hooks/useCatchTxError'
-import { ToastDescriptionWithTx } from '../../../../components/Toast'
 import { useTranslation } from 'react-i18next'
 
 import { useDispatch } from 'react-redux'
@@ -18,6 +16,7 @@ import { FarmWithStakedValue } from '../types'
 import StakedLP from '../StakedLP'
 import MinusIcon from '../MinusIcon'
 import PlusIcon from '../PlusIcon'
+import { useAddPopup } from '../../../../state/application/hooks'
 
 interface FarmCardActionsProps extends FarmWithStakedValue {
   lpLabel?: string
@@ -51,19 +50,24 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
   const dispatch = useDispatch()
   const { account } = useWeb3React()
   const lpPrice = useLpTokenPrice(lpSymbol)
-  const { toastSuccess } = useToast()
   const { fetchWithCatchTxError } = useCatchTxError()
+  const addPopup = useAddPopup()
 
   const handleStake = async (amount: string) => {
     const receipt = await fetchWithCatchTxError(() => {
       return onStake(amount)
     })
+
     if (receipt?.status) {
-      toastSuccess(
-        `${t('Staked')}!`,
-        <ToastDescriptionWithTx txHash={receipt.transactionHash}>
-          {t('Your funds have been staked in the farm')}
-        </ToastDescriptionWithTx>,
+      addPopup(
+        {
+          txn: {
+            hash: receipt.transactionHash,
+            success: receipt.status === 1,
+            summary: 'Stake succesful'
+          }
+        },
+        receipt.transactionHash
       )
       dispatch(fetchFarmUserDataAsync({ account, pids: [pid] }))
     }
@@ -74,12 +78,6 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
       return onUnstake(amount)
     })
     if (receipt?.status) {
-      toastSuccess(
-        `${t('Unstaked')}!`,
-        <ToastDescriptionWithTx txHash={receipt.transactionHash}>
-          {t('Your earnings have also been harvested to your wallet')}
-        </ToastDescriptionWithTx>,
-      )
       dispatch(fetchFarmUserDataAsync({ account, pids: [pid] }))
     }
   }

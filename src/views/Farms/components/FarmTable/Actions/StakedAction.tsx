@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { Button, IconButton, Skeleton, Text } from '@pancakeswap/uikit'
 import { useWeb3React } from '@web3-react/core'
 // import ConnectWalletButton from 'components/ConnectWalletButton'
-import { ToastDescriptionWithTx } from '../../../../../components/Toast'
 // import { BASE_ADD_LIQUIDITY_URL } from 'config'
 import { useTranslation } from 'react-i18next'
 
@@ -29,6 +28,7 @@ import PlusIcon from '../../PlusIcon'
 import MinusIcon from '../../MinusIcon'
 import BigNumber from 'bignumber.js'
 import { ModalContainer } from '../../../Farms'
+import { useAddPopup } from '../../../../../state/application/hooks'
 
 const IconButtonWrapper = styled.div`
   display: flex;
@@ -66,6 +66,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
   const lpPrice = useLpTokenPrice(lpSymbol)
   const [showModalDeposit, setshowModalDeposit] = useState(false)
   const [showModalWithdraw, setshowModalWithdraw] = useState(false)
+  const addPopup = useAddPopup()
 
   const isApproved = account && allowance && allowance.isGreaterThan(0)
 
@@ -82,12 +83,16 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
       return onStake(amount)
     })
     if (receipt?.status) {
-      toastSuccess(
-        `${t('Staked')}!`,
-        <ToastDescriptionWithTx txHash={receipt.transactionHash}>
-          {t('Your funds have been staked in the farm')}
-        </ToastDescriptionWithTx>,
-      )
+      addPopup(
+        {
+          txn: {
+            hash: receipt.transactionHash,
+            success: receipt.status === 1,
+            summary: 'Staked '+amount+' '+token.symbol+"-"+quoteToken.symbol+' LP to farm',
+          }
+        },
+        receipt.transactionHash
+      )  
       dispatch(fetchFarmUserDataAsync({ account, pids: [pid] }))
     }
   }
@@ -97,12 +102,16 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
       return onUnstake(amount)
     })
     if (receipt?.status) {
-      toastSuccess(
-        `${t('Unstaked')}!`,
-        <ToastDescriptionWithTx txHash={receipt.transactionHash}>
-          {t('Your earnings have also been harvested to your wallet')}
-        </ToastDescriptionWithTx>,
-      )
+      addPopup(
+        {
+          txn: {
+            hash: receipt.transactionHash,
+            success: receipt.status === 1,
+            summary: 'Removed '+amount+' '+token.symbol+"-"+quoteToken.symbol+' LP from farm',
+          }
+        },
+        receipt.transactionHash
+      )  
       dispatch(fetchFarmUserDataAsync({ account, pids: [pid] }))
     }
   }
@@ -115,7 +124,16 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
       return onApprove()
     })
     if (receipt?.status) {
-      toastSuccess(t('Contract Enabled'), <ToastDescriptionWithTx txHash={receipt.transactionHash} />)
+      addPopup(
+        {
+          txn: {
+            hash: receipt.transactionHash,
+            success: true,
+            summary: 'Contract enabled!',
+          }
+        },
+        receipt.transactionHash
+      )  
       dispatch(fetchFarmUserDataAsync({ account, pids: [pid] }))
     }
   }, [onApprove, dispatch, account, pid, t, toastSuccess, fetchWithCatchTxError])

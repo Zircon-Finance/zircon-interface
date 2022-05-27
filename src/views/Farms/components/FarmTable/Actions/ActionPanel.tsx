@@ -80,6 +80,7 @@ const Container = styled.div<{ expanded, staked }>`
   grid-template-columns: ${({ staked }) => staked ? '22% 22% 22% auto 40px' : '22% 44% auto 40px'};
   gap: 5px;
   position: relative;
+  z-index: 100;
 `
 
 export const StyledLinkExternal = styled.a`
@@ -136,7 +137,6 @@ export const SpaceBetween = styled.div`
   justify-content: space-between;
 `
 
-// const ModalBehind = {position: 'absolute', top: '0', left: '0', width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)', zIndex: '1'}
 
 const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   details,
@@ -218,7 +218,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
         tokenName={farm.lpSymbol}
         multiplier={farm.multiplier}
         addLiquidityUrl={'Placeholder'}
-        cakePrice={112 as unknown as BigNumber}
+        cakePrice={1 as unknown as BigNumber}
       />
       </ModalContainer>
     )}
@@ -263,7 +263,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
         {isApproved ? (
         <StakeAdd clickAction={() => {setShowModal(true)}} row={true} margin={false} width={'30%'} />)
         : (
-          <ButtonOutlined mt='10px' mb='50px' width="100%" disabled={pendingTx} onClick={handleApprove}>
+          <ButtonOutlined m="auto" width="50%" disabled={pendingTx} onClick={handleApprove}>
             {t('Enable Contract')}
           </ButtonOutlined>
         )}

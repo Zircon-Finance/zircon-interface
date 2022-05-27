@@ -1,10 +1,11 @@
 import BigNumber from 'bignumber.js'
 import React, { useCallback, useMemo, useState } from 'react'
-import { Button, Modal } from '@pancakeswap/uikit'
+import { Modal } from '@pancakeswap/uikit'
 import { ModalActions, ModalInput } from '../../../components/ModalFarm'
 import { useTranslation } from 'react-i18next'
 
 import { getFullDisplayBalance } from '../../../utils/formatBalance'
+import { ButtonOutlined, ButtonPrimary } from '../../../components/Button'
 
 interface WithdrawModalProps {
   max: BigNumber
@@ -38,7 +39,7 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ onConfirm, onDismiss, max
   }, [fullBalance, setVal])
 
   return (
-    <Modal style={{position: 'absolute', width: 'auto'}} title={t('Unstake LP tokens')} onDismiss={onDismiss}>
+    <Modal style={{position: 'absolute', width: 'auto', maxWidth: '360px'}} title={t('Unstake LP tokens')} onDismiss={onDismiss}>
       <ModalInput
         onSelectMax={handleSelectMax}
         onChange={handleChange}
@@ -48,10 +49,10 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ onConfirm, onDismiss, max
         inputTitle={t('Unstake')}
       />
       <ModalActions>
-        <Button variant="secondary" onClick={onDismiss} width="100%" disabled={pendingTx}>
+        <ButtonOutlined mt={'15px'} height={'60px'} onClick={onDismiss} width="100%" disabled={pendingTx}>
           {t('Cancel')}
-        </Button>
-        <Button
+        </ButtonOutlined>
+        <ButtonPrimary mt={'15px'}
           disabled={pendingTx || !valNumber.isFinite() || valNumber.eq(0) || valNumber.gt(fullBalanceNumber)}
           onClick={async () => {
             setPendingTx(true)
@@ -62,7 +63,7 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ onConfirm, onDismiss, max
           width="100%"
         >
           {pendingTx ? t('Confirming') : t('Confirm')}
-        </Button>
+        </ButtonPrimary>
       </ModalActions>
     </Modal>
   )

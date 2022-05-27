@@ -163,10 +163,21 @@ export const ModalContainer = styled.div`
   width: 100%;
   height: 100%;
   background-color: rgba(0,0,0,0.5);
-  z-index: 1;
+  z-index: 9999;
   display: flex;
   justify-content: center;
   align-items: center;
+  h2 {
+    color: ${({ theme }) => theme.text1};
+    font-size: 18px;
+    font-weight: 300;
+  }
+  div {
+    border-bottom: none;
+  }
+  svg {
+    fill: #fff;
+  }
 `
 
 const NUMBER_OF_FARMS_VISIBLE = 12

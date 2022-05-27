@@ -1,9 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Text, Button, Input, InputProps, Flex, Link } from '@pancakeswap/uikit'
+import { Text, InputProps, Flex } from '@pancakeswap/uikit'
 import { useTranslation } from 'react-i18next'
 import { parseUnits } from '@ethersproject/units'
 import { formatBigNumber } from '../../utils/formatBalance'
+import { ButtonOutlined } from '../Button'
 
 interface ModalInputProps {
   max: string
@@ -32,21 +33,26 @@ const StyledTokenInput = styled.div<InputProps>`
   border-radius: 16px;
   box-shadow: ${getBoxShadow};
   color: ${({ theme }) => theme.text1};
-  padding: 8px 16px 8px 0;
   width: 100%;
+  padding: 12px;
 `
 
-const StyledInput = styled(Input)`
+const StyledInput = styled.input`
   box-shadow: none;
-  width: 60px;
-  margin: 0 8px;
-  padding: 0 8px;
   border: none;
+  font-size: 24px;
+  background: transparent;
+  width: 60%;
+  color: ${({ theme }) => theme.text1};
+  border-radius: 5px;
+  &:focus {
+    outline: 1px solid ${({ theme }) => theme.bg1};
+  }
 `
 
-const StyledErrorMessage = styled(Text)`
-  position: absolute;
-  bottom: -22px;
+export const StyledErrorMessage = styled(Text)`
+  text-align: center;
+  margin-top: 15px;
   a {
     display: inline;
   }
@@ -77,12 +83,8 @@ const ModalInput: React.FC<ModalInputProps> = ({
   return (
     <div style={{ position: 'relative' }}>
       <StyledTokenInput isWarning={isBalanceZero}>
-        <Flex justifyContent="space-between" pl="16px">
-          <Text fontSize="14px">{inputTitle}</Text>
-          <Text fontSize="14px">{t('Balance: ', displayBalance(max))}</Text>
-        </Flex>
-        <Flex alignItems="flex-end" justifyContent="space-around">
-          <StyledInput
+        <Flex style={{fontSize: '24px'}} justifyContent="space-between" mb={'20px'}>
+        <StyledInput
             pattern={`^[0-9]*[.,]?[0-9]{0,${decimals}}$`}
             inputMode="decimal"
             step="any"
@@ -91,20 +93,15 @@ const ModalInput: React.FC<ModalInputProps> = ({
             placeholder="0"
             value={value}
           />
-          <Button scale="sm" onClick={onSelectMax} mr="8px">
-            {t('Max')}
-          </Button>
           <Text fontSize="16px">{symbol}</Text>
         </Flex>
+        <Flex alignItems="flex-end" justifyContent="space-between">
+        <Text fontSize="13px">{'Balance: '+ displayBalance(max)}</Text>
+          <ButtonOutlined width={'55px'} height={'30px'} padding={'0px'} onClick={onSelectMax}>
+            {t('MAX')}
+          </ButtonOutlined>
+        </Flex>
       </StyledTokenInput>
-      {isBalanceZero && (
-        <StyledErrorMessage fontSize="14px" color="failure">
-          {t('No tokens to stake')}:{' '}
-          <Link fontSize="14px" bold={false} href={addLiquidityUrl} external color="failure">
-            {t('Get ', symbol)}
-          </Link>
-        </StyledErrorMessage>
-      )}
     </div>
   )
 }

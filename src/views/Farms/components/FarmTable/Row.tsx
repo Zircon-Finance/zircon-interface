@@ -71,6 +71,7 @@ animation: ${({ expanded }) =>
   width: 100%;
   background: ${({ theme }) => theme.cardSmall};
   border-radius: 17px;
+  z-index: 1;
 `
 
 const EarnedMobileCell = styled.td`
@@ -118,7 +119,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
      userDataReady, 
   } = props
   const hasStakedAmount = !!useFarmUser(details.pid).stakedBalance.toNumber()
-  const [actionPanelExpanded, setActionPanelExpanded] = useState(hasStakedAmount)
+  const [actionPanelExpanded, setActionPanelExpanded] = useState(false)
   const [hovered, setHovered] = useState(false)
   const shouldRenderChild = actionPanelExpanded
   const { t } = useTranslation()

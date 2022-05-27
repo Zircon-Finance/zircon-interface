@@ -204,7 +204,6 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   }*/,
 }
 
-export { default as farmsConfig } from './farms'
 export { default as poolsConfig } from './pools'
 
 export const FAST_INTERVAL = 10000

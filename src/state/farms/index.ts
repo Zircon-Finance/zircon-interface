@@ -3,9 +3,9 @@ import type {
   UnknownAsyncThunkFulfilledAction,
   UnknownAsyncThunkPendingAction,
   UnknownAsyncThunkRejectedAction,
-  // eslint-disable-next-line import/no-unresolved
 } from '@reduxjs/toolkit/dist/matchers'
 import { createAsyncThunk, createSlice, isAnyOf } from '@reduxjs/toolkit'
+import { farms as farmsConfig } from '../../constants/farms'
 import stringify from 'fast-json-stable-stringify'
 import type { AppState } from '../../state'
 import fetchFarms from './fetchFarms'
@@ -18,24 +18,8 @@ import {
 import { SerializedFarmsState, SerializedFarm } from '../types'
 import { fetchMasterChefFarmPoolLength } from './fetchMasterChefData'
 import { resetUserState } from '../global/actions'
-import { ChainId, Token } from 'zircon-sdk'
 
-const { MOONBASE } = ChainId
-
-
-const farmsConfig = [
-  {
-    pid: 2,
-    lpSymbol: 'PLUT-SAT LP',
-    lpAddresses: {
-      97: '0x88b236730bBf3761fc9f78356eaA9ec28514975a',
-      56: '0x88b236730bBf3761fc9f78356eaA9ec28514975a',
-    },
-    token: new Token(MOONBASE, '0x4c945cD20DD13168BC87f30D55f12dC26512ca33', 18, 'PLUT', 'Pluto'),
-    quoteToken: new Token(MOONBASE, '0xe75F9ae61926FF1d27d16403C938b4cd15c756d5', 18, 'SAT', 'Saturn'),
-    isCommunity: true,
-  },
-]
+console.log('farmsConfig', farmsConfig)
 
 const noAccountFarmConfig = farmsConfig.map((farm) => ({
   ...farm,
@@ -64,6 +48,7 @@ export const fetchFarmsPublicDataAsync = createAsyncThunk<
 >(
   'farms/fetchFarmsPublicDataAsync',
   async (pids) => {
+    console.log('pids')
     const poolLength = await fetchMasterChefFarmPoolLength()
     const farmsToFetch = farmsConfig.filter((farmConfig) => pids.includes(farmConfig.pid))
     
@@ -112,12 +97,7 @@ export const fetchFarmUserDataAsync = createAsyncThunk<
     const userFarmAllowances = await fetchFarmUserAllowances(account, farmsCanFetch)
     const userFarmTokenBalances = await fetchFarmUserTokenBalances(account, farmsCanFetch)
     const userStakedBalances = await fetchFarmUserStakedBalances(account, farmsCanFetch)
-    console.log('userStakedBalances', userStakedBalances)
     const userFarmEarnings = await fetchFarmUserEarnings(account, farmsCanFetch)
-    console.log('userFarmEarnings', userFarmEarnings)
-    farmsCanFetch.map((farmAllowance, index) => {
-      console.log('Balance token at index',userFarmTokenBalances[index], index)
-    })
     return userFarmAllowances.map((farmAllowance, index) => {
       return {
         pid: farmsCanFetch[index].pid,

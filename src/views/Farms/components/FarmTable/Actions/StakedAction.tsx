@@ -156,7 +156,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
           onConfirm={handleStake}
           tokenName={lpSymbol}
           multiplier={multiplier}
-          addLiquidityUrl={'Placeholder'}
+          addLiquidityUrl={'#/add-pro/'+token.address+'/'+quoteToken.address}
           cakePrice={112 as unknown as BigNumber}/>
         }
 

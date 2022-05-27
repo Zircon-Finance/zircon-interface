@@ -1,15 +1,15 @@
 import { useWeb3React } from '@web3-react/core'
 import BigNumber from 'bignumber.js'
-// import farmsConfig from '../../constants/farms'
 import { useFastRefreshEffect, useSlowRefreshEffect } from '../../hooks/useRefreshEffect'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchFarmsPublicDataAsync, fetchFarmUserDataAsync } from '.'
 import { DeserializedFarm, DeserializedFarmsState, DeserializedFarmUserData, SerializedFarm, State } from '../types'
 
-import { farmsConfig } from '../../constants'
+import { farms as farmsConfig } from '../../constants/farms'
 import { BIG_ZERO } from '../../utils/bigNumber'
 import { getBalanceAmount } from '../../utils/formatBalance'
 import { deserializeToken } from '../user/hooks'
+// import { Pylon } from 'zircon-sdk'
 
 const deserializeFarmUserData = (farm: SerializedFarm): DeserializedFarmUserData => {
   return {

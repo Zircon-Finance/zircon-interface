@@ -24,6 +24,8 @@ import { useDarkModeManager } from '../../state/user/hooks';
 
 const HeaderFrame = styled.div`
   width: 100%;
+  position: relative;
+  z-index: 2;
   @media (min-width: 700px) {
     flex-direction: column;
     display: flex;
@@ -34,7 +36,6 @@ const HeaderFrame = styled.div`
     top: 0;
     position: absolute;
     overflow-x: hidden;
-    z-index: 2;
     ${({ theme }) => theme.mediaWidth.upToExtraSmall`
       padding: 12px 0 0 0;
       width: calc(100%);
@@ -191,7 +192,7 @@ export default function Header() {
             </div>
           </div>
       } */}
-      <RowBetween style={{ alignItems: 'flex-start', flexWrap: width > 700 ? 'nowrap' : 'wrap' }} padding="1rem 1rem 0 1rem">
+      <RowBetween style={{ alignItems: 'flex-start', flexWrap: width > 700 ? 'nowrap' : 'wrap'}} padding="1rem 1rem 0 1rem">
         {width > 700 ?
         <>
         <HeaderElement>
@@ -204,7 +205,7 @@ export default function Header() {
         </HeaderElement>
         {width > 1100 ? 
         <>
-        <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : location.pathname === '/pool' ? 'pool' : 'farm'} />
+        <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : location.pathname === '/farm' ? 'farm' : 'pool'} />
           <HeaderElement>
             <button  style={{border: 'none', 
               outline: 'none', 

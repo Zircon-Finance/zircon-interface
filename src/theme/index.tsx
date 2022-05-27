@@ -73,7 +73,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     // hover button
     bg12: chainId !== 1287 ? '#5B4874' : '#634d58',
     // button purple
-    bg13: '#5F299F',
+    bg13: chainId !== 1287 ? '#5F299F' : '#361E2A',
     bg14: chainId !== 1287 ? '#4E386B' : '#523946',
     //specialty colors
     modalBG: 'rgba(0,0,0,.425)',
@@ -129,7 +129,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
       backgroundDisabled: "#E9EAEB",
       backgroundAlt: chainId !== 1287 ? '#311f48' : '#4A303E',
       backgroundAlt2: "rgba(255, 255, 255, 0.7)",
-      cardBorder: "#311f48",
+      cardBorder: chainId !== 1287 ? '#311f48' : '#361E2A',
       contrast: "#191326",
       dropdown: "#F6F6F6",
       dropdownDeep: "#EEEEEE",
@@ -174,7 +174,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
       active: "0px 0px 0px 1px #0098A1, 0px 0px 4px 8px rgba(31, 199, 212, 0.4)",
       success: "0px 0px 0px 1px #31D0AA, 0px 0px 0px 4px rgba(49, 208, 170, 0.2)",
       warning: "0px 0px 0px 1px #ED4B9E, 0px 0px 0px 4px rgba(237, 75, 158, 0.2)",
-      focus: "0px 0px 0px 1px #311f48, 0px 0px 0px 4px rgba(118, 69, 217, 0.6)",
+      focus: chainId !== 1287 ? "0px 0px 0px 1px #311f48, 0px 0px 0px 4px rgba(118, 69, 217, 0.6)" : "0px 0px 0px 1px #4A303E, 0px 0px 0px 4px rgba(74, 48, 62, 0.4)",
       inset: "inset 0px 2px 2px -1px rgba(74, 74, 104, 0.1)",
       tooltip: "0px 0px 2px rgba(0, 0, 0, 0.2), 0px 4px 12px -8px rgba(14, 14, 44, 0.1)",
     },

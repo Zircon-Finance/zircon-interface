@@ -17,13 +17,14 @@ const ModalActions: React.FC = ({ children }) => {
 
 const StyledModalActions = styled.div`
   align-items: center;
+  justify-content: space-between;
   background-color: ${(props) => props.theme.bg1}00;
   display: flex;
   margin: 0;
 `
 
 const StyledModalAction = styled.div`
-  flex: 1;
+  width: 49%;
 `
 
 export default ModalActions

@@ -22,7 +22,6 @@ const LiquidityWrapper = styled.div`
   text-align: right;
   display: flex;
   align-items: center;
-  position: relative;
   ${({ theme }) => theme.mediaQueries.lg} {
     text-align: left;
     margin-right: 0;
@@ -35,9 +34,10 @@ const Container = styled.div`
 `
 
 const Staked: React.FunctionComponent<StakedProps> = ({ staked, hovered }) => {
+  console.log('staked', staked)
   const displayBalance =
   staked && staked.gt(0) ? (
-      `$${Number(staked).toLocaleString(undefined, { maximumFractionDigits: 0 })}`
+      `$${Number(staked).toLocaleString( 'en-US', { maximumFractionDigits: 2 } )}`
     ) : (
       <Skeleton width={60} />
     )
@@ -45,7 +45,7 @@ const Staked: React.FunctionComponent<StakedProps> = ({ staked, hovered }) => {
   return (
     <Container>
       <LiquidityWrapper>
-        <Text textAlign={'left'}>{displayBalance}</Text>
+        <Text style={{position: 'relative'}} textAlign={'left'}>{displayBalance}</Text>
         {staked > new BigNumber(0) && hovered && 
         <div style={{position: 'absolute', left: '50px', pointerEvents: 'none'}}>
           <IconButton style={{background: 'transparent', width: 'auto'}} variant="tertiary">

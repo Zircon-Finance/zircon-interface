@@ -9,10 +9,6 @@ export type TranslatableText =
         [key: string]: string | number
       }
     }
-export interface Address {
-  97?: string
-  56: string
-}
 
 export interface SerializedToken {
   chainId: number
@@ -66,7 +62,7 @@ export enum PoolCategory {
 interface FarmConfigBaseProps {
   pid: number
   lpSymbol: string
-  lpAddresses: Address
+  lpAddress: string
   multiplier?: string
   isCommunity?: boolean
   dual?: {
@@ -92,7 +88,7 @@ export interface PoolDeployedBlockNumber {
 
 interface PoolConfigBaseProps {
   sousId: number
-  contractAddress: Address
+  contractAddress: string
   poolCategory: PoolCategory
   tokenPerBlock: string
   sortOrder?: number

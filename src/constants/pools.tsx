@@ -18,10 +18,7 @@ const pools: SerializedPoolConfig[] = [
     sousId: 0,
     stakingToken: null,
     earningToken: null,
-    contractAddress: {
-      97: '0x1d32c2945C8FDCBc7156c553B7cEa4325a17f4f9',
-      56: '0x73feaa1eE314F8c655E354234017bE2193C9E24E',
-    },
+    contractAddress: '0x1d32c2945C8FDCBc7156c553B7cEa4325a17f4f9',
     poolCategory: PoolCategory.CORE,
     harvest: true,
     tokenPerBlock: '10',
@@ -32,10 +29,7 @@ const pools: SerializedPoolConfig[] = [
     sousId: 235,
     stakingToken: null,
     earningToken: null,
-    contractAddress: {
-      97: '',
-      56: '0x2b8751B7141Efa7a9917f9C6fea2CEA071af5eE7',
-    },
+    contractAddress: '0x2b8751B7141Efa7a9917f9C6fea2CEA071af5eE7',
     poolCategory: PoolCategory.CORE,
     harvest: true,
     sortOrder: 999,

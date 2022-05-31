@@ -1,9 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import styled from 'styled-components'
-import { Button, Flex, IconButton, useModal } from '@pancakeswap/uikit'
+import { Flex, IconButton } from '@pancakeswap/uikit'
 import useCatchTxError from '../../../../hooks/useCatchTxError'
-import { useTranslation } from 'react-i18next'
 
 import { useDispatch } from 'react-redux'
 import { fetchFarmUserDataAsync } from '../../../../state/farms'
@@ -17,6 +16,9 @@ import StakedLP from '../StakedLP'
 import MinusIcon from '../MinusIcon'
 import PlusIcon from '../PlusIcon'
 import { useAddPopup } from '../../../../state/application/hooks'
+import { ModalContainer } from '../../Farms'
+import StakeAdd from './StakeAdd'
+import { useTransactionAdder } from '../../../../state/transactions/hooks'
 
 interface FarmCardActionsProps extends FarmWithStakedValue {
   lpLabel?: string
@@ -42,7 +44,6 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
   tokenAmountTotal,
   quoteTokenAmountTotal,
 }) => {
-  const { t } = useTranslation()
   const { onStake } = useStakeFarms(pid)
   const { onUnstake } = useUnstakeFarms(pid)
   const { tokenBalance, stakedBalance } = useFarmUser(pid)
@@ -52,10 +53,18 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
   const lpPrice = useLpTokenPrice(lpSymbol)
   const { fetchWithCatchTxError } = useCatchTxError()
   const addPopup = useAddPopup()
+  const [showModalDeposit, setShowModalDeposit] = useState(false)
+  const [showModalWithdraw, setShowModalWithdraw] = useState(false)
+  const addTransaction = useTransactionAdder()
 
   const handleStake = async (amount: string) => {
     const receipt = await fetchWithCatchTxError(() => {
-      return onStake(amount)
+      return onStake(amount).then((response) => {
+        addTransaction(response, {
+          summary: `Stake ${token.symbol}-${quoteToken.symbol} tokens`
+        })
+        return response
+      })
     })
 
     if (receipt?.status) {
@@ -75,49 +84,30 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
 
   const handleUnstake = async (amount: string) => {
     const receipt = await fetchWithCatchTxError(() => {
-      return onUnstake(amount)
+      return onUnstake(amount).then((response) => {
+        addTransaction(response, {
+          summary: 'Unstake '+ amount+ ' ' + token.symbol+ "-" +quoteToken.symbol+' tokens'
+        })
+        return response
+      })
     })
     if (receipt?.status) {
       dispatch(fetchFarmUserDataAsync({ account, pids: [pid] }))
     }
   }
 
-  const [onPresentDeposit] = useModal(
-    <DepositModal
-      max={tokenBalance}
-      stakedBalance={stakedBalance}
-      onConfirm={handleStake}
-      tokenName={lpSymbol}
-      multiplier={multiplier}
-      lpPrice={lpPrice}
-      lpLabel={lpLabel}
-      apr={apr}
-      displayApr={displayApr}
-      addLiquidityUrl={addLiquidityUrl}
-      cakePrice={cakePrice}
-    />,
-  )
-  const [onPresentWithdraw] = useModal(
-    <WithdrawModal max={stakedBalance} onConfirm={handleUnstake} tokenName={lpSymbol} />,
-  )
-
   const renderStakingButtons = () => {
     return stakedBalance.eq(0) ? (
-      <Button
-        onClick={onPresentDeposit}
-        disabled={['history', 'archived'].some((item) => window.location.pathname.includes(item))}
-      >
-        {t('Stake LP')}
-      </Button>
+      <StakeAdd row={true} />
     ) : (
       <IconButtonWrapper>
-        <IconButton style={{background: 'transparent', width: 'auto'}} variant="tertiary" onClick={onPresentWithdraw} mr="6px">
+        <IconButton style={{background: 'transparent', width: 'auto'}} variant="tertiary" onClick={()=>setShowModalWithdraw(true)} mr="6px">
           <MinusIcon />
         </IconButton>
         <IconButton
           style={{background: 'transparent', width: 'auto'}} 
           variant="tertiary"
-          onClick={onPresentDeposit}
+          onClick={()=>setShowModalDeposit(true)}
           disabled={['history', 'archived'].some((item) => window.location.pathname.includes(item))}
         >
           <PlusIcon/>
@@ -127,6 +117,31 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
   }
 
   return (
+    <>
+        {(showModalDeposit || showModalWithdraw) && 
+          <ModalContainer>
+        
+        {showModalDeposit &&
+          <DepositModal
+          max={tokenBalance}
+          lpPrice={lpPrice}
+          lpLabel={lpLabel}
+          apr={apr}
+          onDismiss={() => setShowModalDeposit(false)}
+          displayApr={'111'}
+          stakedBalance={stakedBalance}
+          onConfirm={handleStake}
+          tokenName={lpSymbol}
+          multiplier={multiplier}
+          addLiquidityUrl={'#/add-pro/'+token.address+'/'+quoteToken.address}
+          cakePrice={cakePrice}/>
+        }
+
+        {showModalWithdraw &&
+          <WithdrawModal max={stakedBalance} onConfirm={handleUnstake} tokenName={lpSymbol} onDismiss={()=>setShowModalWithdraw(false)} />
+        }
+        </ModalContainer>
+        }
     <Flex justifyContent="space-between" alignItems="center">
       <StakedLP
         stakedBalance={stakedBalance}
@@ -139,6 +154,7 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
       />
       {renderStakingButtons()}
     </Flex>
+    </>
   )
 }
 

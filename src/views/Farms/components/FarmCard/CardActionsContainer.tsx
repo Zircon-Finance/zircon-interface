@@ -1,15 +1,12 @@
 import React from 'react'
 import { Text } from '@pancakeswap/uikit'
-import { ToastDescriptionWithTx } from '../../../../components/Toast'
 import { useTranslation } from 'react-i18next'
 import { useERC20 } from '../../../../hooks/useContract'
-import useToast from '../../../../hooks/useToast'
 import useCatchTxError from '../../../../hooks/useCatchTxError'
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { fetchFarmUserDataAsync } from '../../../../state/farms'
 import styled, {useTheme} from 'styled-components'
-import { getAddress } from '../../../../utils/addressHelpers'
 import { FarmWithStakedValue } from '../types'
 import useApproveFarm from '../../hooks/useApproveFarm'
 import HarvestAction from './HarvestAction'
@@ -17,10 +14,12 @@ import StakeAction from './StakeAction'
 import StakeAdd from './StakeAdd'
 import BigNumber from 'bignumber.js'
 import { ButtonOutlined } from '../../../../components/Button'
+import { useAddPopup, useWalletModalToggle } from '../../../../state/application/hooks'
+import { useTransactionAdder } from '../../../../state/transactions/hooks'
 
 const Action = styled.div`
   padding: 0px;
-  height: 270px;
+  height: 230px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -45,13 +44,14 @@ interface FarmCardActionsProps {
 const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidityUrl, lpLabel, displayApr }) => {
   const { t } = useTranslation()
   const theme = useTheme()
-  const { toastSuccess } = useToast()
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
-  const { pid, lpAddresses } = farm
+  const { pid, lpAddress } = farm
   const { allowance, earnings } = farm.userData || {}
-  const lpAddress = getAddress(lpAddresses)
   const isApproved = account && allowance && allowance.isGreaterThan(0)
   const dispatch = useDispatch()
+  const addPopup = useAddPopup()
+  const addTransaction = useTransactionAdder()
+  const toggleWalletModal = useWalletModalToggle()
 
   const lpContract = useERC20(lpAddress)
 
@@ -59,13 +59,27 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
 
   const handleApprove = useCallback(async () => {
     const receipt = await fetchWithCatchTxError(() => {
-      return onApprove()
+      return onApprove().then(response => {
+        addTransaction(response, {
+          summary:  `Enable ${farm.token.symbol}-${farm.quoteToken.symbol} stake contract`
+        })
+        return response
+      })
     })
     if (receipt?.status) {
-      toastSuccess(t('Contract Enabled'), <ToastDescriptionWithTx txHash={receipt.transactionHash} />)
+      addPopup(
+        {
+          txn: {
+            hash: receipt.transactionHash,
+            success: true,
+            summary: 'Contract enabled!',
+          }
+        },
+        receipt.transactionHash
+      )
       dispatch(fetchFarmUserDataAsync({ account, pids: [pid] }))
     }
-  }, [onApprove, dispatch, account, pid, t, toastSuccess, fetchWithCatchTxError])
+  }, [onApprove, dispatch, account, pid, fetchWithCatchTxError, addPopup, addTransaction, farm.quoteToken.symbol, farm.token.symbol])
 
   const renderApprovalOrStakeButton = () => {
     return isApproved ? (
@@ -76,8 +90,8 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
           <StakeAction {...farm} lpLabel={lpLabel} addLiquidityUrl={addLiquidityUrl} displayApr={displayApr} />
         </ActionContainer>
     ) : (
-      <ButtonOutlined mt='10px' mb='50px' width="100%" disabled={pendingTx} onClick={handleApprove}>
-        {t('Enable Contract')}
+      <ButtonOutlined mt='10px' mb='50px' width="100%" disabled={pendingTx} onClick={account ? handleApprove : toggleWalletModal}>
+        {account ? 'Enable Contract' : 'Connect Wallet'}
       </ButtonOutlined>
     )
   }
@@ -85,7 +99,7 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
   return (
     <Action>
       {allowance <= new BigNumber(0) ? (
-        <StakeAdd row={false} width={'70%'} />
+        <StakeAdd disabled={!isApproved} row={false} width={'70%'} />
       ) : (
         <>
         <ActionContainer style={{backgroundColor: theme.cardExpanded}}>
@@ -95,7 +109,11 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
         <HarvestAction earnings={earnings} pid={pid} />
         </ActionContainer>
         </>)}
-      {!account ? <p>{'Connect wallet placeholder'}</p> : renderApprovalOrStakeButton()}
+      {!account ? 
+      <ButtonOutlined m="auto" mb='15px' width="100%" disabled={pendingTx} onClick={toggleWalletModal}>
+        {'Connect Wallet'}
+      </ButtonOutlined>
+       : renderApprovalOrStakeButton()}
     </Action>
   )
 }

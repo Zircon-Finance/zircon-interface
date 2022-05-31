@@ -13,17 +13,17 @@ export enum VaultKey {
 
 export const getAddress = (address: Address): string => {
   const chainId = NETWORK_CHAIN_ID
-  return address[chainId] ?? address[97] ?? address[56]
+  return address[chainId] ?? address
 }
 
 export const getMasterChefAddress = () => {
-  return getAddress(addresses.masterChef)
+  return addresses.masterChef
 }
 export const getMulticallAddress = () => {
-  return getAddress(addresses.multiCall)
+  return addresses.multiCall
 }
 export const getBunnyFactoryAddress = () => {
-  return getAddress(addresses.bunnyFactory)
+  return addresses.bunnyFactory
 }
 
 export const getVaultPoolAddress = (vaultKey: VaultKey) => {
@@ -34,8 +34,8 @@ export const getVaultPoolAddress = (vaultKey: VaultKey) => {
 }
 
 export const getCakeVaultAddress = () => {
-  return getAddress(addresses.cakeVault)
+  return addresses.cakeVault
 }
 export const getFarmAuctionAddress = () => {
-  return getAddress(addresses.farmAuction)
+  return addresses.farmAuction
 }

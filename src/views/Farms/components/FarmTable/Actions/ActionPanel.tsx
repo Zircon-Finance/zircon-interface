@@ -3,7 +3,6 @@ import styled, { keyframes, css, useTheme } from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { Text } from '@pancakeswap/uikit'
 // import getLiquidityUrlPathParts from 'utils/getLiquidityUrlPathParts'
-import { getAddress } from '../../../../../utils/addressHelpers'
 // import { getBscScanLink } from 'utils'
 import { FarmWithStakedValue } from '../../types'
 
@@ -21,9 +20,7 @@ import StakeAdd from '../../FarmCard/StakeAdd'
 import DepositModal from '../../DepositModal'
 import { useFarmUser, useLpTokenPrice } from '../../../../../state/farms/hooks'
 import useStakeFarms from '../../../hooks/useStakeFarms'
-import useToast from '../../../../../hooks/useToast'
 import useCatchTxError from '../../../../../hooks/useCatchTxError'
-import { ToastDescriptionWithTx } from '../../../../../components/Toast'
 import { fetchFarmUserDataAsync } from '../../../../../state/farms'
 import { useDispatch } from 'react-redux'
 import { useWeb3React } from '@web3-react/core'
@@ -31,6 +28,9 @@ import BigNumber from 'bignumber.js'
 import useApproveFarm from '../../../hooks/useApproveFarm'
 import { useERC20 } from '../../../../../hooks/useContract'
 import { ModalContainer } from '../../../Farms'
+import { useAddPopup, useWalletModalToggle } from '../../../../../state/application/hooks'
+import { Link } from 'react-router-dom'
+import { useTransactionAdder } from '../../../../../state/transactions/hooks'
 
 export interface ActionPanelProps {
   apr: AprProps
@@ -77,7 +77,7 @@ const Container = styled.div<{ expanded, staked }>`
   padding: 5px;
   border-radius: 17px;
   margin-top: 5px;
-  grid-template-columns: ${({ staked }) => staked ? '22% 22% 22% auto 40px' : '22% 44% auto 40px'};
+  grid-template-columns: ${({ staked }) => staked ? '22% 25% 25% auto 40px' : '22% 50% auto 40px'};
   gap: 5px;
   position: relative;
   z-index: 100;
@@ -122,6 +122,9 @@ const QuarterContainer = styled.div`
 
 const ValueContainer = styled.div`
   display: block;
+  a {
+    text-decoration: none;
+  }
 `
 
 const ValueWrapper = styled.div`
@@ -156,7 +159,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   //   quoteTokenAddress: quoteToken.address,
   //   tokenAddress: token.address,
   // })
-  const lpAddress = getAddress(farm.lpAddresses)
+  const lpAddress = farm.lpAddress
   const bsc = 'placeholder'
   // getBscScanLink(lpAddress, 'address')
   const info = `/info/pool/${lpAddress}`
@@ -165,9 +168,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const lpPrice = useLpTokenPrice(farm.lpSymbol)
   const { tokenBalance, stakedBalance } = useFarmUser(farm.pid)
   const [showModal, setShowModal] = useState(false)
-
   const { onStake } = useStakeFarms(farm.pid)
-  const { toastSuccess } = useToast()
   const { account } = useWeb3React()
   const dispatch = useDispatch()
   const { allowance } = farm.userData || {}
@@ -175,29 +176,55 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
   const lpContract = useERC20(lpAddress)
   const { onApprove } = useApproveFarm(lpContract)
-
+  const addPopup = useAddPopup()
+  const addTransaction = useTransactionAdder()
+  const toggleWalletModal = useWalletModalToggle()
 
   const handleApprove = useCallback(async () => {
     const receipt = await fetchWithCatchTxError(() => {
-      return onApprove()
+      return onApprove().then(response => {
+        addTransaction(response, {
+          summary: `Enable ${token.symbol}-${quoteToken.symbol} stake contract`
+        })
+        return response
+      })
     })
+
     if (receipt?.status) {
-      toastSuccess(t('Contract Enabled'), <ToastDescriptionWithTx txHash={receipt.transactionHash} />)
+      addPopup(
+        {
+          txn: {
+            hash: receipt.transactionHash,
+            success: true,
+            summary: 'Contract enabled!',
+          }
+        },
+        receipt.transactionHash
+      )      
       dispatch(fetchFarmUserDataAsync({ account, pids: [farm.pid] }))
     }
-  }, [onApprove, dispatch, account, farm.pid, t, toastSuccess, fetchWithCatchTxError])
+  }, [onApprove, dispatch, account, farm.pid, addPopup, fetchWithCatchTxError, addTransaction, quoteToken.symbol, token.symbol])
 
   const handleStake = async (amount: string) => {
     const receipt = await fetchWithCatchTxError(() => {
-      return onStake(amount)
+      return onStake(amount).then((response) => {
+        addTransaction(response, {
+          summary: `Stake ${token.symbol}-${quoteToken.symbol} tokens`
+        })
+        return response
+      })
     })
     if (receipt?.status) {
-      toastSuccess(
-        `${t('Staked')}!`,
-        <ToastDescriptionWithTx txHash={receipt.transactionHash}>
-          {t('Your funds have been staked in the farm')}
-        </ToastDescriptionWithTx>,
-      )
+      addPopup(
+        {
+          txn: {
+            hash: receipt.transactionHash,
+            success: receipt.status === 1,
+            summary: 'Staked '+amount+' '+token.symbol+"-"+quoteToken.symbol+' LP to farm',
+          }
+        },
+        receipt.transactionHash
+      )  
       dispatch(fetchFarmUserDataAsync({ account, pids: [farm.pid] }))
     }
   }
@@ -226,7 +253,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
       <QuarterContainer>
         <ActionContainer style={{padding: '0 10px'}}>
           <SpaceBetween>
-            <span>{token.name + '-' + quoteToken.name}</span>
+            <span style={{fontWeight: '300'}}>{token.symbol + '-' + quoteToken.symbol}</span>
             <DoubleCurrencyLogo currency0={token} currency1={quoteToken} size={25} />
           </SpaceBetween>
           <SpaceBetween>
@@ -263,8 +290,8 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
         {isApproved ? (
         <StakeAdd clickAction={() => {setShowModal(true)}} row={true} margin={false} width={'30%'} />)
         : (
-          <ButtonOutlined m="auto" width="50%" disabled={pendingTx} onClick={handleApprove}>
-            {t('Enable Contract')}
+          <ButtonOutlined m="auto" width="50%" disabled={pendingTx} onClick={account ? handleApprove : toggleWalletModal}>
+            {account ? 'Enable Contract' : 'Connect Wallet'}
           </ButtonOutlined>
         )}
       </QuarterContainer>
@@ -281,7 +308,9 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
             <Text fontSize='13px' fontWeight={300}>{t('Liquidity')}</Text>
             <Liquidity {...liquidity} />
           </ValueWrapper>
-          <ButtonOutlined style={{padding: '10px', fontSize: '13px'}}>{`Get ${token.name} - ${quoteToken.name} Anchor LP`}</ButtonOutlined>
+          <Link to={`/add-pro/${token.address}/${quoteToken.address}`}>
+            <ButtonOutlined style={{padding: '10px', fontSize: '13px'}}>{`Get ${token.name} - ${quoteToken.name} Anchor LP`}</ButtonOutlined>
+          </Link>
         </ValueContainer>
       </QuarterContainer>
       <QuarterContainer onClick={() => clickAction(false)} style={{justifyContent: 'center', alignItems: 'center', cursor: 'pointer'}}>

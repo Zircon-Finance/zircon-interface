@@ -8,12 +8,13 @@ interface StakeAddProps {
   width? : string
   clickAction? :  any
   onClick? : () => void
+  disabled? : boolean
 }
 
-const StakeAdd : React.FC<StakeAddProps> = ({clickAction, row, margin, width}) => {
+const StakeAdd : React.FC<StakeAddProps> = ({clickAction, row, margin, width, disabled}) => {
   return (
-    <div style={{paddingTop: row ? '0px' : '50px', display: 'flex', height: '100%'}} onClick={clickAction}>
-      <ButtonOutlined onClick={clickAction}
+    <div style={{display: 'flex', height: '100%', pointerEvents: disabled ? 'none' : 'auto'}} onClick={clickAction}>
+      <ButtonOutlined disabled={disabled} onClick={clickAction}
         style={{padding: row ? '0px' : null, width: width || '40%', margin: margin ? 'auto 0 auto 0' : 'auto'}}>
         <Flex justifyContent={'space-between'} flexDirection={row ? 'row' : 'column'} alignItems={'center'}>
         <svg width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -6,7 +6,6 @@ import { useWeb3React } from '@web3-react/core'
 import { useTranslation } from 'react-i18next'
 
 import { useERC20 } from '../../../../../hooks/useContract'
-import useToast from '../../../../../hooks/useToast'
 import useCatchTxError from '../../../../../hooks/useCatchTxError'
 // import { useRouter } from 'next/router'
 import { useCallback } from 'react'
@@ -14,7 +13,6 @@ import { useDispatch } from 'react-redux'
 import { fetchFarmUserDataAsync } from '../../../../../state/farms'
 import { useFarmUser, useLpTokenPrice } from '../../../../../state/farms/hooks'
 import styled, { useTheme } from 'styled-components'
-import { getAddress } from '../../../../../utils/addressHelpers'
 // import getLiquidityUrlPathParts from 'utils/getLiquidityUrlPathParts'
 import useApproveFarm from '../../../hooks/useApproveFarm'
 import useStakeFarms from '../../../hooks/useStakeFarms'
@@ -29,6 +27,7 @@ import MinusIcon from '../../MinusIcon'
 import BigNumber from 'bignumber.js'
 import { ModalContainer } from '../../../Farms'
 import { useAddPopup } from '../../../../../state/application/hooks'
+import { useTransactionAdder } from '../../../../../state/transactions/hooks'
 
 const IconButtonWrapper = styled.div`
   display: flex;
@@ -46,7 +45,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
   multiplier,
   lpSymbol,
   lpLabel,
-  lpAddresses,
+  lpAddress,
   quoteToken,
   token,
   userDataReady,
@@ -56,7 +55,6 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
   quoteTokenAmountTotal,
 }) => {
   const { t } = useTranslation()
-  const { toastSuccess } = useToast()
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
   const { account } = useWeb3React()
   const { allowance, tokenBalance, stakedBalance } = useFarmUser(pid)
@@ -67,10 +65,10 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
   const [showModalDeposit, setshowModalDeposit] = useState(false)
   const [showModalWithdraw, setshowModalWithdraw] = useState(false)
   const addPopup = useAddPopup()
+  const addTransaction = useTransactionAdder()
 
   const isApproved = account && allowance && allowance.isGreaterThan(0)
 
-  const lpAddress = getAddress(lpAddresses)
   // const liquidityUrlPathParts = 'placeholder'
   // getLiquidityUrlPathParts({
   //   quoteTokenAddress: quoteToken.address,
@@ -80,7 +78,12 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
 
   const handleStake = async (amount: string) => {
     const receipt = await fetchWithCatchTxError(() => {
-      return onStake(amount)
+      return onStake(amount).then((response) => {
+        addTransaction(response, {
+          summary: `Stake ${token.symbol}-${quoteToken.symbol} tokens`
+        })
+        return response
+      })
     })
     if (receipt?.status) {
       addPopup(
@@ -88,7 +91,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
           txn: {
             hash: receipt.transactionHash,
             success: receipt.status === 1,
-            summary: 'Staked '+amount+' '+token.symbol+"-"+quoteToken.symbol+' LP to farm',
+            summary: 'Stake '+amount+' '+token.symbol+"-"+quoteToken.symbol+' LP to farm',
           }
         },
         receipt.transactionHash
@@ -99,7 +102,12 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
 
   const handleUnstake = async (amount: string) => {
     const receipt = await fetchWithCatchTxError(() => {
-      return onUnstake(amount)
+      return onUnstake(amount).then((response) => {
+        addTransaction(response, {
+          summary: 'Unstake '+ amount+ ' ' + token.symbol+ "-" +quoteToken.symbol+' tokens'
+        })
+        return response
+      })
     })
     if (receipt?.status) {
       addPopup(
@@ -121,8 +129,14 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
 
   const handleApprove = useCallback(async () => {
     const receipt = await fetchWithCatchTxError(() => {
-      return onApprove()
+      return onApprove().then(response => {
+        addTransaction(response, {
+          summary: `Enable ${token.symbol}-${quoteToken.symbol} stake contract`
+        })
+        return response
+      })
     })
+
     if (receipt?.status) {
       addPopup(
         {
@@ -136,7 +150,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
       )  
       dispatch(fetchFarmUserDataAsync({ account, pids: [pid] }))
     }
-  }, [onApprove, dispatch, account, pid, t, toastSuccess, fetchWithCatchTxError])
+  }, [onApprove, dispatch, account, pid, addPopup, fetchWithCatchTxError, addTransaction, token.symbol, quoteToken.symbol])
   const theme = useTheme()
 
   if (!account) {
@@ -161,7 +175,6 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
         {(showModalDeposit || showModalWithdraw) && 
           <ModalContainer>
         
-      
         {showModalDeposit &&
           <DepositModal
           max={tokenBalance}

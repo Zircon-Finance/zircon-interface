@@ -71,7 +71,7 @@ animation: ${({ expanded }) =>
   width: 100%;
   background: ${({ theme }) => theme.cardSmall};
   border-radius: 17px;
-  z-index: 1;
+  z-index: 10;
 `
 
 const EarnedMobileCell = styled.td`
@@ -139,7 +139,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   }
 
   useEffect(() => {
-    setActionPanelExpanded(hasStakedAmount)
+    setActionPanelExpanded(false)
     setIsVisible(true)
   }, [hasStakedAmount, isVisible])
 

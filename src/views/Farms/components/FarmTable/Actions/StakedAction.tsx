@@ -182,13 +182,13 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
           lpLabel={lpLabel}
           apr={apr}
           onDismiss={() => setshowModalDeposit(false)}
-          displayApr={'111'}
+          displayApr={'1'}
           stakedBalance={stakedBalance}
           onConfirm={handleStake}
           tokenName={lpSymbol}
           multiplier={multiplier}
           addLiquidityUrl={'#/add-pro/'+token.address+'/'+quoteToken.address}
-          cakePrice={112 as unknown as BigNumber}/>
+          cakePrice={2 as unknown as BigNumber}/>
         }
 
         {showModalWithdraw &&

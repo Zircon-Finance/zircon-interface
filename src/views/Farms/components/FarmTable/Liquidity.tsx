@@ -46,7 +46,7 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
   return (
     <Container>
       <LiquidityWrapper>
-        <Text>{'displayLiquidity'}</Text>
+        <Text>{'1'}</Text>
         {/* { liquidity.gt(0) && hovered && 
         <div style={{position: 'absolute', left: '60px', pointerEvents: 'none'}}>
           <IconButton style={{background: 'transparent', width: 'auto'}} variant="tertiary">

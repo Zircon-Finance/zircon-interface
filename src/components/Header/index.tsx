@@ -192,7 +192,7 @@ export default function Header() {
             </div>
           </div>
       } */}
-      <RowBetween style={{ alignItems: 'flex-start', flexWrap: width > 700 ? 'nowrap' : 'wrap'}} padding="1rem 1rem 0 1rem">
+      <RowBetween style={{ alignItems: 'flex-start', flexWrap: width > 700 ? 'nowrap' : 'wrap', justifyContent: 'center'}} padding="1rem 1rem 0 1rem">
         {width > 700 ?
         <>
         <HeaderElement>
@@ -229,7 +229,7 @@ export default function Header() {
             </button>
            <ChainPoolTab active={chainId !== 1287 ? 'moonbeam' : 'moonriver'} />
            </HeaderElement>
-           <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : 'pool'} />
+           <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : location.pathname === '/farm' ? 'farm' : 'pool'} />
           </div>}
           <HeaderControls>
           <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
@@ -278,7 +278,7 @@ export default function Header() {
             </HeaderElement>
           </HeaderControls>
           </div>
-          <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : 'pool'} />
+          <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : location.pathname === '/farm' ? 'farm' : 'pool'} />
         </>
 
         }

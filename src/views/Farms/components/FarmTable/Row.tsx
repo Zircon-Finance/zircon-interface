@@ -20,6 +20,7 @@ import TrendingHealthIcon from '../../../../components/TrendingHealthIcon'
 import QuestionMarkIcon from '../../../../components/QuestionMarkIcon'
 import StakeAdd from '../FarmCard/StakeAdd'
 import { useFarmUser } from '../../../../state/farms/hooks'
+import { useWindowDimensions } from '../../../../hooks'
 // import { useFarmUser } from '../../../../state/farms/hooks'
 
 export interface RowProps {
@@ -66,12 +67,15 @@ animation: ${({ expanded }) =>
       `};
   cursor: pointer;
   margin: ${({ expanded }) => expanded ? '5px 0 5px 0' : '10px 0 10px 0'};
-  display: table;
+  display: flex;
+  flex-direction: column;
   position: relative;
   width: 100%;
   background: ${({ theme }) => theme.cardSmall};
   border-radius: 17px;
   z-index: 10;
+  @media (min-width: 992px) {
+    display: table;
 `
 
 const EarnedMobileCell = styled.td`
@@ -81,10 +85,12 @@ const EarnedMobileCell = styled.td`
 const AprMobileCell = styled.td`
   padding-top: 16px;
   padding-bottom: 24px;
+  padding-right: 16px;
 `
 
 const FarmMobileCell = styled.td`
   padding-top: 24px;
+  width: 100%;
 `
 
 export const TableData = styled.td`
@@ -124,6 +130,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const shouldRenderChild = actionPanelExpanded
   const { t } = useTranslation()
   const theme = useTheme()
+  const {width} = useWindowDimensions()
   const tooltipContent = (
     <div style={{background: theme.bg3, borderRadius: '17px', padding: '10px'}}>
       <Text>
@@ -143,7 +150,8 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     setIsVisible(true)
   }, [hasStakedAmount, isVisible])
 
-  const { isDesktop, isMobile } = useMatchBreakpoints()
+  const mobileVer = width <= 992
+  const { isDesktop } = useMatchBreakpoints()
   const isSmallerScreen = !isDesktop
   const tableSchema = isSmallerScreen ? MobileColumnSchema : DesktopColumnSchema
   const columnNames = tableSchema.map((column) => column.name)
@@ -152,7 +160,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     tooltipOffset: [20, 10],
   })
   const handleRenderRow = () => {
-    if (!isMobile) {
+    if (!mobileVer) {
       return (
         !actionPanelExpanded && (
         <StyledTr expanded={isVisible} onClick={toggleActionPanel} onMouseOver={() => setHovered(true)} 
@@ -177,7 +185,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
               case 'farm':
                 const risk = props[key].farmHealth && props[key].farmHealth > 300
                 return (
-                  <TableData style={{minWidth: '502px'}} key={key}>
+                  <TableData style={{minWidth: width > 1400 ? '502px' : width > 992 ? '405px' : 'auto'}} key={key}>
                     <CellInner style={{width: '100%',justifyContent: 'flex-start'}}>
                       <CellLayout hovered={hovered} label={hovered && t(tableSchema[columnIndex].label)}>
                         <Flex width={'100%'} justifyContent={'space-between'}>
@@ -249,18 +257,20 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     }
 
     return (
+      !actionPanelExpanded && (
       <StyledTr expanded={isVisible} onClick={toggleActionPanel} 
       onMouseOver={() => setHovered(true)} 
       onMouseOut={() => setHovered(false)}>
         <td>
-          <tr>
+          <tr style={{width: '100%', display: 'flex'}}>
             <FarmMobileCell>
               <CellLayout>
                 <Farm {...props.farm} />
+                <Details actionPanelToggled={actionPanelExpanded} />
               </CellLayout>
             </FarmMobileCell>
           </tr>
-          <tr>
+          <tr style={{display: 'flex', width:' 100%', justifyContent: 'space-between'}}>
             <EarnedMobileCell>
               <CellLayout label={t('Earned')}>
                 <Earned {...props.earned} userDataReady={userDataReady} />
@@ -273,14 +283,8 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
             </AprMobileCell>
           </tr>
         </td>
-        <td>
-          <CellInner>
-            <CellLayout>
-              <Details actionPanelToggled={actionPanelExpanded} />
-            </CellLayout>
-          </CellInner>
-        </td>
       </StyledTr>
+    )
     )
   }
 

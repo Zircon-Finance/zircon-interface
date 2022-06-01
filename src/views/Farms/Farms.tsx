@@ -21,10 +21,11 @@ import SearchInput from '../../components/SearchInput'
 import Table from './components/FarmTable/FarmTable'
 import { RowProps } from './components/FarmTable/Row'
 import { DesktopColumnSchema, FarmWithStakedValue } from './components/types'
-import { AnchorFloatTab, FarmTabButtons, PylonClassicTab, ViewModeTabs } from '../../components/FarmSelectTabs'
+import { AnchorFloatTab, PylonClassicTab, ViewModeTabs } from '../../components/FarmSelectTabs'
 import FarmRepeatIcon from '../../components/FarmRepeatIcon'
 import FarmsPage from '../../pages/Farm/'
 import Select from '../../components/Select/Select'
+import { useWindowDimensions } from '../../hooks'
 
 const Loading = styled.div`
   border: 8px solid #f3f3f3;
@@ -61,7 +62,10 @@ const FlexLayout = styled.div`
   flex-wrap: wrap;
   margin-top: 5px;
   & > * {
-    min-width: 280px;
+    min-width: 100%;
+    @media (min-width: 700px) {
+      min-width: 280px;
+    }
     width: 24.3%;
     margin-right: 8px;
     margin-bottom: 8px;
@@ -206,6 +210,7 @@ const Farms: React.FC = ({ children }) => {
   const [sortOption, setSortOption] = useState('hot')
   const { observerRef, isIntersecting } = useIntersectionObserver()
   const chosenFarmsLength = useRef(0)
+  const { width } = useWindowDimensions()
 
   const isArchived = pathname.includes('archived')
   const isInactive = pathname.includes('history')
@@ -265,8 +270,10 @@ const Farms: React.FC = ({ children }) => {
   )
 
   const handleChangeQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.persist()
     setQuery(event.target.value)
   }
+  console.log('query', query)
 
   const [numberOfFarmsVisible, setNumberOfFarmsVisible] = useState(NUMBER_OF_FARMS_VISIBLE)
   const options = ['Earned', 'Staked', 'APR', 'Liquidty']
@@ -363,6 +370,7 @@ const Farms: React.FC = ({ children }) => {
         token: farm.token,
         quoteToken: farm.quoteToken,
         farmHealth: Math.floor(Math.random() * (500 - 100 + 1)) + 100,
+        isAnchor: farm.isAnchor,
         // This will be the function to get the health of the farm
       },
       earned: {
@@ -427,8 +435,8 @@ const Farms: React.FC = ({ children }) => {
           </Flex>
           <Flex>
             <ViewControls>
-              <ToggleWrapper style={{marginRight: '20px'}}> 
-                <Text mr={'10px'}> {t('Staked only')}</Text>
+              <ToggleWrapper style={{marginRight: '20px', position: 'relative'}}> 
+                <Text mr={'10px'} width={'max-content'}> {t('Staked only')}</Text>
                 <Toggle
                   id="staked-only-farms"
                   checked={stakedOnly}
@@ -438,22 +446,24 @@ const Farms: React.FC = ({ children }) => {
                   scale="sm"
                 />
               </ToggleWrapper>
-              <FarmTabButtons active='Active' />
+              {/* <FarmTabButtons active='Active' /> */}
             </ViewControls>
             <FilterContainer>
               <LabelWrapper style={{ marginLeft: 16 }}>
-                <SearchInput onChange={() => handleChangeQuery} placeholder="Search Farms" />
+                <SearchInput onChange={handleChangeQuery} placeholder="Search Farms" />
               </LabelWrapper>
             </FilterContainer>
           </Flex>
         </ControlContainer>
         <MainContainer>
           <table style={{width: '100%'}}>
-            <tr style={viewMode === ViewMode.CARD ? ({display: 'flex', justifyContent: 'space-between', alignItems: 'center'}) : null}>
-              <TableData style={{minWidth: '500px'}}>
+            <tr style={viewMode === ViewMode.CARD || (viewMode === ViewMode.TABLE && width <= 992) ? 
+              ({display: 'flex', justifyContent: 'space-between', alignItems: 'center'}) 
+              : null}>
+              <TableData style={{minWidth: width > 1400 ? '500px' : width > 992 ? '400px' : 'auto'}}>
                 <ViewModeTabs active={viewMode} />
               </TableData>
-              {viewMode === ViewMode.TABLE ? options.map((option) => (
+              {viewMode === ViewMode.TABLE && width > 992 ? options.map((option) => (
                 <TableData key={option} style={{cursor: 'pointer'}} onClick={() => setSortOption(option.toLowerCase())}>
                   <div style={{display: 'flex', alignItems: 'center'}}>
                     <p style={{fontSize: '13px', color: theme.whiteHalf}}>{option}</p>
@@ -462,7 +472,7 @@ const Farms: React.FC = ({ children }) => {
                   {sortOption === option.toLowerCase() && <SelectedOptionDiv />}
                 </TableData>)) :
                 (
-                  <TableData style={{display: 'flex', width: '200px', paddingRight: '5px'}}>
+                  <TableData style={{display: 'flex', width: '200px', paddingRight: width <= 992 ? '0px' : '5px'}}>
                     <Text style={{width: '100px', alignSelf: 'center'}} color={theme.whiteHalf} fontSize={'15px'} >{t('Sort by')}</Text>
                     <Select
                       options={[
@@ -495,7 +505,7 @@ const Farms: React.FC = ({ children }) => {
                     />
                   </TableData>
                 )}
-              {viewMode === ViewMode.TABLE && (<TableData></TableData>)}
+              {viewMode === ViewMode.TABLE && width > 992 && (<TableData></TableData>)}
             </tr>
           </table>
             {renderContent()}

@@ -11,6 +11,7 @@ export const farms: SerializedFarmConfig[] = [
     token: serializedTokens.pluto,
     quoteToken: serializedTokens.saturn,
     isCommunity: true,
+    isAnchor: true,
   },
   {
     pid: 3,
@@ -19,6 +20,7 @@ export const farms: SerializedFarmConfig[] = [
     token: serializedTokens.neptune,
     quoteToken: serializedTokens.pluto,
     isCommunity: true,
+    isAnchor: true,
   },
   {
     pid: 4,
@@ -27,6 +29,34 @@ export const farms: SerializedFarmConfig[] = [
     token: serializedTokens.saturn,
     quoteToken: serializedTokens.mars,
     isCommunity: true,
+    isAnchor: true,
+  },
+  {
+    pid: 5,
+    lpSymbol: 'ERTH-JUP LP',
+    lpAddress: '0x1e9200b2f7a558b1f2fd5bf7de2e94919d8c2b0b',
+    token: serializedTokens.earth,
+    quoteToken: serializedTokens.jupiter,
+    isCommunity: true,
+    isAnchor: true,
+  },
+  {
+    pid: 6,
+    lpSymbol: 'ERTH-VEN LP',
+    lpAddress: '0x3ee9db11eac15f9313b5b85ea321c573b381b913',
+    token: serializedTokens.earth,
+    quoteToken: serializedTokens.venus,
+    isCommunity: true,
+    isAnchor: true,
+  },
+  {
+    pid: 7,
+    lpSymbol: 'ERTH-MERC LP',
+    lpAddress: '0x58abe7f5132340f90634806c7c8886e7be7bd97a',
+    token: serializedTokens.earth,
+    quoteToken: serializedTokens.mercury,
+    isCommunity: true,
+    isAnchor: false,
   },
 ]
 

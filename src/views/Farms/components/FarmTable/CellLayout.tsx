@@ -11,6 +11,7 @@ const ContentContainer = styled.div`
   min-height: 24px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
 `
 
 interface CellLayoutProps {

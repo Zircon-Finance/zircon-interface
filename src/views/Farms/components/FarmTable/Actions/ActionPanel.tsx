@@ -31,6 +31,8 @@ import { ModalContainer } from '../../../Farms'
 import { useAddPopup, useWalletModalToggle } from '../../../../../state/application/hooks'
 import { Link } from 'react-router-dom'
 import { useTransactionAdder } from '../../../../../state/transactions/hooks'
+import { useWindowDimensions } from '../../../../../hooks'
+import { Flex } from 'rebass'
 
 export interface ActionPanelProps {
   apr: AprProps
@@ -72,16 +74,23 @@ const Container = styled.div<{ expanded, staked }>`
         `};
   overflow: hidden;
   background: ${({ theme }) => theme.anchorFloatBadge};
-  display: grid;
+  display: flex;
+  flex-direction: column;
   width: 100%;
   padding: 5px;
   border-radius: 17px;
   margin-top: 5px;
-  grid-template-columns: ${({ staked }) => staked ? '22% 25% 25% auto 40px' : '22% 50% auto 40px'};
-  gap: 5px;
+  grid-template-columns: ${({ staked }) => staked ? '25% 20% 20% auto 40px' : '25% 35% auto 40px'};
   position: relative;
   z-index: 100;
+  @media (min-width: 800px) {
+    grid-template-columns: ${({ staked }) => staked ? '22% 25% 25% auto 40px' : '22% 50% auto 40px'};
+    display: grid;
+    gap: 5px;
+  }
 `
+//25% 20% 20% auto 40px
+//25% 35% auto 40px
 
 export const StyledLinkExternal = styled.a`
   font-weight: 300;
@@ -179,6 +188,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const addPopup = useAddPopup()
   const addTransaction = useTransactionAdder()
   const toggleWalletModal = useWalletModalToggle()
+  const { width } = useWindowDimensions()
 
   const handleApprove = useCallback(async () => {
     const receipt = await fetchWithCatchTxError(() => {
@@ -252,10 +262,26 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
     <Container expanded={expanded} staked={staked}>
       <QuarterContainer>
         <ActionContainer style={{padding: '0 10px'}}>
-          <SpaceBetween>
-            <span style={{fontWeight: '300'}}>{token.symbol + '-' + quoteToken.symbol}</span>
-            <DoubleCurrencyLogo currency0={token} currency1={quoteToken} size={25} />
-          </SpaceBetween>
+            {width >= 800 ? (
+              <SpaceBetween>
+                  <span style={{fontWeight: '300'}}>{token.symbol + '-' + quoteToken.symbol}</span>
+                  <DoubleCurrencyLogo currency0={token} currency1={quoteToken} size={25} />
+              </SpaceBetween>
+            ) : (
+              <SpaceBetween style={{paddingTop: '16px'}}>
+                <Flex alignItems={'center'} style={{gap: '10px'}}>
+                  <DoubleCurrencyLogo currency0={token} currency1={quoteToken} size={25} />
+                  <span style={{fontWeight: '300'}}>{token.symbol + '-' + quoteToken.symbol}</span>
+                  <BadgeSmall style={{fontSize: '13px',margin: '0'}}>{'ANCHOR'}</BadgeSmall>
+                </Flex>
+                <QuarterContainer onClick={() => clickAction(false)} 
+                  style={{justifyContent: 'center', alignItems: 'center', cursor: 'pointer'}}>
+                  <ArrowIcon toggled={expanded}  />
+                </QuarterContainer>
+              </SpaceBetween>
+            )}
+          {width >= 800 ? (
+          <>
           <SpaceBetween>
             <BadgeSmall style={{fontSize: '13px',margin: '0'}}>{'ANCHOR'}</BadgeSmall>
             <span>{'High risk'}</span>
@@ -264,6 +290,18 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
             <StyledLinkExternal color={theme.whiteHalf} href={bsc}>{t('View Contract ↗')}</StyledLinkExternal>
             <StyledLinkExternal color={theme.whiteHalf} href={info}>{t('See Pair Info ↗')}</StyledLinkExternal>
           </SpaceBetween>
+          </> ) : (
+            <>
+            <SpaceBetween style={{marginBottom: '16px'}}>
+              <Flex style={{flexDirection: 'column'}}>
+              <StyledLinkExternal style={{margin: '5px 0 5px 0'}} color={theme.whiteHalf} href={bsc}>{t('View Contract ↗')}</StyledLinkExternal>
+              <StyledLinkExternal color={theme.whiteHalf} href={info}>{t('See Pair Info ↗')}</StyledLinkExternal>
+              </Flex>
+              <span>{'High risk'}</span>
+            </SpaceBetween>
+            </>
+          )}
+
           {/* <TagsContainer> */}
             {/* {farm.isCommunity ? <FarmAuctionTag /> : <CoreTag />} */}
             {/* {dual ? <DualTag /> : null} */}
@@ -288,7 +326,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
     ) : (
       <QuarterContainer >
         {isApproved ? (
-        <StakeAdd clickAction={() => {setShowModal(true)}} row={true} margin={false} width={'30%'} />)
+        <StakeAdd clickAction={() => {setShowModal(true)}} row={true} margin={false} width={width > 992 ? '30%' : '60%'} />)
         : (
           <ButtonOutlined m="auto" width="50%" disabled={pendingTx} onClick={account ? handleApprove : toggleWalletModal}>
             {account ? 'Enable Contract' : 'Connect Wallet'}
@@ -298,7 +336,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
     )}
      
 
-      <QuarterContainer style={{paddingLeft: '10px'}}>
+      <QuarterContainer style={{padding: width < 992 ? '0 10px' : '0 0 0 10px'}}>
         <ValueContainer>
           <ValueWrapper>
             <Text fontSize='13px' fontWeight={300}>{t('APR')}</Text>
@@ -313,9 +351,9 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           </Link>
         </ValueContainer>
       </QuarterContainer>
-      <QuarterContainer onClick={() => clickAction(false)} style={{justifyContent: 'center', alignItems: 'center', cursor: 'pointer'}}>
+      {width >= 800 && <QuarterContainer onClick={() => clickAction(false)} style={{justifyContent: 'center', alignItems: 'center', cursor: 'pointer'}}>
         <ArrowIcon toggled={expanded}  />
-      </QuarterContainer>
+      </QuarterContainer>}
 
     </Container>
     </>

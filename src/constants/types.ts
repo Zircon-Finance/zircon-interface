@@ -65,6 +65,7 @@ interface FarmConfigBaseProps {
   lpAddress: string
   multiplier?: string
   isCommunity?: boolean
+  isAnchor: boolean
   dual?: {
     rewardPerBlock: number
     earnLabel: string

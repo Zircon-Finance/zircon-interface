@@ -6,6 +6,7 @@ import {
 import BigNumber from 'bignumber.js'
 import PlusIcon from '../PlusIcon'
 import MinusIcon from '../MinusIcon'
+import { getBalanceAmount } from '../../../../utils/formatBalance'
 
 // const ReferenceElement = styled.div`
 //   display: inline-block;
@@ -37,7 +38,7 @@ const Staked: React.FunctionComponent<StakedProps> = ({ staked, hovered }) => {
   console.log('staked', staked)
   const displayBalance =
   staked && staked.gt(0) ? (
-      `$${Number(staked).toLocaleString( 'en-US', { maximumFractionDigits: 2 } )}`
+      `$${getBalanceAmount(staked).toFixed(3, BigNumber.ROUND_DOWN)}`
     ) : (
       <Skeleton width={60} />
     )

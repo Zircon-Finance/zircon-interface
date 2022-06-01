@@ -6,7 +6,10 @@ export const ActionContainer = styled.div`
   flex-grow: 1;
   flex-basis: 0;
   margin-bottom: 16px;
-
+  min-height: 120px;
+  @media (min-width: 800px) {
+    min-height: 50px;
+  }
   ${({ theme }) => theme.mediaQueries.sm} {
     margin-right: 12px;
     margin-bottom: 0;

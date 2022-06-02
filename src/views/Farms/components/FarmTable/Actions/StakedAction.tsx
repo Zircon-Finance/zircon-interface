@@ -17,7 +17,6 @@ import styled, { useTheme } from 'styled-components'
 import useApproveFarm from '../../../hooks/useApproveFarm'
 import useStakeFarms from '../../../hooks/useStakeFarms'
 import useUnstakeFarms from '../../../hooks/useUnstakeFarms'
-import DepositModal from '../../DepositModal'
 import WithdrawModal from '../../WithdrawModal'
 import { ActionContainer, ActionContent, ActionTitles } from './styles'
 import { FarmWithStakedValue } from '../../types'
@@ -25,9 +24,11 @@ import StakedLP from '../../StakedLP'
 import PlusIcon from '../../PlusIcon'
 import MinusIcon from '../../MinusIcon'
 import BigNumber from 'bignumber.js'
-import { ModalContainer } from '../../../Farms'
 import { useAddPopup } from '../../../../../state/application/hooks'
 import { useTransactionAdder } from '../../../../../state/transactions/hooks'
+import { modalTopDeposit } from './ActionPanel'
+import Portal from '@reach/portal'
+import { ModalContainer } from '../../../Farms'
 
 const IconButtonWrapper = styled.div`
   display: flex;
@@ -172,29 +173,19 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
     if (stakedBalance.gt(0)) {
       return (
         <>
-        {(showModalDeposit || showModalWithdraw) && 
-          <ModalContainer>
         
         {showModalDeposit &&
-          <DepositModal
-          max={tokenBalance}
-          lpPrice={lpPrice}
-          lpLabel={lpLabel}
-          apr={apr}
-          onDismiss={() => setshowModalDeposit(false)}
-          displayApr={'1'}
-          stakedBalance={stakedBalance}
-          onConfirm={handleStake}
-          tokenName={lpSymbol}
-          multiplier={multiplier}
-          addLiquidityUrl={'#/add-pro/'+token.address+'/'+quoteToken.address}
-          cakePrice={2 as unknown as BigNumber}/>
+        modalTopDeposit(tokenBalance, lpPrice, lpLabel, apr, () => setshowModalDeposit(false), '1', stakedBalance, handleStake, lpSymbol, multiplier, 
+        `#/add-pro/${token.address}/${quoteToken.address}`,1 as unknown as BigNumber)
         }
 
         {showModalWithdraw &&
-          <WithdrawModal max={stakedBalance} onConfirm={handleUnstake} tokenName={lpSymbol} onDismiss={()=>setshowModalWithdraw(false)} />
-        }
-        </ModalContainer>
+        <Portal>
+          <ModalContainer>
+            <WithdrawModal max={stakedBalance} onConfirm={handleUnstake} tokenName={lpSymbol} onDismiss={()=>setshowModalWithdraw(false)} />
+          </ModalContainer>
+        </Portal>
+          
         }
         <ActionContainer style={{background: theme.bg6}}>
           <ActionTitles>

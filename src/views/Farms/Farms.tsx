@@ -16,7 +16,7 @@ import orderBy from 'lodash/orderBy'
 import isArchivedPid from '../../utils/farmHelpers'
 import { latinise } from '../../utils/latinise'
 import { useUserFarmsFilterAnchorFloat, useUserFarmsFilterPylonClassic, useUserFarmStakedOnly, useUserFarmsViewMode } from '../../state/user/hooks'
-import { ViewMode } from '../../state/user/actions'
+import { FarmFilterAnchorFloat, ViewMode } from '../../state/user/actions'
 import SearchInput from '../../components/SearchInput'
 import Table from './components/FarmTable/FarmTable'
 import { RowProps } from './components/FarmTable/Row'
@@ -258,22 +258,27 @@ const Farms: React.FC = ({ children }) => {
         return { ...farm, apr: cakeRewardsApr, lpRewardsApr, liquidity: totalLiquidity }
       })
 
+      farmsToDisplayWithAPR = farmsToDisplayWithAPR.filter((farm) => {
+        return (filterAnchorFloat === FarmFilterAnchorFloat.ANCHOR) ? farm.isAnchor === true : 
+        (filterAnchorFloat === FarmFilterAnchorFloat.FLOAT) ? farm.isAnchor === false : farm
+      })
+
       if (query) {
         const lowercaseQuery = latinise(query.toLowerCase())
         farmsToDisplayWithAPR = farmsToDisplayWithAPR.filter((farm: FarmWithStakedValue) => {
           return latinise(farm.lpSymbol.toLowerCase()).includes(lowercaseQuery)
         })
       }
+
       return farmsToDisplayWithAPR
     },
-    [cakePrice, query, isActive],
+    [cakePrice, query, isActive, filterAnchorFloat],
   )
 
   const handleChangeQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.persist()
     setQuery(event.target.value)
   }
-  console.log('query', query)
 
   const [numberOfFarmsVisible, setNumberOfFarmsVisible] = useState(NUMBER_OF_FARMS_VISIBLE)
   const options = ['Earned', 'Staked', 'APR', 'Liquidty']

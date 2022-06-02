@@ -1,4 +1,4 @@
-import React, { useEffect, useState, createElement } from 'react'
+import React, { useEffect, useState, createElement, useCallback } from 'react'
 import styled, { css, keyframes, useTheme } from 'styled-components'
 import { useMatchBreakpoints, useTooltip } from '@pancakeswap/uikit'
 import { useTranslation } from 'react-i18next'
@@ -20,7 +20,15 @@ import TrendingHealthIcon from '../../../../components/TrendingHealthIcon'
 import QuestionMarkIcon from '../../../../components/QuestionMarkIcon'
 import StakeAdd from '../FarmCard/StakeAdd'
 import { useFarmUser } from '../../../../state/farms/hooks'
-import { useWindowDimensions } from '../../../../hooks'
+import { useActiveWeb3React, useWindowDimensions } from '../../../../hooks'
+import { ButtonLighter } from '../../../../components/Button'
+import { useAddPopup, useWalletModalToggle } from '../../../../state/application/hooks'
+import useApproveFarm from '../../hooks/useApproveFarm'
+import { useERC20 } from '../../../../hooks/useContract'
+import useCatchTxError from '../../../../hooks/useCatchTxError'
+import { useTransactionAdder } from '../../../../state/transactions/hooks'
+import { useDispatch } from 'react-redux'
+import { fetchFarmUserDataAsync } from '../../../../state/farms'
 // import { useFarmUser } from '../../../../state/farms/hooks'
 
 export interface RowProps {
@@ -35,6 +43,7 @@ export interface RowProps {
 
 interface RowPropsWithLoading extends RowProps {
   userDataReady: boolean
+  zIndex: number
 }
 
 const cells = {
@@ -56,7 +65,7 @@ const CellInner = styled.div`
   position: relative;
 `
 
-const StyledTr = styled.tr<{ expanded }>`
+const StyledTr = styled.tr<{ expanded, zIndex }>`
 animation: ${({ expanded }) =>
   expanded
     ? css`
@@ -66,26 +75,27 @@ animation: ${({ expanded }) =>
         ${collapseAnimation} 300ms linear forwards
       `};
   cursor: pointer;
-  margin: ${({ expanded }) => expanded ? '5px 0 5px 0' : '10px 0 10px 0'};
+  margin: ${({ expanded }) => expanded ? '0 0 5px 0' : '10px 0 10px 0'};
   display: flex;
   flex-direction: column;
-  position: relative;
   width: 100%;
   background: ${({ theme }) => theme.cardSmall};
   border-radius: 17px;
-  z-index: 10;
+  z-index: ${({ zIndex }) => zIndex};
   @media (min-width: 992px) {
     display: table;
 `
 
 const EarnedMobileCell = styled.td`
   padding: 16px 0 24px 16px;
+  font-size: 13px;
 `
 
 const AprMobileCell = styled.td`
   padding-top: 16px;
   padding-bottom: 24px;
   padding-right: 16px;
+  font-size: 13px;
 `
 
 const FarmMobileCell = styled.td`
@@ -149,7 +159,38 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     setActionPanelExpanded(false)
     setIsVisible(true)
   }, [hasStakedAmount, isVisible])
+  const lpContract = useERC20(details.lpAddress)
+  const { onApprove } = useApproveFarm(lpContract)
+  const { fetchWithCatchTxError } = useCatchTxError()
+  const addTransaction = useTransactionAdder()
+  const addPopup = useAddPopup()
+  const dispatch = useDispatch()
+  const { account } = useActiveWeb3React()
 
+  const handleApprove = useCallback(async () => {
+    const receipt = await fetchWithCatchTxError(() => {
+      return onApprove().then(response => {
+        addTransaction(response, {
+          summary:  `Enable ${details.token.symbol}-${details.quoteToken.symbol} stake contract`
+        })
+        return response
+      })
+    })
+    if (receipt?.status) {
+      addPopup(
+        {
+          txn: {
+            hash: receipt.transactionHash,
+            success: true,
+            summary: 'Contract enabled!',
+          }
+        },
+        receipt.transactionHash
+      )
+      dispatch(fetchFarmUserDataAsync({ account, pids: [details.pid] }))
+    }
+  },
+  [onApprove, dispatch, fetchWithCatchTxError, addPopup, addTransaction, details.quoteToken.symbol, details.token.symbol, account, details.pid])
   const mobileVer = width <= 992
   const { isDesktop } = useMatchBreakpoints()
   const isSmallerScreen = !isDesktop
@@ -159,11 +200,17 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     placement: 'top-end',
     tooltipOffset: [20, 10],
   })
+  const isApproved = account && details.userData.allowance && details.userData.allowance.isGreaterThan(0)
+  const stakedAmount = useFarmUser(details.pid).stakedBalance.toNumber()
+  const toggleWalletModal = useWalletModalToggle()
+  console.log('zIndex', props.zIndex)
+
+
   const handleRenderRow = () => {
     if (!mobileVer) {
       return (
         !actionPanelExpanded && (
-        <StyledTr expanded={isVisible} onClick={toggleActionPanel} onMouseOver={() => setHovered(true)} 
+        <StyledTr zIndex={props.zIndex} expanded={isVisible} onClick={toggleActionPanel} onMouseOver={() => setHovered(true)} 
         onMouseOut={() => setHovered(false)} style={hovered ? {backgroundColor: theme.cardExpanded} : null}>
           {Object.keys(props).map((key) => {
             const columnIndex = columnNames.indexOf(key)
@@ -258,7 +305,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
 
     return (
       !actionPanelExpanded && (
-      <StyledTr expanded={isVisible} onClick={toggleActionPanel} 
+      <StyledTr zIndex={props.zIndex} expanded={isVisible} onClick={toggleActionPanel} 
       onMouseOver={() => setHovered(true)} 
       onMouseOut={() => setHovered(false)}>
         <td>
@@ -270,15 +317,41 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
               </CellLayout>
             </FarmMobileCell>
           </tr>
-          <tr style={{display: 'flex', width:' 100%', justifyContent: 'space-between'}}>
+          <tr style={{display: 'flex', width:' 100%', justifyContent: 'space-between', alignItems: 'center'}}>
             <EarnedMobileCell>
               <CellLayout label={t('Earned')}>
-                <Earned {...props.earned} userDataReady={userDataReady} />
+                {account ? (
+                  isApproved ? (stakedAmount ? (
+                    <>
+                      <span style={{color: theme.whiteHalf, fontSize: '13px'}}>{'Earned: '}</span>
+                      <Earned {...props.earned} userDataReady={userDataReady} />
+                    </>
+                  ) : (
+                    <ButtonLighter style={{fontSize: '13px', padding: '10px', borderRadius: '12px', maxHeight: '38px'}}>
+                      <Flex justifyContent={'space-between'} flexDirection={'row'} alignItems={'center'}>
+                        <svg width="25" height="25" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22.75 9.875V36.125" stroke="#9D94AA" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M9.625 23H35.875" stroke="#9D94AA" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        <Text style={{minWidth: 'auto'}}>Stake</Text>
+                      </Flex>
+                    </ButtonLighter>
+                  )) : (
+                    <ButtonLighter style={{fontSize: '13px', padding: '10px', borderRadius: '12px'}}
+                    onClick={handleApprove}>{'Enable contract'}</ButtonLighter>
+                  )) : (
+                    <ButtonLighter style={{fontSize: '13px', padding: '10px', borderRadius: '12px'}}
+                    onClick={toggleWalletModal}>{'Connect wallet'}</ButtonLighter>
+                  )}
+                
               </CellLayout>
             </EarnedMobileCell>
             <AprMobileCell>
               <CellLayout label={t('APR')}>
-                <Apr {...props.apr} hideButton />
+                <>
+                  <span style={{color: theme.whiteHalf, fontSize: '13px'}}>{'APR: '}</span>
+                  <Apr {...props.apr} hideButton />
+                </>
               </CellLayout>
             </AprMobileCell>
           </tr>

@@ -44,6 +44,14 @@ const TableBody = styled.tbody`
       vertical-align: middle;
     }
   }
+  :first-child {
+    tr {
+      margin-top: 5px;
+  }
+  :nth-child(n) {
+    tr {
+      position: relative;
+    }
 `
 
 const TableContainer = styled.div`
@@ -62,8 +70,8 @@ const FarmTable: React.FC<ITableProps> = (props) => {
         <TableWrapper ref={tableWrapperEl}>
           <StyledTable>
             <TableBody>
-              {rows.map((row) => {
-                return <Row {...row.original} userDataReady={userDataReady} key={`table-row-${row.id}`} />
+              {rows.map((row, index) => {
+                return <Row zIndex={99-index} {...row.original} userDataReady={userDataReady} key={`table-row-${row.id}`} />
               })}
             </TableBody>
           </StyledTable>

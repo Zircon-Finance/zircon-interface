@@ -5,7 +5,7 @@ import { Text } from '@pancakeswap/uikit'
 // import getLiquidityUrlPathParts from 'utils/getLiquidityUrlPathParts'
 // import { getBscScanLink } from 'utils'
 import { FarmWithStakedValue } from '../../types'
-
+import Portal from '@reach/portal'
 import HarvestAction from './HarvestAction'
 import StakedAction from './StakedAction'
 import Apr, { AprProps } from '../Apr'
@@ -42,6 +42,7 @@ export interface ActionPanelProps {
   details: FarmWithStakedValue
   userDataReady: boolean
   expanded: boolean
+  zIndex: number
   clickAction: Dispatch<SetStateAction<boolean>>
 }
 
@@ -63,7 +64,7 @@ const collapseAnimation = keyframes`
   }
 `
 
-const Container = styled.div<{ expanded, staked }>`
+const Container = styled.div<{ expanded, staked, zIndex }>`
   animation: ${({ expanded }) =>
     expanded
       ? css`
@@ -79,15 +80,15 @@ const Container = styled.div<{ expanded, staked }>`
   width: 100%;
   padding: 5px;
   border-radius: 17px;
-  margin-top: 5px;
+  margin-bottom: 5px;
   grid-template-columns: ${({ staked }) => staked ? '25% 20% 20% auto 40px' : '25% 35% auto 40px'};
-  position: relative;
-  z-index: 100;
   @media (min-width: 800px) {
     grid-template-columns: ${({ staked }) => staked ? '22% 25% 25% auto 40px' : '22% 50% auto 40px'};
     display: grid;
     gap: 5px;
   }
+  position: relative;
+  z-index: ${({ zIndex }) => zIndex};
 `
 //25% 20% 20% auto 40px
 //25% 35% auto 40px
@@ -149,6 +150,29 @@ export const SpaceBetween = styled.div`
   justify-content: space-between;
 `
 
+export const modalTopDeposit = (max, lpPrice, lpLabel, apr, onDismiss, displayApr, stakedBalance, onConfirm, tokenName, multiplier, addLiquidityUrl, cakePrice) => {
+  return (
+    <Portal>
+      <ModalContainer>
+        <DepositModal
+        max={max}
+        lpPrice={lpPrice}
+        lpLabel={lpLabel}
+        apr={apr}
+        onDismiss={onDismiss}
+        displayApr={displayApr}
+        stakedBalance={stakedBalance}
+        onConfirm={onConfirm}
+        tokenName={tokenName}
+        multiplier={multiplier}
+        addLiquidityUrl={addLiquidityUrl}
+        cakePrice={cakePrice}
+      />
+      </ModalContainer>
+    </Portal>
+  )
+}
+
 
 const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   details,
@@ -157,10 +181,10 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   userDataReady,
   clickAction,
   expanded,
+  zIndex,
 }) => {
   const farm = details
   const staked = details.userData.stakedBalance.gt(0)
-
   const { t } = useTranslation()
   const { quoteToken, token } = farm
   const lpLabel = farm.lpSymbol && farm.lpSymbol.toUpperCase().replace('PANCAKE', '')
@@ -241,25 +265,22 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
 
   return (
     <>
+
     {showModal && (
-      <ModalContainer>
-        <DepositModal
-        max={tokenBalance}
-        lpPrice={lpPrice}
-        lpLabel={lpLabel}
-        apr={farm.apr}
-        onDismiss={() => setShowModal(false)}
-        displayApr={'111'}
-        stakedBalance={stakedBalance}
-        onConfirm={handleStake}
-        tokenName={farm.lpSymbol}
-        multiplier={farm.multiplier}
-        addLiquidityUrl={'Placeholder'}
-        cakePrice={1 as unknown as BigNumber}
-      />
-      </ModalContainer>
+      modalTopDeposit(tokenBalance, 
+        lpPrice, 
+        lpLabel, 
+        farm.apr, 
+        () => setShowModal(false), 
+        '111', 
+        stakedBalance, 
+        handleStake, 
+        farm.lpSymbol, 
+        farm.multiplier, 
+        'Placeholder', 
+        1 as unknown as BigNumber)
     )}
-    <Container expanded={expanded} staked={staked}>
+    <Container zIndex={zIndex} expanded={expanded} staked={staked}>
       <QuarterContainer>
         <ActionContainer style={{padding: '0 10px'}}>
             {width >= 800 ? (

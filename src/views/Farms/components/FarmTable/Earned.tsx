@@ -17,6 +17,10 @@ const Amount = styled.span<{ earned: number }>`
   color: ${({ earned, theme }) => (earned ? theme.colors.text : theme.colors.textDisabled)};
   display: flex;
   align-items: center;
+  font-size: 13px;
+  @media (min-width: 992px) {
+    font-size: 16px;
+  }
 `
 
 const Earned: React.FunctionComponent<EarnedPropsWithLoading> = ({ earnings, userDataReady, hovered }) => {

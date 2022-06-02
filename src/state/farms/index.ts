@@ -48,7 +48,6 @@ export const fetchFarmsPublicDataAsync = createAsyncThunk<
 >(
   'farms/fetchFarmsPublicDataAsync',
   async (pids) => {
-    console.log('pids')
     const poolLength = await fetchMasterChefFarmPoolLength()
     const farmsToFetch = farmsConfig.filter((farmConfig) => pids.includes(farmConfig.pid))
     
@@ -58,7 +57,6 @@ export const fetchFarmsPublicDataAsync = createAsyncThunk<
     const farmsWithoutHelperLps = farms.filter((farm: SerializedFarm) => {
       return farm.pid || farm.pid === 0
     })
-    console.log('Farm data from fetchFarmsPublicDataAsync', farmsWithoutHelperLps)
 
     return [farmsWithoutHelperLps, poolLength.toNumber()]
   },

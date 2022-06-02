@@ -74,8 +74,8 @@ const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pi
           {isAnchor ? (
             <>
             <Flex>  
-              <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '10px'}}>
-              <span style={{color: '#fff', fontSize: '16px'}}>{token.symbol} </span>{'ANCHOR'}
+              <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '10px', display: 'flex'}}>
+              <span style={{color: '#fff', fontSize: '16px', marginRight: '3px'}}>{token.symbol} </span>{'ANCHOR'}
               </BadgeSmall>
               <Text fontWeight={400}>{` - ${quoteToken.symbol}`}</Text>
             </Flex>
@@ -85,8 +85,8 @@ const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pi
             <>
             <Flex>
               <Text fontWeight={400}>{token.symbol} -</Text>
-              <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '10px'}}>
-                <span style={{color: '#fff', fontSize: '16px'}}>{`${quoteToken.symbol} `}</span>{'FLOAT'}
+              <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '10px', display: 'flex'}}>
+                <span style={{color: '#fff', fontSize: '16px', marginRight: '3px'}}>{`${quoteToken.symbol} `}</span>{'FLOAT'}
               </BadgeSmall>
             </Flex>
               

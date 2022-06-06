@@ -456,7 +456,7 @@ const Farms: React.FC = ({ children }) => {
               {/* <FarmTabButtons active='Active' /> */}
             </ViewControls>}
             <FilterContainer>
-              <LabelWrapper style={{ marginLeft: showMobileSearchBar ? 0 : 16 }}>
+              <LabelWrapper style={{ marginLeft: showMobileSearchBar ? 0 : 16, width: '100%' }}>
                 <SearchInput onChange={handleChangeQuery} placeholder="Search Farms" />
               </LabelWrapper>
             </FilterContainer>

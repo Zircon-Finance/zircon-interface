@@ -55,7 +55,7 @@ const SearchInputFarm: React.FC<Props> = ({ onChange: onChangeCallback, placehol
       <SearchInput expanded={true} style={{height: '30px', borderRadius: '12px'}}
       value={searchText} onChange={onChange} placeholder={t(placeholder)} />
       ) : (
-        <Flex style={{margin: showMobileSearchBar ? '10px 0' : '0'}}>
+        <Flex style={{width: '100%'}}>
           {!showMobileSearchBar && <SearchButton onClick={() => [setFakeMobileSearchBar(true),toggleShowMobileSearchBar()]} >
             <img src={SearchIcon} alt="search" />
           </SearchButton>}
@@ -64,7 +64,7 @@ const SearchInputFarm: React.FC<Props> = ({ onChange: onChangeCallback, placehol
             <SearchInput expanded={fakeMobileSearchBar} style={{background: 'none', backgroundColor: theme.bg9, height: '30px', borderRadius: '12px', position: 'absolute'}}
             value={searchText} onChange={onChange} placeholder={t(placeholder)} />
             <CloseIcon onClick={() => [setFakeMobileSearchBar(false), setTimeout(() => {toggleShowMobileSearchBar()}, 300)]} 
-            style={{position: 'absolute', right: '10px', top: '40px', alignSelf: 'center', opacity: fakeMobileSearchBar ? '1' : '0' }} />
+            style={{position: 'relative', left: '90%', top: '7px', opacity: fakeMobileSearchBar ? '1' : '0' }} />
             </>
           )}
         </Flex>

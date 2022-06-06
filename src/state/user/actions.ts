@@ -38,6 +38,7 @@ export enum FarmFilterAnchorFloat {
 export const updateMatchesDarkMode = createAction<{ matchesDarkMode: boolean }>('user/updateMatchesDarkMode')
 export const updateUserDarkMode = createAction<{ userDarkMode: boolean }>('user/updateUserDarkMode')
 export const updateUserExpertMode = createAction<{ userExpertMode: boolean }>('user/updateUserExpertMode')
+export const updateShowMobileSearchBar = createAction<{ showMobileSearchBar: boolean }>('user/updateShowMobileSearchBar')
 export const updateUserSlippageTolerance = createAction<{ userSlippageTolerance: number }>(
   'user/updateUserSlippageTolerance'
 )

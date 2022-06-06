@@ -42,7 +42,6 @@ export interface ActionPanelProps {
   details: FarmWithStakedValue
   userDataReady: boolean
   expanded: boolean
-  zIndex: number
   clickAction: Dispatch<SetStateAction<boolean>>
 }
 
@@ -64,7 +63,7 @@ const collapseAnimation = keyframes`
   }
 `
 
-const Container = styled.div<{ expanded, staked, zIndex }>`
+const Container = styled.div<{ expanded, staked }>`
   animation: ${({ expanded }) =>
     expanded
       ? css`
@@ -80,7 +79,7 @@ const Container = styled.div<{ expanded, staked, zIndex }>`
   width: 100%;
   padding: 5px;
   border-radius: 17px;
-  margin-bottom: 5px;
+  margin-bottom: ${({ expanded }) => (expanded ? '0' : '5px')};
   grid-template-columns: ${({ staked }) => staked ? '25% 20% 20% auto 40px' : '25% 35% auto 40px'};
   @media (min-width: 800px) {
     grid-template-columns: ${({ staked }) => staked ? '22% 25% 25% auto 40px' : '22% 50% auto 40px'};
@@ -88,7 +87,6 @@ const Container = styled.div<{ expanded, staked, zIndex }>`
     gap: 5px;
   }
   position: relative;
-  z-index: ${({ zIndex }) => zIndex};
 `
 //25% 20% 20% auto 40px
 //25% 35% auto 40px
@@ -181,7 +179,6 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   userDataReady,
   clickAction,
   expanded,
-  zIndex,
 }) => {
   const farm = details
   const staked = details.userData.stakedBalance.gt(0)
@@ -280,7 +277,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
         'Placeholder', 
         1 as unknown as BigNumber)
     )}
-    <Container zIndex={zIndex} expanded={expanded} staked={staked}>
+    <Container expanded={expanded} staked={staked}>
       <QuarterContainer>
         <ActionContainer style={{padding: '0 10px'}}>
             {width >= 800 ? (

@@ -15,7 +15,7 @@ import { getFarmApr } from '../../utils/apr'
 import orderBy from 'lodash/orderBy'
 import isArchivedPid from '../../utils/farmHelpers'
 import { latinise } from '../../utils/latinise'
-import { useUserFarmsFilterAnchorFloat, useUserFarmsFilterPylonClassic, useUserFarmStakedOnly, useUserFarmsViewMode } from '../../state/user/hooks'
+import { useShowMobileSearchBarManager, useUserFarmsFilterAnchorFloat, useUserFarmsFilterPylonClassic, useUserFarmStakedOnly, useUserFarmsViewMode } from '../../state/user/hooks'
 import { FarmFilterAnchorFloat, ViewMode } from '../../state/user/actions'
 import SearchInput from '../../components/SearchInput'
 import Table from './components/FarmTable/FarmTable'
@@ -282,6 +282,8 @@ const Farms: React.FC = ({ children }) => {
 
   const [numberOfFarmsVisible, setNumberOfFarmsVisible] = useState(NUMBER_OF_FARMS_VISIBLE)
   const options = ['Earned', 'Staked', 'APR', 'Liquidty']
+  const [showMobileSearchBar] = useShowMobileSearchBarManager()
+
 
   const chosenFarmsMemoized = useMemo(() => {
     let chosenFarms = []
@@ -438,8 +440,8 @@ const Farms: React.FC = ({ children }) => {
             <PylonClassicTab active={filter} />
             <AnchorFloatTab active={filterAnchorFloat} />
           </Flex>
-          <Flex>
-            <ViewControls>
+          <Flex position={'relative'} width={width < 500 ? showMobileSearchBar ? '100%' : 'auto' : 'auto'} height={'70px'}>
+            { (!showMobileSearchBar || width > 500) && <ViewControls>
               <ToggleWrapper style={{marginRight: '20px', position: 'relative'}}> 
                 <Text mr={'10px'} width={'max-content'}> {t('Staked only')}</Text>
                 <Toggle
@@ -452,9 +454,9 @@ const Farms: React.FC = ({ children }) => {
                 />
               </ToggleWrapper>
               {/* <FarmTabButtons active='Active' /> */}
-            </ViewControls>
+            </ViewControls>}
             <FilterContainer>
-              <LabelWrapper style={{ marginLeft: 16 }}>
+              <LabelWrapper style={{ marginLeft: showMobileSearchBar ? 0 : 16 }}>
                 <SearchInput onChange={handleChangeQuery} placeholder="Search Farms" />
               </LabelWrapper>
             </FilterContainer>

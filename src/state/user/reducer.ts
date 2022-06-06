@@ -21,7 +21,8 @@ import {
   FarmFilter,
   updateuserFarmsFilterAnchorFloat,
   FarmFilterAnchorFloat,
-  updateGasPrice
+  updateGasPrice,
+  updateShowMobileSearchBar
 } from './actions'
 import { GAS_PRICE_GWEI } from '../../utils/getGasPrice'
 
@@ -35,6 +36,7 @@ export interface UserState {
   matchesDarkMode: boolean // whether the dark mode media query matches
 
   userExpertMode: boolean
+  showMobileSearchBar: boolean
 
   // user defined slippage tolerance in bips, used in all txns
   userSlippageTolerance: number
@@ -81,6 +83,7 @@ export const initialState: UserState = {
   userFarmsFilterPylonClassic: FarmFilter.PYLON,
   userFarmsFilterAnchorFloat: FarmFilterAnchorFloat.ALL,
   gasPrice: GAS_PRICE_GWEI.default,
+  showMobileSearchBar: false
 }
 
 export default createReducer(initialState, builder =>
@@ -110,6 +113,10 @@ export default createReducer(initialState, builder =>
     })
     .addCase(updateUserExpertMode, (state, action) => {
       state.userExpertMode = action.payload.userExpertMode
+      state.timestamp = currentTimestamp()
+    })
+    .addCase(updateShowMobileSearchBar, (state, action) => {
+      state.showMobileSearchBar = action.payload.showMobileSearchBar
       state.timestamp = currentTimestamp()
     })
     .addCase(updateUserSlippageTolerance, (state, action) => {

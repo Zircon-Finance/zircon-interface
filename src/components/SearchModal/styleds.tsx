@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css, keyframes } from 'styled-components'
 import { AutoColumn } from '../Column'
 import { RowBetween, RowFixed } from '../Row'
 import SearchIcon from '../../assets/svg/Search.svg'
@@ -37,7 +37,37 @@ export const MenuItem = styled(RowBetween)`
   opacity: ${({ disabled, selected }) => (disabled || selected ? 0.5 : 1)};
 `
 
-export const SearchInput = styled.input`
+const expandAnimation = keyframes`
+  from {
+    width: 0%;
+    opacity: 0;
+  }
+  to {
+    width: 100%;
+    opacity: 1;
+  }
+`
+
+const collapseAnimation = keyframes`
+  from {
+    width: 100%;
+    opacity: 1;
+  }
+  to {
+    width: 0%;
+    opacity: 0;
+  }
+`
+
+export const SearchInput = styled.input<{ expanded }>`
+animation: ${({ expanded }) =>
+    expanded
+      ? css`
+          ${expandAnimation} 300ms linear forwards
+        `
+      : css`
+          ${collapseAnimation} 300ms linear forwards
+        `};
   position: relative;
   display: flex;
   padding: 18px 40px 18px 20px;

@@ -43,7 +43,6 @@ export interface RowProps {
 
 interface RowPropsWithLoading extends RowProps {
   userDataReady: boolean
-  zIndex: number
 }
 
 const cells = {
@@ -65,7 +64,7 @@ const CellInner = styled.div`
   position: relative;
 `
 
-const StyledTr = styled.tr<{ expanded, zIndex }>`
+const StyledTr = styled.tr<{ expanded }>`
 animation: ${({ expanded }) =>
   expanded
     ? css`
@@ -81,7 +80,6 @@ animation: ${({ expanded }) =>
   width: 100%;
   background: ${({ theme }) => theme.cardSmall};
   border-radius: 17px;
-  z-index: ${({ zIndex }) => zIndex};
   @media (min-width: 992px) {
     display: table;
 `
@@ -203,14 +201,12 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const isApproved = account && details.userData.allowance && details.userData.allowance.isGreaterThan(0)
   const stakedAmount = useFarmUser(details.pid).stakedBalance.toNumber()
   const toggleWalletModal = useWalletModalToggle()
-  console.log('zIndex', props.zIndex)
-
 
   const handleRenderRow = () => {
     if (!mobileVer) {
       return (
         !actionPanelExpanded && (
-        <StyledTr zIndex={props.zIndex} expanded={isVisible} onClick={toggleActionPanel} onMouseOver={() => setHovered(true)} 
+        <StyledTr expanded={isVisible} onClick={toggleActionPanel} onMouseOver={() => setHovered(true)} 
         onMouseOut={() => setHovered(false)} style={hovered ? {backgroundColor: theme.cardExpanded} : null}>
           {Object.keys(props).map((key) => {
             const columnIndex = columnNames.indexOf(key)
@@ -305,7 +301,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
 
     return (
       !actionPanelExpanded && (
-      <StyledTr zIndex={props.zIndex} expanded={isVisible} onClick={toggleActionPanel} 
+      <StyledTr expanded={isVisible} onClick={toggleActionPanel} 
       onMouseOver={() => setHovered(true)} 
       onMouseOut={() => setHovered(false)}>
         <td>

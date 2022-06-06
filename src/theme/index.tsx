@@ -59,7 +59,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     bg4: '#565A69', // Lighter gray
     bg5: '#6C7284',
     // light purple - inputs
-    bg6: chainId !== 1287 ? '#534169' : '#492F3D',
+    bg6: chainId !== 1287 ? '#534169' : '#492f3a',
     // darker purple - container
     bg7: chainId !== 1287 ? '#402d58' : '#3c2330',
     // connect wallet button - dark purple

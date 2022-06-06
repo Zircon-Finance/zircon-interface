@@ -150,6 +150,7 @@ export function CurrencySearch({
           <CloseIcon onClick={onDismiss} id="modal-close-x" />
         </RowBetween>
         <SearchInput
+          expanded={true}
           type="text"
           id="token-search-input"
           placeholder={t('tokenSearchPlaceholder')}

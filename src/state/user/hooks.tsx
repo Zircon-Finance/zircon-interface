@@ -24,7 +24,8 @@ import {
   updateUserSlippageTolerance,
   ViewMode,
   FarmFilterAnchorFloat,
-  updateuserFarmsFilterAnchorFloat
+  updateuserFarmsFilterAnchorFloat,
+  updateShowMobileSearchBar
 } from './actions'
 
 export function serializeToken(token: Token): SerializedToken {
@@ -149,6 +150,10 @@ export function useIsExpertMode(): boolean {
   return useSelector<AppState, AppState['user']['userExpertMode']>(state => state.user.userExpertMode)
 }
 
+export function useShowMobileSearchBar(): boolean {
+  return useSelector<AppState, AppState['user']['showMobileSearchBar']>(state => state.user.showMobileSearchBar)
+}
+
 export function useExpertModeManager(): [boolean, () => void] {
   const dispatch = useDispatch<AppDispatch>()
   const expertMode = useIsExpertMode()
@@ -158,6 +163,17 @@ export function useExpertModeManager(): [boolean, () => void] {
   }, [expertMode, dispatch])
 
   return [expertMode, toggleSetExpertMode]
+}
+
+export function useShowMobileSearchBarManager(): [boolean, () => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const showMobileSearchBar = useShowMobileSearchBar()
+
+  const toggleShowMobileSearchBar = useCallback(() => {
+    dispatch(updateShowMobileSearchBar({ showMobileSearchBar: !showMobileSearchBar }))
+  }, [showMobileSearchBar, dispatch])
+
+  return [showMobileSearchBar, toggleShowMobileSearchBar]
 }
 
 export function useUserSlippageTolerance(): [number, (slippage: number) => void] {

@@ -9,6 +9,7 @@ import SearchIcon from '../../assets/svg/Search.svg'
 import { Flex } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 import { CloseIcon } from '../../theme'
+import { useShowMobileSearchBarManager } from '../../state/user/hooks'
 
 interface Props {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
@@ -45,23 +46,25 @@ const SearchInputFarm: React.FC<Props> = ({ onChange: onChangeCallback, placehol
   }
 
   const { width } = useWindowDimensions()
-  const [showSearchBar, setShowSearchBar] = useState(false)
   const theme = useTheme()
+  const [showMobileSearchBar, toggleShowMobileSearchBar] = useShowMobileSearchBarManager()
+  const [fakeMobileSearchBar, setFakeMobileSearchBar] = useState(showMobileSearchBar)
 
   return (
     width >= 500 ? (
-      <SearchInput style={{height: '30px', borderRadius: '12px'}}
+      <SearchInput expanded={true} style={{height: '30px', borderRadius: '12px'}}
       value={searchText} onChange={onChange} placeholder={t(placeholder)} />
       ) : (
-        <Flex flexDirection={'row-reverse'}>
-          {!showSearchBar && <SearchButton onClick={() => setShowSearchBar(!showSearchBar)} >
+        <Flex style={{margin: showMobileSearchBar ? '10px 0' : '0'}}>
+          {!showMobileSearchBar && <SearchButton onClick={() => [setFakeMobileSearchBar(true),toggleShowMobileSearchBar()]} >
             <img src={SearchIcon} alt="search" />
           </SearchButton>}
-          {showSearchBar && (
+          {showMobileSearchBar && (
             <>
-            <SearchInput style={{background: 'none', backgroundColor: theme.bg9, height: '30px', borderRadius: '12px', position: 'relative'}}
+            <SearchInput expanded={fakeMobileSearchBar} style={{background: 'none', backgroundColor: theme.bg9, height: '30px', borderRadius: '12px', position: 'absolute'}}
             value={searchText} onChange={onChange} placeholder={t(placeholder)} />
-            <CloseIcon onClick={() => setShowSearchBar(!showSearchBar)} style={{position: 'absolute', right: '10px', alignSelf: 'center'}} />
+            <CloseIcon onClick={() => [setFakeMobileSearchBar(false), setTimeout(() => {toggleShowMobileSearchBar()}, 300)]} 
+            style={{position: 'absolute', right: '10px', top: '40px', alignSelf: 'center', opacity: fakeMobileSearchBar ? '1' : '0' }} />
             </>
           )}
         </Flex>

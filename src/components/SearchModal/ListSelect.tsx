@@ -348,6 +348,7 @@ export function ListSelect({ onDismiss, onBack }: { onDismiss: () => void; onBac
         </Text>
         <Row>
           <SearchInput
+            expanded={true}
             type="text"
             id="list-add-input"
             placeholder="https:// or ipfs:// or ENS name"

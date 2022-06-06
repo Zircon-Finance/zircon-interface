@@ -24,6 +24,7 @@ const DropDownListContainer = styled.div`
   background: ${({ theme }) => theme.anchorFloatBadge};
   transition: transform 0.15s, opacity 0.15s;
   transform: scaleY(0);
+  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.1);
   transform-origin: top;
   opacity: 0;
   width: 100%;

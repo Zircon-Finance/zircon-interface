@@ -4,6 +4,7 @@ export const ActionContainer = styled.div`
   padding: 16px;
   border-radius: 16px;
   flex-grow: 1;
+  color: ${({ theme }) => theme.text1};
   flex-basis: 0;
   margin-bottom: 16px;
   min-height: 120px;

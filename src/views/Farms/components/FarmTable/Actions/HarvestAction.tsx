@@ -50,7 +50,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ pid, userD
       <ActionContent>
         <div style={{display: 'flex', justifyContent: 'space-between', width: '100%', height: '115%', alignItems: 'center'}}>
           <div style={{display: 'flex', flexFlow: 'column', height: '100%', justifyContent: 'space-between'}}>
-            <Text fontSize="13px">
+            <Text color={theme.text1} fontSize="13px">
               {t('Earned')}
             </Text>
             <Heading style={{margin: '0', fontWeight: '400'}}>{displayBalance}</Heading>

@@ -32,6 +32,10 @@ import { ModalContainer } from '../../../Farms'
 
 const IconButtonWrapper = styled.div`
   display: flex;
+  svg {
+    background: ${({ theme }) => theme.questionMarks};
+    border-radius: 100%;
+  }
 `
 
 interface StackedActionProps extends FarmWithStakedValue {
@@ -189,7 +193,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
         }
         <ActionContainer style={{background: theme.bg6}}>
           <ActionTitles>
-            <Text fontSize="13px">
+            <Text color={theme.text1} fontSize="13px">
               {t('Staked')}
             </Text>
           </ActionTitles>

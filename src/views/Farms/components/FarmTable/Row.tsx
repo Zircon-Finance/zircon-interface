@@ -29,6 +29,7 @@ import useCatchTxError from '../../../../hooks/useCatchTxError'
 import { useTransactionAdder } from '../../../../state/transactions/hooks'
 import { useDispatch } from 'react-redux'
 import { fetchFarmUserDataAsync } from '../../../../state/farms'
+import { useIsDarkMode } from '../../../../state/user/hooks'
 // import { useFarmUser } from '../../../../state/farms/hooks'
 
 export interface RowProps {
@@ -201,13 +202,14 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const isApproved = account && details.userData.allowance && details.userData.allowance.isGreaterThan(0)
   const stakedAmount = useFarmUser(details.pid).stakedBalance.toNumber()
   const toggleWalletModal = useWalletModalToggle()
+  const darkMode = useIsDarkMode()
 
   const handleRenderRow = () => {
     if (!mobileVer) {
       return (
         !actionPanelExpanded && (
         <StyledTr expanded={isVisible} onClick={toggleActionPanel} onMouseOver={() => setHovered(true)} 
-        onMouseOut={() => setHovered(false)} style={hovered ? {backgroundColor: theme.cardExpanded} : null}>
+        onMouseOut={() => setHovered(false)} style={{backgroundColor: hovered ? theme.cardExpanded : null, borderBottom: !darkMode ? `1px solid ${theme.cardExpanded}` : null}} >
           {Object.keys(props).map((key) => {
             const columnIndex = columnNames.indexOf(key)
             if (columnIndex === -1) {

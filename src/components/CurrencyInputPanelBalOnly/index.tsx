@@ -48,7 +48,7 @@ const StyledBalanceMax = styled.button`
   height: 30px;
   width: 50px;
   padding: 6px 10px 7px;
-  background-color: #68597B;
+  background-color: ${({ theme }) => theme.maxButton};
   border: 0;
   letter-spacing: 0.05em
   border-radius: 0.9rem;
@@ -58,7 +58,7 @@ const StyledBalanceMax = styled.button`
   font-weight: 300;
   cursor: pointer;
   margin-right: 0.5rem;
-  color: ${({ theme }) => theme.primaryText1};
+  color: ${({ theme }) => theme.whiteBlackPink};
 
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     margin-right: 0.5rem;

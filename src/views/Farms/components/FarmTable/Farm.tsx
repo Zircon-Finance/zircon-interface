@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 // import { useFarmUser } from '../../../../state/farms/hooks'
 // import { useTranslation } from 'react-i18next'
 
@@ -52,6 +52,7 @@ const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pi
   }
 
   const {width} = useWindowDimensions()
+  const theme = useTheme()
 
   return (
     <Container>
@@ -62,7 +63,7 @@ const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pi
         <>
           <div>
           {handleRenderFarming()}
-          <Text style={{minWidth: 'max-content'}} fontWeight={400}>{label}</Text>
+          <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{label}</Text>
           </div>
           <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '10px', alignItems: 'center'}}>
           {stakedBalance > new BigNumber(0) ? 'ANCHOR' : 'FLOAT'}

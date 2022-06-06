@@ -166,7 +166,7 @@ export const ModalContainer = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0.5);
+  background-color: ${({ theme }) => theme.modalBg};
   z-index: 9999;
   display: flex;
   justify-content: center;
@@ -443,12 +443,12 @@ const Farms: React.FC = ({ children }) => {
           <Flex position={'relative'} width={width < 500 ? showMobileSearchBar ? '100%' : 'auto' : 'auto'} height={'70px'}>
             { (!showMobileSearchBar || width > 500) && <ViewControls>
               <ToggleWrapper style={{marginRight: '20px', position: 'relative'}}> 
-                <Text mr={'10px'} width={'max-content'}> {t('Staked only')}</Text>
+                <Text color={theme.text1} mr={'10px'} width={'max-content'}> {t('Staked only')}</Text>
                 <Toggle
                   id="staked-only-farms"
                   checked={stakedOnly}
-                  checkedColor={'cardBorder'}
-                  defaultColor={'cardBorder'}
+                  checkedColor={'invertedContrast'}
+                  defaultColor={'invertedContrast'}
                   onChange={() => setStakedOnly(!stakedOnly)}
                   scale="sm"
                 />

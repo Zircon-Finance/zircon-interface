@@ -335,7 +335,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
         </ActionContainer>
       </QuarterContainer>
 
-      <QuarterContainer>
+      <QuarterContainer style={{paddingLeft: width > 800 ? '5px' : '0'}}>
         <ActionContainer>
           <StakedAction {...farm} userDataReady={userDataReady} lpLabel={lpLabel} displayApr={apr.value} />
         </ActionContainer>

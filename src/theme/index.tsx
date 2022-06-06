@@ -9,8 +9,8 @@ import styled, {
 } from 'styled-components'
 import { Text, TextProps } from 'rebass'
 import { Colors } from './styled'
-import { useIsDarkMode } from '../state/user/hooks'
 import { useActiveWeb3React } from '../hooks'
+import { useIsDarkMode } from '../state/user/hooks'
 
 export * from './components'
 
@@ -33,48 +33,48 @@ const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } 
   {}
 ) as any
 
-const white = '#FFFFFF'
-const black = '#000000'
 
 export function colors(chainId: any, darkMode: boolean): Colors {
   return {
     chainId,
     darkMode,
     // base
-    white,
-    black,
-    whiteHalf: 'rgba(255,255,255,0.5)',
+    whiteHalf: darkMode ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)',
+
+    white: darkMode ? '#FFFFFF' : '#000000',
+    black: darkMode ? '#000000' : '#FFFFFF',
 
     // text
-    text1: '#FFFFFF',
-    text2: '#C3C5CB',
-    text3: '#6C7284',
-    text4: '#565A69',
-    text5: '#2C2F36',
+    text1: darkMode ? '#FFFFFF' : '#000000',
+    text2: darkMode ? '#C3C5CB' : '#000f0f',
+    text3: darkMode ?'#6C7284'  : '#000f0f',
+    text4: darkMode ?'#565A69'  : '#000f0f',
+    text5: darkMode ?'#2C2F36'  : '#000f0f',
+    tabsText: chainId !== 1287 ? '#FFF' : darkMode ? '#FFF' : '#945c67',
 
     // backgrounds / greys
-    bg1: chainId !== 1287 ? '#221237' : '#2E1621', // Dark purple
+    bg1: chainId !== 1287 ? '#221237' : darkMode ? '#2E1621' : '#FCFBFC', // Dark purple
     bg2: '#020202', //Black
     bg3: '#40444F', // Dark gray
     bg4: '#565A69', // Lighter gray
     bg5: '#6C7284',
     // light purple - inputs
-    bg6: chainId !== 1287 ? '#534169' : '#492f3a',
+    bg6: chainId !== 1287 ? '#534169' : darkMode ? '#492f3a' : '#f5f3f3',
     // darker purple - container
-    bg7: chainId !== 1287 ? '#402d58' : '#3c2330',
+    bg7: chainId !== 1287 ? '#402d58' : darkMode ? '#3c2330' : '#f5f3f3',
     // connect wallet button - dark purple
     bg8: chainId !== 1287 ? '#4a207c' : '#874955',
     // max button - very light purple
-    bg9: chainId !== 1287 ? '#443455' : '#634d58',
+    bg9: chainId !== 1287 ? '#443455' : darkMode ? '#634d58' : '#edebeb',
     //modal bg
-    bg10: chainId !== 1287 ? '#3c2955' : '#492F3D',
+    bg10: chainId !== 1287 ? '#3c2955' : darkMode ? '#492F3D' : '#f5f3f3',
     //button bg
     bg11: chainId !== 1287 ? '#604C7A' : '#5b4450',
     // hover button
     bg12: chainId !== 1287 ? '#5B4874' : '#634d58',
     // button purple
     bg13: chainId !== 1287 ? '#5F299F' : '#361E2A',
-    bg14: chainId !== 1287 ? '#4E386B' : '#523946',
+    bg14: chainId !== 1287 ? '#4E386B' : darkMode ? '#523946' : '#f5f3f3',
     //specialty colors
     modalBG: 'rgba(0,0,0,.425)',
     advancedBG: 'rgba(0,0,0,0.1)',
@@ -85,30 +85,34 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     primary3: '#BA73ED',
     primary4: '#A548E970',
     primary5: '#BA73ED70',
+    maxButton: chainId !== 1287 ? '#68597b' : darkMode ? '#361E2A' : '#ede3e8',
 
-    disabled1: chainId !== 1287 ? '#36195A' : '#44232E',
+    disabled1: chainId !== 1287 ? '#36195A' : darkMode ? '#44232E' : '#dfced2',
 
-    inputSelect1: chainId !== 1287 ? '#A987C2' : '#7D5F77',
+    inputSelect1: chainId !== 1287 ? '#A987C2' : darkMode ? '#7D5F77' : '#a69997',
 
-    navigationTabs: chainId !== 1287 ? '#402D54' : '#66393D',
+    navigationTabs: chainId !== 1287 ? '#402D54' : darkMode ? '#66393D' : '#e7e2e2',
 
-    navigationBorder: chainId !== 1287 ? '#413055' : '#66393D',
+    navigationBorder: chainId !== 1287 ? '#413055' : darkMode ? '#66393D' : '#e7e2e2',
 
-    anchorFloatBadge: chainId !== 1287 ? '#311f48' : '#4A303E',
+    anchorFloatBadge: chainId !== 1287 ? '#311f48' : darkMode ? '#4A303E' : '#e7e2e2',
 
-    questionMarks: chainId !== 1287 ? '#604C7A' : '#5b434f',
+    questionMarks: chainId !== 1287 ? '#604C7A' : darkMode ? '#5b434f' : '#9e4d86',
 
     slippageActive: chainId !== 1287 ? '#997aaf' : '#7d5f76',
 
-    walletActive: chainId !== 1287 ? '#25123C' : '#4e3430',
+    walletActive: chainId !== 1287 ? '#25123C' : darkMode ? '#4e3430' : '#edebea',
 
-    cardSmall: chainId !== 1287 ? '#2B1840' : '#361E2A' ,
-    cardExpanded: chainId !== 1287 ? '#3C2955' : '#3c2330',
+    cardSmall: chainId !== 1287 ? '#2B1840' : darkMode ? '#361E2A' : '#fcfbfc',
+    cardLightBorder: '#f2f0f1',
+    cardExpanded: chainId !== 1287 ? '#3C2955' : darkMode ? '#3c2330' : '#f2f0f1',
 
-    positionsButtons: chainId !== 1287 ? '#7a628c' : '#503945',
+    positionsButtons: chainId !== 1287 ? '#7a628c' : darkMode ? '#503945' : '#fcfbfc',
+    modalBg : chainId !== 1287 ? 'rgba(0,0,0,0.5)' : darkMode ? 'rgba(0,0,0,0.5)' : 'rgba(36, 17, 26, 0.5)',
 
     // color text
     primaryText1: '#ffffff',
+    whiteBlackPink: chainId !== 1287 ? '#ffffff' : darkMode ? '#ffffff' : '#9e4d86',
 
     // secondary colors
     secondary1: '#2172E5',
@@ -144,7 +148,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
       success: "#2ECC71",
     },
     card: {
-      background: chainId !== 1287 ? '#2B1840' : '#361E2A' ,
+      background: chainId !== 1287 ? '#2B1840' : darkMode ? '#361E2A' : '#f5f3f4',
     },
     lightColors: {
       card: chainId !== 1287 ? '#2B1840' : '#361E2A' ,
@@ -180,10 +184,10 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     },
     // toggle: chainId !== 1287 ? '#311f48' : '#4A303E',
     toggle: {
-      handleBackground: chainId !== 1287 ? '#644a7c' : '#4A303E',
+      handleBackground: chainId !== 1287 ? '#644a7c' : '#7d5f76',
     },
     modal: {
-      background: chainId !== 1287 ? '#2B1840' : '#361E2A' ,
+      background: chainId !== 1287 ? '#2B1840' : darkMode ? '#361E2A' : '#f1eff1' ,
     },
     zIndices: {
       modal: 1000,
@@ -340,13 +344,14 @@ body {
   min-height: 100vh;
   background-repeat: no-repeat;
   background-size: cover;
+  color: ${({ theme }) => theme.text1};
   background: ${ ({ theme }) => theme.chainId !== 1287 ? 
     (theme.darkMode ? 
       'radial-gradient(42.57% 42.57% at 50% 50%, rgba(44, 9, 90, 0.95) 0%, rgba(29, 8, 51, 0.95) 99.19%);' :
       '#371057;') : 
     (theme.darkMode ? 
       'linear-gradient(180deg, #3C2320 0%, #261715 100%);' :
-      '#372E0B;')}
+      '#F5F4F4;')}
   background-attachment: fixed;
 
 }

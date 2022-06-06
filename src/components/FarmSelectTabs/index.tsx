@@ -33,7 +33,7 @@ const StyledNavLink = styled(NavLink).attrs({
   outline: none;
   cursor: pointer;
   text-decoration: none;
-  color: ${({ theme }) => theme.text1};
+  color: ${({ theme }) => theme.tabsText};
   font-size: 13px;
   padding: 6px 10px;
   width: 50%;

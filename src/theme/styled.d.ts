@@ -15,6 +15,7 @@ export interface Colors {
   text3: Color
   text4: Color
   text5: Color
+  tabsText: Color
 
   // backgrounds / greys
   bg1: Color
@@ -35,6 +36,8 @@ export interface Colors {
   bg12: Color
   bg13: Color
   bg14: Color
+  maxButton: Color
+  modalBg: Color
 
   modalBG: Color
   advancedBG: Color
@@ -73,6 +76,8 @@ export interface Colors {
   secondary1: Color
   secondary2: Color
   secondary3: Color
+  whiteBlackPink: Color
+  cardLightBorder: Color
 
   // other
   red1: Color

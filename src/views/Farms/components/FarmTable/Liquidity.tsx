@@ -45,7 +45,7 @@ const DialogContainer = styled.div<{ show }>`
   border-radius: 17px;
   padding: 10px;
   z-index: 1000;
-  right: -50px;
+  right: -30px;
   width: max-content;
   font-size: 13px;
 `

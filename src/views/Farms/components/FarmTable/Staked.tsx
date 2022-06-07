@@ -76,14 +76,14 @@ const Staked: React.FunctionComponent<StakedProps> = ({ staked, hovered, setHove
   const [hoverMinus, setHoverMinus] = React.useState(false)
   const [hoverPlus, setHoverPlus] = React.useState(false)
   const plusContent = (
-    <DialogContainer style={{left: '15px'}} show={hoverPlus}>
+    <DialogContainer style={{left: '20px'}} show={hoverPlus}>
       <Text fontSize='13px'>
         {('Stake')}
       </Text>
     </DialogContainer>
   )
   const minusContent = (
-    <DialogContainer style={{right: '5px'}} show={hoverMinus}>
+    <DialogContainer style={{right: '10px'}} show={hoverMinus}>
       <Text fontSize='13px'>
         {('Unstake')}
       </Text>

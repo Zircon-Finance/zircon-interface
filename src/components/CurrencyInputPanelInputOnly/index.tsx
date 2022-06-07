@@ -1,11 +1,11 @@
 import { Currency, Pair } from 'zircon-sdk'
 import React, { useState, useCallback } from 'react'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
 import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
 import CurrencyLogo from '../CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
-import { RowBetween } from '../Row'
+// import { RowBetween } from '../Row'
 
 import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
 import { useTranslation } from 'react-i18next'
@@ -14,12 +14,11 @@ import { useTranslation } from 'react-i18next'
 
 const CurrencySelect = styled.button<{ selected: boolean }>`
   align-items: center;
-  height: 3rem;
   font-size: 16px;
   font-weight: 200;
   background-color: ${({ selected, theme }) => (selected ? theme.bg7 : theme.inputSelect1)};
   color: ${({ selected, theme }) => (selected ? theme.text1 : theme.white)};
-  border-radius: 12px;
+  border-radius: 17px;
   box-shadow: ${({ selected }) => (selected ? 'none' : '0px 6px 10px rgba(0, 0, 0, 0.075)')};
   outline: none;
   cursor: pointer;
@@ -74,7 +73,7 @@ const InputPanel = styled.div<{ hideInput?: boolean }>`
 `
 
 const Container = styled.div<{ hideInput: boolean }>`
-  border-radius: ${({ hideInput }) => (hideInput ? '8px' : '12px')};
+  border-radius: ${({ hideInput }) => (hideInput ? '8px' : '17px')};
   background-color: ${({ theme }) => theme.anchorFloatBadge};
   width: 100%;
 `
@@ -83,6 +82,8 @@ const StyledTokenName = styled.span<{ active?: boolean }>`
   ${({ active }) => (active ? '  margin: 0 0.75rem 0 0.75rem;' : '  margin: 0 0.25rem 0 0.25rem;')}
   font-size:  16px;
   align-self: center;
+  display: flex;
+  align-items: center;
 
 `
 
@@ -124,15 +125,16 @@ export default function CurrencyInputPanel({
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
   }, [setModalOpen])
+  const theme = useTheme()
 
   return (
     <InputPanel id={id}>
       <Container hideInput={hideInput}>
         {!hideInput && (
           <LabelRow>
-            <RowBetween style={{display: 'flex', flexFlow: 'column'}}>
-              <span style={{alignSelf: 'start',padding: '5px 5px 5px 10px', fontSize: '10px', letterSpacing: '0.05em'}}>{anchor ? 'ANCHOR' : 'FLOAT'}</span>
-              <div style={{display: 'flex', width: '100%'}}>
+            {/* <RowBetween style={{display: 'flex', flexFlow: 'column'}}> */}
+              {/* <span style={{alignSelf: 'start',padding: '5px 5px 5px 10px', fontSize: '10px', letterSpacing: '0.05em'}}>{anchor ? 'ANCHOR' : 'FLOAT'}</span> */}
+              {/* <div style={{display: 'flex', width: '100%'}}> */}
                 <CurrencySelect
                 selected={!!currency}
                 className="open-currency-select-button"
@@ -143,7 +145,7 @@ export default function CurrencyInputPanel({
                 }}
               >
                 <Aligner>
-                  <div style={{display: 'flex'}}>
+                  <div style={{display: 'flex', alignItems: 'center'}}>
                   {pair ? (
                     <DoubleCurrencyLogo currency0={pair.token0} currency1={pair.token1} size={24} margin={true} />
                   ) : currency ? (
@@ -159,16 +161,16 @@ export default function CurrencyInputPanel({
                         ? currency.symbol.slice(0, 4) +
                           '...' +
                           currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
-                        : currency?.symbol) || t('selectToken')}
+                        : <><p>{currency?.symbol}</p><span style={{color: theme.whiteHalf, marginLeft: '5px'}}>{anchor ? 'ANCHOR' : 'FLOAT'}</span></>) || t('selectToken')}
                     </StyledTokenName>
                   )}
                   </div>
                   {!disableCurrencySelect && <StyledDropDown selected={!!currency} />}
                 </Aligner>
               </CurrencySelect>
-              </div>
+              {/* </div> */}
               {/* Line below should be {account && ( */}
-            </RowBetween>
+            {/* </RowBetween> */}
           </LabelRow>
         )}
       </Container>

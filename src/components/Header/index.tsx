@@ -173,10 +173,10 @@ export default function Header() {
         <div style={{display: 'flex', paddingLeft: '15px', justifyContent: 'space-between', boxShadow: `inset 1px -10px 2px -10px ${theme.bg14}`,
                     alignSelf: 'start'}}>
               <div style={{display: 'grid', gridAutoFlow: 'column', columnGap: '20px', alignItems: 'center'}}>
-                  <Text color={chainId !== 1287 ? theme.white : theme.text2}
+                  <Text color={chainId === 1287 ? theme.white : theme.text2}
                         fontSize={13}
                         onClick={() => connectNet('moonbase')}
-                        style={{borderBottom: `${chainId !== 1287 ? ('1px solid'+theme.bg5) : 'none'}`,
+                        style={{borderBottom: `${chainId === 1287 ? ('1px solid'+theme.bg5) : 'none'}`,
                               cursor: 'pointer',
                               height: '50px',
                               display: 'flex',
@@ -215,7 +215,7 @@ export default function Header() {
               onClick={() => darkMode ? toggleSetDarkMode() : toggleSetDarkMode()}>
             <SunLogo  />
             </button>
-           <ChainPoolTab active={chainId !== 1287 ? 'moonbeam' : 'moonriver'} />
+           <ChainPoolTab active={chainId === 1287 ? 'moonbeam' : 'moonriver'} />
           </HeaderElement> </> :
           <div style={{display: 'grid', gridGap: '15px'}}>
           <HeaderElement>
@@ -227,7 +227,7 @@ export default function Header() {
               onClick={() => darkMode ? toggleSetDarkMode() : toggleSetDarkMode()}>
             <SunLogo  />
             </button>
-           <ChainPoolTab active={chainId !== 1287 ? 'moonbeam' : 'moonriver'} />
+           <ChainPoolTab active={chainId === 1287 ? 'moonbeam' : 'moonriver'} />
            </HeaderElement>
            <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : location.pathname === '/farm' ? 'farm' : 'pool'} />
           </div>}
@@ -263,7 +263,7 @@ export default function Header() {
             <SunLogo  />
             </button>
           
-           <ChainPoolTab active={chainId !== 1287 ? 'moonbeam' : 'moonriver'} /> </>
+           <ChainPoolTab active={chainId === 1287 ? 'moonbeam' : 'moonriver'} /> </>
           </HeaderElement>
           <HeaderControls>
             <HeaderElement>

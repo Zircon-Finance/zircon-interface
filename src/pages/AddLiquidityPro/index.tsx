@@ -269,10 +269,6 @@ export default function AddLiquidityPro({
         value = null
       }
     }else if (sync === "full") {
-      console.log(float)
-      console.log(DEV)
-      console.log(wrappedCurrency(currencies[Field.CURRENCY_A], chainId)?.address ?? '')
-      console.log(wrappedCurrency(currencies[Field.CURRENCY_B], chainId)?.address ?? '')
       if (float.currency_a === DEV) {
         estimate = router.estimateGas.addAsyncLiquidity100ETH
         method = router.addAsyncLiquidity100ETH
@@ -548,7 +544,7 @@ export default function AddLiquidityPro({
 
               {/* Condition that triggers pylov view */}
 
-              <div style={{display: 'flex', border: `1px solid ${theme.navigationBorder}`, borderRadius: '17px', margin: '0px 10px'}}>
+              <div style={{display: 'flex', borderBottom: `1px solid ${theme.navigationBorder}`,paddingBottom: '5px', margin: '0px 10px'}}>
                 <CurrencyInputPanelInputOnly
                     onCurrencySelect={handleCurrencyASelect}
                     currency={currencies[Field.CURRENCY_A]} id="add-liquidity-input-tokena" showCommonBases

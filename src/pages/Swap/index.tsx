@@ -92,9 +92,6 @@ export default function Swap() {
     currencies[Field.OUTPUT],
     typedValue
   )
-  const { chainId } = useActiveWeb3React()
-
-  console.log('Chain id is: ', chainId)
   const inputCurrency = useCurrency(inputCurrencyId)
   const outputCurrency = useCurrency(outputCurrencyId)
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE

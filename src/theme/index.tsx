@@ -50,31 +50,31 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     text3: darkMode ?'#6C7284'  : '#000f0f',
     text4: darkMode ?'#565A69'  : '#000f0f',
     text5: darkMode ?'#2C2F36'  : '#000f0f',
-    tabsText: chainId !== 1287 ? '#FFF' : darkMode ? '#FFF' : '#945c67',
+    tabsText: chainId === 1287 ? '#FFF' : darkMode ? '#FFF' : '#945c67',
 
     // backgrounds / greys
-    bg1: chainId !== 1287 ? '#221237' : darkMode ? '#2E1621' : '#FCFBFC', // Dark purple
+    bg1: chainId === 1287 ? '#221237' : darkMode ? '#2E1621' : '#FCFBFC', // Dark purple
     bg2: '#020202', //Black
     bg3: '#40444F', // Dark gray
     bg4: '#565A69', // Lighter gray
     bg5: '#6C7284',
     // light purple - inputs
-    bg6: chainId !== 1287 ? '#534169' : darkMode ? '#492f3a' : '#f5f3f3',
+    bg6: chainId === 1287 ? '#534169' : darkMode ? '#492f3a' : '#f5f3f3',
     // darker purple - container
-    bg7: chainId !== 1287 ? '#402d58' : darkMode ? '#3c2330' : '#f5f3f3',
+    bg7: chainId === 1287 ? '#402d58' : darkMode ? '#3c2330' : '#f5f3f3',
     // connect wallet button - dark purple
-    bg8: chainId !== 1287 ? '#4a207c' : '#874955',
+    bg8: chainId === 1287 ? '#4a207c' : '#874955',
     // max button - very light purple
-    bg9: chainId !== 1287 ? '#443455' : darkMode ? '#634d58' : '#edebeb',
+    bg9: chainId === 1287 ? '#443455' : darkMode ? '#634d58' : '#edebeb',
     //modal bg
-    bg10: chainId !== 1287 ? '#3c2955' : darkMode ? '#492F3D' : '#f5f3f3',
+    bg10: chainId === 1287 ? '#3c2955' : darkMode ? '#492F3D' : '#f5f3f3',
     //button bg
-    bg11: chainId !== 1287 ? '#604C7A' : '#5b4450',
+    bg11: chainId === 1287 ? '#604C7A' : '#5b4450',
     // hover button
-    bg12: chainId !== 1287 ? '#5B4874' : '#634d58',
+    bg12: chainId === 1287 ? '#5B4874' : '#634d58',
     // button purple
-    bg13: chainId !== 1287 ? '#5F299F' : '#361E2A',
-    bg14: chainId !== 1287 ? '#4E386B' : darkMode ? '#523946' : '#f5f3f3',
+    bg13: chainId === 1287 ? '#5F299F' : '#361E2A',
+    bg14: chainId === 1287 ? '#4E386B' : darkMode ? '#523946' : '#f5f3f3',
     //specialty colors
     modalBG: 'rgba(0,0,0,.425)',
     advancedBG: 'rgba(0,0,0,0.1)',
@@ -85,34 +85,34 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     primary3: '#BA73ED',
     primary4: '#A548E970',
     primary5: '#BA73ED70',
-    maxButton: chainId !== 1287 ? '#68597b' : darkMode ? '#361E2A' : '#ede3e8',
+    maxButton: chainId === 1287 ? '#68597b' : darkMode ? '#361E2A' : '#ede3e8',
 
-    disabled1: chainId !== 1287 ? '#36195A' : darkMode ? '#44232E' : '#dfced2',
+    disabled1: chainId === 1287 ? '#36195A' : darkMode ? '#44232E' : '#dfced2',
 
-    inputSelect1: chainId !== 1287 ? '#A987C2' : darkMode ? '#7D5F77' : '#a69997',
+    inputSelect1: chainId === 1287 ? '#A987C2' : darkMode ? '#7D5F77' : '#a69997',
 
-    navigationTabs: chainId !== 1287 ? '#402D54' : darkMode ? '#66393D' : '#e7e2e2',
+    navigationTabs: chainId === 1287 ? '#402D54' : darkMode ? '#66393D' : '#e7e2e2',
 
-    navigationBorder: chainId !== 1287 ? '#413055' : darkMode ? '#66393D' : '#e7e2e2',
+    navigationBorder: chainId === 1287 ? '#413055' : darkMode ? '#66393D' : '#e7e2e2',
 
-    anchorFloatBadge: chainId !== 1287 ? '#311f48' : darkMode ? '#4A303E' : '#e7e2e2',
+    anchorFloatBadge: chainId === 1287 ? '#311f48' : darkMode ? '#4A303E' : '#e7e2e2',
 
-    questionMarks: chainId !== 1287 ? '#604C7A' : darkMode ? '#5b434f' : '#9e4d86',
+    questionMarks: chainId === 1287 ? '#604C7A' : darkMode ? '#5b434f' : '#9e4d86',
 
-    slippageActive: chainId !== 1287 ? '#997aaf' : '#7d5f76',
+    slippageActive: chainId === 1287 ? '#997aaf' : '#7d5f76',
 
-    walletActive: chainId !== 1287 ? '#25123C' : darkMode ? '#4e3430' : '#edebea',
+    walletActive: chainId === 1287 ? '#25123C' : darkMode ? '#4e3430' : '#edebea',
 
-    cardSmall: chainId !== 1287 ? '#2B1840' : darkMode ? '#361E2A' : '#fcfbfc',
+    cardSmall: chainId === 1287 ? '#2B1840' : darkMode ? '#361E2A' : '#fcfbfc',
     cardLightBorder: '#f2f0f1',
-    cardExpanded: chainId !== 1287 ? '#3C2955' : darkMode ? '#3c2330' : '#f2f0f1',
+    cardExpanded: chainId === 1287 ? '#3C2955' : darkMode ? '#3c2330' : '#f2f0f1',
 
-    positionsButtons: chainId !== 1287 ? '#7a628c' : darkMode ? '#503945' : '#fcfbfc',
-    modalBg : chainId !== 1287 ? 'rgba(0,0,0,0.5)' : darkMode ? 'rgba(0,0,0,0.5)' : 'rgba(36, 17, 26, 0.5)',
+    positionsButtons: chainId === 1287 ? '#7a628c' : darkMode ? '#503945' : '#fcfbfc',
+    modalBg : chainId === 1287 ? 'rgba(0,0,0,0.5)' : darkMode ? 'rgba(0,0,0,0.5)' : 'rgba(36, 17, 26, 0.5)',
 
     // color text
     primaryText1: '#ffffff',
-    whiteBlackPink: chainId !== 1287 ? '#ffffff' : darkMode ? '#ffffff' : '#9e4d86',
+    whiteBlackPink: chainId === 1287 ? '#ffffff' : darkMode ? '#ffffff' : '#9e4d86',
 
     // secondary colors
     secondary1: '#2172E5',
@@ -131,30 +131,30 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     // blue5: darkMode ? '#153d6f70' : '#EBF4FF',
     colors: {
       backgroundDisabled: "#E9EAEB",
-      backgroundAlt: chainId !== 1287 ? '#311f48' : '#4A303E',
+      backgroundAlt: chainId === 1287 ? '#311f48' : '#4A303E',
       backgroundAlt2: "rgba(255, 255, 255, 0.7)",
-      cardBorder: chainId !== 1287 ? '#311f48' : '#361E2A',
+      cardBorder: chainId === 1287 ? '#311f48' : '#361E2A',
       contrast: "#191326",
       dropdown: "#F6F6F6",
       dropdownDeep: "#EEEEEE",
-      invertedContrast: chainId !== 1287 ? '#311f48' : '#4A303E',
-      input: chainId !== 1287 ? '#311f48' : '#4A303E',
-      inputSecondary: chainId !== 1287 ? '#311f48' : '#4A303E',
-      tertiary: chainId !== 1287 ? '#311f48' : '#4A303E',
+      invertedContrast: chainId === 1287 ? '#311f48' : '#4A303E',
+      input: chainId === 1287 ? '#311f48' : '#4A303E',
+      inputSecondary: chainId === 1287 ? '#311f48' : '#4A303E',
+      tertiary: chainId === 1287 ? '#311f48' : '#4A303E',
       text: "#FFFFFF",
       textDisabled: "#BDC2C4",
       textSubtle: 'rgba(255,255,255,0.5)',
-      disabled: chainId !== 1287 ? '#311f48' : '#4A303E',
+      disabled: chainId === 1287 ? '#311f48' : '#4A303E',
       success: "#2ECC71",
     },
     card: {
-      background: chainId !== 1287 ? '#2B1840' : darkMode ? '#361E2A' : '#f5f3f4',
+      background: chainId === 1287 ? '#2B1840' : darkMode ? '#361E2A' : '#f5f3f4',
     },
     lightColors: {
-      card: chainId !== 1287 ? '#2B1840' : '#361E2A' ,
+      card: chainId === 1287 ? '#2B1840' : '#361E2A' ,
     },
     darkColors: {
-      card: chainId !== 1287 ? '#2B1840' : '#361E2A' ,
+      card: chainId === 1287 ? '#2B1840' : '#361E2A' ,
     },
 
     mediaQueries: {
@@ -178,16 +178,16 @@ export function colors(chainId: any, darkMode: boolean): Colors {
       active: "0px 0px 0px 1px #0098A1, 0px 0px 4px 8px rgba(31, 199, 212, 0.4)",
       success: "0px 0px 0px 1px #31D0AA, 0px 0px 0px 4px rgba(49, 208, 170, 0.2)",
       warning: "0px 0px 0px 1px #ED4B9E, 0px 0px 0px 4px rgba(237, 75, 158, 0.2)",
-      focus: chainId !== 1287 ? "0px 0px 0px 1px #311f48, 0px 0px 0px 4px rgba(118, 69, 217, 0.6)" : "0px 0px 0px 1px #4A303E, 0px 0px 0px 4px rgba(74, 48, 62, 0.4)",
+      focus: chainId === 1287 ? "0px 0px 0px 1px #311f48, 0px 0px 0px 4px rgba(118, 69, 217, 0.6)" : "0px 0px 0px 1px #4A303E, 0px 0px 0px 4px rgba(74, 48, 62, 0.4)",
       inset: "inset 0px 2px 2px -1px rgba(74, 74, 104, 0.1)",
       tooltip: "0px 0px 2px rgba(0, 0, 0, 0.2), 0px 4px 12px -8px rgba(14, 14, 44, 0.1)",
     },
-    // toggle: chainId !== 1287 ? '#311f48' : '#4A303E',
+    // toggle: chainId === 1287 ? '#311f48' : '#4A303E',
     toggle: {
-      handleBackground: chainId !== 1287 ? '#644a7c' : '#7d5f76',
+      handleBackground: chainId === 1287 ? '#644a7c' : '#7d5f76',
     },
     modal: {
-      background: chainId !== 1287 ? '#2B1840' : darkMode ? '#361E2A' : '#f1eff1' ,
+      background: chainId === 1287 ? '#2B1840' : darkMode ? '#361E2A' : '#f1eff1' ,
     },
     zIndices: {
       modal: 1000,
@@ -284,13 +284,13 @@ export const TYPE = {
 
 export const FixedGlobalStyle = createGlobalStyle`
 html, input, textarea, button {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'DM-sans', sans-serif;
   letter-spacing: -0.018em;
   font-display: fallback;
 }
 @supports (font-variation-settings: normal) {
   html, input, textarea, button {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'DM-sans', sans-serif;
   }
 }
 
@@ -345,7 +345,7 @@ body {
   background-repeat: no-repeat;
   background-size: cover;
   color: ${({ theme }) => theme.text1};
-  background: ${ ({ theme }) => theme.chainId !== 1287 ? 
+  background: ${ ({ theme }) => theme.chainId === 1287 ? 
     (theme.darkMode ? 
       'radial-gradient(42.57% 42.57% at 50% 50%, rgba(44, 9, 90, 0.95) 0%, rgba(29, 8, 51, 0.95) 99.19%);' :
       '#371057;') : 

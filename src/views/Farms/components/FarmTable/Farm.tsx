@@ -7,9 +7,9 @@ import { Text } from '@pancakeswap/uikit'
 import { Token } from 'zircon-sdk'
 // import { getBalanceNumber } from '../../../../utils/formatBalance'
 import DoubleCurrencyLogo from '../../../../components/DoubleLogo'
-import { useFarmUser } from '../../../../state/farms/hooks'
+// import { useFarmUser } from '../../../../state/farms/hooks'
 import { BadgeSmall } from '../../../../components/Header'
-import BigNumber from 'bignumber.js'
+// import BigNumber from 'bignumber.js'
 import { useWindowDimensions } from '../../../../hooks'
 import { Flex } from 'rebass'
 
@@ -35,21 +35,21 @@ const TokenWrapper = styled.div`
 `
 
 const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pid, isAnchor }) => {
-  const { stakedBalance } = useFarmUser(pid)
+  // const { stakedBalance } = useFarmUser(pid)
   // const { t } = useTranslation()
   // const rawStakedBalance = getBalanceNumber(stakedBalance)
 
-  const handleRenderFarming = (): JSX.Element => {
-    // if (rawStakedBalance) {
-    //   return (
-    //     <Text color="secondary" fontWeight={300} fontSize="12px" bold textTransform="uppercase">
-    //       {t('Farming')}
-    //     </Text>
-    //   )
-    // }
+  // const handleRenderFarming = (): JSX.Element => {
+  //   // if (rawStakedBalance) {
+  //   //   return (
+  //   //     <Text color="secondary" fontWeight={300} fontSize="12px" bold textTransform="uppercase">
+  //   //       {t('Farming')}
+  //   //     </Text>
+  //   //   )
+  //   // }
 
-    return null
-  }
+  //   return null
+  // }
 
   const {width} = useWindowDimensions()
   const theme = useTheme()
@@ -59,17 +59,6 @@ const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pi
       <TokenWrapper>
         <DoubleCurrencyLogo currency0={token} currency1={quoteToken} size={width <= 500 ? 25 : 30} />
       </TokenWrapper>
-      { width >= 500 ? (
-        <>
-          <div>
-          {handleRenderFarming()}
-          <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{label}</Text>
-          </div>
-          <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '10px', alignItems: 'center'}}>
-          {stakedBalance > new BigNumber(0) ? 'ANCHOR' : 'FLOAT'}
-          </BadgeSmall>
-        </>
-      ) : (
         <>
           <div>
           {isAnchor ? (
@@ -78,14 +67,14 @@ const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pi
               <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '10px', display: 'flex', alignItems: 'center'}}>
               <span style={{color: '#fff', fontSize: '16px', marginRight: '3px'}}>{token.symbol} </span>{'ANCHOR'}
               </BadgeSmall>
-              <Text fontWeight={400}>{` - ${quoteToken.symbol}`}</Text>
+              <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{` - ${quoteToken.symbol}`}</Text>
             </Flex>
               
             </>
           ) : (
             <>
             <Flex>
-              <Text fontWeight={400}>{token.symbol} -</Text>
+              <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{token.symbol} -</Text>
               <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '10px', display: 'flex', alignItems: 'center'}}>
                 <span style={{color: '#fff', fontSize: '16px', marginRight: '3px'}}>{`${quoteToken.symbol} `}</span>{'FLOAT'}
               </BadgeSmall>
@@ -95,8 +84,6 @@ const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pi
           )}
           </div>
         </>
-      
-      )}
     </Container>
   )
 }

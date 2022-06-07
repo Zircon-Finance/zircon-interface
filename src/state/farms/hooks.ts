@@ -50,11 +50,9 @@ export const usePollFarmsWithUserData = () => {
 
   useSlowRefreshEffect(() => {
     const pids = farmsConfig.filter((farmToFetch) => farmToFetch.pid).map((farmToFetch) => farmToFetch.pid)
-    console.log('pids', pids)
     dispatch(fetchFarmsPublicDataAsync(pids))
 
     if (account) {
-      console.log('Updating user data async for account and pids', account, pids)
       dispatch(fetchFarmUserDataAsync({ account, pids }))
     }
   }, [dispatch, account])

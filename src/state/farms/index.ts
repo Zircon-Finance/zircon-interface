@@ -19,7 +19,6 @@ import { SerializedFarmsState, SerializedFarm } from '../types'
 import { fetchMasterChefFarmPoolLength } from './fetchMasterChefData'
 import { resetUserState } from '../global/actions'
 
-console.log('farmsConfig', farmsConfig)
 
 const noAccountFarmConfig = farmsConfig.map((farm) => ({
   ...farm,

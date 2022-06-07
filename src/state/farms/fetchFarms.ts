@@ -7,9 +7,7 @@ import { SerializedFarm } from '../types'
 
 const fetchFarms = async (farmsToFetch: SerializedFarmConfig[]): Promise<SerializedFarm[]> => {
   const farmResult = await fetchPublicFarmsData(farmsToFetch)
-  console.log('Farm result', farmResult)
   const masterChefResult = await fetchMasterChefData(farmsToFetch)
-  console.log('Master Chef result', masterChefResult)
 
   return farmsToFetch.map((farm, index) => {
     const [tokenBalanceLP, quoteTokenBalanceLP, lpTokenBalanceMC, lpTotalSupply, tokenDecimals, quoteTokenDecimals] =
@@ -22,7 +20,6 @@ const fetchFarms = async (farmsToFetch: SerializedFarmConfig[]): Promise<Seriali
 
     // Raw amount of token in the LP, including those not staked
     const tokenAmountTotal = new BigNumber(tokenBalanceLP).div(BIG_TEN.pow(tokenDecimals))
-    console.log('tokenBalanceLP', tokenBalanceLP)
     const quoteTokenAmountTotal = new BigNumber(quoteTokenBalanceLP).div(BIG_TEN.pow(quoteTokenDecimals))
 
     // Amount of quoteToken in the LP that are staked in the MC

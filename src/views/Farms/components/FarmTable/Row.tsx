@@ -57,7 +57,7 @@ const cells = {
 }
 
 const CellInner = styled.div`
-  padding: 24px 0px;
+  padding: 19px 0px;
   display: flex;
   width: 100%;
   align-items: center;
@@ -265,7 +265,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                     {props.staked.staked.gt(0) && (
                       <CellInner>
                         <CellLayout hovered={hovered} label={t('Earned')}>
-                          {createElement(cells[key], { ...props[key], userDataReady, hovered })}
+                          {createElement(cells[key], { ...props[key], userDataReady, hovered, setHovered })}
                         </CellLayout>
                       </CellInner>
                     )}
@@ -277,7 +277,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                     {props.staked.staked.gt(0) ? (
                       <CellInner>
                         <CellLayout hovered={hovered} label={t('Staked')}>
-                          {createElement(cells[key], { ...props[key], hovered })}
+                          {createElement(cells[key], { ...props[key], hovered, setHovered })}
                         </CellLayout>
                       </CellInner>) : (
                       <StakeAdd row={true} margin={true} width={'75%'} />)}
@@ -289,7 +289,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                   <TableData key={key}>
                     <CellInner>
                       <CellLayout hovered={hovered} label={t(tableSchema[columnIndex].label)}>
-                        {createElement(cells[key], { ...props[key], userDataReady, hovered })}
+                        {createElement(cells[key], { ...props[key], userDataReady, hovered, setHovered })}
                       </CellLayout>
                     </CellInner>
                   </TableData>

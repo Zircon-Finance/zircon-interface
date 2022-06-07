@@ -282,14 +282,14 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
         <ActionContainer style={{padding: '0 10px'}}>
             {width >= 800 ? (
               <SpaceBetween>
-                  <span style={{fontWeight: '300'}}>{token.symbol + '-' + quoteToken.symbol}</span>
+                  <span style={{fontWeight: '400'}}>{token.symbol + '-' + quoteToken.symbol}</span>
                   <DoubleCurrencyLogo currency0={token} currency1={quoteToken} size={25} />
               </SpaceBetween>
             ) : (
               <SpaceBetween style={{paddingTop: '16px'}}>
                 <Flex alignItems={'center'} style={{gap: '10px'}}>
                   <DoubleCurrencyLogo currency0={token} currency1={quoteToken} size={25} />
-                  <span style={{fontWeight: '300'}}>{token.symbol + '-' + quoteToken.symbol}</span>
+                  <span style={{fontWeight: '400'}}>{token.symbol + '-' + quoteToken.symbol}</span>
                   <BadgeSmall style={{fontSize: '13px',margin: '0'}}>{'ANCHOR'}</BadgeSmall>
                 </Flex>
                 <QuarterContainer onClick={() => clickAction(false)} 

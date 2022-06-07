@@ -21,7 +21,7 @@ import SearchInput from '../../components/SearchInput'
 import Table from './components/FarmTable/FarmTable'
 import { RowProps } from './components/FarmTable/Row'
 import { DesktopColumnSchema, FarmWithStakedValue } from './components/types'
-import { AnchorFloatTab, PylonClassicTab, ViewModeTabs } from '../../components/FarmSelectTabs'
+import { AnchorFloatTab, FarmTabButtons, PylonClassicTab, ViewModeTabs } from '../../components/FarmSelectTabs'
 import FarmRepeatIcon from '../../components/FarmRepeatIcon'
 import FarmsPage from '../../pages/Farm/'
 import Select from '../../components/Select/Select'
@@ -78,15 +78,17 @@ const ControlContainer = styled.div`
   align-items: center;
   position: relative;
 
-  justify-content: space-between;
+  justify-content: center;
   flex-direction: column;
   margin-bottom: 32px;
 
   @media (min-width: 992px) {
     flex-direction: row;
     flex-wrap: wrap;
-    padding: 16px 0px;
     margin-bottom: 0;
+  }
+  @media (min-width: 1100px) {
+    justify-content: space-between;
   }
 `
 
@@ -127,7 +129,7 @@ const FilterContainer = styled.div`
 `
 
 const ViewControls = styled.div`
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: space-between;
   display: flex;
   align-items: center;
@@ -384,10 +386,13 @@ const Farms: React.FC = ({ children }) => {
         earnings: getBalanceNumber(new BigNumber(farm.userData.earnings)),
         pid: farm.pid,
         hovered: false,
+        setHovered: () => {},
       },
       liquidity: {
         liquidity: farm.liquidity,
         hovered: false,
+        setHovered: () => {},
+        farm: farm,
       },
       multiplier: {
         multiplier: farm.multiplier,
@@ -395,10 +400,10 @@ const Farms: React.FC = ({ children }) => {
       staked: {
         staked: farm.userData.stakedBalance,
         hovered: false,
+        setHovered: () => {},
       },
       details: farm,
     }
-    console.log('Liquidity', farm.liquidity)
     return row
   })
 
@@ -453,7 +458,7 @@ const Farms: React.FC = ({ children }) => {
                   scale="sm"
                 />
               </ToggleWrapper>
-              {/* <FarmTabButtons active='Active' /> */}
+              <FarmTabButtons active='Active' />
             </ViewControls>}
             <FilterContainer>
               <LabelWrapper style={{ marginLeft: showMobileSearchBar ? 0 : 16, width: '100%' }}>

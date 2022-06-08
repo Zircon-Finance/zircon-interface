@@ -53,9 +53,9 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ pid, userD
             <Text color={theme.text1} fontSize="13px">
               {t('Earned')}
             </Text>
-            <Heading style={{margin: '0', fontWeight: '400'}}>{displayBalance}</Heading>
+            <Heading color={theme.text1} style={{margin: '0', fontWeight: '400'}}>{displayBalance}</Heading>
             {earningsBusd > 0 && (
-              <Balance fontSize="13px" color={theme.whiteHalf} decimals={2} value={earningsBusd} unit=" USD" prefix="~" />
+              <Balance fontSize="13px" color={theme.text1} decimals={2} value={earningsBusd} unit=" USD" prefix="~" />
             )}
           </div>
           <HarvestButton

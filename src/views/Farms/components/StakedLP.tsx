@@ -4,6 +4,7 @@ import Balance from '../../../components/Balance'
 import React, { useCallback } from 'react'
 import { useLpTokenPrice } from '../../../state/farms/hooks'
 import { getBalanceAmount, getBalanceNumber, getFullDisplayBalance } from '../../../utils/formatBalance'
+import { useTheme } from 'styled-components'
 
 interface StackedLPProps {
   stakedBalance: BigNumber
@@ -25,7 +26,7 @@ const StakedLP: React.FunctionComponent<StackedLPProps> = ({
   quoteTokenAmountTotal,
 }) => {
   const lpPrice = useLpTokenPrice(lpSymbol)
-
+  const theme = useTheme()
   const displayBalance = useCallback(() => {
     const stakedBalanceBigNumber = getBalanceAmount(stakedBalance)
     if (stakedBalanceBigNumber.gt(0) && stakedBalanceBigNumber.lt(0.0000001)) {
@@ -39,12 +40,12 @@ const StakedLP: React.FunctionComponent<StackedLPProps> = ({
 
   return (
     <Flex flexDirection="column" alignItems="flex-start">
-      <Heading style={{fontWeight: '400'}} color={stakedBalance.eq(0) ? 'textDisabled' : 'text'}>{displayBalance()}</Heading>
+      <Heading style={{color: theme.text1, margin: '0',fontWeight: '400'}}>{displayBalance()}</Heading>
       {stakedBalance.gt(0) && lpPrice.gt(0) && (
         <>
           <Balance
             fontSize="12px"
-            color="textSubtle"
+            color={theme.text1}
             decimals={2}
             value={getBalanceNumber(lpPrice.times(stakedBalance))}
             unit=" USD"
@@ -53,14 +54,14 @@ const StakedLP: React.FunctionComponent<StackedLPProps> = ({
           <Flex style={{ gap: '4px' }}>
             <Balance
               fontSize="12px"
-              color="textSubtle"
+              color={theme.whiteHalf}
               decimals={2}
               value={stakedBalance.div(lpTotalSupply).times(tokenAmountTotal).toNumber()}
               unit={` ${tokenSymbol}`}
             />
             <Balance
               fontSize="12px"
-              color="textSubtle"
+              color={theme.whiteHalf}
               decimals={2}
               value={stakedBalance.div(lpTotalSupply).times(quoteTokenAmountTotal).toNumber()}
               unit={` ${quoteTokenSymbol}`}
@@ -69,7 +70,7 @@ const StakedLP: React.FunctionComponent<StackedLPProps> = ({
         </>
       )}
     </Flex>
-  )
-}
+  )}
+
 
 export default StakedLP

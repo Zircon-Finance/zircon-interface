@@ -10,13 +10,16 @@ interface DetailsProps {
 const Container = styled.div`
   display: flex;
   justify-content: center;
-  padding-right: 10px;
+  padding-right: 15px;
   color: ${({ theme }) => theme.text1};
+  width: 100%;
+  justify-content: flex-end;
 `
 
 export const ArrowIcon = styled(ChevronDownIcon)<{ toggled: boolean }>`
   transform: ${({ toggled }) => (toggled ? 'rotate(180deg)' : 'rotate(0)')};
   height: 20px;
+  fill: ${({ theme }) => theme.text1};
 `
 
 const Details: React.FC<DetailsProps> = ({ actionPanelToggled }) => {

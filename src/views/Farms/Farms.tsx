@@ -448,7 +448,7 @@ const Farms: React.FC = ({ children }) => {
           <Flex position={'relative'} width={width < 500 ? showMobileSearchBar ? '100%' : 'auto' : 'auto'} height={'70px'}>
             { (!showMobileSearchBar || width > 500) && <ViewControls>
               <ToggleWrapper style={{marginRight: '20px', position: 'relative'}}> 
-                <Text color={theme.text1} mr={'10px'} width={'max-content'}> {t('Staked only')}</Text>
+                <Text fontSize='13px' color={theme.text1} mr={'10px'} width={'max-content'}> {t('STAKED ONLY')}</Text>
                 <Toggle
                   id="staked-only-farms"
                   checked={stakedOnly}
@@ -462,7 +462,7 @@ const Farms: React.FC = ({ children }) => {
             </ViewControls>}
             <FilterContainer>
               <LabelWrapper style={{ marginLeft: showMobileSearchBar ? 0 : 16, width: '100%' }}>
-                <SearchInput onChange={handleChangeQuery} placeholder="Search Farms" />
+                <SearchInput onChange={handleChangeQuery} placeholder="SEARCH FARMS" />
               </LabelWrapper>
             </FilterContainer>
           </Flex>

@@ -10,6 +10,7 @@ export const ActionContainer = styled.div`
   min-height: 120px;
   @media (min-width: 800px) {
     min-height: 50px;
+    margin-bottom: 0;
   }
   ${({ theme }) => theme.mediaQueries.sm} {
     margin-right: 12px;
@@ -48,6 +49,6 @@ export const HarvestButton = styled.button`
   width: 74px;
   height: 33px;
 
-  background: ${({ theme }) => theme.questionMarks};
+  background: ${({ theme }) => theme.hoveredButton};
   border-radius: 12px;
 `

@@ -7,6 +7,7 @@ import { useLocation } from 'react-router-dom';
 import styled from 'styled-components'
 
 import Logo from '../../assets/images/mainlogo.png'
+import DarkLogo from '../../assets/images/mainlogo-dark.png'
 import ZirconSmall from '../ZirconSmall';
 import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
 //import { useDarkModeManager } from '../../state/user/hooks'
@@ -173,18 +174,18 @@ export default function Header() {
         <div style={{display: 'flex', paddingLeft: '15px', justifyContent: 'space-between', boxShadow: `inset 1px -10px 2px -10px ${theme.bg14}`,
                     alignSelf: 'start'}}>
               <div style={{display: 'grid', gridAutoFlow: 'column', columnGap: '20px', alignItems: 'center'}}>
-                  <Text color={chainId === 1287 ? theme.white : theme.text2}
+                  <Text color={chainId !== 1287 ? theme.white : theme.text2}
                         fontSize={13}
                         onClick={() => connectNet('moonbase')}
-                        style={{borderBottom: `${chainId === 1287 ? ('1px solid'+theme.bg5) : 'none'}`,
+                        style={{borderBottom: `${chainId !== 1287 ? ('1px solid'+theme.bg5) : 'none'}`,
                               cursor: 'pointer',
                               height: '50px',
                               display: 'flex',
                               alignItems: 'center'}}>{'NORMAL'}</Text>
-                  <Text color={chainId === 1287 ? theme.white : theme.text2}
+                  <Text color={chainId !== 1287 ? theme.white : theme.text2}
                         fontSize={13}
                         onClick={() => connectNet('moonriver')}
-                        style={{borderBottom: `${chainId === 1287 ? ('1px solid'+theme.bg5) : 'none'}`,
+                        style={{borderBottom: `${chainId !== 1287 ? ('1px solid'+theme.bg5) : 'none'}`,
                               cursor: 'pointer',
                               height: '50px',
                               display: 'flex',
@@ -198,9 +199,9 @@ export default function Header() {
         <HeaderElement>
           <Title href=".">
             <UniIcon id="z-logo">
-              <img style={{ height: 50 }} src={Logo} alt="logo" />
+              <img style={{ height: 50 }} src={!darkMode ? DarkLogo : Logo} alt="logo" />
             </UniIcon>
-            {chainId === 1287 && <BadgeSmall>{'GAMMA'}</BadgeSmall>}
+            {chainId !== 1287 && <BadgeSmall>{'GAMMA'}</BadgeSmall>}
           </Title>
         </HeaderElement>
         {width > 1100 ? 
@@ -215,7 +216,7 @@ export default function Header() {
               onClick={() => darkMode ? toggleSetDarkMode() : toggleSetDarkMode()}>
             <SunLogo  />
             </button>
-           <ChainPoolTab active={chainId === 1287 ? 'moonbeam' : 'moonriver'} />
+           <ChainPoolTab active={chainId !== 1287 ? 'moonbeam' : 'moonriver'} />
           </HeaderElement> </> :
           <div style={{display: 'grid', gridGap: '15px'}}>
           <HeaderElement>
@@ -227,7 +228,7 @@ export default function Header() {
               onClick={() => darkMode ? toggleSetDarkMode() : toggleSetDarkMode()}>
             <SunLogo  />
             </button>
-           <ChainPoolTab active={chainId === 1287 ? 'moonbeam' : 'moonriver'} />
+           <ChainPoolTab active={chainId !== 1287 ? 'moonbeam' : 'moonriver'} />
            </HeaderElement>
            <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : location.pathname === '/farm' ? 'farm' : 'pool'} />
           </div>}
@@ -251,7 +252,7 @@ export default function Header() {
               <UniIcon id="z-logo">
                 <ZirconSmall />
               </UniIcon>
-              {chainId === 1287 && <BadgeSmall>{'GAMMA'}</BadgeSmall>}
+              {chainId !== 1287 && <BadgeSmall>{'GAMMA'}</BadgeSmall>}
             </Title>
              <>
             <button  style={{border: 'none', 
@@ -263,7 +264,7 @@ export default function Header() {
             <SunLogo  />
             </button>
           
-           <ChainPoolTab active={chainId === 1287 ? 'moonbeam' : 'moonriver'} /> </>
+           <ChainPoolTab active={chainId !== 1287 ? 'moonbeam' : 'moonriver'} /> </>
           </HeaderElement>
           <HeaderControls>
             <HeaderElement>

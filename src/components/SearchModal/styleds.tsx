@@ -78,7 +78,7 @@ animation: ${({ expanded }) =>
   background-position: right;
   background-position-x: 95%;
   ::placeholder {
-    color: white;
+    color: ${({ theme }) => theme.text1};
   }
   white-space: nowrap;
   background-color: ${({ theme}) => theme.bg9};

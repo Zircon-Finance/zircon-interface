@@ -29,7 +29,7 @@ export const farms: SerializedFarmConfig[] = [
     token: serializedTokens.saturn,
     quoteToken: serializedTokens.mars,
     isCommunity: true,
-    isAnchor: true,
+    isAnchor: false,
   },
   {
     pid: 5,

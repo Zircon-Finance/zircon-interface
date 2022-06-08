@@ -38,6 +38,7 @@ export interface Colors {
   bg14: Color
   maxButton: Color
   modalBg: Color
+  hoveredButton: Color
 
   modalBG: Color
   advancedBG: Color

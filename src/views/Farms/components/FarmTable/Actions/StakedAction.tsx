@@ -29,11 +29,11 @@ import { useTransactionAdder } from '../../../../../state/transactions/hooks'
 import { modalTopDeposit } from './ActionPanel'
 import Portal from '@reach/portal'
 import { ModalContainer } from '../../../Farms'
+import { Flex } from 'rebass'
 
 const IconButtonWrapper = styled.div`
   display: flex;
   svg {
-    background: ${({ theme }) => theme.questionMarks};
     border-radius: 100%;
   }
 `
@@ -208,16 +208,23 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
               quoteTokenAmountTotal={quoteTokenAmountTotal}
             />
             <IconButtonWrapper>
-            <IconButton style={{background: 'transparent', width: 'auto'}} variant="tertiary" onClick={()=>setshowModalWithdraw(true)} mr="6px">
-              <MinusIcon />
+            <IconButton 
+              style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}} 
+              variant="tertiary" 
+              onClick={()=>setshowModalWithdraw(true)} mr="6px">
+              <Flex>
+                <MinusIcon />
+              </Flex>
             </IconButton>
               <IconButton
-                style={{background: 'transparent', width: 'auto', border:'none'}} 
-                variant="secondary"
+                style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%'}} 
+                variant="tertiary"
                 onClick={()=>{setshowModalDeposit(true)}}
                 disabled={['history', 'archived'].some((item) => window.location.pathname.includes(item))}
               >
-                <PlusIcon/>
+                <Flex>
+                  <PlusIcon />
+                </Flex>
               </IconButton>
             </IconButtonWrapper>
           </ActionContent>

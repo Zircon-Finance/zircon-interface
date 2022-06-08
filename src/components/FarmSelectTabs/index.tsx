@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { darken } from 'polished'
 import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router-dom'
@@ -84,17 +84,17 @@ export function AnchorFloatTab({ active }: { active: 'ALL' | 'ANCHOR' | 'FLOAT' 
       <StyledNavLink id={`all-select-tab`} to={'#'} 
         onClick={()=> {setuserFarmsFilterAnchorFloat(FarmFilterAnchorFloat.ALL)}} 
         isActive={() => filter === FarmFilterAnchorFloat.ALL}>
-        {t('All')}
+        {t('ALL')}
       </StyledNavLink>
       <StyledNavLink id={`anchor-select-tab`} to={'#'} 
         onClick={()=> {setuserFarmsFilterAnchorFloat(FarmFilterAnchorFloat.ANCHOR)}} 
         isActive={() => filter === FarmFilterAnchorFloat.ANCHOR}>
-        {t('Anchor')}
+        {t('ANCHOR')}
       </StyledNavLink>
       <StyledNavLink id={`float-select-tab`} to={'#'} 
         onClick={()=> {setuserFarmsFilterAnchorFloat(FarmFilterAnchorFloat.FLOAT)}} 
         isActive={() => filter === FarmFilterAnchorFloat.FLOAT}>
-        {t('Float')}
+        {t('FLOAT')}
       </StyledNavLink>
     </Tabs>
   )
@@ -102,10 +102,10 @@ export function AnchorFloatTab({ active }: { active: 'ALL' | 'ANCHOR' | 'FLOAT' 
 
 export function ViewModeTabs({ active }: { active: 'TABLE' | 'CARD'}) {
   const [viewMode, setViewMode] = useUserFarmsViewMode()
-
+  const theme = useTheme()
   return (
     <div style={{width: '100%'}}>
-      <Tabs style={{ width: '70px', margin: '0'}}>
+      <Tabs style={{background: theme.maxButton, width: '70px', margin: '0'}}>
         <StyledNavLink
           style={{padding: '5px'}}
           id={`anchor-select-tab`} to={'#'}
@@ -136,11 +136,11 @@ export function FarmTabButtons({ active }: { active: 'Active' | 'Finished'}) {
     <Tabs style={{padding: '5px',  width: width > 700 ? 'auto' : '100%' }}>
       <StyledNavLink id={`live-farms-select`} to={'/farm'} 
         isActive={() => hash === '#/farm'}>
-        {t('Active')}
+        {t('ACTIVE')}
       </StyledNavLink>
       <StyledNavLink id={`finished-farms-select`} to={'/farm/history'} 
         isActive={() => hash === '#/farm/history'}>
-        {t('Finished')}
+        {t('FINISHED')}
       </StyledNavLink>
     </Tabs>
   )

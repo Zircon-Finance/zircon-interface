@@ -73,7 +73,7 @@ const Container = styled.div<{ expanded, staked }>`
           ${collapseAnimation} 300ms linear forwards
         `};
   overflow: hidden;
-  background: ${({ theme }) => theme.anchorFloatBadge};
+  background: ${({ theme }) => theme.card.background};
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -82,7 +82,7 @@ const Container = styled.div<{ expanded, staked }>`
   margin-bottom: ${({ expanded }) => (expanded ? '0' : '5px')};
   grid-template-columns: ${({ staked }) => staked ? '25% 20% 20% auto 40px' : '25% 35% auto 40px'};
   @media (min-width: 800px) {
-    grid-template-columns: ${({ staked }) => staked ? '22% 25% 25% auto 40px' : '22% 50% auto 40px'};
+    grid-template-columns: ${({ staked }) => staked ? '24% 25% 25% auto 40px' : '24% 50% auto 40px'};
     display: grid;
     gap: 5px;
   }
@@ -183,7 +183,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const farm = details
   const staked = details.userData.stakedBalance.gt(0)
   const { t } = useTranslation()
-  const { quoteToken, token } = farm
+  const { quoteToken, token, isAnchor } = farm
   const lpLabel = farm.lpSymbol && farm.lpSymbol.toUpperCase().replace('PANCAKE', '')
   // getLiquidityUrlPathParts({
   //   quoteTokenAddress: quoteToken.address,
@@ -282,15 +282,57 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
         <ActionContainer style={{padding: '0 10px'}}>
             {width >= 800 ? (
               <SpaceBetween>
-                  <span style={{fontWeight: '400'}}>{token.symbol + '-' + quoteToken.symbol}</span>
+                  <div>
+                  {isAnchor ? (
+                    <>
+                    <Flex flexWrap='wrap'>  
+                      <BadgeSmall 
+                      style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', display: 'flex', alignItems: 'center', marginRight: '5px'}}>
+                      <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{token.symbol} </span>{'ANCHOR'}
+                      </BadgeSmall>
+                      <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{` - ${quoteToken.symbol}`}</Text>
+                    </Flex>
+                      
+                    </>
+                  ) : (
+                    <>
+                    <Flex flexWrap='wrap'>
+                      <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{token.symbol} -</Text>
+                      <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '5px', display: 'flex', alignItems: 'center'}}>
+                        <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{`${quoteToken.symbol}`}</span>{'FLOAT'}
+                      </BadgeSmall>
+                    </Flex>
+                    </>
+                  )}
+                  </div>
                   <DoubleCurrencyLogo currency0={token} currency1={quoteToken} size={25} />
               </SpaceBetween>
             ) : (
               <SpaceBetween style={{paddingTop: '16px'}}>
                 <Flex alignItems={'center'} style={{gap: '10px'}}>
                   <DoubleCurrencyLogo currency0={token} currency1={quoteToken} size={25} />
-                  <span style={{fontWeight: '400'}}>{token.symbol + '-' + quoteToken.symbol}</span>
-                  <BadgeSmall style={{fontSize: '13px',margin: '0'}}>{'ANCHOR'}</BadgeSmall>
+                  <div>
+                  {isAnchor ? (
+                    <>
+                    <Flex flexWrap='wrap'>  
+                      <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', display: 'flex', alignItems: 'center'}}>
+                      <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{token.symbol} </span>{'ANCHOR'}
+                      </BadgeSmall>
+                      <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{` - ${quoteToken.symbol}`}</Text>
+                    </Flex>
+                      
+                    </>
+                  ) : (
+                    <>
+                    <Flex flexWrap='wrap'>
+                      <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{token.symbol} -</Text>
+                      <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '5px', display: 'flex', alignItems: 'center'}}>
+                        <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{`${quoteToken.symbol}`}</span>{'FLOAT'}
+                      </BadgeSmall>
+                    </Flex>
+                    </>
+                  )}
+                  </div>
                 </Flex>
                 <QuarterContainer onClick={() => clickAction(false)} 
                   style={{justifyContent: 'center', alignItems: 'center', cursor: 'pointer'}}>
@@ -301,12 +343,11 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           {width >= 800 ? (
           <>
           <SpaceBetween>
-            <BadgeSmall style={{fontSize: '13px',margin: '0'}}>{'ANCHOR'}</BadgeSmall>
+            <Flex flexDirection={'column'}>
+              <StyledLinkExternal style={{marginBottom: '5px'}} color={theme.tabsText} href={bsc}>{t('View Contract')}</StyledLinkExternal>
+              <StyledLinkExternal color={theme.tabsText} href={info}>{t('See Pair Info')}</StyledLinkExternal>
+            </Flex>
             <span>{'High risk'}</span>
-          </SpaceBetween>
-          <SpaceBetween>
-            <StyledLinkExternal color={theme.whiteHalf} href={bsc}>{t('View Contract ↗')}</StyledLinkExternal>
-            <StyledLinkExternal color={theme.whiteHalf} href={info}>{t('See Pair Info ↗')}</StyledLinkExternal>
           </SpaceBetween>
           </> ) : (
             <>
@@ -357,15 +398,15 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
       <QuarterContainer style={{padding: width < 992 ? '0 10px' : '0 0 0 10px'}}>
         <ValueContainer>
           <ValueWrapper>
-            <Text fontSize='13px' fontWeight={300}>{t('APR')}</Text>
+            <Text fontSize='13px' fontWeight={300} color={theme.text1}>{t('APR')}</Text>
             <Apr left={true} {...apr} />
           </ValueWrapper>
           <ValueWrapper>
-            <Text fontSize='13px' fontWeight={300}>{t('Liquidity')}</Text>
+            <Text color={theme.text1} fontSize='13px' fontWeight={300}>{t('Liquidity')}</Text>
             <Liquidity {...liquidity} />
           </ValueWrapper>
           <Link to={`/add-pro/${token.address}/${quoteToken.address}`}>
-            <ButtonOutlined style={{padding: '10px', fontSize: '13px'}}>{`Get ${token.name} - ${quoteToken.name} Anchor LP`}</ButtonOutlined>
+            <ButtonOutlined style={{padding: '10px', fontSize: '13px', color: theme.whiteBlackPink}}>{`Get ${token.name} - ${quoteToken.name} Anchor LP`}</ButtonOutlined>
           </Link>
         </ValueContainer>
       </QuarterContainer>

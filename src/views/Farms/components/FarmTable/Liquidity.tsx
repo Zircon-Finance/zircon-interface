@@ -1,10 +1,12 @@
 import React, { Dispatch, SetStateAction } from 'react'
-import styled, { css } from 'styled-components'
+import styled, { css, useTheme } from 'styled-components'
 import { IconButton, Text } from '@pancakeswap/uikit'
 import BigNumber from 'bignumber.js'
 import { expandAnimation, collapseAnimation } from './Staked'
 import PlusIcon from '../PlusIcon'
 import { Link } from 'react-router-dom'
+import { Flex } from 'rebass'
+import { useWindowDimensions } from '../../../../hooks'
 
 
 export interface LiquidityProps {
@@ -41,7 +43,7 @@ const DialogContainer = styled.div<{ show }>`
       `};
   position: absolute;
   top: 40px;
-  background: ${({ theme }) => theme.bg6};
+  background: ${({ theme }) => theme.hoveredButton};
   border-radius: 17px;
   padding: 10px;
   z-index: 1000;
@@ -64,11 +66,12 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
   //   ) : (
   //     <Skeleton width={60} />
   //   )
-
+  const theme = useTheme()
+  const { width } = useWindowDimensions()
   const [hoverPlus, setHoverPlus] = React.useState(false)
   const plusContent = (
       <DialogContainer show={hoverPlus}>
-        <Text fontSize='13px'>
+        <Text style={{color: '#FFF'}} fontSize='13px'>
           {('Add liquidity')}
         </Text>
       </DialogContainer>
@@ -77,18 +80,20 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
   return (
     <Container>
       <LiquidityWrapper>
-        <Text>{'1000$'}</Text>
+        <Text color={theme.text1}>{'1000$'}</Text>
         { 
         // liquidity.gt(0) && 
-        hovered && 
+        hovered && width >= 1100 &&
         <AbsContainer onMouseEnter={()=>setHovered(true)}>
           <Link to={`/add-pro/${farm.token.address}/${farm.quoteToken.address}`}>
-            <IconButton style={{background: 'transparent', width: 'auto'}} variant="tertiary">
-            <div 
+            <IconButton 
+            style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%'}}
+            >
+            <Flex 
               onMouseEnter={()=>setHoverPlus(true)}
               onMouseLeave={()=>setHoverPlus(false)}>
               <PlusIcon />
-            </div>
+            </Flex>
             </IconButton>
           </Link>
           {hoverPlus && plusContent}

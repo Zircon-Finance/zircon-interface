@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
 const Label = styled.div`
   font-size: 12px;
@@ -20,9 +20,10 @@ interface CellLayoutProps {
 }
 
 const CellLayout: React.FC<CellLayoutProps> = ({ label = '', children, hovered }) => {
+  const theme = useTheme()
   return (
     <div style={{width: '100%'}}>
-      {label && <Label style={{color: hovered ? 'rgba(255,255,255,0.5)' : 'transparent', position: 'absolute', bottom: '42px'}}>{label}</Label>}
+      {label && <Label style={{color: hovered ? theme.whiteHalf : 'transparent', position: 'absolute', bottom: '42px'}}>{label}</Label>}
       <ContentContainer>{children}</ContentContainer>
     </div>
   )

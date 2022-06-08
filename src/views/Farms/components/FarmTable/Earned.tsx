@@ -1,9 +1,10 @@
 import React, { Dispatch, SetStateAction } from 'react'
-import styled, { css } from 'styled-components'
+import styled, { css, useTheme } from 'styled-components'
 import { IconButton, Skeleton } from '@pancakeswap/uikit'
 import MinusIcon from '../MinusIcon'
 import { expandAnimation, collapseAnimation } from './Staked'
-import { Text } from 'rebass'
+import { Flex, Text } from 'rebass'
+import { useWindowDimensions } from '../../../../hooks'
 
 export interface EarnedProps {
   earnings: number
@@ -37,7 +38,7 @@ const DialogContainer = styled.div<{ show }>`
       `};
   position: absolute;
   top: 40px;
-  background: ${({ theme }) => theme.bg6};
+  background: ${({ theme }) => theme.hoveredButton};
   border-radius: 17px;
   padding: 10px;
   z-index: 1000;
@@ -55,9 +56,11 @@ const AbsContainer = styled.div`
 
 const Earned: React.FunctionComponent<EarnedPropsWithLoading> = ({ earnings, userDataReady, hovered, setHovered }) => {
   const [hoverMinus, setHoverMinus] = React.useState(false)
+  const theme = useTheme()
+  const { width } = useWindowDimensions()
   const minusContent = (
     <DialogContainer show={hoverMinus}>
-      <Text>
+      <Text style={{color: '#FFF'}}>
         {('Withdraw')}
       </Text>
     </DialogContainer>
@@ -67,15 +70,16 @@ const Earned: React.FunctionComponent<EarnedPropsWithLoading> = ({ earnings, use
     <Amount earned={earnings}>{earnings.toLocaleString()}</Amount>
     { 
     // earnings > 0 && 
-    hovered && 
+    width >= 1100 && hovered &&
       <AbsContainer
       onMouseEnter={()=>setHovered(true)}>
-        <IconButton style={{background: 'transparent', width: 'auto'}} variant="tertiary">
-        <div 
-            onMouseEnter={()=>setHoverMinus(true)}
-            onMouseLeave={()=>setHoverMinus(false)}>
-            <MinusIcon />
-        </div>
+        <IconButton 
+            style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%'}}>
+            <Flex 
+              onMouseEnter={()=>setHoverMinus(true)}
+              onMouseLeave={()=>setHoverMinus(false)}>
+              <MinusIcon />
+            </Flex>
         </IconButton>
         {hoverMinus && minusContent}
       </AbsContainer>}</div>

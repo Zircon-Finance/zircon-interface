@@ -79,8 +79,7 @@ animation: ${({ expanded }) =>
   display: flex;
   flex-direction: column;
   width: 100%;
-  background: ${({ theme }) => theme.cardSmall};
-  border-radius: 17px;
+  border-bottom: 1px solid ${({ theme }) => theme.bg7};
   @media (min-width: 992px) {
     display: table;
 `

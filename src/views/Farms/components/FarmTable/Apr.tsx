@@ -9,7 +9,6 @@ import { Skeleton } from '@pancakeswap/uikit'
 
 export interface AprProps {
   value: string
-  multiplier: string
   pid: number
   lpLabel: string
   lpSymbol: string
@@ -53,7 +52,6 @@ const Apr: React.FC<AprProps> = ({
   pid,
   lpLabel,
   lpSymbol,
-  multiplier,
   tokenAddress,
   quoteTokenAddress,
   cakePrice,
@@ -70,7 +68,6 @@ const Apr: React.FC<AprProps> = ({
           pid={pid}
           lpSymbol={lpSymbol}
           lpLabel={lpLabel}
-          multiplier={multiplier}
           cakePrice={cakePrice}
           apr={originalValue}
           displayApr={value}

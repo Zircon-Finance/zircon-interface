@@ -5,13 +5,11 @@ import { useWeb3React } from '@web3-react/core'
 // import { BASE_ADD_LIQUIDITY_URL } from 'config'
 import { useTranslation } from 'react-i18next'
 
-import { useERC20 } from '../../../../../hooks/useContract'
+import { useERC20, useSousChef } from '../../../../../hooks/useContract'
 import useCatchTxError from '../../../../../hooks/useCatchTxError'
 // import { useRouter } from 'next/router'
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
-import { fetchFarmUserDataAsync } from '../../../../../state/farms'
-import { useFarmUser, useLpTokenPrice } from '../../../../../state/farms/hooks'
 import styled, { useTheme } from 'styled-components'
 // import getLiquidityUrlPathParts from 'utils/getLiquidityUrlPathParts'
 import useApproveFarm from '../../../hooks/useApproveFarm'
@@ -19,17 +17,22 @@ import useStakeFarms from '../../../hooks/useStakeFarms'
 import useUnstakeFarms from '../../../hooks/useUnstakeFarms'
 import WithdrawModal from '../../WithdrawModal'
 import { ActionContainer, ActionContent, ActionTitles } from './styles'
-import { FarmWithStakedValue } from '../../types'
 import StakedLP from '../../StakedLP'
+import { MaxUint256 } from '@ethersproject/constants'
 import PlusIcon from '../../PlusIcon'
 import MinusIcon from '../../MinusIcon'
 import BigNumber from 'bignumber.js'
 import { useAddPopup } from '../../../../../state/application/hooks'
 import { useTransactionAdder } from '../../../../../state/transactions/hooks'
-import { modalTopDeposit } from './ActionPanel'
+import { ModalTopDeposit } from './ActionPanel'
 import Portal from '@reach/portal'
 import { ModalContainer } from '../../../Farms'
 import { Flex } from 'rebass'
+import { DeserializedPool } from '../../../../../state/types'
+import { Token } from 'zircon-sdk'
+import { usePool } from '../../../../../state/pools/hooks'
+import { fetchPoolsUserDataAsync } from '../../../../../state/pools'
+import { useCallWithGasPrice } from '../../../../../hooks/useCallWithGasPrice'
 
 const IconButtonWrapper = styled.div`
   display: flex;
@@ -38,35 +41,32 @@ const IconButtonWrapper = styled.div`
   }
 `
 
-interface StackedActionProps extends FarmWithStakedValue {
+interface StackedActionProps extends DeserializedPool {
   userDataReady: boolean
   lpLabel?: string
   displayApr?: string
 }
 
 const Staked: React.FunctionComponent<StackedActionProps> = ({
-  pid,
+  sousId,
   apr,
-  multiplier,
-  lpSymbol,
   lpLabel,
-  lpAddress,
-  quoteToken,
-  token,
+  contractAddress,
+  earningToken,
+  stakingToken,
   userDataReady,
   displayApr,
-  lpTotalSupply,
-  tokenAmountTotal,
-  quoteTokenAmountTotal,
 }) => {
   const { t } = useTranslation()
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
   const { account } = useWeb3React()
-  const { allowance, tokenBalance, stakedBalance } = useFarmUser(pid)
-  const { onStake } = useStakeFarms(pid)
-  const { onUnstake } = useUnstakeFarms(pid)
+  const { pool } = usePool(sousId)
+  const allowance = pool.userData.allowance
+  const tokenBalance = pool.userData.stakingTokenBalance
+  const stakedBalance = pool.userData.stakedBalance
+  const { onStake } = useStakeFarms(sousId)
+  const { onUnstake } = useUnstakeFarms(sousId)
   // const router = useRouter()
-  const lpPrice = useLpTokenPrice(lpSymbol)
   const [showModalDeposit, setshowModalDeposit] = useState(false)
   const [showModalWithdraw, setshowModalWithdraw] = useState(false)
   const addPopup = useAddPopup()
@@ -81,11 +81,11 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
   // })
   // `${BASE_ADD_LIQUIDITY_URL}/${liquidityUrlPathParts}`
 
-  const handleStake = async (amount: string) => {
+  const handleStake = async (amount: string, token: Token) => {
     const receipt = await fetchWithCatchTxError(() => {
-      return onStake(amount).then((response) => {
+      return onStake(amount, token.decimals).then((response) => {
         addTransaction(response, {
-          summary: `Stake ${token.symbol}-${quoteToken.symbol} tokens`
+          summary: `Stake ${earningToken.symbol}-${stakingToken.symbol} tokens`
         })
         return response
       })
@@ -96,20 +96,20 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
           txn: {
             hash: receipt.transactionHash,
             success: receipt.status === 1,
-            summary: 'Stake '+amount+' '+token.symbol+"-"+quoteToken.symbol+' LP to farm',
+            summary: 'Stake '+amount+' '+earningToken.symbol+"-"+stakingToken.symbol+' LP to farm',
           }
         },
         receipt.transactionHash
       )  
-      dispatch(fetchFarmUserDataAsync({ account, pids: [pid] }))
+      dispatch(fetchPoolsUserDataAsync(account))
     }
   }
 
-  const handleUnstake = async (amount: string) => {
+  const handleUnstake = async (amount: string, token: Token) => {
     const receipt = await fetchWithCatchTxError(() => {
-      return onUnstake(amount).then((response) => {
+      return onUnstake(amount, token.decimals).then((response) => {
         addTransaction(response, {
-          summary: 'Unstake '+ amount+ ' ' + token.symbol+ "-" +quoteToken.symbol+' tokens'
+          summary: 'Unstake '+ amount+ ' ' + earningToken.symbol+ "-" +stakingToken.symbol+' tokens'
         })
         return response
       })
@@ -120,23 +120,25 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
           txn: {
             hash: receipt.transactionHash,
             success: receipt.status === 1,
-            summary: 'Removed '+amount+' '+token.symbol+"-"+quoteToken.symbol+' LP from farm',
+            summary: 'Removed '+amount+' '+earningToken.symbol+"-"+stakingToken.symbol+' LP from farm',
           }
         },
         receipt.transactionHash
       )  
-      dispatch(fetchFarmUserDataAsync({ account, pids: [pid] }))
+      dispatch(fetchPoolsUserDataAsync(account))
     }
   }
-  const lpContract = useERC20(lpAddress)
+  const lpContract = useERC20(contractAddress)
   const dispatch = useDispatch()
-  const { onApprove } = useApproveFarm(lpContract)
+  const { handleApprove } = useApproveFarm(lpContract, sousId, earningToken.symbol)
+  const sousChefContract = useSousChef(sousId)
+  const { callWithGasPrice } = useCallWithGasPrice()
 
-  const handleApprove = useCallback(async () => {
+  const handleApproval = useCallback(async () => {
     const receipt = await fetchWithCatchTxError(() => {
-      return onApprove().then(response => {
+      return callWithGasPrice(lpContract, 'approve', [sousChefContract.address, MaxUint256]).then(response => {
         addTransaction(response, {
-          summary: `Enable ${token.symbol}-${quoteToken.symbol} stake contract`
+          summary:  `Enable ${pool.earningToken.symbol}-${pool.stakingToken.symbol} stake contract`
         })
         return response
       })
@@ -153,9 +155,9 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
         },
         receipt.transactionHash
       )  
-      dispatch(fetchFarmUserDataAsync({ account, pids: [pid] }))
+      dispatch(fetchPoolsUserDataAsync(account))
     }
-  }, [onApprove, dispatch, account, pid, addPopup, fetchWithCatchTxError, addTransaction, token.symbol, quoteToken.symbol])
+  }, [handleApprove, dispatch, account, sousId, addPopup, fetchWithCatchTxError, addTransaction, earningToken.symbol, stakingToken.symbol])
   const theme = useTheme()
 
   if (!account) {
@@ -179,14 +181,30 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
         <>
         
         {showModalDeposit &&
-        modalTopDeposit(tokenBalance, lpPrice, lpLabel, apr, () => setshowModalDeposit(false), '1', stakedBalance, handleStake, lpSymbol, multiplier, 
-        `#/add-pro/${token.address}/${quoteToken.address}`,1 as unknown as BigNumber)
+        <ModalTopDeposit
+        max={tokenBalance }
+        lpLabel={'lpLabel'}
+        apr = {apr}
+        onDismiss = {() => setshowModalDeposit(false)}
+        displayApr = '1'
+        stakedBalance = {stakedBalance}
+        onConfirm = {handleStake}
+        tokenName = {earningToken.name}
+        addLiquidityUrl = {`#/add-pro/${earningToken.address}/${stakingToken.address}`}
+        cakePrice = {1 as unknown as BigNumber}
+        token = {earningToken}
+        />
         }
 
         {showModalWithdraw &&
         <Portal>
           <ModalContainer>
-            <WithdrawModal max={stakedBalance} onConfirm={handleUnstake} tokenName={lpSymbol} onDismiss={()=>setshowModalWithdraw(false)} />
+            <WithdrawModal 
+            max={stakedBalance} 
+            onConfirm={handleUnstake} 
+            tokenName={pool.earningToken.symbol} 
+            onDismiss={()=>setshowModalWithdraw(false)} 
+            token={pool.earningToken} />
           </ModalContainer>
         </Portal>
           
@@ -200,12 +218,12 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
           <ActionContent>
             <StakedLP
               stakedBalance={stakedBalance}
-              lpSymbol={lpSymbol}
-              quoteTokenSymbol={quoteToken.symbol}
-              tokenSymbol={token.symbol}
-              lpTotalSupply={lpTotalSupply}
-              tokenAmountTotal={tokenAmountTotal}
-              quoteTokenAmountTotal={quoteTokenAmountTotal}
+              lpSymbol={pool.earningToken.symbol+'-'+pool.stakingToken.symbol}
+              quoteTokenSymbol={pool.earningToken.symbol}
+              tokenSymbol={pool.stakingToken.symbol}
+              lpTotalSupply={1 as unknown as BigNumber}
+              tokenAmountTotal={1 as unknown as BigNumber}
+              quoteTokenAmountTotal={1 as unknown as BigNumber}
             />
             <IconButtonWrapper>
             <IconButton 
@@ -240,7 +258,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
             {t('Stake')}
           </Text>
           <Text bold textTransform="uppercase" color="secondary" fontSize="12px">
-            {lpSymbol}
+            {'lpSymbol'}
           </Text>
         </ActionTitles>
         <ActionContent>
@@ -280,7 +298,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
         </Text>
       </ActionTitles>
       <ActionContent>
-        <Button style={{backgroundColor: theme.questionMarks, boxShadow: 'none'}} width="100%" disabled={pendingTx} onClick={handleApprove} variant="primary">
+        <Button style={{backgroundColor: theme.questionMarks, boxShadow: 'none'}} width="100%" disabled={pendingTx} onClick={handleApproval} variant="primary">
           {t('Enable')}
         </Button>
       </ActionContent>

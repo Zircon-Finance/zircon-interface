@@ -1,17 +1,17 @@
 import { NETWORK_CHAIN_ID } from '../connectors'
 import addresses from '../constants/contracts'
 
-interface Address {
-  97?: string
-  56: string
-}
+// interface Address {
+//   97?: string
+//   56: string
+// }
 
 export enum VaultKey {
   CakeVault = 'cakeVault',
   IfoPool = 'ifoPool',
 }
 
-export const getAddress = (address: Address): string => {
+export const getAddress = (address: string): string => {
   const chainId = NETWORK_CHAIN_ID
   return address[chainId] ?? address
 }

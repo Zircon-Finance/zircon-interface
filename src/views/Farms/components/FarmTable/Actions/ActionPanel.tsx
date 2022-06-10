@@ -4,12 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { Text } from '@pancakeswap/uikit'
 // import getLiquidityUrlPathParts from 'utils/getLiquidityUrlPathParts'
 // import { getBscScanLink } from 'utils'
-import { FarmWithStakedValue } from '../../types'
 import Portal from '@reach/portal'
 import HarvestAction from './HarvestAction'
 import StakedAction from './StakedAction'
 import Apr, { AprProps } from '../Apr'
 import { MultiplierProps } from '../Multiplier'
+import { MaxUint256 } from '@ethersproject/constants'
 import Liquidity, { LiquidityProps } from '../Liquidity'
 import { StakedProps } from '../Staked'
 import DoubleCurrencyLogo from '../../../../../components/DoubleLogo'
@@ -18,28 +18,31 @@ import { ButtonOutlined } from '../../../../../components/Button'
 import { ArrowIcon } from '../Details'
 import StakeAdd from '../../FarmCard/StakeAdd'
 import DepositModal from '../../DepositModal'
-import { useFarmUser, useLpTokenPrice } from '../../../../../state/farms/hooks'
 import useStakeFarms from '../../../hooks/useStakeFarms'
 import useCatchTxError from '../../../../../hooks/useCatchTxError'
-import { fetchFarmUserDataAsync } from '../../../../../state/farms'
 import { useDispatch } from 'react-redux'
 import { useWeb3React } from '@web3-react/core'
 import BigNumber from 'bignumber.js'
 import useApproveFarm from '../../../hooks/useApproveFarm'
-import { useERC20 } from '../../../../../hooks/useContract'
+import { useERC20, useSousChef } from '../../../../../hooks/useContract'
 import { ModalContainer } from '../../../Farms'
 import { useAddPopup, useWalletModalToggle } from '../../../../../state/application/hooks'
 import { Link } from 'react-router-dom'
 import { useTransactionAdder } from '../../../../../state/transactions/hooks'
 import { useWindowDimensions } from '../../../../../hooks'
 import { Flex } from 'rebass'
+import { Token } from 'zircon-sdk'
+import { DeserializedPool } from '../../../../../state/types'
+import { usePool } from '../../../../../state/pools/hooks'
+import { fetchPoolsUserDataAsync } from '../../../../../state/pools'
+import { useCallWithGasPrice } from '../../../../../hooks/useCallWithGasPrice'
 
 export interface ActionPanelProps {
   apr: AprProps
   staked: StakedProps
-  multiplier: MultiplierProps
+  multiplier?: MultiplierProps
   liquidity: LiquidityProps
-  details: FarmWithStakedValue
+  details: DeserializedPool
   userDataReady: boolean
   expanded: boolean
   clickAction: Dispatch<SetStateAction<boolean>>
@@ -147,14 +150,37 @@ export const SpaceBetween = styled.div`
   align-items: center;
   justify-content: space-between;
 `
+interface ModalProps {
+  max: BigNumber
+  lpLabel: string
+  apr: number
+  onDismiss: () => void
+  displayApr: string
+  stakedBalance: BigNumber
+  onConfirm: (amount: string, token: Token) => Promise<void>
+  tokenName: string
+  addLiquidityUrl: string
+  cakePrice: BigNumber
+  token: Token
+}
 
-export const modalTopDeposit = (max, lpPrice, lpLabel, apr, onDismiss, displayApr, stakedBalance, onConfirm, tokenName, multiplier, addLiquidityUrl, cakePrice) => {
+export const ModalTopDeposit: React.FunctionComponent<ModalProps> = ({
+  max, 
+  lpLabel, 
+  apr, 
+  onDismiss, 
+  displayApr, 
+  stakedBalance, 
+  onConfirm, 
+  tokenName, 
+  addLiquidityUrl, 
+  cakePrice, 
+  token}) => {
   return (
     <Portal>
       <ModalContainer>
         <DepositModal
         max={max}
-        lpPrice={lpPrice}
         lpLabel={lpLabel}
         apr={apr}
         onDismiss={onDismiss}
@@ -162,9 +188,9 @@ export const modalTopDeposit = (max, lpPrice, lpLabel, apr, onDismiss, displayAp
         stakedBalance={stakedBalance}
         onConfirm={onConfirm}
         tokenName={tokenName}
-        multiplier={multiplier}
         addLiquidityUrl={addLiquidityUrl}
         cakePrice={cakePrice}
+        token={token}
       />
       </ModalContainer>
     </Portal>
@@ -183,39 +209,42 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const farm = details
   const staked = details.userData.stakedBalance.gt(0)
   const { t } = useTranslation()
-  const { quoteToken, token, isAnchor } = farm
-  const lpLabel = farm.lpSymbol && farm.lpSymbol.toUpperCase().replace('PANCAKE', '')
+  const { earningToken, stakingToken, isAnchor } = farm
+  const lpLabel = `${farm.earningToken.symbol}-${farm.stakingToken.symbol}`
   // getLiquidityUrlPathParts({
   //   quoteTokenAddress: quoteToken.address,
   //   tokenAddress: token.address,
   // })
-  const lpAddress = farm.lpAddress
+  const lpAddress = farm.contractAddress
   const bsc = 'placeholder'
   // getBscScanLink(lpAddress, 'address')
   const info = `/info/pool/${lpAddress}`
   const theme = useTheme()
 
-  const lpPrice = useLpTokenPrice(farm.lpSymbol)
-  const { tokenBalance, stakedBalance } = useFarmUser(farm.pid)
+  const { pool } = usePool(farm.sousId)
+  const tokenBalance = pool.userData.stakingTokenBalance
+  const stakedBalance = pool.userData.stakedBalance
   const [showModal, setShowModal] = useState(false)
-  const { onStake } = useStakeFarms(farm.pid)
+  const { onStake } = useStakeFarms(farm.sousId)
   const { account } = useWeb3React()
   const dispatch = useDispatch()
   const { allowance } = farm.userData || {}
   const isApproved = account && allowance && allowance.isGreaterThan(0)
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
   const lpContract = useERC20(lpAddress)
-  const { onApprove } = useApproveFarm(lpContract)
+  const { handleApprove } = useApproveFarm(lpContract, farm.sousId, farm.earningToken.symbol)
   const addPopup = useAddPopup()
   const addTransaction = useTransactionAdder()
   const toggleWalletModal = useWalletModalToggle()
   const { width } = useWindowDimensions()
+  const sousChefContract = useSousChef(pool.sousId)
+  const { callWithGasPrice } = useCallWithGasPrice()
 
-  const handleApprove = useCallback(async () => {
+  const handleApproval = useCallback(async () => {
     const receipt = await fetchWithCatchTxError(() => {
-      return onApprove().then(response => {
+      return callWithGasPrice(lpContract, 'approve', [sousChefContract.address, MaxUint256]).then(response => {
         addTransaction(response, {
-          summary: `Enable ${token.symbol}-${quoteToken.symbol} stake contract`
+          summary:  `Enable ${farm.earningToken.symbol}-${farm.stakingToken.symbol} stake contract`
         })
         return response
       })
@@ -232,15 +261,15 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
         },
         receipt.transactionHash
       )      
-      dispatch(fetchFarmUserDataAsync({ account, pids: [farm.pid] }))
+      dispatch(fetchPoolsUserDataAsync(account))
     }
-  }, [onApprove, dispatch, account, farm.pid, addPopup, fetchWithCatchTxError, addTransaction, quoteToken.symbol, token.symbol])
+  }, [handleApprove, dispatch, account, farm.sousId, addPopup, fetchWithCatchTxError, addTransaction, earningToken.symbol, stakingToken.symbol])
 
-  const handleStake = async (amount: string) => {
+  const handleStake = async (amount: string, token: Token) => {
     const receipt = await fetchWithCatchTxError(() => {
-      return onStake(amount).then((response) => {
+      return onStake(amount, token.decimals).then((response) => {
         addTransaction(response, {
-          summary: `Stake ${token.symbol}-${quoteToken.symbol} tokens`
+          summary: `Stake ${earningToken.symbol}-${stakingToken.symbol} tokens`
         })
         return response
       })
@@ -251,31 +280,31 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           txn: {
             hash: receipt.transactionHash,
             success: receipt.status === 1,
-            summary: 'Staked '+amount+' '+token.symbol+"-"+quoteToken.symbol+' LP to farm',
+            summary: 'Staked '+amount+' '+earningToken.symbol+"-"+stakingToken.symbol+' LP to farm',
           }
         },
         receipt.transactionHash
       )  
-      dispatch(fetchFarmUserDataAsync({ account, pids: [farm.pid] }))
+      dispatch(fetchPoolsUserDataAsync(account))
     }
   }
 
   return (
     <>
-
     {showModal && (
-      modalTopDeposit(tokenBalance, 
-        lpPrice, 
-        lpLabel, 
-        farm.apr, 
-        () => setShowModal(false), 
-        '111', 
-        stakedBalance, 
-        handleStake, 
-        farm.lpSymbol, 
-        farm.multiplier, 
-        'Placeholder', 
-        1 as unknown as BigNumber)
+      <ModalTopDeposit 
+        max={tokenBalance} 
+        lpLabel = {lpLabel}
+        apr = {1}
+        onDismiss = {() => setShowModal(false) }
+        displayApr = {'111'}
+        stakedBalance = {stakedBalance}
+        onConfirm = {handleStake }
+        tokenName = {farm.contractAddress}
+        addLiquidityUrl = {'#/add-pro/'+farm.earningToken.address+'/'+farm.stakingToken.address}
+        cakePrice = {1 as unknown as BigNumber}
+        token = {farm.earningToken}
+        />
     )}
     <Container expanded={expanded} staked={staked}>
       <QuarterContainer>
@@ -288,46 +317,46 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                     <Flex flexWrap='wrap'>  
                       <BadgeSmall 
                       style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', display: 'flex', alignItems: 'center', marginRight: '5px'}}>
-                      <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{token.symbol} </span>{'ANCHOR'}
+                      <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{earningToken.symbol} </span>{'ANCHOR'}
                       </BadgeSmall>
-                      <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{` - ${quoteToken.symbol}`}</Text>
+                      <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{` - ${stakingToken.symbol}`}</Text>
                     </Flex>
                       
                     </>
                   ) : (
                     <>
                     <Flex flexWrap='wrap'>
-                      <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{token.symbol} -</Text>
+                      <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{earningToken.symbol} -</Text>
                       <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '5px', display: 'flex', alignItems: 'center'}}>
-                        <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{`${quoteToken.symbol}`}</span>{'FLOAT'}
+                        <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{`${stakingToken.symbol}`}</span>{'FLOAT'}
                       </BadgeSmall>
                     </Flex>
                     </>
                   )}
                   </div>
-                  <DoubleCurrencyLogo currency0={token} currency1={quoteToken} size={25} />
+                  <DoubleCurrencyLogo currency0={earningToken} currency1={stakingToken} size={25} />
               </SpaceBetween>
             ) : (
               <SpaceBetween style={{paddingTop: '16px'}}>
                 <Flex alignItems={'center'} style={{gap: '10px'}}>
-                  <DoubleCurrencyLogo currency0={token} currency1={quoteToken} size={25} />
+                  <DoubleCurrencyLogo currency0={earningToken} currency1={stakingToken} size={25} />
                   <div>
                   {isAnchor ? (
                     <>
                     <Flex flexWrap='wrap'>  
                       <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', display: 'flex', alignItems: 'center'}}>
-                      <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{token.symbol} </span>{'ANCHOR'}
+                      <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{earningToken.symbol} </span>{'ANCHOR'}
                       </BadgeSmall>
-                      <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{` - ${quoteToken.symbol}`}</Text>
+                      <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{` - ${stakingToken.symbol}`}</Text>
                     </Flex>
                       
                     </>
                   ) : (
                     <>
                     <Flex flexWrap='wrap'>
-                      <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{token.symbol} -</Text>
+                      <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{earningToken.symbol} -</Text>
                       <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '5px', display: 'flex', alignItems: 'center'}}>
-                        <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{`${quoteToken.symbol}`}</span>{'FLOAT'}
+                        <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{`${stakingToken.symbol}`}</span>{'FLOAT'}
                       </BadgeSmall>
                     </Flex>
                     </>
@@ -387,7 +416,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
         {isApproved ? (
         <StakeAdd clickAction={() => {setShowModal(true)}} row={true} margin={false} width={width > 992 ? '30%' : '60%'} />)
         : (
-          <ButtonOutlined m="auto" width="50%" disabled={pendingTx} onClick={account ? handleApprove : toggleWalletModal}>
+          <ButtonOutlined m="auto" width="50%" disabled={pendingTx} onClick={account ? handleApproval : toggleWalletModal}>
             {account ? 'Enable Contract' : 'Connect Wallet'}
           </ButtonOutlined>
         )}
@@ -405,8 +434,8 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
             <Text color={theme.text1} fontSize='13px' fontWeight={300}>{t('Liquidity')}</Text>
             <Liquidity {...liquidity} />
           </ValueWrapper>
-          <Link to={`/add-pro/${token.address}/${quoteToken.address}`}>
-            <ButtonOutlined style={{padding: '10px', fontSize: '13px', color: theme.whiteBlackPink}}>{`Get ${token.name} - ${quoteToken.name} Anchor LP`}</ButtonOutlined>
+          <Link to={`/add-pro/${earningToken.address}/${stakingToken.address}`}>
+            <ButtonOutlined style={{padding: '10px', fontSize: '13px', color: theme.whiteBlackPink}}>{`Get ${earningToken.name} - ${stakingToken.name} Anchor LP`}</ButtonOutlined>
           </Link>
         </ValueContainer>
       </QuarterContainer>

@@ -14,7 +14,7 @@ import WDEV_ABI from '../constants/abis/weth.json'
 import { MULTICALL_ABI, MULTICALL_NETWORKS } from '../constants/multicall'
 import { getContract, getProviderOrSigner } from '../utils'
 import { useActiveWeb3React } from './index'
-import { getBep20Contract, getCakeContract, getFarmAuctionContract, getMasterchefContract } from '../utils/contractHelpers'
+import { getBep20Contract, getCakeContract, getFarmAuctionContract, getMasterchefContract, getSouschefContract } from '../utils/contractHelpers'
 
 // returns null on errors
 function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
@@ -42,6 +42,11 @@ export const useERC20 = (address: string, withSignerIfPossible = true) => {
 export const useMasterchef = () => {
   const { library } = useActiveWeb3React()
   return useMemo(() => getMasterchefContract(library.getSigner()), [library])
+}
+
+export const useSousChef = (id) => {
+  const { library } = useActiveWeb3React()
+  return useMemo(() => getSouschefContract(id, library.getSigner()), [id, library])
 }
 
 export const useFarmAuctionContract = (withSignerIfPossible = true) => {

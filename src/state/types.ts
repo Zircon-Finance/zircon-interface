@@ -5,7 +5,6 @@ import {
   SerializedFarmConfig,
   DeserializedPoolConfig,
   SerializedPoolConfig,
-  Team,
   DeserializedFarmConfig,
 } from '../constants/types'
 
@@ -105,18 +104,6 @@ export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
   }
 }
 
-export interface Profile {
-  userId: number
-  points: number
-  teamId: number
-  collectionAddress: string
-  tokenId: number
-  isActive: boolean
-  username: string
-  team?: Team
-  hasRegistered: boolean
-}
-
 // Slices states
 
 export interface SerializedFarmsState {
@@ -203,8 +190,8 @@ export interface DeserializedIfoCakeVault extends Omit<DeserializedCakeVault, 'u
 
 export interface PoolsState {
   data: SerializedPool[]
-  cakeVault: SerializedCakeVault
-  ifoPool: SerializedIfoCakeVault
+  // cakeVault: SerializedCakeVault
+  // ifoPool: SerializedIfoCakeVault
   userDataLoaded: boolean
 }
 
@@ -245,4 +232,26 @@ export interface Space {
 export interface State {
   farms: SerializedFarmsState
   pools: PoolsState
+}
+
+export interface PoolsState {
+  data: SerializedPool[]
+  // cakeVault: SerializedCakeVault
+  userDataLoaded: boolean
+}
+
+export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
+  totalStaked?: SerializedBigNumber
+  stakingLimit?: SerializedBigNumber
+  numberBlocksForUserLimit?: number
+  profileRequirement?: {
+    required: boolean
+    thresholdPoints: SerializedBigNumber
+  }
+  userData?: {
+    allowance: SerializedBigNumber
+    stakingTokenBalance: SerializedBigNumber
+    stakedBalance: SerializedBigNumber
+    pendingReward: SerializedBigNumber
+  }
 }

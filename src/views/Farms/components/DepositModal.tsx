@@ -11,6 +11,7 @@ import { getInterestBreakdown } from '../../../utils/compoundApyHelpers'
 import { ButtonOutlined, ButtonPrimary } from '../../../components/Button'
 import { Link } from 'rebass'
 import { StyledErrorMessage } from '../../../components/ModalFarm/ModalInput'
+import { Token } from 'zircon-sdk'
 
 const AnnualRoiContainer = styled(Flex)`
   cursor: pointer;
@@ -28,15 +29,15 @@ interface DepositModalProps {
   max: BigNumber
   stakedBalance: BigNumber
   multiplier?: string
-  lpPrice: BigNumber
   lpLabel?: string
-  onConfirm: (amount: string) => void
+  onConfirm: (amount: string, token: Token) => void
   onDismiss?: () => void
   tokenName?: string
   apr?: number
   displayApr?: string
   addLiquidityUrl?: string
   cakePrice?: BigNumber
+  token: Token
 }
 
 const DepositModal: React.FC<DepositModalProps> = ({
@@ -47,11 +48,11 @@ const DepositModal: React.FC<DepositModalProps> = ({
   tokenName = '',
   multiplier,
   displayApr,
-  lpPrice,
   lpLabel,
   apr,
   addLiquidityUrl,
   cakePrice,
+  token,
 }) => {
   const [val, setVal] = useState('')
   const [pendingTx, setPendingTx] = useState(false)
@@ -64,7 +65,7 @@ const DepositModal: React.FC<DepositModalProps> = ({
   const lpTokensToStake = new BigNumber(val)
   const fullBalanceNumber = new BigNumber(fullBalance)
 
-  const usdToStake = lpTokensToStake.times(lpPrice)
+  const usdToStake = lpTokensToStake.times(1)
 
   const interestBreakdown = getInterestBreakdown({
     principalInUSD: !lpTokensToStake.isNaN() ? usdToStake.toNumber() : 0,
@@ -97,7 +98,7 @@ const DepositModal: React.FC<DepositModalProps> = ({
         linkLabel={t('Get ', lpLabel)}
         stakingTokenBalance={stakedBalance.plus(max)}
         stakingTokenSymbol={tokenName}
-        stakingTokenPrice={lpPrice.toNumber()}
+        stakingTokenPrice={111}
         earningTokenPrice={cakePrice.toNumber()}
         apr={apr}
         multiplier={multiplier}
@@ -162,7 +163,7 @@ const DepositModal: React.FC<DepositModalProps> = ({
           }
           onClick={async () => {
             setPendingTx(true)
-            await onConfirm(val)
+            await onConfirm(val, token)
             onDismiss?.()
             setPendingTx(false)
           }}

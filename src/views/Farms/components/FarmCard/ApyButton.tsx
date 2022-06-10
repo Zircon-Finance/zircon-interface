@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js'
 import { Flex, IconButton, useModal, CalculateIcon } from '@pancakeswap/uikit'
 import RoiCalculatorModal from '../../../../components/RoiCalculatorModal'
 import { useTranslation } from 'react-i18next'
-import { useFarmUser, useLpTokenPrice } from '../../../../state/farms/hooks'
+import { usePool } from '../../../../state/pools/hooks'
 
 const ApyLabelContainer = styled(Flex)`
   cursor: pointer;
@@ -19,7 +19,7 @@ export interface ApyButtonProps {
   pid: number
   lpSymbol: string
   lpLabel?: string
-  multiplier: string
+  multiplier?: string
   cakePrice?: BigNumber
   apr?: number
   displayApr?: string
@@ -38,14 +38,15 @@ const ApyButton: React.FC<ApyButtonProps> = ({
   addLiquidityUrl,
 }) => {
   const { t } = useTranslation()
-  const lpPrice = useLpTokenPrice(lpSymbol)
-  const { tokenBalance, stakedBalance } = useFarmUser(pid)
+  const { pool } = usePool(pid)
+  const tokenBalance = pool.userData.stakingTokenBalance
+  const stakedBalance = pool.userData.stakedBalance
   const [onPresentApyModal] = useModal(
     <RoiCalculatorModal
       linkLabel={t('Get %symbol%', { symbol: lpLabel })}
       stakingTokenBalance={stakedBalance.plus(tokenBalance)}
       stakingTokenSymbol={lpSymbol}
-      stakingTokenPrice={lpPrice.toNumber()}
+      stakingTokenPrice={1}
       earningTokenPrice={cakePrice.toNumber()}
       apr={apr}
       multiplier={multiplier}

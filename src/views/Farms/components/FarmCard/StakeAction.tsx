@@ -5,13 +5,10 @@ import { Flex, IconButton } from '@pancakeswap/uikit'
 import useCatchTxError from '../../../../hooks/useCatchTxError'
 
 import { useDispatch } from 'react-redux'
-import { fetchFarmUserDataAsync } from '../../../../state/farms'
-import { useLpTokenPrice, useFarmUser, usePriceCakeBusd } from '../../../../state/farms/hooks'
 import DepositModal from '../DepositModal'
 import WithdrawModal from '../WithdrawModal'
 import useUnstakeFarms from '../../hooks/useUnstakeFarms'
 import useStakeFarms from '../../hooks/useStakeFarms'
-import { FarmWithStakedValue } from '../types'
 import StakedLP from '../StakedLP'
 import MinusIcon from '../MinusIcon'
 import PlusIcon from '../PlusIcon'
@@ -19,8 +16,12 @@ import { useAddPopup } from '../../../../state/application/hooks'
 import { ModalContainer } from '../../Farms'
 import StakeAdd from './StakeAdd'
 import { useTransactionAdder } from '../../../../state/transactions/hooks'
+import { usePool } from '../../../../state/pools/hooks'
+import { DeserializedPool } from '../../../../state/types'
+import { fetchPoolsUserDataAsync } from '../../../../state/pools'
+import BigNumber from 'bignumber.js'
 
-interface FarmCardActionsProps extends FarmWithStakedValue {
+interface FarmCardActionsProps extends DeserializedPool {
   lpLabel?: string
   addLiquidityUrl?: string
   displayApr?: string
@@ -31,26 +32,21 @@ const IconButtonWrapper = styled.div`
 `
 
 const StakeAction: React.FC<FarmCardActionsProps> = ({
-  quoteToken,
-  token,
-  lpSymbol,
-  pid,
-  multiplier,
+  earningToken,
+  stakingToken,
+  sousId,
   apr,
   displayApr,
   addLiquidityUrl,
   lpLabel,
-  lpTotalSupply,
-  tokenAmountTotal,
-  quoteTokenAmountTotal,
 }) => {
-  const { onStake } = useStakeFarms(pid)
-  const { onUnstake } = useUnstakeFarms(pid)
-  const { tokenBalance, stakedBalance } = useFarmUser(pid)
-  const cakePrice = usePriceCakeBusd()
+  const { onStake } = useStakeFarms(sousId)
+  const { onUnstake } = useUnstakeFarms(sousId)
+  const { pool } = usePool(sousId)
+  const tokenBalance = pool.userData.stakingTokenBalance
+  const stakedBalance = pool.userData.stakedBalance
   const dispatch = useDispatch()
   const { account } = useWeb3React()
-  const lpPrice = useLpTokenPrice(lpSymbol)
   const { fetchWithCatchTxError } = useCatchTxError()
   const addPopup = useAddPopup()
   const [showModalDeposit, setShowModalDeposit] = useState(false)
@@ -59,9 +55,9 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
 
   const handleStake = async (amount: string) => {
     const receipt = await fetchWithCatchTxError(() => {
-      return onStake(amount).then((response) => {
+      return onStake(amount, pool.earningToken.decimals).then((response) => {
         addTransaction(response, {
-          summary: `Stake ${token.symbol}-${quoteToken.symbol} tokens`
+          summary: `Stake ${earningToken.symbol}-${stakingToken.symbol} tokens`
         })
         return response
       })
@@ -78,21 +74,21 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
         },
         receipt.transactionHash
       )
-      dispatch(fetchFarmUserDataAsync({ account, pids: [pid] }))
+      dispatch(fetchPoolsUserDataAsync(account))
     }
   }
 
   const handleUnstake = async (amount: string) => {
     const receipt = await fetchWithCatchTxError(() => {
-      return onUnstake(amount).then((response) => {
+      return onUnstake(amount, earningToken.decimals).then((response) => {
         addTransaction(response, {
-          summary: 'Unstake '+ amount+ ' ' + token.symbol+ "-" +quoteToken.symbol+' tokens'
+          summary: 'Unstake '+ amount+ ' ' + earningToken.symbol+ "-" +stakingToken.symbol+' tokens'
         })
         return response
       })
     })
     if (receipt?.status) {
-      dispatch(fetchFarmUserDataAsync({ account, pids: [pid] }))
+      dispatch(fetchPoolsUserDataAsync(account))
     }
   }
 
@@ -124,33 +120,32 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
         {showModalDeposit &&
           <DepositModal
           max={tokenBalance}
-          lpPrice={lpPrice}
           lpLabel={lpLabel}
           apr={apr}
           onDismiss={() => setShowModalDeposit(false)}
           displayApr={'111'}
           stakedBalance={stakedBalance}
           onConfirm={handleStake}
-          tokenName={lpSymbol}
-          multiplier={multiplier}
-          addLiquidityUrl={'#/add-pro/'+token.address+'/'+quoteToken.address}
-          cakePrice={cakePrice}/>
+          tokenName={'lpSymbol'}
+          addLiquidityUrl={'#/add-pro/'+earningToken.address+'/'+stakingToken.address}
+          token={earningToken}
+          />
         }
 
         {showModalWithdraw &&
-          <WithdrawModal max={stakedBalance} onConfirm={handleUnstake} tokenName={lpSymbol} onDismiss={()=>setShowModalWithdraw(false)} />
+          <WithdrawModal max={stakedBalance} onConfirm={handleUnstake} tokenName={'lpSymbol'} onDismiss={()=>setShowModalWithdraw(false)} token={earningToken} />
         }
         </ModalContainer>
         }
     <Flex justifyContent="space-between" alignItems="center">
       <StakedLP
         stakedBalance={stakedBalance}
-        lpSymbol={lpSymbol}
-        quoteTokenSymbol={quoteToken.symbol}
-        tokenSymbol={token.symbol}
-        lpTotalSupply={lpTotalSupply}
-        tokenAmountTotal={tokenAmountTotal}
-        quoteTokenAmountTotal={quoteTokenAmountTotal}
+        lpSymbol={'lpSymbol'}
+        quoteTokenSymbol={stakingToken.symbol}
+        tokenSymbol={earningToken.symbol}
+        lpTotalSupply={1 as unknown as BigNumber}
+        tokenAmountTotal={1 as unknown as BigNumber}
+        quoteTokenAmountTotal={1 as unknown as BigNumber}
       />
       {renderStakingButtons()}
     </Flex>

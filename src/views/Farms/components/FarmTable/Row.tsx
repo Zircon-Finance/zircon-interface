@@ -8,28 +8,30 @@ import Apr, { AprProps } from './Apr'
 import Farm, { FarmProps } from './Farm'
 import Earned, { EarnedProps } from './Earned'
 import Details from './Details'
-import Multiplier, { MultiplierProps } from './Multiplier'
+import { MaxUint256 } from '@ethersproject/constants'
+import Multiplier from './Multiplier'
 import Liquidity, { LiquidityProps } from './Liquidity'
 import ActionPanel from './Actions/ActionPanel'
 import CellLayout from './CellLayout'
-import { DesktopColumnSchema, MobileColumnSchema, FarmWithStakedValue } from '../types'
+import { DesktopColumnSchema, MobileColumnSchema } from '../types'
 import Staked, { StakedProps } from './Staked'
 import { Flex, Text } from 'rebass'
 import RiskHealthIcon from '../../../../components/RiskHealthIcon'
 import TrendingHealthIcon from '../../../../components/TrendingHealthIcon'
 import QuestionMarkIcon from '../../../../components/QuestionMarkIcon'
 import StakeAdd from '../FarmCard/StakeAdd'
-import { useFarmUser } from '../../../../state/farms/hooks'
 import { useActiveWeb3React, useWindowDimensions } from '../../../../hooks'
 import { ButtonLighter } from '../../../../components/Button'
 import { useAddPopup, useWalletModalToggle } from '../../../../state/application/hooks'
 import useApproveFarm from '../../hooks/useApproveFarm'
-import { useERC20 } from '../../../../hooks/useContract'
+import { useERC20, useSousChef } from '../../../../hooks/useContract'
 import useCatchTxError from '../../../../hooks/useCatchTxError'
 import { useTransactionAdder } from '../../../../state/transactions/hooks'
 import { useDispatch } from 'react-redux'
 import { fetchFarmUserDataAsync } from '../../../../state/farms'
 import { useIsDarkMode } from '../../../../state/user/hooks'
+import { usePool } from '../../../../state/pools/hooks'
+import { useCallWithGasPrice } from '../../../../hooks/useCallWithGasPrice'
 // import { useFarmUser } from '../../../../state/farms/hooks'
 
 export interface RowProps {
@@ -38,8 +40,7 @@ export interface RowProps {
   earned: EarnedProps
   staked: StakedProps
   liquidity: LiquidityProps
-  details: FarmWithStakedValue
-  multiplier: MultiplierProps
+  details: any
 }
 
 interface RowPropsWithLoading extends RowProps {
@@ -132,7 +133,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     details,
      userDataReady, 
   } = props
-  const hasStakedAmount = !!useFarmUser(details.pid).stakedBalance.toNumber()
+  const hasStakedAmount = !!usePool(details.pid).pool.userData.stakedBalance.toNumber()
   const [actionPanelExpanded, setActionPanelExpanded] = useState(false)
   const [hovered, setHovered] = useState(false)
   const shouldRenderChild = actionPanelExpanded
@@ -158,18 +159,20 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     setIsVisible(true)
   }, [hasStakedAmount, isVisible])
   const lpContract = useERC20(details.lpAddress)
-  const { onApprove } = useApproveFarm(lpContract)
+  const { handleApprove } = useApproveFarm(lpContract, details.pid, details.earningToken.symbol)
   const { fetchWithCatchTxError } = useCatchTxError()
   const addTransaction = useTransactionAdder()
   const addPopup = useAddPopup()
   const dispatch = useDispatch()
   const { account } = useActiveWeb3React()
+  const sousChefContract = useSousChef(details.sousId)
+  const { callWithGasPrice } = useCallWithGasPrice()
 
-  const handleApprove = useCallback(async () => {
+  const handleApproval = useCallback(async () => {
     const receipt = await fetchWithCatchTxError(() => {
-      return onApprove().then(response => {
+      return callWithGasPrice(lpContract, 'approve', [sousChefContract.address, MaxUint256]).then(response => {
         addTransaction(response, {
-          summary:  `Enable ${details.token.symbol}-${details.quoteToken.symbol} stake contract`
+          summary:  `Enable ${details.earningToken.symbol}-${details.stakingToken.symbol} stake contract`
         })
         return response
       })
@@ -188,7 +191,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
       dispatch(fetchFarmUserDataAsync({ account, pids: [details.pid] }))
     }
   },
-  [onApprove, dispatch, fetchWithCatchTxError, addPopup, addTransaction, details.quoteToken.symbol, details.token.symbol, account, details.pid])
+  [handleApprove, dispatch, fetchWithCatchTxError, addPopup, addTransaction, details.quoteToken.symbol, details.token.symbol, account, details.pid])
   const mobileVer = width <= 992
   const { isDesktop } = useMatchBreakpoints()
   const isSmallerScreen = !isDesktop
@@ -199,7 +202,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     tooltipOffset: [20, 10],
   })
   const isApproved = account && details.userData.allowance && details.userData.allowance.isGreaterThan(0)
-  const stakedAmount = useFarmUser(details.pid).stakedBalance.toNumber()
+  const stakedAmount = usePool(details.pid).pool.userData.stakedBalance.toNumber()
   const toggleWalletModal = useWalletModalToggle()
   const darkMode = useIsDarkMode()
 
@@ -335,7 +338,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                     </ButtonLighter>
                   )) : (
                     <ButtonLighter style={{fontSize: '13px', padding: '10px', borderRadius: '12px'}}
-                    onClick={handleApprove}>{'Enable contract'}</ButtonLighter>
+                    onClick={handleApproval}>{'Enable contract'}</ButtonLighter>
                   )) : (
                     <ButtonLighter style={{fontSize: '13px', padding: '10px', borderRadius: '12px'}}
                     onClick={toggleWalletModal}>{'Connect wallet'}</ButtonLighter>

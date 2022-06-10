@@ -3,12 +3,12 @@ import BigNumber from 'bignumber.js'
 import { useFastRefreshEffect, useSlowRefreshEffect } from '../../hooks/useRefreshEffect'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchFarmsPublicDataAsync, fetchFarmUserDataAsync } from '.'
-import { DeserializedFarm, DeserializedFarmsState, DeserializedFarmUserData, SerializedFarm, State } from '../types'
+import { DeserializedFarm, DeserializedFarmsState, DeserializedFarmUserData, DeserializedPool, SerializedFarm, State } from '../types'
 
 import { farms as farmsConfig } from '../../constants/farms'
 import { BIG_ZERO } from '../../utils/bigNumber'
-import { getBalanceAmount } from '../../utils/formatBalance'
 import { deserializeToken } from '../user/hooks'
+import { usePool } from '../pools/hooks'
 // import { Pylon } from 'zircon-sdk'
 
 const deserializeFarmUserData = (farm: SerializedFarm): DeserializedFarmUserData => {
@@ -97,39 +97,19 @@ export const useFarmFromLpSymbol = (lpSymbol: string): DeserializedFarm => {
   return deserializeFarm(farm)
 }
 
-export const useFarmUser = (pid): DeserializedFarmUserData => {
-  const { userData } = useFarmFromPid(pid)
-  const { allowance, tokenBalance, stakedBalance, earnings } = userData
+export const useFarmUser = (sousId): DeserializedPool => {
+  const { pool } = usePool(sousId)
+  const { allowance, stakingTokenBalance, stakedBalance, pendingReward } = pool.userData
   return {
-    allowance,
-    tokenBalance,
-    stakedBalance,
-    earnings,
+    ...pool,
+    userData: {
+      allowance,
+      stakingTokenBalance,
+      stakedBalance,
+      pendingReward
+    }
+    
   }
-}
-
-// Return the base token price for a farm, from a given pid
-export const useBusdPriceFromPid = (pid: number): BigNumber => {
-  const farm = useFarmFromPid(pid)
-  return farm && new BigNumber(farm.tokenPriceBusd)
-}
-
-export const useLpTokenPrice = (symbol: string) => {
-  const farm = useFarmFromLpSymbol(symbol)
-  const farmTokenPriceInUsd = useBusdPriceFromPid(farm.pid)
-  let lpTokenPrice = BIG_ZERO
-
-  if (farm.lpTotalSupply.gt(0) && farm.lpTotalInQuoteToken.gt(0)) {
-    // Total value of base token in LP
-    const valueOfBaseTokenInFarm = farmTokenPriceInUsd.times(farm.tokenAmountTotal)
-    // Double it to get overall value in LP
-    const overallValueOfAllTokensInFarm = valueOfBaseTokenInFarm.times(2)
-    // Divide total value of all tokens, by the number of LP tokens
-    const totalLpTokens = getBalanceAmount(farm.lpTotalSupply)
-    lpTokenPrice = overallValueOfAllTokensInFarm.div(totalLpTokens)
-  }
-
-  return lpTokenPrice
 }
 
 /**

@@ -1,5 +1,5 @@
-import { serializeTokens } from './tokens'
-import { SerializedFarmConfig } from './types'
+import { serializeTokens } from '../constants/tokens'
+import { SerializedFarmConfig } from '../constants/types'
 
 const serializedTokens = serializeTokens()
 

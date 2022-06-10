@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 // import { BASE_ADD_LIQUIDITY_URL } from 'config'
 // import getLiquidityUrlPathParts from 'utils/getLiquidityUrlPathParts'
 import CardHeading from './CardHeading'
-import { FarmWithStakedValue } from '../types'
 import CardActionsContainer from './CardActionsContainer'
 import ApyButton from './ApyButton'
 import { ButtonOutlined } from '../../../../components/Button'
@@ -14,14 +13,14 @@ import { SpaceBetween, StyledLinkExternal } from '../FarmTable/Actions/ActionPan
 import StakeAdd from './StakeAdd'
 import { ModalContainer } from '../../Farms'
 import DepositModal from '../DepositModal'
-import { useLpTokenPrice } from '../../../../state/farms/hooks'
 import useCatchTxError from '../../../../hooks/useCatchTxError'
 import useStakeFarms from '../../hooks/useStakeFarms'
 import { useAddPopup } from '../../../../state/application/hooks'
-import { fetchFarmUserDataAsync } from '../../../../state/farms'
 import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { useTransactionAdder } from '../../../../state/transactions/hooks'
+import { DeserializedPool } from '../../../../state/types'
+import { fetchPoolsUserDataAsync } from '../../../../state/pools'
 
 const StyledCard = styled(Card)`
   align-self: baseline;
@@ -49,7 +48,7 @@ const FarmCardInnerContainer = styled(Flex)`
 
 
 interface FarmCardProps {
-  farm: FarmWithStakedValue
+  farm: DeserializedPool
   displayApr: string
   removed: boolean
   cakePrice?: BigNumber
@@ -65,13 +64,12 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
   //     ? `$${farm.liquidity.toNumber().toLocaleString(undefined, { maximumFractionDigits: 0 })}`
   //     : ''
 
-  const lpLabel = farm.lpSymbol && farm.lpSymbol.toUpperCase().replace('PANCAKE', '')
-  const addLiquidityUrl = '#/add-pro/' + farm.token.address+'/' + farm.quoteToken.address
-  const isPromotedFarm = farm.token.symbol === 'CAKE'
+  const lpLabel = `${farm.earningToken.symbol}-${farm.stakingToken.symbol}`
+  const addLiquidityUrl = '#/add-pro/' + farm.earningToken.address+'/' + farm.stakingToken.address
+  const isPromotedFarm = farm.earningToken.symbol === 'CAKE'
   const isApproved = account && farm.userData.allowance && farm.userData.allowance.isGreaterThan(0)
   const [showModalDeposit, setShowModalDeposit] = useState(false)
-  const lpPrice = useLpTokenPrice(farm.lpSymbol)
-  const { onStake } = useStakeFarms(farm.pid)
+  const { onStake } = useStakeFarms(farm.sousId)
   const addPopup = useAddPopup()
   const dispatch = useDispatch()
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
@@ -80,9 +78,9 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
 
   const handleStake = async (amount: string) => {
     const receipt = await fetchWithCatchTxError(() => {
-      return onStake(amount).then((response) => {
+      return onStake(amount, farm.earningToken.decimals).then((response) => {
         addTransaction(response, {
-          summary: `Stake ${farm.token.symbol}-${farm.quoteToken.symbol} tokens`
+          summary: `Stake ${farm.earningToken.symbol}-${farm.stakingToken.symbol} tokens`
         })
         return response
       })
@@ -93,12 +91,12 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
           txn: {
             hash: receipt.transactionHash,
             success: receipt.status === 1,
-            summary: 'Staked '+amount+' '+farm.token.symbol+"-"+farm.quoteToken.symbol+' LP to farm',
+            summary: 'Staked '+amount+' '+farm.earningToken.symbol+"-"+farm.stakingToken.symbol+' LP to farm',
           }
         },
         receipt.transactionHash
       )  
-      dispatch(fetchFarmUserDataAsync({ account, pids: [farm.pid] }))
+      dispatch(fetchPoolsUserDataAsync(account))
     }
   }
 
@@ -108,10 +106,8 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
       <FarmCardInnerContainer>
         <CardHeading
           lpLabel={lpLabel}
-          multiplier={farm.multiplier}
-          isCommunityFarm={farm.isCommunity}
-          token={farm.token}
-          quoteToken={farm.quoteToken}
+          token={farm.earningToken}
+          quoteToken={farm.stakingToken}
         />
         {
           farm.userData.stakedBalance.gt(0) || !isApproved ? (
@@ -126,18 +122,17 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
               {showModalDeposit && 
                 <ModalContainer>   
                   <DepositModal
-                    max={farm.userData.tokenBalance}
-                    lpPrice={lpPrice}
+                    max={farm.userData.stakingTokenBalance}
                     lpLabel={lpLabel}
                     apr={farm.apr}
                     onDismiss={() => setShowModalDeposit(false)}
                     displayApr={'111'}
                     stakedBalance={farm.userData.stakedBalance}
                     onConfirm={handleStake}
-                    tokenName={farm.lpSymbol}
-                    multiplier={farm.multiplier}
-                    addLiquidityUrl={'#/add-pro/'+farm.token.address+'/'+farm.quoteToken.address}
-                    cakePrice={112 as unknown as BigNumber}/>
+                    tokenName={farm.earningToken.symbol}
+                    addLiquidityUrl={'#/add-pro/'+farm.earningToken.address+'/'+farm.stakingToken.address}
+                    cakePrice={112 as unknown as BigNumber}
+                    token = {farm.earningToken}/>
                 </ModalContainer>
               }
                 
@@ -153,9 +148,9 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
               {farm.apr ? (
                 <ApyButton
                   variant="text-and-button"
-                  pid={farm.pid}
-                  lpSymbol={farm.lpSymbol}
-                  multiplier={farm.multiplier}
+                  pid={farm.sousId}
+                  lpSymbol={'farm.lpSymbol'}
+                  multiplier={'Multiplier placeholder'}
                   lpLabel={lpLabel}
                   addLiquidityUrl={addLiquidityUrl}
                   cakePrice={cakePrice}
@@ -172,9 +167,9 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
           <Text fontSize='13px'>{t('Liquidity')}:</Text>
           <Text fontSize='13px'>{'farm.liquidity.toNumber()'}</Text>
         </Flex>
-        <Link to={`add-pro/${farm.token.address}/${farm.quoteToken.address}`}>
+        <Link to={`add-pro/${farm.earningToken.address}/${farm.stakingToken.address}`}>
           <ButtonOutlined mt='20px' style={{padding: '10px', fontSize: '13px'}}>
-            {`Get ${farm.token.name} - ${farm.quoteToken.name} Anchor LP`}
+            {`Get ${farm.earningToken.name} - ${farm.stakingToken.name} Anchor LP`}
           </ButtonOutlined>
         </Link>
         <SpaceBetween style={{marginTop:'20px'}}>

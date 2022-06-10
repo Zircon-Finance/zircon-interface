@@ -1,5 +1,4 @@
-import { useContext } from 'react'
-import { FarmsPageLayout, FarmsContext } from '../../views/Farms'
+import { FarmsPageLayout } from '../../views/Farms'
 import FarmCard from '../../views/Farms/components/FarmCard/FarmCard'
 import { getDisplayApr } from '../../views/Farms/Farms'
 import { usePriceCakeBusd } from '../../state/farms/hooks'
@@ -7,7 +6,8 @@ import { useWeb3React } from '@web3-react/core'
 
 const FarmsHistoryPage = () => {
   const { account } = useWeb3React()
-  const { chosenFarmsMemoized } = useContext(FarmsContext)
+  // const { chosenFarmsMemoized } = useContext(FarmsContext)
+  const chosenFarmsMemoized = []
   const cakePrice = usePriceCakeBusd()
 
   return (

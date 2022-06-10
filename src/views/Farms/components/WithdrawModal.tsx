@@ -6,15 +6,17 @@ import { useTranslation } from 'react-i18next'
 
 import { getFullDisplayBalance } from '../../../utils/formatBalance'
 import { ButtonOutlined, ButtonPrimary } from '../../../components/Button'
+import { Token } from 'zircon-sdk'
 
 interface WithdrawModalProps {
   max: BigNumber
-  onConfirm: (amount: string) => void
+  onConfirm: (amount: string, token: Token) => void
   onDismiss?: () => void
   tokenName?: string
+  token: Token
 }
 
-const WithdrawModal: React.FC<WithdrawModalProps> = ({ onConfirm, onDismiss, max, tokenName = '' }) => {
+const WithdrawModal: React.FC<WithdrawModalProps> = ({ onConfirm, onDismiss, max, tokenName = '', token }) => {
   const [val, setVal] = useState('')
   const [pendingTx, setPendingTx] = useState(false)
   const { t } = useTranslation()
@@ -56,7 +58,7 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ onConfirm, onDismiss, max
           disabled={pendingTx || !valNumber.isFinite() || valNumber.eq(0) || valNumber.gt(fullBalanceNumber)}
           onClick={async () => {
             setPendingTx(true)
-            await onConfirm(val)
+            await onConfirm(val, token)
             onDismiss?.()
             setPendingTx(false)
           }}

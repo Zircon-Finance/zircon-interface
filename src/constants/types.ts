@@ -98,6 +98,7 @@ interface PoolConfigBaseProps {
   enableEmergencyWithdraw?: boolean
   deployedBlockNumber?: number
   version?: number
+  isAnchor? : boolean
 }
 
 export interface SerializedPoolConfig extends PoolConfigBaseProps {
@@ -120,57 +121,6 @@ export type Images = {
 export type TeamImages = {
   alt: string
 } & Images
-
-export type Team = {
-  id: number
-  name: string
-  description: string
-  isJoinable?: boolean
-  users: number
-  points: number
-  images: TeamImages
-  background: string
-  textColor: string
-}
-
-export type CampaignType = 'ifo' | 'teambattle' | 'participation'
-
-export type Campaign = {
-  id: string
-  type: CampaignType
-  title?: TranslatableText
-  description?: TranslatableText
-  badge?: string
-}
-
-export type PageMeta = {
-  title: string
-  description?: string
-  image?: string
-}
-
-export enum LotteryStatus {
-  PENDING = 'pending',
-  OPEN = 'open',
-  CLOSE = 'close',
-  CLAIMABLE = 'claimable',
-}
-
-export interface LotteryTicket {
-  id: string
-  number: string
-  status: boolean
-  rewardBracket?: number
-  roundId?: string
-  cakeReward?: string
-}
-
-export interface LotteryTicketClaimData {
-  ticketsWithUnclaimedRewards: LotteryTicket[]
-  allWinningTickets: LotteryTicket[]
-  cakeTotal: BigNumber
-  roundId: string
-}
 
 // Farm Auction
 export interface FarmAuctionBidderConfig {

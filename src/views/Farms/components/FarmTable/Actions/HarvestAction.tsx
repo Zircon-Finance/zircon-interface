@@ -14,19 +14,19 @@ import { fetchFarmUserDataAsync } from '../../../../../state/farms'
 import { usePriceCakeBusd } from '../../../../../state/farms/hooks'
 import { BIG_ZERO } from '../../../../../utils/bigNumber'
 import { getBalanceAmount } from '../../../../../utils/formatBalance'
-import { FarmWithStakedValue } from '../../types'
 import useHarvestFarm from '../../../hooks/useHarvestFarm'
 import { ActionContainer, ActionContent, HarvestButton } from './styles'
 import { useTheme } from 'styled-components'
+import { DeserializedPool } from '../../../../../state/types'
 
-interface HarvestActionProps extends FarmWithStakedValue {
+interface HarvestActionProps extends DeserializedPool {
   userDataReady: boolean
 }
 
-const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ pid, userData, userDataReady }) => {
+const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ sousId, userData, userDataReady }) => {
   const { toastSuccess } = useToast()
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
-  const earningsBigNumber = new BigNumber(userData.earnings)
+  const earningsBigNumber = new BigNumber(userData.pendingReward)
   const cakePrice = usePriceCakeBusd()
   let earnings = BIG_ZERO
   let earningsBusd = 0
@@ -39,7 +39,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ pid, userD
     displayBalance = earnings.toFixed(3, BigNumber.ROUND_DOWN)
   }
 
-  const { onReward } = useHarvestFarm(pid)
+  const { onReward } = useHarvestFarm(sousId)
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const { account } = useWeb3React()
@@ -71,7 +71,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ pid, userD
                   {t('Your %symbol% earnings have been sent to your wallet!', { symbol: 'CAKE' })}
                 </ToastDescriptionWithTx>,
               )
-              dispatch(fetchFarmUserDataAsync({ account, pids: [pid] }))
+              dispatch(fetchFarmUserDataAsync({ account, pids: [sousId] }))
             }
           }}
         >

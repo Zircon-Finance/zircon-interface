@@ -1,18 +1,55 @@
 import { useCallback } from 'react'
-import { unstakeFarm } from '../../../utils/calls'
-import { useMasterchef } from '../../../hooks/useContract'
+// import { unstakeFarm } from '../../../utils/calls'
+import { 
+  // useMasterchef,
+   useSousChef } from '../../../hooks/useContract'
+import { parseUnits } from '@ethersproject/units'
+import getGasPrice from '../../../utils/getGasPrice'
 
-const useUnstakeFarms = (pid: number) => {
-  const masterChefContract = useMasterchef()
+const sousUnstake = (sousChefContract: any, amount: string, decimals: number) => {
+  const gasPrice = getGasPrice()
+  const units = parseUnits(amount, decimals)
+
+  return sousChefContract.withdraw(units.toString(), {
+    gasPrice,
+  })
+}
+
+const sousEmergencyUnstake = (sousChefContract: any) => {
+  const gasPrice = getGasPrice()
+  return sousChefContract.emergencyWithdraw({ gasPrice })
+}
+
+const useUnstakePool = (sousId: number, enableEmergencyWithdraw = false) => {
+  const sousChefContract = useSousChef(sousId)
 
   const handleUnstake = useCallback(
-    async (amount: string) => {
-      return unstakeFarm(masterChefContract, pid, amount)
+    async (amount: string, decimals: number) => {
+      if (enableEmergencyWithdraw) {
+        return sousEmergencyUnstake(sousChefContract)
+      }
+
+      return sousUnstake(sousChefContract, amount, decimals)
     },
-    [masterChefContract, pid],
+    [enableEmergencyWithdraw, sousChefContract],
   )
 
   return { onUnstake: handleUnstake }
 }
 
-export default useUnstakeFarms
+export default useUnstakePool
+
+// const useUnstakeFarms = (pid: number) => {
+//   const masterChefContract = useMasterchef()
+
+//   const handleUnstake = useCallback(
+//     async (amount: string) => {
+//       return unstakeFarm(masterChefContract, pid, amount)
+//     },
+//     [masterChefContract, pid],
+//   )
+
+//   return { onUnstake: handleUnstake }
+// }
+
+// export default useUnstakeFarms

@@ -1,6 +1,6 @@
 import { ChainId, Token } from 'zircon-sdk'
 import { serializeToken } from '../state/user/hooks'
-import { SerializedToken } from './types'
+import { SerializedToken } from '../constants/types'
 
 const { MOONBASE } = ChainId
 

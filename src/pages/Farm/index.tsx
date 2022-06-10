@@ -7,12 +7,12 @@ import { useWeb3React } from '@web3-react/core'
 
 const FarmsPage = () => {
   const { account } = useWeb3React()
-  const { chosenFarmsMemoized } = useContext(FarmsContext)
+  const { activeFarms } = useContext(FarmsContext)
   const cakePrice = usePriceCakeBusd()
 
   return (
     <>
-      {chosenFarmsMemoized.map((farm) => (
+      {activeFarms.map((farm) => (
         <FarmCard
           key={farm.pid}
           farm={farm}

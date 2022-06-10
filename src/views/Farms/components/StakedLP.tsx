@@ -2,7 +2,6 @@ import { Heading, Flex } from '@pancakeswap/uikit'
 import { BigNumber } from 'bignumber.js'
 import Balance from '../../../components/Balance'
 import React, { useCallback } from 'react'
-import { useLpTokenPrice } from '../../../state/farms/hooks'
 import { getBalanceAmount, getBalanceNumber, getFullDisplayBalance } from '../../../utils/formatBalance'
 import { useTheme } from 'styled-components'
 
@@ -25,7 +24,7 @@ const StakedLP: React.FunctionComponent<StackedLPProps> = ({
   tokenAmountTotal,
   quoteTokenAmountTotal,
 }) => {
-  const lpPrice = useLpTokenPrice(lpSymbol)
+  const lpPrice = 0 as unknown as BigNumber
   const theme = useTheme()
   const displayBalance = useCallback(() => {
     const stakedBalanceBigNumber = getBalanceAmount(stakedBalance)

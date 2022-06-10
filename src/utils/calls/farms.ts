@@ -1,39 +1,45 @@
 import BigNumber from 'bignumber.js'
-import getGasPrice from '../getGasPrice'
+import poolsConfig from '../../constants/pools'
+import sousChefV2 from '../../constants/abi/psionicFarmABI.json'
+import multicall from '../multicall'
+import { simpleRpcProvider } from '../providers'
+import { getAddress } from '../addressHelpers'
 
-const BIG_TEN = new BigNumber(10)
-const DEFAULT_TOKEN_DECIMAL = BIG_TEN.pow(18)
-const DEFAULT_GAS_LIMIT = 200000
+export const DEFAULT_GAS_LIMIT = 200000
 
-const options = {
-  gasLimit: DEFAULT_GAS_LIMIT,
-}
+/**
+ * Returns the total number of pools that were active at a given block
+ */
+ export const getActivePools = async (block?: number) => {
+  const eligiblePools = poolsConfig
+    .filter((pool) => pool.sousId !== 0)
+    .filter((pool) => pool.isFinished === false || pool.isFinished === undefined)
+  const blockNumber = block || (await simpleRpcProvider.getBlockNumber())
+  const startBlockCalls = eligiblePools.map(({ contractAddress }) => ({
+    address: getAddress(contractAddress),
+    name: 'startBlock',
+  }))
+  const endBlockCalls = eligiblePools.map(({ contractAddress }) => ({
+    address: getAddress(contractAddress),
+    name: 'bonusEndBlock',
+  }))
+  const [startBlocks, endBlocks] = await Promise.all([
+    multicall(sousChefV2, startBlockCalls),
+    multicall(sousChefV2, endBlockCalls),
+  ])
 
-export const stakeFarm = async (masterChefContract, pid, amount) => {
-  const gasPrice = getGasPrice()
-  const value = new BigNumber(amount).times(DEFAULT_TOKEN_DECIMAL).toString()
-  if (pid === 0) {
-    return masterChefContract.enterStaking(value, { ...options, gasPrice })
-  }
+  return eligiblePools.reduce((accum, poolCheck, index) => {
+    const startBlock = startBlocks[index] ? new BigNumber(startBlocks[index]) : null
+    const endBlock = endBlocks[index] ? new BigNumber(endBlocks[index]) : null
 
-  return masterChefContract.deposit(pid, value, { ...options, gasPrice })
-}
+    if (!startBlock || !endBlock) {
+      return accum
+    }
 
-export const unstakeFarm = async (masterChefContract, pid, amount) => {
-  const gasPrice = getGasPrice()
-  const value = new BigNumber(amount).times(DEFAULT_TOKEN_DECIMAL).toString()
-  if (pid === 0) {
-    return masterChefContract.leaveStaking(value, { ...options, gasPrice })
-  }
+    if (startBlock.gte(blockNumber) || endBlock.lte(blockNumber)) {
+      return accum
+    }
 
-  return masterChefContract.withdraw(pid, value, { ...options, gasPrice })
-}
-
-export const harvestFarm = async (masterChefContract, pid) => {
-  const gasPrice = getGasPrice()
-  if (pid === 0) {
-    return masterChefContract.leaveStaking('0', { ...options, gasPrice })
-  }
-
-  return masterChefContract.deposit(pid, '0', { ...options, gasPrice })
+    return [...accum, poolCheck]
+  }, [])
 }

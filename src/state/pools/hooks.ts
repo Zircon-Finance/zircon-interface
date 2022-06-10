@@ -53,6 +53,7 @@ export const useFetchUserPools = (account) => {
 }
 
 export const usePools = (): { pools: DeserializedPool[]; userDataLoaded: boolean } => {
+  console.log('AAAAAAAAAAAAAAAAA')
   return useSelector(poolsWithUserDataLoadingSelector)
 }
 

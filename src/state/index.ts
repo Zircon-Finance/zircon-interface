@@ -9,6 +9,7 @@ import swap from './swap/reducer'
 import mint from './mint/reducer'
 import lists from './lists/reducer'
 import farmsReducer from './farms'
+import poolsReducer from './pools'
 import burn from './burn/reducer'
 import multicall from './multicall/reducer'
 
@@ -18,6 +19,7 @@ const store = configureStore({
   reducer: {
     application,
     farms: farmsReducer,
+    pools: poolsReducer,
     user,
     transactions,
     swap,

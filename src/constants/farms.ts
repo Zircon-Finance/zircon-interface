@@ -1,7 +1,7 @@
-import { serializeTokens } from '../constants/tokens'
-import { SerializedFarmConfig } from '../constants/types'
+import { serializeTokens } from './tokens'
+import { SerializedFarmConfig } from './types'
 
-const serializedTokens = serializeTokens()
+export const serializedTokens = serializeTokens()
 
 export const farms: SerializedFarmConfig[] = [
   {

@@ -2,10 +2,9 @@ import { BigNumber } from '@ethersproject/bignumber'
 // import Trans from 'components/Trans'
 // import { VaultKey } from 'state/types'
 import { NETWORK_CHAIN_ID } from '../connectors'
-import { serializeTokens } from './tokens'
-import { SerializedPoolConfig, PoolCategory } from './types'
 
-const serializedTokens = serializeTokens()
+import { SerializedPoolConfig, PoolCategory } from './types'
+import { serializedTokens } from './farms'
 
 export const MAX_LOCK_DURATION = 31536000
 export const UNLOCK_FREE_DURATION = 604800

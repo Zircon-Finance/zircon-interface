@@ -20,7 +20,7 @@ import { fetchMasterChefFarmPoolLength } from './fetchMasterChefData'
 import { resetUserState } from '../global/actions'
 
 
-const noAccountFarmConfig = farmsConfig.map((farm) => ({
+const noAccountFarmConfig = [].map((farm) => ({
   ...farm,
   userData: {
     allowance: '0',

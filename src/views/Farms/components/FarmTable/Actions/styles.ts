@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 export const ActionContainer = styled.div`
-  padding: 16px;
+  padding: 10px;
   display: flex;
   flex-flow: column;
   border-radius: 16px;

@@ -39,7 +39,7 @@ const StakedLP: React.FunctionComponent<StackedLPProps> = ({
 
   return (
     <Flex flexDirection="column" alignItems="flex-start">
-      <Heading style={{color: theme.text1, fontWeight: '400'}}>{displayBalance()}</Heading>
+      <Heading style={{color: theme.text1, fontWeight: '400', fontSize: '24px'}}>{displayBalance()}</Heading>
       {stakedBalance.gt(0) && (
         <>
           {/* <Balance

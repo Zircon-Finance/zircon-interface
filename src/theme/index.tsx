@@ -91,7 +91,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
 
     inputSelect1: chainId !== 1287 ? '#A987C2' : darkMode ? '#7D5F77' : '#a69997',
 
-    navigationTabs: chainId !== 1287 ? '#402D54' : darkMode ? '#66393D' : '#e7e2e2',
+    navigationTabs: chainId !== 1287 ? '#402D54' : darkMode ? '#583935' : '#e7e2e2',
 
     navigationBorder: chainId !== 1287 ? '#413055' : darkMode ? '#66393D' : '#e7e2e2',
 
@@ -118,6 +118,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     cardSmall: chainId !== 1287 ? '#2B1840' : darkMode ? '#361E2A' : '#fcfbfc',
     cardLightBorder: '#f2f0f1',
     cardExpanded: chainId !== 1287 ? '#3C2955' : darkMode ? '#3c2330' : '#f2f0f1',
+    badgeSmall: chainId !== 1287 ? '#604C7A' : darkMode ? '#442734' : '#f2f0f1',
 
     positionsButtons: chainId !== 1287 ? '#7a628c' : darkMode ? '#755452' : '#fcfbfc',
     modalBg : chainId !== 1287 ? 'rgba(0,0,0,0.5)' : darkMode ? 'rgba(0,0,0,0.5)' : 'rgba(36, 17, 26, 0.5)',

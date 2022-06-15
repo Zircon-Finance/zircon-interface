@@ -81,6 +81,8 @@ export interface Colors {
 
   meatPink: Color
 
+  badgeSmall: Color
+
   primaryText1: Color
 
   // pinks

@@ -47,7 +47,6 @@ interface FarmCardActionsProps {
 const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidityUrl, lpLabel, displayApr }) => {
   const { t } = useTranslation()
   const theme = useTheme()
-  console.log('farm', farm)
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
   const { sousId, contractAddress } = farm
   const { allowance, pendingReward } = farm.userData || {}

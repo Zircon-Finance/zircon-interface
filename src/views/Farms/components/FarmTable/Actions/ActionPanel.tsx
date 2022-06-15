@@ -229,7 +229,6 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const { account } = useWeb3React()
   const dispatch = useDispatch()
   const allowance = farm.userData?.allowance ? new BigNumber(farm.userData.allowance) : BIG_ZERO
-  console.log('allowance', allowance)
   const isApproved = account && allowance && allowance.isGreaterThan(0)
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
   const lpContract = useERC20(lpAddress)
@@ -239,7 +238,6 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const { width } = useWindowDimensions()
   const sousChefContract = useSousChef(pool.sousId)
   const { callWithGasPrice } = useCallWithGasPrice()
-  console.log('SousChefContract', sousChefContract.address)
   const handleApproval = useCallback(async () => {
     const receipt = await fetchWithCatchTxError(() => {
       return callWithGasPrice(lpContract, 'approve', [sousChefContract.address, MaxUint256])
@@ -279,7 +277,6 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const handleStake = async (amount: string, token: Token) => {
     const receipt = await fetchWithCatchTxError(() => {
       return onStake(amount, token.decimals).then((response) => {
-        console.log('Staking token: ', token, 'amount: ', amount)
         addTransaction(response, {
           summary: `Stake ${token1.symbol}-${token2.symbol} LP tokens`
         })
@@ -327,14 +324,14 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
         <ActionContainer style={{padding: '0 10px'}}>
             {width >= 800 ? (
               <SpaceBetween>
-                  <div>
+                  <div style={{letterSpacing: '0.05em'}}>
                   {!isClassic ? (
                   isAnchor ? (
                     <>
                     <Flex flexWrap='wrap'>  
                       <BadgeSmall 
                       style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', display: 'flex', alignItems: 'center', marginRight: '5px'}}>
-                      <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{token1.symbol} </span>{'ANCHOR'}
+                      <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{token1.symbol} </span>{'FLOAT'}
                       </BadgeSmall>
                       <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{` - ${token2.symbol}`}</Text>
                     </Flex>
@@ -345,7 +342,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                     <Flex flexWrap='wrap'>
                       <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{token1.symbol} -</Text>
                       <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '5px', display: 'flex', alignItems: 'center'}}>
-                        <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{`${token2.symbol}`}</span>{'FLOAT'}
+                        <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{`${token2.symbol}`}</span>{'ANCHOR'}
                       </BadgeSmall>
                     </Flex>
                     </>
@@ -365,7 +362,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                     <>
                     <Flex flexWrap='wrap'>  
                       <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', display: 'flex', alignItems: 'center'}}>
-                      <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{token1.symbol} </span>{'ANCHOR'}
+                      <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{token1.symbol} </span>{'FLOAT'}
                       </BadgeSmall>
                       <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{` - ${token2.symbol}`}</Text>
                     </Flex>
@@ -376,7 +373,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                     <Flex flexWrap='wrap'>
                       <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{token1.symbol} -</Text>
                       <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '5px', display: 'flex', alignItems: 'center'}}>
-                        <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{`${token2.symbol}`}</span>{'FLOAT'}
+                        <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{`${token2.symbol}`}</span>{'ANCHOR'}
                       </BadgeSmall>
                     </Flex>
                     </>

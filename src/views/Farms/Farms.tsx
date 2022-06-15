@@ -253,7 +253,6 @@ const Farms: React.FC = ({ children }) => {
   const [stakedOnly, setStakedOnly] = useUserFarmStakedOnly(isActive)
 
   const activeFarms = pools
-  console.log('activeFarms', activeFarms)
   // .filter(
   //   (farm) =>
   //     farm.pid !== 0 && farm.multiplier !== '0X' && !isArchivedPid(farm.pid) && (!poolLength || poolLength > farm.pid),
@@ -391,6 +390,7 @@ const Farms: React.FC = ({ children }) => {
 
   const rowData = activeFarms.map((farm) => {
     const { earningToken, stakingToken } = farm
+    console.log('stakingToken', stakingToken)
     const tokenAddress = earningToken.address
     const quoteTokenAddress = stakingToken.address
     const lpLabel = `${farm.token1.symbol}-${farm.token2.symbol}`

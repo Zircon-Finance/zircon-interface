@@ -1,10 +1,10 @@
-import { Currency, DEV, Token } from 'zircon-sdk'
+import { Currency, DEV } from 'zircon-sdk'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
 import EthereumLogo from '../../assets/images/ethereum-logo.png'
-import useHttpLocations from '../../hooks/useHttpLocations'
-import { WrappedTokenInfo } from '../../state/lists/hooks'
+// import useHttpLocations from '../../hooks/useHttpLocations'
+// import { WrappedTokenInfo } from '../../state/lists/hooks'
 import Logo from '../Logo'
 
 const getTokenLogoURL = (name: string) =>
@@ -32,21 +32,14 @@ export default function CurrencyLogo({
   size?: string
   style?: React.CSSProperties
 }) {
-  const uriLocations = useHttpLocations(currency instanceof WrappedTokenInfo ? currency.logoURI : undefined)
+  // const uriLocations = useHttpLocations(currency instanceof WrappedTokenInfo ? currency.logoURI : undefined)
 
   const srcs: string[] = useMemo(() => {
     if (currency === DEV) return []
 
-    if (currency instanceof Token) {
-      if (currency instanceof WrappedTokenInfo) {
-        return [...uriLocations, getTokenLogoURL(currency.name?.toLowerCase() as string)]
-      }
-
       return [getTokenLogoURL(currency.name?.toLowerCase() as string)]
       //return [getTokenLogoURL(currency.address)]
-    }
-    return []
-  }, [currency, uriLocations])
+  }, [currency])
 
   if (currency === DEV) {
     return <StyledEthereumLogo src={EthereumLogo} size={size} style={style} />

@@ -132,7 +132,6 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     details,
      userDataReady, 
   } = props
-  console.log('Props from the row', props)
   const hasStakedAmount = !!usePool(details.sousId).pool.userData.stakedBalance.toNumber()
   const [actionPanelExpanded, setActionPanelExpanded] = useState(false)
   const [hovered, setHovered] = useState(false)

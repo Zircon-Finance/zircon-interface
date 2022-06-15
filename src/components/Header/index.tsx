@@ -119,7 +119,7 @@ const UniIcon = styled.div`
 `
 
 export const BadgeSmall = styled.span`
-  background-color: ${({ theme }) => theme.bg9};
+  background-color: ${({ theme }) => theme.badgeSmall};
   padding: 3px 5px;
   border-radius: 5px;
   color: ${({ theme }) => theme.whiteHalf};

@@ -50,7 +50,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     text3: darkMode ?'#6C7284'  : '#000f0f',
     text4: darkMode ?'#565A69'  : '#000f0f',
     text5: darkMode ?'#2C2F36'  : '#000f0f',
-    tabsText: chainId !== 1287 ? '#FFF' : darkMode ? '#FFF' : '#945c67',
+    tabsText: chainId !== 1287 ? '#FFF' : darkMode ? '#D5AEAF' : '#945c67',
 
     // backgrounds / greys
     bg1: chainId !== 1287 ? '#221237' : darkMode ? '#3A1C29' : '#FCFBFC', // Dark purple
@@ -104,6 +104,16 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     walletActive: chainId !== 1287 ? '#25123C' : darkMode ? '#4e3430' : '#edebea',
 
     hoveredButton: chainId !== 1287 ? '#604C7A' : darkMode ? '#5b434f' : '#9e4d86',
+
+    poolPinkButton: '#9E4D86',
+
+    meatPink: '#D5AEAF',
+
+    farmPoolCardsBg: chainId !== 1287 ? '#3C2955' : darkMode ? '#5a2f41' : '#efedee',
+
+    contrastLightButton: chainId !== 1287 ? '#604C7A' : darkMode ? '#582b40' : '#f1ebef',
+
+    darkerContrastPink: chainId !== 1287 ? '#604C7A' : darkMode ? '#412030' : '#f7f2f6',
 
     cardSmall: chainId !== 1287 ? '#2B1840' : darkMode ? '#361E2A' : '#fcfbfc',
     cardLightBorder: '#f2f0f1',
@@ -286,13 +296,13 @@ export const TYPE = {
 
 export const FixedGlobalStyle = createGlobalStyle`
 html, input, textarea, button {
-  font-family: 'DM-sans', sans-serif;
+  font-family: 'DM sans', sans-serif;
   letter-spacing: -0.018em;
   font-display: fallback;
 }
 @supports (font-variation-settings: normal) {
   html, input, textarea, button {
-    font-family: 'DM-sans', sans-serif;
+    font-family: 'DM sans', sans-serif;
   }
 }
 
@@ -347,13 +357,23 @@ body {
   background-repeat: no-repeat;
   background-size: cover;
   color: ${({ theme }) => theme.text1};
-  background: ${ ({ theme }) => theme.chainId !== 1287 ? 
-    (theme.darkMode ? 
-      'radial-gradient(42.57% 42.57% at 50% 50%, rgba(44, 9, 90, 0.95) 0%, rgba(29, 8, 51, 0.95) 99.19%);' :
-      '#371057;') : 
-    (theme.darkMode ? 
-      'radial-gradient(42.57% 42.57% at 50% 50%, rgba(223, 128, 115, 0.5) -50%, #3C2320 100%);' :
-      '#F5F4F4;')}
+  ${({ theme }) => theme.chainId !== 1287 ? 
+      (theme.darkMode ? (`
+        background: rgb(43,12,74);
+        background: -moz-radial-gradient(circle, rgba(43,12,74,1) 0%, rgba(34,10,59,1) 100%);
+        background: -webkit-radial-gradient(circle, rgba(43,12,74,1) 0%, rgba(34,10,59,1) 100%);
+        background: radial-gradient(circle, rgba(43,12,74,1) 0%, rgba(34,10,59,1) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#2B0C4A",endColorstr="#220A3B",GradientType=1);`) 
+      : 
+      (`background: #371057;`)) 
+    :
+    (theme.darkMode ? (`
+      background: rgb(87,51,46);
+      background: -moz-radial-gradient(circle, rgba(87,51,46,1) 0%, rgba(70,41,37,1) 100%);
+      background: -webkit-radial-gradient(circle, rgba(87,51,46,1) 0%, rgba(70,41,37,1) 100%);
+      background: radial-gradient(circle, rgba(87,51,46,1) 0%, rgba(70,41,37,1) 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#57332E",endColorstr="#462925",GradientType=1);`
+    ) : (`background: #F5F4F4;`)) }
   background-attachment: fixed;
 
 }

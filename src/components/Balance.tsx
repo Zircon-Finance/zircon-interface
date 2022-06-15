@@ -27,9 +27,8 @@ const Balance: React.FC<BalanceProps> = ({
   useEffect(() => {
     previousValue.current = value
   }, [value])
-
   return (
-    <Text fontWeight={400} color={isDisabled ? 'textDisabled' : color} onClick={onClick} {...props}>
+    <Text fontWeight={400} color={isDisabled ? 'textDisabled' : color} {...props}>
       <CountUp
         start={previousValue.current}
         end={value}

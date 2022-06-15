@@ -4,7 +4,6 @@ import { Contract } from '@ethersproject/contracts'
 // import { useMasterchef } from '../../../hooks/useContract'
 import { useCallWithGasPrice } from '../../../hooks/useCallWithGasPrice'
 import { useWeb3React } from '@web3-react/core'
-import { useTranslation } from 'react-i18next'
 import { useSousChef } from '../../../hooks/useContract'
 // import { VaultKey } from 'state/types'
 // import { useSWRContract, UseSWRContractKey } from 'hooks/useSWRContract'
@@ -15,7 +14,6 @@ import { updateUserAllowance } from '../../../state/pools'
 const useApprovePool = (lpContract: Contract, sousId, earningTokenSymbol) => {
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
   const { callWithGasPrice } = useCallWithGasPrice()
-  const { t } = useTranslation()
   const dispatch = useDispatch()
   const { account } = useWeb3React()
   const sousChefContract = useSousChef(sousId)
@@ -39,8 +37,6 @@ const useApprovePool = (lpContract: Contract, sousId, earningTokenSymbol) => {
     lpContract,
     sousChefContract,
     sousId,
-    earningTokenSymbol,
-    t,
     callWithGasPrice,
     fetchWithCatchTxError,
   ])

@@ -2,6 +2,8 @@ import styled from 'styled-components'
 
 export const ActionContainer = styled.div`
   padding: 16px;
+  display: flex;
+  flex-flow: column;
   border-radius: 16px;
   flex-grow: 1;
   color: ${({ theme }) => theme.text1};
@@ -34,6 +36,9 @@ export const ActionContent = styled.div`
   height: 100%;
   justify-content: space-between;
   align-items: center;
+  h2 {
+    margin: 8px 0;
+  }
 `
 
 export const HarvestButton = styled.button`
@@ -49,6 +54,6 @@ export const HarvestButton = styled.button`
   width: 74px;
   height: 33px;
 
-  background: ${({ theme }) => theme.hoveredButton};
+  background: ${({ theme }) => theme.poolPinkButton};
   border-radius: 12px;
 `

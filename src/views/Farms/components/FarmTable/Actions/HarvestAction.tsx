@@ -46,16 +46,16 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ sousId, us
   const theme = useTheme()
 
   return (
-    <ActionContainer style={{background: theme.bg6}}>
+    <ActionContainer style={{background: theme.farmPoolCardsBg}}>
       <ActionContent>
-        <div style={{display: 'flex', justifyContent: 'space-between', width: '100%', height: '115%', alignItems: 'center'}}>
+        <div style={{display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center', height: '65px'}}>
           <div style={{display: 'flex', flexFlow: 'column', height: '100%', justifyContent: 'space-between'}}>
             <Text color={theme.text1} fontSize="13px">
               {t('Earned')}
             </Text>
-            <Heading color={theme.text1} style={{margin: '0', fontWeight: '400'}}>{displayBalance}</Heading>
+            <Heading color={theme.text1} style={{margin: '8px 0', fontWeight: '400'}}>{displayBalance}</Heading>
             {earningsBusd > 0 && (
-              <Balance fontSize="13px" color={theme.text1} decimals={2} value={earningsBusd} unit=" USD" prefix="~" />
+              <Balance fontSize="12px" color={theme.whiteHalf} decimals={2} value={earningsBusd} unit=" USD" prefix="~" />
             )}
           </div>
           <HarvestButton

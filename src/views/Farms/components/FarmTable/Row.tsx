@@ -21,9 +21,8 @@ import TrendingHealthIcon from '../../../../components/TrendingHealthIcon'
 import QuestionMarkIcon from '../../../../components/QuestionMarkIcon'
 import StakeAdd from '../FarmCard/StakeAdd'
 import { useActiveWeb3React, useWindowDimensions } from '../../../../hooks'
-import { ButtonLighter } from '../../../../components/Button'
+import { ButtonLighter, ButtonPinkGamma } from '../../../../components/Button'
 import { useAddPopup, useWalletModalToggle } from '../../../../state/application/hooks'
-import useApproveFarm from '../../hooks/useApproveFarm'
 import { useERC20, useSousChef } from '../../../../hooks/useContract'
 import useCatchTxError from '../../../../hooks/useCatchTxError'
 import { useTransactionAdder } from '../../../../state/transactions/hooks'
@@ -133,7 +132,8 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     details,
      userDataReady, 
   } = props
-  const hasStakedAmount = !!usePool(details.pid).pool.userData.stakedBalance.toNumber()
+  console.log('Props from the row', props)
+  const hasStakedAmount = !!usePool(details.sousId).pool.userData.stakedBalance.toNumber()
   const [actionPanelExpanded, setActionPanelExpanded] = useState(false)
   const [hovered, setHovered] = useState(false)
   const shouldRenderChild = actionPanelExpanded
@@ -158,8 +158,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     setActionPanelExpanded(false)
     setIsVisible(true)
   }, [hasStakedAmount, isVisible])
-  const lpContract = useERC20(details.lpAddress)
-  const { handleApprove } = useApproveFarm(lpContract, details.pid, details.earningToken.symbol)
+  const lpContract = useERC20(details.contractAddress)
   const { fetchWithCatchTxError } = useCatchTxError()
   const addTransaction = useTransactionAdder()
   const addPopup = useAddPopup()
@@ -172,7 +171,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     const receipt = await fetchWithCatchTxError(() => {
       return callWithGasPrice(lpContract, 'approve', [sousChefContract.address, MaxUint256]).then(response => {
         addTransaction(response, {
-          summary:  `Enable ${details.earningToken.symbol}-${details.stakingToken.symbol} stake contract`
+          summary:  `Enable ${details.token1.symbol}-${details.token2.symbol} stake contract`
         })
         return response
       })
@@ -188,10 +187,22 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
         },
         receipt.transactionHash
       )
-      dispatch(fetchFarmUserDataAsync({ account, pids: [details.pid] }))
+      dispatch(fetchFarmUserDataAsync({ account, pids: [details.sousId] }))
     }
   },
-  [handleApprove, dispatch, fetchWithCatchTxError, addPopup, addTransaction, details.quoteToken.symbol, details.token.symbol, account, details.pid])
+  [
+    dispatch, 
+    fetchWithCatchTxError, 
+    addPopup, 
+    addTransaction, 
+    account,
+    details.sousId,
+    details.token1.symbol,
+    details.token2.symbol,
+    lpContract,
+    sousChefContract.address,
+    callWithGasPrice,
+  ])
   const mobileVer = width <= 992
   const { isDesktop } = useMatchBreakpoints()
   const isSmallerScreen = !isDesktop
@@ -202,7 +213,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     tooltipOffset: [20, 10],
   })
   const isApproved = account && details.userData.allowance && details.userData.allowance.isGreaterThan(0)
-  const stakedAmount = usePool(details.pid).pool.userData.stakedBalance.toNumber()
+  const stakedAmount = usePool(details.sousId).pool.userData.stakedBalance.toNumber()
   const toggleWalletModal = useWalletModalToggle()
   const darkMode = useIsDarkMode()
 
@@ -276,13 +287,20 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
               case 'staked':
                 return (
                   <TableData key={key}>
-                    {props.staked.staked.gt(0) ? (
+                    {account ? (
+                    isApproved ?
+                    props.staked.staked.gt(0) ? (
                       <CellInner>
                         <CellLayout hovered={hovered} label={t('Staked')}>
                           {createElement(cells[key], { ...props[key], hovered, setHovered })}
                         </CellLayout>
                       </CellInner>) : (
-                      <StakeAdd row={true} margin={true} width={'75%'} />)}
+                      <StakeAdd row={true} margin={true} width={'75%'} />)
+                    : (
+                      <ButtonPinkGamma style={{width: '80%', fontSize: '13px', padding: '10px', borderRadius: '12px'}}
+                      onClick={handleApproval}>{'Enable contract'}</ButtonPinkGamma>)) : (
+                        <ButtonPinkGamma style={{width: '80%', fontSize: '13px', padding: '10px', borderRadius: '12px'}}
+                    onClick={toggleWalletModal}>{'Connect wallet'}</ButtonPinkGamma>)}
                   </TableData>
                 )
 

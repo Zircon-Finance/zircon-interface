@@ -102,11 +102,19 @@ interface PoolConfigBaseProps {
 }
 
 export interface SerializedPoolConfig extends PoolConfigBaseProps {
+  isClassic: boolean
+  isAnchor?: boolean
+  token1: SerializedToken
+  token2: SerializedToken
   earningToken: SerializedToken
   stakingToken: SerializedToken
 }
 
 export interface DeserializedPoolConfig extends PoolConfigBaseProps {
+  isClassic: boolean
+  isAnchor?: boolean
+  token1: SerializedToken
+  token2: SerializedToken
   earningToken: Token
   stakingToken: Token
 }

@@ -64,9 +64,9 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
   //     ? `$${farm.liquidity.toNumber().toLocaleString(undefined, { maximumFractionDigits: 0 })}`
   //     : ''
 
-  const lpLabel = `${farm.earningToken.symbol}-${farm.stakingToken.symbol}`
-  const addLiquidityUrl = '#/add-pro/' + farm.earningToken.address+'/' + farm.stakingToken.address
-  const isPromotedFarm = farm.earningToken.symbol === 'CAKE'
+  const lpLabel = `${farm.token1.symbol}-${farm.token2.symbol}`
+  const addLiquidityUrl = '#/add-pro/' + farm.token1.address+'/' + farm.token2.address
+  const isPromotedFarm = farm.token1.symbol === 'CAKE'
   const isApproved = account && farm.userData.allowance && farm.userData.allowance.isGreaterThan(0)
   const [showModalDeposit, setShowModalDeposit] = useState(false)
   const { onStake } = useStakeFarms(farm.sousId)
@@ -78,9 +78,9 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
 
   const handleStake = async (amount: string) => {
     const receipt = await fetchWithCatchTxError(() => {
-      return onStake(amount, farm.earningToken.decimals).then((response) => {
+      return onStake(amount, farm.stakingToken.decimals).then((response) => {
         addTransaction(response, {
-          summary: `Stake ${farm.earningToken.symbol}-${farm.stakingToken.symbol} tokens`
+          summary: `Stake ${farm.token1.symbol}-${farm.token2.symbol} LP tokens`
         })
         return response
       })
@@ -91,7 +91,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
           txn: {
             hash: receipt.transactionHash,
             success: receipt.status === 1,
-            summary: 'Staked '+amount+' '+farm.earningToken.symbol+"-"+farm.stakingToken.symbol+' LP to farm',
+            summary: 'Staked '+amount+' '+farm.token1.symbol+"-"+farm.token2.symbol+' LP to farm',
           }
         },
         receipt.transactionHash
@@ -106,8 +106,8 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
       <FarmCardInnerContainer>
         <CardHeading
           lpLabel={lpLabel}
-          token={farm.earningToken}
-          quoteToken={farm.stakingToken}
+          token={farm.token1}
+          quoteToken={farm.token2}
         />
         {
           farm.userData.stakedBalance.gt(0) || !isApproved ? (
@@ -129,8 +129,12 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
                     displayApr={'111'}
                     stakedBalance={farm.userData.stakedBalance}
                     onConfirm={handleStake}
-                    tokenName={farm.earningToken.symbol}
-                    addLiquidityUrl={'#/add-pro/'+farm.earningToken.address+'/'+farm.stakingToken.address}
+                    tokenName={farm.token2.symbol}
+                    addLiquidityUrl={farm.isClassic ?
+                      `#/add/${farm.token1.address}/${farm.token2.address}` :
+                      farm.isAnchor ? 
+                      `#/add-pro/${farm.token1.address}/${farm.token2.address}` : 
+                      `#/add-pro/${farm.token2.address}/${farm.token1.address}`}
                     cakePrice={112 as unknown as BigNumber}
                     token = {farm.earningToken}/>
                 </ModalContainer>
@@ -164,17 +168,21 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
           </Flex>
         )}
         <Flex mt='10px' justifyContent="space-between">
-          <Text fontSize='13px'>{t('Liquidity')}:</Text>
-          <Text fontSize='13px'>{'farm.liquidity.toNumber()'}</Text>
+          <Text color={theme.text1} fontSize='13px'>{t('Liquidity')}:</Text>
+          <Text color={theme.text1} fontSize='13px'>{'farm.liquidity.toNumber()'}</Text>
         </Flex>
-        <Link to={`add-pro/${farm.earningToken.address}/${farm.stakingToken.address}`}>
+        <Link to={farm.isClassic ?
+                      `#/add/${farm.token1.address}/${farm.token2.address}` :
+                      farm.isAnchor ? 
+                      `#/add-pro/${farm.token1.address}/${farm.token2.address}` : 
+                      `#/add-pro/${farm.token2.address}/${farm.token1.address}`}>
           <ButtonOutlined mt='20px' style={{padding: '10px', fontSize: '13px'}}>
-            {`Get ${farm.earningToken.name} - ${farm.stakingToken.name} Anchor LP`}
+            {`Get ${farm.token1.name} - ${farm.token2.name} LP tokens`}
           </ButtonOutlined>
         </Link>
         <SpaceBetween style={{marginTop:'20px'}}>
-            <StyledLinkExternal color={theme.whiteHalf} href={'Placeholder'}>{t('View Contract ↗')}</StyledLinkExternal>
-            <StyledLinkExternal color={theme.whiteHalf} href={'Placeholder'}>{t('See Pair Info ↗')}</StyledLinkExternal>
+            <StyledLinkExternal color={theme.meatPink} href={'Placeholder'}>{t('View Contract ↗')}</StyledLinkExternal>
+            <StyledLinkExternal color={theme.meatPink} href={'Placeholder'}>{t('See Pair Info ↗')}</StyledLinkExternal>
           </SpaceBetween>
       </FarmCardInnerContainer>
     </StyledCard>

@@ -1,17 +1,18 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { Flex, Heading } from '@pancakeswap/uikit'
-import { Token } from 'zircon-sdk'
+// import { Token } from 'zircon-sdk'
 import DoubleCurrencyLogo from '../../../../components/DoubleLogo'
 import { BadgeSmall } from '../../../../components/Header'
 import { SpaceBetween } from '../FarmTable/Actions/ActionPanel'
+import { SerializedToken } from '../../../../constants/types'
 
 export interface ExpandableSectionProps {
   lpLabel?: string
   multiplier?: string
   isCommunityFarm?: boolean
-  token: Token
-  quoteToken: Token
+  token: SerializedToken
+  quoteToken: SerializedToken
 }
 
 const Wrapper = styled(Flex)`
@@ -21,11 +22,12 @@ const Wrapper = styled(Flex)`
 `
 
 const CardHeading: React.FC<ExpandableSectionProps> = ({ lpLabel, multiplier, isCommunityFarm, token, quoteToken }) => {
+  const theme = useTheme()
   return (
-    <div style={{padding: '10px'}}>
+    <div style={{padding: '10px', color: theme.text1}}>
       <Wrapper justifyContent="space-between" alignItems="center" mb="12px">
       <Flex flexDirection="column" alignItems="flex-end">
-        <Heading style={{fontSize:'16px', fontWeight:'300', margin: '0'}} mb="0px">{lpLabel.split(' ')[0]}</Heading>
+        <Heading color={theme.text1} style={{fontSize:'16px', fontWeight:'300', margin: '0'}} mb="0px">{lpLabel.split(' ')[0]}</Heading>
         {/* <Flex justifyContent="center">
           {multiplier ? (
             <MultiplierTag variant="secondary">{multiplier}</MultiplierTag>

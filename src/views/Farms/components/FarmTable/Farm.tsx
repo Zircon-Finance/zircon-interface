@@ -4,7 +4,6 @@ import styled, { useTheme } from 'styled-components'
 // import { useTranslation } from 'react-i18next'
 
 import { Text } from '@pancakeswap/uikit'
-import { Token } from 'zircon-sdk'
 // import { getBalanceNumber } from '../../../../utils/formatBalance'
 import DoubleCurrencyLogo from '../../../../components/DoubleLogo'
 // import { useFarmUser } from '../../../../state/farms/hooks'
@@ -12,14 +11,16 @@ import { BadgeSmall } from '../../../../components/Header'
 // import BigNumber from 'bignumber.js'
 import { useWindowDimensions } from '../../../../hooks'
 import { Flex } from 'rebass'
+import { SerializedToken } from '../../../../constants/types'
 
 export interface FarmProps {
   label: string
   pid: number
-  token: Token
-  quoteToken: Token
+  token: SerializedToken
+  quoteToken: SerializedToken
   farmHealth: number
   isAnchor: boolean
+  isClassic: boolean
 }
 
 const Container = styled.div`
@@ -34,7 +35,7 @@ const TokenWrapper = styled.div`
   padding-right: 8px;
 `
 
-const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pid, isAnchor }) => {
+const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pid, isAnchor, isClassic }) => {
   // const { stakedBalance } = useFarmUser(pid)
   // const { t } = useTranslation()
   // const rawStakedBalance = getBalanceNumber(stakedBalance)

@@ -2,7 +2,7 @@ import { Heading, Flex } from '@pancakeswap/uikit'
 import { BigNumber } from 'bignumber.js'
 import Balance from '../../../components/Balance'
 import React, { useCallback } from 'react'
-import { getBalanceAmount, getBalanceNumber, getFullDisplayBalance } from '../../../utils/formatBalance'
+import { getBalanceAmount, getFullDisplayBalance } from '../../../utils/formatBalance'
 import { useTheme } from 'styled-components'
 
 interface StackedLPProps {
@@ -24,7 +24,7 @@ const StakedLP: React.FunctionComponent<StackedLPProps> = ({
   tokenAmountTotal,
   quoteTokenAmountTotal,
 }) => {
-  const lpPrice = 0 as unknown as BigNumber
+  // const lpPrice = useLpTokenPrice(lpSymbol)
   const theme = useTheme()
   const displayBalance = useCallback(() => {
     const stakedBalanceBigNumber = getBalanceAmount(stakedBalance)
@@ -39,31 +39,33 @@ const StakedLP: React.FunctionComponent<StackedLPProps> = ({
 
   return (
     <Flex flexDirection="column" alignItems="flex-start">
-      <Heading style={{color: theme.text1, margin: '0',fontWeight: '400'}}>{displayBalance()}</Heading>
-      {stakedBalance.gt(0) && lpPrice.gt(0) && (
+      <Heading style={{color: theme.text1, fontWeight: '400'}}>{displayBalance()}</Heading>
+      {stakedBalance.gt(0) && (
         <>
-          <Balance
+          {/* <Balance
             fontSize="12px"
             color={theme.text1}
             decimals={2}
-            value={getBalanceNumber(lpPrice.times(stakedBalance))}
+            value={1}
             unit=" USD"
             prefix="~"
-          />
+          /> */}
           <Flex style={{ gap: '4px' }}>
             <Balance
               fontSize="12px"
               color={theme.whiteHalf}
               decimals={2}
-              value={stakedBalance.div(lpTotalSupply).times(tokenAmountTotal).toNumber()}
+              value={1}
               unit={` ${tokenSymbol}`}
+              prefix=" "
             />
             <Balance
               fontSize="12px"
               color={theme.whiteHalf}
               decimals={2}
-              value={stakedBalance.div(lpTotalSupply).times(quoteTokenAmountTotal).toNumber()}
+              value={1}
               unit={` ${quoteTokenSymbol}`}
+              prefix=" "
             />
           </Flex>
         </>

@@ -20,6 +20,7 @@ const LiquidityWrapper = styled.div`
   font-weight: 400;
   display: flex;
   align-items: center;
+  font-size: 13px;
   position: relative;
   ${({ theme }) => theme.mediaQueries.lg} {
     text-align: left;
@@ -85,7 +86,11 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
         // liquidity.gt(0) && 
         hovered && width >= 1100 &&
         <AbsContainer onMouseEnter={()=>setHovered(true)}>
-          <Link to={`/add-pro/${farm.token.address}/${farm.quoteToken.address}`}>
+          <Link to={farm.isClassic ?
+                      `#/add/${farm.token1.address}/${farm.token2.address}` :
+                      farm.isAnchor ? 
+                      `#/add-pro/${farm.token1.address}/${farm.token2.address}` : 
+                      `#/add-pro/${farm.token2.address}/${farm.token1.address}`}>
             <IconButton 
             style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%'}}
             >

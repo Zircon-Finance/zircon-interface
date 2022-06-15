@@ -12,7 +12,6 @@ import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import styled, { useTheme } from 'styled-components'
 // import getLiquidityUrlPathParts from 'utils/getLiquidityUrlPathParts'
-import useApproveFarm from '../../../hooks/useApproveFarm'
 import useStakeFarms from '../../../hooks/useStakeFarms'
 import useUnstakeFarms from '../../../hooks/useUnstakeFarms'
 import WithdrawModal from '../../WithdrawModal'
@@ -130,7 +129,6 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
   }
   const lpContract = useERC20(contractAddress)
   const dispatch = useDispatch()
-  const { handleApprove } = useApproveFarm(lpContract, sousId, earningToken.symbol)
   const sousChefContract = useSousChef(sousId)
   const { callWithGasPrice } = useCallWithGasPrice()
 
@@ -138,7 +136,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
     const receipt = await fetchWithCatchTxError(() => {
       return callWithGasPrice(lpContract, 'approve', [sousChefContract.address, MaxUint256]).then(response => {
         addTransaction(response, {
-          summary:  `Enable ${pool.earningToken.symbol}-${pool.stakingToken.symbol} stake contract`
+          summary:  `Enable ${pool.token1.symbol}-${pool.token2.symbol} stake contract`
         })
         return response
       })
@@ -157,12 +155,24 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
       )  
       dispatch(fetchPoolsUserDataAsync(account))
     }
-  }, [handleApprove, dispatch, account, sousId, addPopup, fetchWithCatchTxError, addTransaction, earningToken.symbol, stakingToken.symbol])
+  }, [ 
+      dispatch, 
+      account, 
+      addPopup, 
+      fetchWithCatchTxError, 
+      addTransaction, 
+      lpContract,
+      sousChefContract.address,
+      callWithGasPrice,
+      pool.token1.symbol,
+      pool.token2.symbol
+    ])
+
   const theme = useTheme()
 
   if (!account) {
     return (
-      <ActionContainer style={{background: theme.bg6}}>
+      <ActionContainer style={{background: theme.farmPoolCardsBg}}>
         <ActionTitles>
           <Text fontSize="13px">
             {t('Start Farming')}
@@ -202,14 +212,14 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
             <WithdrawModal 
             max={stakedBalance} 
             onConfirm={handleUnstake} 
-            tokenName={pool.earningToken.symbol} 
+            tokenName={pool.stakingToken.symbol} 
             onDismiss={()=>setshowModalWithdraw(false)} 
-            token={pool.earningToken} />
+            token={pool.stakingToken} />
           </ModalContainer>
         </Portal>
           
         }
-        <ActionContainer style={{background: theme.bg6}}>
+        <ActionContainer style={{background: theme.farmPoolCardsBg}}>
           <ActionTitles>
             <Text color={theme.text1} fontSize="13px">
               {t('Staked')}
@@ -218,7 +228,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
           <ActionContent>
             <StakedLP
               stakedBalance={stakedBalance}
-              lpSymbol={pool.earningToken.symbol+'-'+pool.stakingToken.symbol}
+              lpSymbol={pool.token1.symbol+'-'+pool.token2.symbol}
               quoteTokenSymbol={pool.earningToken.symbol}
               tokenSymbol={pool.stakingToken.symbol}
               lpTotalSupply={1 as unknown as BigNumber}
@@ -227,7 +237,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
             />
             <IconButtonWrapper>
             <IconButton 
-              style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}} 
+              style={{background: theme.poolPinkButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}} 
               variant="tertiary" 
               onClick={()=>setshowModalWithdraw(true)} mr="6px">
               <Flex>
@@ -235,7 +245,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
               </Flex>
             </IconButton>
               <IconButton
-                style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%'}} 
+                style={{background: theme.poolPinkButton, width: '29px', height: '28px', borderRadius: '100%'}} 
                 variant="tertiary"
                 onClick={()=>{setshowModalDeposit(true)}}
                 disabled={['history', 'archived'].some((item) => window.location.pathname.includes(item))}
@@ -252,7 +262,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
     }
 
     return (
-      <ActionContainer style={{background: theme.bg6}}>
+      <ActionContainer style={{background: theme.farmPoolCardsBg}}>
         <ActionTitles>
           <Text bold textTransform="uppercase" color="textSubtle" fontSize="12px" pr="4px">
             {t('Stake')}
@@ -277,7 +287,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
 
   if (!userDataReady) {
     return (
-      <ActionContainer style={{background: theme.bg6}}>
+      <ActionContainer style={{background: theme.farmPoolCardsBg}}>
         <ActionTitles>
           <Text fontSize="13px">
             {t('Start Farming')}

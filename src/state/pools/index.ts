@@ -30,7 +30,7 @@ import {
 import { getTokenPricesFromFarm } from './helpers'
 import { resetUserState } from '../global/actions'
 import { BIG_ZERO } from '../../utils/bigNumber'
-import { multicallv2 } from '../../utils/multicall'
+import multicall from '../../utils/multicall'
 import { simpleRpcProvider } from '../../utils/providers'
 import priceHelperLpsConfig from '../../constants/priceHelperLps'
 import { getBalanceNumber } from '../../utils/formatBalance'
@@ -109,7 +109,7 @@ export const fetchCakePoolUserDataAsync = (account: string) => async (dispatch) 
     params: [account],
   }
   const cakeContractCalls = [allowanceCall, balanceOfCall]
-  const [[allowance], [stakingTokenBalance]] = await multicallv2(cakeAbi, cakeContractCalls)
+  const [[allowance], [stakingTokenBalance]] = await multicall(cakeAbi, cakeContractCalls)
 
   dispatch(
     setPoolUserData({
@@ -200,9 +200,9 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
 }
 
 export const fetchPoolsStakingLimitsAsync = () => async (dispatch, getState) => {
-  const poolsWithStakingLimit = getState()
-    .pools.data.filter(({ stakingLimit }) => stakingLimit !== null && stakingLimit !== undefined)
-    .map((pool) => pool.sousId)
+  const poolsWithStakingLimit = getState().pools.data
+    // .filter(({ stakingLimit }) => stakingLimit !== null && stakingLimit !== undefined)
+    // .map((pool) => pool.sousId)
 
   try {
     const stakingLimits = await fetchPoolsStakingLimits(poolsWithStakingLimit)

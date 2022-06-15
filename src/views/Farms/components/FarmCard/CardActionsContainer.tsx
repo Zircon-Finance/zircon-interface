@@ -8,7 +8,6 @@ import { useDispatch } from 'react-redux'
 import { MaxUint256 } from '@ethersproject/constants'
 import { fetchFarmUserDataAsync } from '../../../../state/farms'
 import styled, {useTheme} from 'styled-components'
-import useApproveFarm from '../../hooks/useApproveFarm'
 import HarvestAction from './HarvestAction'
 import StakeAction from './StakeAction'
 import StakeAdd from './StakeAdd'
@@ -34,6 +33,7 @@ const ActionContainer = styled.div`
   border-radius: 7px;
   margin-bottom: 10px;
   padding: 10px;
+  height: 110px;
 `
 
 interface FarmCardActionsProps {
@@ -47,6 +47,7 @@ interface FarmCardActionsProps {
 const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidityUrl, lpLabel, displayApr }) => {
   const { t } = useTranslation()
   const theme = useTheme()
+  console.log('farm', farm)
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
   const { sousId, contractAddress } = farm
   const { allowance, pendingReward } = farm.userData || {}
@@ -61,13 +62,11 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
 
   const lpContract = useERC20(contractAddress)
 
-  const { handleApprove } = useApproveFarm(lpContract, sousId, farm.earningToken.symbol)
-
   const handleApproval = useCallback(async () => {
     const receipt = await fetchWithCatchTxError(() => {
       return callWithGasPrice(lpContract, 'approve', [sousChefContract.address, MaxUint256]).then(response => {
         addTransaction(response, {
-          summary:  `Enable ${farm.earningToken.symbol}-${farm.stakingToken.symbol} stake contract`
+          summary:  `Enable ${farm.token1.symbol}-${farm.token2.symbol} stake contract`
         })
         return response
       })
@@ -87,12 +86,24 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
       dispatch(fetchFarmUserDataAsync({ account, pids: [sousId] }))
       dispatch(updateUserAllowance({ sousId, account }))
     }
-  }, [handleApprove, dispatch, account, sousId, fetchWithCatchTxError, addPopup, addTransaction, farm.earningToken.symbol, farm.stakingToken.symbol])
+  }, [ 
+      dispatch, 
+      account, 
+      sousId, 
+      fetchWithCatchTxError, 
+      addPopup, 
+      addTransaction, 
+      lpContract,
+      callWithGasPrice,
+      farm.token1.symbol,
+      farm.token2.symbol,
+      sousChefContract.address,
+    ])
 
   const renderApprovalOrStakeButton = () => {
     return isApproved ? (
-      <ActionContainer style={{backgroundColor: theme.cardExpanded}}>
-          <Text  fontSize="13px" fontWeight={300}>
+      <ActionContainer style={{backgroundColor: theme.farmPoolCardsBg}}>
+          <Text  fontSize="13px" fontWeight={300} color={theme.text1}>
             {t('Staked')}
           </Text>
           <StakeAction {...farm} lpLabel={lpLabel} addLiquidityUrl={addLiquidityUrl} displayApr={displayApr} />
@@ -110,8 +121,8 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
         <StakeAdd disabled={!isApproved} row={false} width={'70%'} />
       ) : (
         <>
-        <ActionContainer style={{backgroundColor: theme.cardExpanded}}>
-        <Text fontSize="13px" fontWeight={300}>
+        <ActionContainer style={{backgroundColor: theme.farmPoolCardsBg}}>
+        <Text fontSize="13px" fontWeight={300} color={theme.text1}>
           {t('Earned')}
         </Text>
         <HarvestAction earnings={pendingReward} pid={sousId} />

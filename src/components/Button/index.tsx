@@ -220,6 +220,20 @@ export const ButtonLighter = styled(Base)`
   }
 `
 
+export const ButtonPinkGamma = styled(Base)`
+  border: none;
+  background-color: ${({ theme }) => theme.darkerContrastPink};
+  color: ${({ theme }) => theme.poolPinkButton};
+
+  &:hover {
+    background-color: ${({ theme }) => theme.maxButton};
+  }
+  &:disabled {
+    opacity: 50%;
+    cursor: auto;
+  }
+`
+
 export const ButtonEmpty = styled(Base)`
   background-color: transparent;
   color: ${({ theme }) => theme.primary1};

@@ -26,6 +26,7 @@ const StyledNavLink = styled(NavLink).attrs({
 })`
   ${({ theme }) => theme.flexRowNoWrap}
   align-items: center;
+  letter-spacing: 0.05em;
   font-weight: 400;
   justify-content: center;
   height: auto;

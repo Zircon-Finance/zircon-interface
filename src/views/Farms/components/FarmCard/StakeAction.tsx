@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { Flex, IconButton } from '@pancakeswap/uikit'
 import useCatchTxError from '../../../../hooks/useCatchTxError'
 
@@ -32,6 +32,8 @@ const IconButtonWrapper = styled.div`
 `
 
 const StakeAction: React.FC<FarmCardActionsProps> = ({
+  token1,
+  token2,
   earningToken,
   stakingToken,
   sousId,
@@ -55,9 +57,9 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
 
   const handleStake = async (amount: string) => {
     const receipt = await fetchWithCatchTxError(() => {
-      return onStake(amount, pool.earningToken.decimals).then((response) => {
+      return onStake(amount, pool.stakingToken.decimals).then((response) => {
         addTransaction(response, {
-          summary: `Stake ${earningToken.symbol}-${stakingToken.symbol} tokens`
+          summary: `Stake ${token1.symbol}-${token2.symbol} LP tokens`
         })
         return response
       })
@@ -91,17 +93,20 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
       dispatch(fetchPoolsUserDataAsync(account))
     }
   }
+  const theme = useTheme()
 
   const renderStakingButtons = () => {
     return stakedBalance.eq(0) ? (
       <StakeAdd row={true} />
     ) : (
       <IconButtonWrapper>
-        <IconButton style={{background: 'transparent', width: 'auto'}} variant="tertiary" onClick={()=>setShowModalWithdraw(true)} mr="6px">
+        <IconButton 
+        style={{background: theme.poolPinkButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}} 
+        variant="tertiary" onClick={()=>setShowModalWithdraw(true)} mr="6px">
           <MinusIcon />
         </IconButton>
         <IconButton
-          style={{background: 'transparent', width: 'auto'}} 
+          style={{background: theme.poolPinkButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}} 
           variant="tertiary"
           onClick={()=>setShowModalDeposit(true)}
           disabled={['history', 'archived'].some((item) => window.location.pathname.includes(item))}
@@ -143,8 +148,8 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
         lpSymbol={'lpSymbol'}
         quoteTokenSymbol={stakingToken.symbol}
         tokenSymbol={earningToken.symbol}
-        lpTotalSupply={1 as unknown as BigNumber}
-        tokenAmountTotal={1 as unknown as BigNumber}
+        lpTotalSupply={10000000000000000000 as unknown as BigNumber}
+        tokenAmountTotal={100 as unknown as BigNumber}
         quoteTokenAmountTotal={1 as unknown as BigNumber}
       />
       {renderStakingButtons()}

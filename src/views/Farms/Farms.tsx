@@ -8,7 +8,7 @@ import { RowType, Toggle, Text, Flex } from '@pancakeswap/uikit'
 // import { NextLinkFromReactRouter } from 'components/NextLink'
 import styled, { useTheme } from 'styled-components'
 import Page from '../../components/Layout/Page'
-import { usePollFarmsWithUserData, usePriceCakeBusd } from '../../state/farms/hooks'
+import { usePriceCakeBusd } from '../../state/farms/hooks'
 import useIntersectionObserver from '../../hooks/useIntersectionObserver'
 // import { DeserializedFarm } from '../../state/types'
 import { useTranslation } from 'react-i18next'
@@ -16,7 +16,7 @@ import { getBalanceNumber } from '../../utils/formatBalance'
 // import { getFarmApr } from '../../utils/apr'
 // import isArchivedPid from '../../utils/farmHelpers'
 // import { latinise } from '../../utils/latinise'
-import { useShowMobileSearchBarManager, useUserFarmsFilterAnchorFloat, useUserFarmsFilterPylonClassic, useUserFarmStakedOnly, useUserFarmsViewMode } from '../../state/user/hooks'
+import { useIsDarkMode, useShowMobileSearchBarManager, useUserFarmsFilterAnchorFloat, useUserFarmsFilterPylonClassic, useUserFarmStakedOnly, useUserFarmsViewMode } from '../../state/user/hooks'
 import { 
   // FarmFilterAnchorFloat, 
   ViewMode } from '../../state/user/actions'
@@ -32,6 +32,7 @@ import FarmsPage from '../../pages/Farm/'
 import Select from '../../components/Select/Select'
 import { useWindowDimensions } from '../../hooks'
 import { usePools, usePoolsPageFetch } from '../../state/pools/hooks'
+import { fetchPoolsUserDataAsync } from '../../state/pools'
 
 const Loading = styled.div`
   border: 8px solid #f3f3f3;
@@ -87,6 +88,8 @@ const ControlContainer = styled.div`
   justify-content: center;
   flex-direction: column;
   margin-bottom: 32px;
+  max-width: 1280px;
+  margin: auto;
 
   @media (min-width: 992px) {
     flex-direction: row;
@@ -120,6 +123,8 @@ const MainContainer = styled.div`
   background: ${({ theme }) => theme.bg1};
   border-radius: 17px;
   padding: 5px;
+  max-width: 1280px;
+  margin: auto;
 `
 
 const FilterContainer = styled.div`
@@ -158,6 +163,14 @@ const TableData = styled.td`
   width: 12%;
   position: relative;
 `
+
+const PinkArrows = styled.div`
+ svg {
+    fill: ${({ theme }) => theme.meatPink};
+    stroke: ${({ theme }) => theme.meatPink};
+ }
+ `
+
 const SelectedOptionDiv = styled.div`
   position: absolute;
   top: 54px;
@@ -228,8 +241,10 @@ const Farms: React.FC = ({ children }) => {
   const isInactive = pathname.includes('history')
   const isActive = !isInactive && !isArchived
 
-  usePollFarmsWithUserData()
   usePoolsPageFetch()
+  if(account) {
+    fetchPoolsUserDataAsync(account)
+  }
 
   // Users with no wallet connected should see 0 as Earned amount
   // Connected users should see loading indicator until first userData has loaded
@@ -238,6 +253,7 @@ const Farms: React.FC = ({ children }) => {
   const [stakedOnly, setStakedOnly] = useUserFarmStakedOnly(isActive)
 
   const activeFarms = pools
+  console.log('activeFarms', activeFarms)
   // .filter(
   //   (farm) =>
   //     farm.pid !== 0 && farm.multiplier !== '0X' && !isArchivedPid(farm.pid) && (!poolLength || poolLength > farm.pid),
@@ -377,11 +393,11 @@ const Farms: React.FC = ({ children }) => {
     const { earningToken, stakingToken } = farm
     const tokenAddress = earningToken.address
     const quoteTokenAddress = stakingToken.address
-    const lpLabel = `${farm.earningToken.symbol}-${farm.stakingToken.symbol}`
+    const lpLabel = `${farm.token1.symbol}-${farm.token2.symbol}`
 
     const row: RowProps = {
       apr: {
-        value: farm.apr.toString(),
+        value: 'farm.apr',
         // getDisplayApr(farm.apr, farm.lpRewardsApr),
         pid: farm.sousId,
         lpLabel,
@@ -389,15 +405,16 @@ const Farms: React.FC = ({ children }) => {
         tokenAddress,
         quoteTokenAddress,
         cakePrice,
-        originalValue: farm.apr,
+        originalValue: 1,
       },
       farm: {
         label: lpLabel,
         pid: farm.sousId,
-        token: farm.earningToken,
-        quoteToken: farm.stakingToken,
+        token: farm.token1,
+        quoteToken: farm.token2,
         farmHealth: Math.floor(Math.random() * (500 - 100 + 1)) + 100,
         isAnchor: farm.isAnchor,
+        isClassic: farm.isClassic,
         // This will be the function to get the health of the farm
       },
       earned: {
@@ -451,7 +468,7 @@ const Farms: React.FC = ({ children }) => {
     }
     return <FlexLayout><FarmsPage /></FlexLayout>
   }
-
+  const darkMode = useIsDarkMode()
   return (
     <FarmsContext.Provider value={{ activeFarms }}>
       <Page>
@@ -463,7 +480,7 @@ const Farms: React.FC = ({ children }) => {
           <Flex position={'relative'} width={width < 500 ? showMobileSearchBar ? '100%' : 'auto' : 'auto'} height={'70px'}>
             { (!showMobileSearchBar || width > 500) && <ViewControls>
               <ToggleWrapper style={{marginRight: '20px', position: 'relative'}}> 
-                <Text fontSize='13px' color={theme.text1} mr={'10px'} width={'max-content'}> {t('STAKED ONLY')}</Text>
+                <Text fontSize='13px' color={theme.text1} mr={'10px'} width={'max-content'} letterSpacing={'0.05em'}> {t('STAKED ONLY')}</Text>
                 <Toggle
                   id="staked-only-farms"
                   checked={stakedOnly}
@@ -492,10 +509,10 @@ const Farms: React.FC = ({ children }) => {
               </TableData>
               {viewMode === ViewMode.TABLE && width > 992 ? options.map((option) => (
                 <TableData key={option} style={{cursor: 'pointer'}} onClick={() => setSortOption(option.toLowerCase())}>
-                  <div style={{display: 'flex', alignItems: 'center'}}>
-                    <p style={{fontSize: '13px', color: theme.whiteHalf}}>{option}</p>
+                  <PinkArrows style={{display: 'flex', alignItems: 'center'}}>
+                    <p style={{fontSize: '13px', color: !darkMode ? theme.text1 : theme.meatPink, fontWeight: 500}}>{option}</p>
                     <FarmRepeatIcon />
-                  </div>
+                  </PinkArrows>
                   {sortOption === option.toLowerCase() && <SelectedOptionDiv />}
                 </TableData>)) :
                 (

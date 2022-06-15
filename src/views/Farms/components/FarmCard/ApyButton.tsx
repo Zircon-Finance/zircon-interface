@@ -1,13 +1,14 @@
 import React from 'react'
 import styled from 'styled-components'
 import BigNumber from 'bignumber.js'
-import { Flex, IconButton, useModal, CalculateIcon } from '@pancakeswap/uikit'
+import { Flex, useModal } from '@pancakeswap/uikit'
 import RoiCalculatorModal from '../../../../components/RoiCalculatorModal'
 import { useTranslation } from 'react-i18next'
 import { usePool } from '../../../../state/pools/hooks'
 
 const ApyLabelContainer = styled(Flex)`
   cursor: pointer;
+  color: ${({ theme }) => theme.text1};
 
   &:hover {
     opacity: 0.5;
@@ -47,7 +48,7 @@ const ApyButton: React.FC<ApyButtonProps> = ({
       stakingTokenBalance={stakedBalance.plus(tokenBalance)}
       stakingTokenSymbol={lpSymbol}
       stakingTokenPrice={1}
-      earningTokenPrice={cakePrice.toNumber()}
+      earningTokenPrice={1}
       apr={apr}
       multiplier={multiplier}
       displayApr={displayApr}
@@ -64,11 +65,6 @@ const ApyButton: React.FC<ApyButtonProps> = ({
   return (
     <ApyLabelContainer alignItems="center" onClick={handleClickButton}>
       {displayApr}%
-      {variant === 'text-and-button' && (
-        <IconButton variant="text" scale="sm" ml="4px">
-          <CalculateIcon width="18px" />
-        </IconButton>
-      )}
     </ApyLabelContainer>
   )
 }

@@ -79,6 +79,8 @@ animation: ${({ expanded }) =>
   background-position-x: 95%;
   ::placeholder {
     color: ${({ theme }) => theme.text1};
+    letter-spacing: 0.05em;
+    opacity: 0.4;
   }
   white-space: nowrap;
   background-color: ${({ theme}) => theme.bg9};

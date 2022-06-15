@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import React, { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { Flex, Text, Modal, CalculateIcon, IconButton, Skeleton } from '@pancakeswap/uikit'
+import { Flex, Text, Modal, Skeleton } from '@pancakeswap/uikit'
 import { ModalActions, ModalInput } from '../../../components/ModalFarm'
 import RoiCalculatorModal from '../../../components/RoiCalculatorModal'
 import { useTranslation } from 'react-i18next'
@@ -118,7 +118,7 @@ const DepositModal: React.FC<DepositModalProps> = ({
         onSelectMax={handleSelectMax}
         onChange={handleChange}
         max={fullBalance}
-        symbol={tokenName}
+        symbol={lpLabel}
         addLiquidityUrl={addLiquidityUrl}
         inputTitle={t('Stake')}
       />
@@ -130,7 +130,7 @@ const DepositModal: React.FC<DepositModalProps> = ({
       <ButtonOutlined style={{ alignSelf: 'center', width: 'auto', height: '30px', margin: '15px 0',
       background: isBalanceZero ? '#C16BAD' : 'transparent' }}>
         <Link style={{textDecoration: 'none', color: '#fff', fontWeight: '300', fontSize: '13px'}} 
-        href={addLiquidityUrl}>{'Get ' + tokenName}</Link>
+        href={addLiquidityUrl}>{'Get ' + lpLabel}</Link>
       </ButtonOutlined>
       <Flex mb="15px" alignItems="center" justifyContent="space-around">
         <Text mr="8px" color="textSubtle" fontSize='13px' fontWeight={500}>
@@ -144,9 +144,6 @@ const DepositModal: React.FC<DepositModalProps> = ({
             }}
           >
             <AnnualRoiDisplay>${formattedAnnualRoi}</AnnualRoiDisplay>
-            <IconButton variant="text" scale="sm">
-              <CalculateIcon color="textSubtle" width="18px" />
-            </IconButton>
           </AnnualRoiContainer>
         ) : (
           <Skeleton width={60} />

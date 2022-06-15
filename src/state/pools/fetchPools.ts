@@ -7,7 +7,7 @@ import sousChefV2 from '../../constants/abi/psionicFarmABI.json'
 // import sousChefV3 from '../../config/abi/sousChefV3.json'
 import { BIG_ZERO } from '../../utils/bigNumber'
 import { getAddress } from '../../utils/addressHelpers'
-import multicall, { multicallv2 } from '../../utils/multicall'
+import multicall from '../../utils/multicall'
 import erc20ABI from '../../constants/abi/erc20.json'
 
 const poolsWithEnd = poolsConfig.filter((p) => p.sousId !== 0)
@@ -71,14 +71,17 @@ export const fetchPoolsTotalStaking = async () => {
 export const fetchPoolsStakingLimits = async (
   poolsWithStakingLimit: number[],
 ): Promise<{ [key: string]: { stakingLimit: BigNumber; numberBlocksForUserLimit: number } }> => {
+  console.log('Poolsconfig', poolsConfig)
   const validPools = poolsConfig
     .filter((p) => p.stakingToken.symbol !== 'BNB' && !p.isFinished)
     .filter((p) => !poolsWithStakingLimit.includes(p.sousId))
 
   // Get the staking limit for each valid pool
+  console.log('fetchPoolsStakingLimits', validPools)
   const poolStakingCalls = validPools
     .map((validPool) => {
       const contractAddress = getAddress(validPool.contractAddress)
+      console.log('contractAddress', contractAddress)
       return ['hasUserLimit', 'poolLimitPerUser', 'numberBlocksForUserLimit'].map((method) => ({
         address: contractAddress,
         name: method,
@@ -86,7 +89,7 @@ export const fetchPoolsStakingLimits = async (
     })
     .flat()
 
-  const poolStakingResultRaw = await multicallv2(sousChefV2, poolStakingCalls, { requireSuccess: false })
+  const poolStakingResultRaw = await multicall(sousChefV2, poolStakingCalls)
   const chunkSize = poolStakingCalls.length / validPools.length
   const poolStakingChunkedResultRaw = chunk(poolStakingResultRaw.flat(), chunkSize)
   return poolStakingChunkedResultRaw.reduce((accum, stakingLimitRaw, index) => {

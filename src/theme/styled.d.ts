@@ -66,10 +66,20 @@ export interface Colors {
 
   walletActive: Color
 
+  poolPinkButton: Color
+
+  contrastLightButton: Color
+
+  darkerContrastPink: Color
+
+  farmPoolCardsBg: Color
+
   cardSmall: Color
   cardExpanded: Color
 
   positionsButtons: Color
+
+  meatPink: Color
 
   primaryText1: Color
 

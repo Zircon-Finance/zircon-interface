@@ -132,9 +132,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
                     tokenName={farm.token2.symbol}
                     addLiquidityUrl={farm.isClassic ?
                       `#/add/${farm.token1.address}/${farm.token2.address}` :
-                      farm.isAnchor ? 
-                      `#/add-pro/${farm.token1.address}/${farm.token2.address}` : 
-                      `#/add-pro/${farm.token2.address}/${farm.token1.address}`}
+                      `#/add-pro/${farm.token1.address}/${farm.token2.address}`}
                     cakePrice={112 as unknown as BigNumber}
                     token = {farm.earningToken}/>
                 </ModalContainer>
@@ -173,9 +171,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
         </Flex>
         <Link to={farm.isClassic ?
                       `#/add/${farm.token1.address}/${farm.token2.address}` :
-                      farm.isAnchor ? 
-                      `#/add-pro/${farm.token1.address}/${farm.token2.address}` : 
-                      `#/add-pro/${farm.token2.address}/${farm.token1.address}`}>
+                      `#/add-pro/${farm.token1.address}/${farm.token2.address}`}>
           <ButtonOutlined mt='20px' style={{padding: '10px', fontSize: '13px'}}>
             {`Get ${farm.token1.name} - ${farm.token2.name} LP tokens`}
           </ButtonOutlined>

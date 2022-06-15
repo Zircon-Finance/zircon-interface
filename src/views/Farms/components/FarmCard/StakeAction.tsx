@@ -71,7 +71,7 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
           txn: {
             hash: receipt.transactionHash,
             success: receipt.status === 1,
-            summary: 'Stake succesful'
+            summary: 'Stake '+amount+' '+pool.token1.symbol+"-"+pool.token2.symbol+' LP to farm',
           }
         },
         receipt.transactionHash
@@ -84,7 +84,7 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
     const receipt = await fetchWithCatchTxError(() => {
       return onUnstake(amount, earningToken.decimals).then((response) => {
         addTransaction(response, {
-          summary: 'Unstake '+ amount+ ' ' + earningToken.symbol+ "-" +stakingToken.symbol+' tokens'
+          summary: 'Unstake '+ amount+ ' ' + pool.token1.symbol+ "-" +pool.token2.symbol+' LP tokens'
         })
         return response
       })

@@ -10,9 +10,8 @@ import { fetchFarmUserDataAsync } from '../../../../state/farms'
 import styled, {useTheme} from 'styled-components'
 import HarvestAction from './HarvestAction'
 import StakeAction from './StakeAction'
-import StakeAdd from './StakeAdd'
 import BigNumber from 'bignumber.js'
-import { ButtonOutlined } from '../../../../components/Button'
+import { ButtonPinkGamma } from '../../../../components/Button'
 import { useAddPopup, useWalletModalToggle } from '../../../../state/application/hooks'
 import { useTransactionAdder } from '../../../../state/transactions/hooks'
 import { DeserializedPool } from '../../../../state/types'
@@ -33,7 +32,6 @@ const ActionContainer = styled.div`
   border-radius: 7px;
   margin-bottom: 10px;
   padding: 10px;
-  height: 110px;
 `
 
 interface FarmCardActionsProps {
@@ -48,7 +46,7 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
   const { t } = useTranslation()
   const theme = useTheme()
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
-  const { sousId, contractAddress } = farm
+  const { sousId, stakingToken } = farm
   const { allowance, pendingReward } = farm.userData || {}
   const isApproved = account && allowance && allowance.isGreaterThan(0)
   const dispatch = useDispatch()
@@ -59,7 +57,7 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
   const { callWithGasPrice } = useCallWithGasPrice()
   
 
-  const lpContract = useERC20(contractAddress)
+  const lpContract = useERC20(stakingToken.address)
 
   const handleApproval = useCallback(async () => {
     const receipt = await fetchWithCatchTxError(() => {
@@ -108,16 +106,16 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
           <StakeAction {...farm} lpLabel={lpLabel} addLiquidityUrl={addLiquidityUrl} displayApr={displayApr} />
         </ActionContainer>
     ) : (
-      <ButtonOutlined mt='10px' mb='50px' width="100%" disabled={pendingTx} onClick={account ? handleApproval : toggleWalletModal}>
+      <ButtonPinkGamma width="100%" disabled={pendingTx} onClick={account ? handleApproval : toggleWalletModal}>
         {account ? 'Enable Contract' : 'Connect Wallet'}
-      </ButtonOutlined>
+      </ButtonPinkGamma>
     )
   }
 
   return (
     <Action>
       {allowance <= new BigNumber(0) ? (
-        <StakeAdd disabled={!isApproved} row={false} width={'70%'} />
+        <span/>
       ) : (
         <>
         <ActionContainer style={{backgroundColor: theme.farmPoolCardsBg}}>
@@ -128,9 +126,9 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
         </ActionContainer>
         </>)}
       {!account ? 
-      <ButtonOutlined m="auto" mb='15px' width="100%" disabled={pendingTx} onClick={toggleWalletModal}>
+      <ButtonPinkGamma m="auto" mb='15px' width="100%" disabled={pendingTx} onClick={toggleWalletModal}>
         {'Connect Wallet'}
-      </ButtonOutlined>
+      </ButtonPinkGamma>
        : renderApprovalOrStakeButton()}
     </Action>
   )

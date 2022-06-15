@@ -312,9 +312,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
         tokenName = {farm.stakingToken.symbol}
         addLiquidityUrl = {farm.isClassic ?
           `#/add/${farm.token1.address}/${farm.token2.address}` :
-          farm.isAnchor ? 
-          `#/add-pro/${farm.token1.address}/${farm.token2.address}` : 
-          `#/add-pro/${farm.token2.address}/${farm.token1.address}`}
+          `#/add-pro/${farm.token1.address}/${farm.token2.address}`}
         cakePrice = {1 as unknown as BigNumber}
         token = {farm.stakingToken}
         />
@@ -326,7 +324,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
               <SpaceBetween>
                   <div style={{letterSpacing: '0.05em'}}>
                   {!isClassic ? (
-                  isAnchor ? (
+                  !isAnchor ? (
                     <>
                     <Flex flexWrap='wrap'>  
                       <BadgeSmall 
@@ -358,7 +356,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                   <DoubleCurrencyLogo currency0={token1} currency1={token2} size={25} />
                   <div>
                   {!isClassic ? (
-                  isAnchor ? (
+                  !isAnchor ? (
                     <>
                     <Flex flexWrap='wrap'>  
                       <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', display: 'flex', alignItems: 'center'}}>

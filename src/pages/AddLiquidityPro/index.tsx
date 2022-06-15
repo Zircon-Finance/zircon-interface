@@ -4,7 +4,7 @@ import {Currency, currencyEquals, DEV, TokenAmount, WDEV} from 'zircon-sdk'
 import React, {useCallback, useState} from 'react'
 import ReactGA from 'react-ga4'
 import {RouteComponentProps} from 'react-router-dom'
-import {Text} from 'rebass'
+import {Flex, Text} from 'rebass'
 import {useTheme} from 'styled-components'
 import {ButtonAnchor, ButtonError, ButtonLight, ButtonPrimary} from '../../components/Button'
 import {BlueCard, GreyCard, LightCard} from '../../components/Card'
@@ -558,15 +558,15 @@ export default function AddLiquidityPro({
               {/* Condition that triggers pylov view */}
 
               {currencies[Field.CURRENCY_B] !== undefined ? (
-                  <div style={{backgroundColor: theme.bg10, padding: '10px', borderRadius: '27px'}}>
-                    <div style={{display: 'flex', justifyContent: 'space-evenly', marginBottom: '10px'}}>
+                <>
+                <Flex justifyContent={'space-evenly'}>
                 <span style={{display: 'inline', alignSelf: 'center', textAlign: 'center', fontSize: sync === 'half' ? '15px' : '16px'}} id="pylon-check">
-
-                  {/* Pylon condition */}
-                  {pylonState === PylonState.EXISTS ? sync === 'half' ? 'Shares received from investment' : 'Token used for investment' 
-                  : pylonState === PylonState.ONLY_PAIR ? 'Create Pylon' :'Create Pair & Pylon'}
-
+                {/* Pylon condition */}
+                {pylonState === PylonState.EXISTS ? sync === 'half' ? 'Shares received from investment' : 'Token used for investment' 
+                : pylonState === PylonState.ONLY_PAIR ? 'Create Pylon' :'Create Pair & Pylon'}
                 </span>
+                <div style={{display: 'flex', justifyContent: 'space-evenly', marginBottom: '10px'}}>
+                
                       {pylonState === PylonState.EXISTS && <div style={{display: 'flex', border: `1px solid ${theme.bg11}`, borderRadius: '17px', padding: '5px'}}>
                         <ButtonAnchor borderRadius={'12px'} padding={'5px 8px 5px 8px'}
                                       style={{backgroundColor: float.currency_a === currencies[Field.CURRENCY_A] ? theme.bg11 : 'transparent'}}
@@ -595,6 +595,10 @@ export default function AddLiquidityPro({
                         </ButtonAnchor>
                       </div>}
                     </div>
+                </Flex>
+                  
+                  <div style={{backgroundColor: theme.bg10, padding: '10px', borderRadius: '27px'}}>
+                    
 
                     {/* Pylon condition  */}
 
@@ -635,6 +639,7 @@ export default function AddLiquidityPro({
                           />) : null}
                     </div>
                   </div>
+                  </>
               ) : null}
 
               {/* Pylon condition */}
@@ -646,24 +651,30 @@ export default function AddLiquidityPro({
                     {'ADVANCED MODE'}
                   </span>)
                 }
-                  <div style={{display: 'flex', border: `1px solid ${theme.navigationBorder}`, borderRadius: '17px', justifyContent: 'space-between'}}>
+                  <div style={{display: 'flex', borderRadius: '17px', justifyContent: 'space-between'}}>
                   {width > 700 &&
                     (<span style={{display: 'inline', alignSelf: 'center', fontSize: '13px', margin: 'auto', letterSpacing: '0.05em'}}>{'ADVANCED MODE'}</span>)
                   }
-                    <div style={{display: 'flex', borderLeft: `1px solid ${theme.bg9}`, borderRadius: '17px', padding: '5px', fontSize: '13px', width: width > 700 ? 'inherit' : '100%'}}>
+                    <div style={{display: 'flex', borderRadius: '17px', padding: '5px', fontSize: '13px', width: width > 700 ? 'inherit' : '100%', background: theme.maxButton}}>
 
                       <ButtonAnchor borderRadius={'12px'} padding={'10px'}
-                                    style={{backgroundColor: sync === 'off' ? theme.bg9 : 'transparent', width: width > 700 ? 'auto' : 'inherit'}}
+                                    style={{backgroundColor: sync === 'off' ? theme.badgeSmall : 'transparent', 
+                                            color: sync === 'off' ? theme.text1 : theme.meatPink,
+                                            width: width > 700 ? 'auto' : 'inherit'}}
                                     onClick={()=> {setSync('off')}}>
                         OFF
                       </ButtonAnchor>
                       <ButtonAnchor borderRadius={'12px'} padding={'10px'}
-                                    style={{backgroundColor: sync === 'full' ? theme.bg9 : 'transparent', width: width > 700 ? 'auto' : 'inherit'}}
+                                    style={{backgroundColor: sync === 'full' ? theme.badgeSmall : 'transparent', 
+                                    color: sync === 'full' ? theme.text1 : theme.meatPink,
+                                    width: width > 700 ? 'auto' : 'inherit'}}
                                     onClick={()=> {setSync('full')}}>
                         100% Async
                       </ButtonAnchor>
                       <ButtonAnchor borderRadius={'12px'} padding={'10px'}
-                                    style={{backgroundColor: sync === 'half' ? theme.bg9 : 'transparent', width: width > 700 ? 'auto' : 'inherit'}}
+                                    style={{backgroundColor: sync === 'half' ? theme.badgeSmall : 'transparent', 
+                                    color: sync === 'half' ? theme.text1 : theme.meatPink,
+                                    width: width > 700 ? 'auto' : 'inherit'}}
                                     onClick={()=> {
                                       setSync('half')
                                       setFloat({

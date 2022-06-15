@@ -14,7 +14,7 @@ const FarmsPage = () => {
     <>
       {activeFarms.map((farm) => (
         <FarmCard
-          key={farm.pid}
+          key={farm.sousId}
           farm={farm}
           displayApr={getDisplayApr(farm.apr, farm.lpRewardsApr)}
           cakePrice={cakePrice}

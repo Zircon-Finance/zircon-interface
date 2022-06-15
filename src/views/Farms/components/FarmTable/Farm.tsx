@@ -62,7 +62,7 @@ const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pi
       </TokenWrapper>
         <>
           <div>
-          {isAnchor ? (
+          {!isAnchor ? (
             <>
             <Flex>  
               <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '10px', marginRight: '5px',  display: 'flex', alignItems: 'center'}}>

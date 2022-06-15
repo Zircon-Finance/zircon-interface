@@ -1,7 +1,8 @@
 import React, { 
   // useEffect, useCallback, 
-  useState, useRef, createContext } from 'react'
+  useState, useRef, createContext, useMemo } from 'react'
 import BigNumber from 'bignumber.js'
+import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber'
 import { useWeb3React } from '@web3-react/core'
 import { RowType, Toggle, Text, Flex } from '@pancakeswap/uikit'
 // import { ChainId } from 'zircon-sdk'
@@ -18,7 +19,8 @@ import { getBalanceNumber } from '../../utils/formatBalance'
 // import { latinise } from '../../utils/latinise'
 import { useIsDarkMode, useShowMobileSearchBarManager, useUserFarmsFilterAnchorFloat, useUserFarmsFilterPylonClassic, useUserFarmStakedOnly, useUserFarmsViewMode } from '../../state/user/hooks'
 import { 
-  // FarmFilterAnchorFloat, 
+  // FarmFilter,
+  FarmFilterAnchorFloat, 
   ViewMode } from '../../state/user/actions'
 import SearchInput from '../../components/SearchInput'
 import Table from './components/FarmTable/FarmTable'
@@ -33,6 +35,9 @@ import Select from '../../components/Select/Select'
 import { useWindowDimensions } from '../../hooks'
 import { usePools, usePoolsPageFetch } from '../../state/pools/hooks'
 import { fetchPoolsUserDataAsync } from '../../state/pools'
+import { DeserializedPool, DeserializedPoolVault } from '../../state/types'
+import orderBy from 'lodash/orderBy'
+import { formatUnits } from 'ethers/lib/utils'
 
 const Loading = styled.div`
   border: 8px solid #f3f3f3;
@@ -205,7 +210,7 @@ export const ModalContainer = styled.div`
   }
 `
 
-// const NUMBER_OF_FARMS_VISIBLE = 12
+ const NUMBER_OF_POOLS_VISIBLE = 12
 
 export const getDisplayApr = (cakeRewardsApr?: number, lpRewardsApr?: number) => {
   if (cakeRewardsApr && lpRewardsApr) {
@@ -253,144 +258,102 @@ const Farms: React.FC = ({ children }) => {
   const [stakedOnly, setStakedOnly] = useUserFarmStakedOnly(isActive)
 
   const activeFarms = pools
-  // .filter(
-  //   (farm) =>
-  //     farm.pid !== 0 && farm.multiplier !== '0X' && !isArchivedPid(farm.pid) && (!poolLength || poolLength > farm.pid),
-  // )
-  // const inactiveFarms = pools.filter((farm) => farm.sousId !== 0 && !isArchivedPid(farm.sousId))
-  // const archivedFarms = pools.filter((farm) => isArchivedPid(farm.sousId))
 
-  // const stakedOnlyFarms = activeFarms.filter(
-  //   (farm) => farm.userData && new BigNumber(farm.userData.stakedBalance).isGreaterThan(0),
-  // )
-
-  // const stakedInactiveFarms = activeFarms.filter(
-  //   (farm) => farm.userData && new BigNumber(farm.userData.stakedBalance).isGreaterThan(0),
-  // )
-
-  // const stakedArchivedFarms = activeFarms.filter(
-  //   (farm) => farm.userData && new BigNumber(farm.userData.stakedBalance).isGreaterThan(0),
-  // )
-
-  // const farmsList = useCallback(
-  //   (farmsToDisplay: DeserializedFarm[]): FarmWithStakedValue[] => {
-  //     let farmsToDisplayWithAPR: FarmWithStakedValue[] = farmsToDisplay.map((farm) => {
-  //       if (!farm.lpTotalInQuoteToken || !farm.quoteTokenPriceBusd) {
-  //         return farm
-  //       }
-  //       const totalLiquidity = new BigNumber(farm.lpTotalInQuoteToken)
-  //       // const totalLiquidity = new BigNumber(Math.floor(Math.random() * (10000 - 100 + 1)) + 100)
-  //       const { cakeRewardsApr, lpRewardsApr } = isActive
-  //         ? getFarmApr(new BigNumber(farm.poolWeight), cakePrice, totalLiquidity, farm.lpAddress[ChainId.MOONBASE])
-  //         : { cakeRewardsApr: 0, lpRewardsApr: 0 }
-
-  //       return { ...farm, apr: cakeRewardsApr, lpRewardsApr, liquidity: totalLiquidity }
-  //     })
-
-  //     farmsToDisplayWithAPR = farmsToDisplayWithAPR.filter((farm) => {
-  //       return (filterAnchorFloat === FarmFilterAnchorFloat.ANCHOR) ? farm.isAnchor === true : 
-  //       (filterAnchorFloat === FarmFilterAnchorFloat.FLOAT) ? farm.isAnchor === false : farm
-  //     })
-
-  //     if (query) {
-  //       const lowercaseQuery = latinise(query.toLowerCase())
-  //       farmsToDisplayWithAPR = farmsToDisplayWithAPR.filter((farm: FarmWithStakedValue) => {
-  //         return latinise(farm.lpSymbol.toLowerCase()).includes(lowercaseQuery)
-  //       })
-  //     }
-
-  //     return farmsToDisplayWithAPR
-  //   },
-  //   [cakePrice, query, isActive, filterAnchorFloat],
-  // )
+  const stakedOnlyFarms = activeFarms.filter(
+    (farm) => farm.userData && new BigNumber(farm.userData.stakedBalance).gt(0),
+  )
 
   const handleChangeQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.persist()
     setQuery(event.target.value)
   }
 
-  // const [
-  //   // numberOfFarmsVisible, 
-  //   setNumberOfFarmsVisible] = useState(NUMBER_OF_FARMS_VISIBLE)
   const options = ['Earned', 'Staked', 'APR', 'Liquidty']
   const [showMobileSearchBar] = useShowMobileSearchBarManager()
-  console.log(query)
 
+    const sortPools = (sortOption: string, poolsToSort: DeserializedPool[]) => {
+      switch (sortOption) {
+        case 'apr':
+          // Ternary is needed to prevent pools without APR (like MIX) getting top spot
+          return orderBy(poolsToSort, (pool: DeserializedPool) => (pool.apr ? pool.apr : 0), 'desc')
+        case 'earned':
+          return orderBy(
+            poolsToSort,
+            (pool: DeserializedPool) => {
+              if (!pool.userData || !pool.earningTokenPrice) {
+                return 0
+              }
+    
+              return pool.userData.pendingReward.times(pool.earningTokenPrice).toNumber()
+            },
+            'desc',
+          )
+        case 'totalStaked': {
+          return orderBy(
+            poolsToSort,
+            (pool: DeserializedPool) => {
+              let totalStaked = Number.NaN
+              if (pool.vaultKey) {
+                const vault = pool as DeserializedPoolVault
+                if (pool.stakingTokenPrice && vault.totalCakeInVault.isFinite()) {
+                  totalStaked =
+                    +formatUnits(EthersBigNumber.from(vault.totalCakeInVault.toString()), pool.stakingToken.decimals) *
+                    pool.stakingTokenPrice
+                }
+              } else if (pool.totalStaked?.isFinite() && pool.stakingTokenPrice) {
+                totalStaked =
+                  +formatUnits(EthersBigNumber.from(pool.totalStaked.toString()), pool.stakingToken.decimals) *
+                  pool.stakingTokenPrice
+              }
+              return Number.isFinite(totalStaked) ? totalStaked : 0
+            },
+            'desc',
+          )
+        }
+        case 'latest':
+          return orderBy(poolsToSort, (pool: DeserializedPool) => Number(pool.sousId), 'desc')
+        default:
+          return poolsToSort
+      }
+    }
 
-  // const chosenFarmsMemoized = useMemo(() => {
-    // let chosenFarms = []
+  let chosenPools = activeFarms
 
-  //   const sortFarms = (farms: FarmWithStakedValue[]): FarmWithStakedValue[] => {
-  //     switch (sortOption) {
-  //       case 'apr':
-  //         return orderBy(farms, (farm: FarmWithStakedValue) => farm.apr + farm.lpRewardsApr, 'desc')
-  //       case 'multiplier':
-  //         return orderBy(
-  //           farms,
-  //           (farm: FarmWithStakedValue) => (farm.multiplier ? Number(farm.multiplier.slice(0, -1)) : 0),
-  //           'desc',
-  //         )
-  //       case 'earned':
-  //         return orderBy(
-  //           farms,
-  //           (farm: FarmWithStakedValue) => (farm.userData ? Number(farm.userData.earnings) : 0),
-  //           'desc',
-  //         )
-  //       case 'liquidity':
-  //         return orderBy(farms, (farm: FarmWithStakedValue) => Number(farm.liquidity), 'desc')
-  //       case 'latest':
-  //         return orderBy(farms, (farm: FarmWithStakedValue) => Number(farm.pid), 'desc')
-  //       default:
-  //         return farms
-  //     }
-  //   }
-
-    // if (isActive) {
-    //   chosenFarms = stakedOnly 
-    //   // ? farmsList(stakedOnlyFarms) : farmsList(activeFarms)
+  chosenPools = useMemo(() => {
+    let sortedPools = sortPools(sortOption, chosenPools).slice(0, NUMBER_OF_POOLS_VISIBLE)
+    if (stakedOnly) {
+      sortedPools = stakedOnlyFarms 
+    }
+    // else {
+    //   sortedPools = activeFarms
     // }
-    // if (isInactive) {
-    //   chosenFarms = stakedOnly 
-    //   // ? farmsList(stakedInactiveFarms) : farmsList(inactiveFarms)
-    // }
-    // if (isArchived) {
-    //   chosenFarms = stakedOnly 
-    //   // ? farmsList(stakedArchivedFarms) : farmsList(archivedFarms)
-    // }
+    if (query) {
+      const lowercaseQuery = query.toLowerCase()
+      sortedPools = sortedPools.filter((pool) => 
+      pool.token1.symbol.toLowerCase().includes(lowercaseQuery) || 
+      pool.token2.symbol.toLowerCase().includes(lowercaseQuery))
+    }
 
-  //   return sortFarms(chosenFarms).slice(0, numberOfFarmsVisible)
-  // }, [
-  //   sortOption,
-  //   activeFarms,
-  //   farmsList,
-  //   inactiveFarms,
-  //   archivedFarms,
-  //   isActive,
-  //   isInactive,
-  //   isArchived,
-  //   stakedArchivedFarms,
-  //   stakedInactiveFarms,
-  //   stakedOnly,
-  //   stakedOnlyFarms,
-  //   numberOfFarmsVisible,
-  // ])
+    sortedPools =
+    filterAnchorFloat === FarmFilterAnchorFloat.ANCHOR ? 
+    sortedPools.filter((pool) => pool.isAnchor === true) : 
+    filterAnchorFloat === FarmFilterAnchorFloat.FLOAT ? 
+    sortedPools.filter((pool) => !pool.isAnchor === true) :
+    sortedPools
+
+    // sortedPools =
+    // filter === FarmFilter.CLASSIC ?
+    // sortedPools.filter((pool) => pool.isClassic === true) :
+    // sortedPools.filter((pool) => !pool.isClassic === true)
+    
+    return sortedPools
+  }, [activeFarms, query, stakedOnly, stakedOnlyFarms, chosenPools, sortOption, filterAnchorFloat])
 
   chosenFarmsLength.current = activeFarms.length
 
-  // useEffect(() => {
-  //   if (isIntersecting) {
-  //     setNumberOfFarmsVisible((farmsCurrentlyVisible) => {
-  //       if (farmsCurrentlyVisible <= chosenFarmsLength.current) {
-  //         return farmsCurrentlyVisible + NUMBER_OF_FARMS_VISIBLE
-  //       }
-  //       return farmsCurrentlyVisible
-  //     })
-  //   }
-  // }, [isIntersecting])
 
-  const rowData = activeFarms.map((farm) => {
+  const rowData = chosenPools.map((farm) => {
     const { earningToken, stakingToken } = farm
-    console.log('stakingToken', stakingToken)
     const tokenAddress = earningToken.address
     const quoteTokenAddress = stakingToken.address
     const lpLabel = `${farm.token1.symbol}-${farm.token2.symbol}`

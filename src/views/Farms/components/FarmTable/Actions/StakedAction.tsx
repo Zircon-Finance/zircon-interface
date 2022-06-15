@@ -84,7 +84,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
     const receipt = await fetchWithCatchTxError(() => {
       return onStake(amount, token.decimals).then((response) => {
         addTransaction(response, {
-          summary: `Stake ${earningToken.symbol}-${stakingToken.symbol} tokens`
+          summary: `Stake ${pool.token1.symbol}-${pool.token2.symbol} LP tokens`
         })
         return response
       })
@@ -95,7 +95,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
           txn: {
             hash: receipt.transactionHash,
             success: receipt.status === 1,
-            summary: 'Stake '+amount+' '+earningToken.symbol+"-"+stakingToken.symbol+' LP to farm',
+            summary: 'Stake '+amount+' '+pool.token1.symbol+"-"+pool.token2.symbol+' LP to farm',
           }
         },
         receipt.transactionHash
@@ -108,7 +108,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
     const receipt = await fetchWithCatchTxError(() => {
       return onUnstake(amount, token.decimals).then((response) => {
         addTransaction(response, {
-          summary: 'Unstake '+ amount+ ' ' + earningToken.symbol+ "-" +stakingToken.symbol+' tokens'
+          summary: 'Unstake '+ amount+ ' ' + pool.token1.symbol+ "-" +pool.token2.symbol+' LP tokens'
         })
         return response
       })
@@ -119,7 +119,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
           txn: {
             hash: receipt.transactionHash,
             success: receipt.status === 1,
-            summary: 'Removed '+amount+' '+earningToken.symbol+"-"+stakingToken.symbol+' LP from farm',
+            summary: 'Removed '+amount+' '+pool.token1.symbol+"-"+pool.token2.symbol+' LP from farm',
           }
         },
         receipt.transactionHash
@@ -127,7 +127,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
       dispatch(fetchPoolsUserDataAsync(account))
     }
   }
-  const lpContract = useERC20(contractAddress)
+  const lpContract = useERC20(stakingToken.address)
   const dispatch = useDispatch()
   const sousChefContract = useSousChef(sousId)
   const { callWithGasPrice } = useCallWithGasPrice()
@@ -193,14 +193,14 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
         {showModalDeposit &&
         <ModalTopDeposit
         max={tokenBalance }
-        lpLabel={'lpLabel'}
+        lpLabel={pool.token1.symbol+"-"+pool.token2.symbol}
         apr = {apr}
         onDismiss = {() => setshowModalDeposit(false)}
         displayApr = '1'
         stakedBalance = {stakedBalance}
         onConfirm = {handleStake}
         tokenName = {earningToken.name}
-        addLiquidityUrl = {`#/add-pro/${earningToken.address}/${stakingToken.address}`}
+        addLiquidityUrl = {`#/add-pro/${pool.token1.address}/${pool.token2.address}`}
         cakePrice = {1 as unknown as BigNumber}
         token = {earningToken}
         />

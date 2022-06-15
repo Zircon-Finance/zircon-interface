@@ -62,7 +62,6 @@ const BodyWrapper = styled.div`
   padding-top: 180px;
   align-items: center;
   flex: 1;
-  z-index: 10;
   @media (min-width: 1100px) {
     padding-top: 110px;
   }
@@ -70,8 +69,6 @@ const BodyWrapper = styled.div`
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
       padding: 16px;
   `};
-
-  z-index: 1;
 `
 
 const Marginer = styled.div`

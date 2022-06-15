@@ -72,7 +72,7 @@ animation: ${({ expanded }) =>
         ${expandAnimation} 200ms
       `
     : css`
-        ${collapseAnimation} 300ms linear forwards
+        ${collapseAnimation} 200ms linear forwards
       `};
   cursor: pointer;
   margin: ${({ expanded }) => expanded ? '0 0 5px 0' : '10px 0 10px 0'};
@@ -157,7 +157,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     setActionPanelExpanded(false)
     setIsVisible(true)
   }, [hasStakedAmount, isVisible])
-  const lpContract = useERC20(details.contractAddress)
+  const lpContract = useERC20(details.stakingToken.address)
   const { fetchWithCatchTxError } = useCatchTxError()
   const addTransaction = useTransactionAdder()
   const addPopup = useAddPopup()
@@ -221,7 +221,8 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
       return (
         !actionPanelExpanded && (
         <StyledTr expanded={isVisible} onClick={toggleActionPanel} onMouseOver={() => setHovered(true)} 
-        onMouseOut={() => setHovered(false)} style={{backgroundColor: hovered ? theme.cardExpanded : null, borderBottom: !darkMode ? `1px solid ${theme.cardExpanded}` : null}} >
+        onMouseOut={() => setHovered(false)} 
+        style={{backgroundColor: hovered ? theme.cardSmall : null, borderBottom: !darkMode ? `1px solid ${theme.cardExpanded}` : null}} >
           {Object.keys(props).map((key) => {
             const columnIndex = columnNames.indexOf(key)
             if (columnIndex === -1) {

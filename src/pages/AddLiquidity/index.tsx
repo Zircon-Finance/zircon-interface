@@ -19,7 +19,7 @@ import { RowBetween, RowFlat } from '../../components/Row'
 
 import { ROUTER_ADDRESS } from '../../constants'
 import { PairState } from '../../data/Reserves'
-import { useActiveWeb3React } from '../../hooks'
+import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
 import { useWalletModalToggle } from '../../state/application/hooks'
@@ -311,6 +311,7 @@ export default function AddLiquidity({
     }
     setTxHash('')
   }, [onFieldAInput, txHash])
+  const { width } = useWindowDimensions()
 
   return (
     <>
@@ -337,7 +338,7 @@ export default function AddLiquidity({
             {noLiquidity && (
               <ColumnCenter>
                 <BlueCard>
-                  <AutoColumn gap="10px">
+                  <AutoColumn gap="10px" style={{fontSize: width > 700 ? '16px' : '15px'}}>
                     <TYPE.link fontWeight={400} color={'primaryText1'}>
                       You are the first liquidity provider.
                     </TYPE.link>

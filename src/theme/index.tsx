@@ -85,7 +85,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     primary3: '#BA73ED',
     primary4: '#A548E970',
     primary5: '#BA73ED70',
-    maxButton: chainId !== 1287 ? '#68597b' : darkMode ? '#361E2A' : '#ede3e8',
+    maxButton: chainId !== 1287 ? '#311149' : darkMode ? '#3e1f2e' : '#efe7ee',
 
     disabled1: chainId !== 1287 ? '#36195A' : darkMode ? '#44232E' : '#dfced2',
 
@@ -122,6 +122,8 @@ export function colors(chainId: any, darkMode: boolean): Colors {
 
     positionsButtons: chainId !== 1287 ? '#7a628c' : darkMode ? '#755452' : '#fcfbfc',
     modalBg : chainId !== 1287 ? 'rgba(0,0,0,0.5)' : darkMode ? 'rgba(0,0,0,0.5)' : 'rgba(36, 17, 26, 0.5)',
+
+    liquidityBg: chainId !== 1287 ? '#260B42' : darkMode ? '#331924' : '#F5F3F6',
 
     // color text
     primaryText1: '#ffffff',

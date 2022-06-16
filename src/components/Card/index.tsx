@@ -52,10 +52,13 @@ export const PinkCard = styled(Card)`
 `
 
 const BlueCardStyled = styled(Card)`
-  background-color: ${({ theme }) => theme.primary5};
+  background-color: ${({ theme }) => theme.anchorFloatBadge};
   color: ${({ theme }) => theme.primary1};
   border-radius: 12px;
-  width: fit-content;
+  width: 100%;
+  @media (min-width: 700px) {
+    width: fit-content;
+  }
 `
 
 export const BlueCard = ({ children, ...rest }: CardProps) => {

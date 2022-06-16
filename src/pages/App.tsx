@@ -92,7 +92,7 @@ export default function App() {
           <HeaderWrapper>
             <Header />
           </HeaderWrapper>
-          <BodyWrapper style={{paddingTop: width > 700 ? width > 1100 ? '180px' : '170px' : '0px'}}>
+          <BodyWrapper style={{paddingTop: width >= 700 ? width >= 1100 ? '180px' : '170px' : '0px'}}>
             <Popups />
             <Web3ReactManager>
               <Switch>

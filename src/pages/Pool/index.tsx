@@ -98,7 +98,7 @@ export default function Pool() {
 
   return (
       <>
-        <Text color={theme.text1} fontWeight={300} fontSize={30} style={{alignSelf: 'center', marginBottom: width > 700 ? '40px' : '20px'}}>
+        <Text color={theme.text1} fontWeight={300} fontSize={30} style={{alignSelf: 'center', marginBottom: width >= 700 ? '40px' : '20px'}}>
           {t('yourLiquidity')}
         </Text>
         {/* <SwapPoolTabs active={'pool'} /> */}
@@ -175,7 +175,7 @@ export default function Pool() {
             </div> */}
             </AutoColumn>
             <AutoRow style={{padding: '10px'}}>
-              {width < 700 && (<SmallerQuestionmark />)}
+              {width <= 700 && (<SmallerQuestionmark />)}
               <div style={{width: '15%', height: '100%'}}>
                 <TriMenu />
               </div>
@@ -185,7 +185,7 @@ export default function Pool() {
               </div>
             </AutoRow>
           </AutoColumn>
-          {width > 700 && <LearnIcon />}
+          {width >= 700 && <LearnIcon />}
         </AppBody>
       </>
   )

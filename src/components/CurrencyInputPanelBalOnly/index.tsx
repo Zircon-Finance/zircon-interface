@@ -8,7 +8,7 @@ import { TYPE } from '../../theme'
 import { Input as NumericalInput } from '../NumericalInput'
 import { useTranslation } from 'react-i18next'
 
-import { useActiveWeb3React } from '../../hooks'
+import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
 import CurrencyLogo from '../CurrencyLogo'
 
 const InputRow = styled.div<{ selected: boolean }>`
@@ -41,7 +41,7 @@ const InputPanel = styled.div<{ hideInput?: boolean }>`
 
 const Container = styled.div<{ hideInput: boolean }>`
   border-radius: ${({ hideInput }) => (hideInput ? '8px' : '14px')};
-  background-color: ${({ theme }) => theme.bg6};
+  background-color: ${({ theme }) => theme.liquidityBg};
 `
 
 const StyledBalanceMax = styled.button`
@@ -52,13 +52,13 @@ const StyledBalanceMax = styled.button`
   border: 0;
   letter-spacing: 0.05em
   border-radius: 0.9rem;
-  font-size: 10px;
+  font-size: 13px;
   outline: none;
   border-radius: 27px;
-  font-weight: 300;
+  font-weight: 500;
   cursor: pointer;
   margin-right: 0.5rem;
-  color: ${({ theme }) => theme.whiteBlackPink};
+  color: ${({ theme }) => theme.poolPinkButton};
 
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     margin-right: 0.5rem;
@@ -119,6 +119,7 @@ export default function CurrencyInputPanel({
   }, [setModalOpen])
 
   const { t } = useTranslation()
+  const { width } = useWindowDimensions()
 
   return (
     <InputPanel id={id}>
@@ -130,11 +131,6 @@ export default function CurrencyInputPanel({
                 <InputRow style={hideInput ? { alignItems: 'center', padding: '0', borderRadius: '8px' } : {alignItems: 'center'}} selected={disableCurrencySelect}>
                 {!hideInput && (
                   <>
-                  <div style={{display: 'flex', flexFlow:'column', border: `2px solid ${theme.bg11}`, borderRadius: '12px'}}>
-                  <span style={{padding: '8px', fontWeight:400}}>
-                    {!isFloat? 'ANCHOR' : 'FLOAT'}
-                  </span>
-                    <div style={{display: 'flex', justifyContent: 'center', borderTop: `2px solid ${theme.bg11}`, borderRadius: '12px'}}>
                       <span style={{padding: '12px 5px 12px 12px'}}>
                         <CurrencyLogo currency={currency} size={'30px'} />
                         </span>
@@ -145,11 +141,10 @@ export default function CurrencyInputPanel({
                           currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
                           : currency?.symbol) || t('selectToken')}
                       </span>
-                    </div>
-                  </div>
+                      <span style={{fontSize: width < 700 ? '13px' : '16px', color: theme.whiteHalf}}>{isFloat ? 'FLOAT' : 'ANCHOR'}</span>
 
                     <NumericalInput
-                      style={{textAlign: 'end'}}
+                      style={{background: 'transparent', textAlign: 'end'}}
                       className="token-amount-input"
                       value={value}
                       onUserInput={val => {

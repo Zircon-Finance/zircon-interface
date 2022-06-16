@@ -81,6 +81,8 @@ export interface Colors {
 
   meatPink: Color
 
+  liquidityBg: Color
+
   badgeSmall: Color
 
   primaryText1: Color

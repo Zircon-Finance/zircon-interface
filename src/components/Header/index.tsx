@@ -193,8 +193,8 @@ export default function Header() {
             </div>
           </div>
       } */}
-      <RowBetween style={{ alignItems: 'flex-start', flexWrap: width > 700 ? 'nowrap' : 'wrap', justifyContent: 'center'}} padding="1rem 1rem 0 1rem">
-        {width > 700 ?
+      <RowBetween style={{ alignItems: 'flex-start', flexWrap: width >= 700 ? 'nowrap' : 'wrap', justifyContent: 'center'}} padding="1rem 1rem 0 1rem">
+        {width >= 700 ?
         <>
         <HeaderElement>
           <Title href=".">

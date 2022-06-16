@@ -60,7 +60,7 @@ export function PylonClassicTab({ active }: { active: 'PYLON' | 'CLASSIC' }) {
   const [filter, setuserFarmsFilterPylonClassic] = useUserFarmsFilterPylonClassic()
 
   return (
-    <Tabs style={{ marginRight: '20px', width: width > 700 ? 'auto' : '100%' }}>
+    <Tabs style={{ marginRight: '20px', width: width >= 700 ? 'auto' : '100%' }}>
       <StyledNavLink id={`pylon-select-tab`} to={'#'} 
         onClick={()=> {setuserFarmsFilterPylonClassic(FarmFilter.PYLON)}} 
         isActive={() => filter === FarmFilter.PYLON}>
@@ -81,7 +81,7 @@ export function AnchorFloatTab({ active }: { active: 'ALL' | 'ANCHOR' | 'FLOAT' 
   const [filter, setuserFarmsFilterAnchorFloat] = useUserFarmsFilterAnchorFloat()
 
   return (
-    <Tabs style={{ width: width > 700 ? 'auto' : '100%' }}>
+    <Tabs style={{ width: width >= 700 ? 'auto' : '100%' }}>
       <StyledNavLink id={`all-select-tab`} to={'#'} 
         onClick={()=> {setuserFarmsFilterAnchorFloat(FarmFilterAnchorFloat.ALL)}} 
         isActive={() => filter === FarmFilterAnchorFloat.ALL}>
@@ -134,7 +134,7 @@ export function FarmTabButtons({ active }: { active: 'Active' | 'Finished'}) {
   const { hash } = window.location
 
   return (
-    <Tabs style={{padding: '5px',  width: width > 700 ? 'auto' : '100%' }}>
+    <Tabs style={{padding: '5px',  width: width >= 700 ? 'auto' : '100%' }}>
       <StyledNavLink id={`live-farms-select`} to={'/farm'} 
         isActive={() => hash === '#/farm'}>
         {t('ACTIVE')}

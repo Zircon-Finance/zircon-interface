@@ -9,6 +9,7 @@ import DoubleCurrencyLogo from '../DoubleLogo'
 
 import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
 import { useTranslation } from 'react-i18next'
+import { useWindowDimensions } from '../../hooks'
 
 
 
@@ -26,6 +27,7 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
   border: none;
   width: 100%;
   padding-left: 10px;
+  height: 100%;
 
   :focus,
   :hover {
@@ -39,6 +41,7 @@ const LabelRow = styled.div`
   align-items: center;
   color: ${({ theme }) => theme.text1};
   font-size: 0.75rem;
+  height: 100%;
   line-height: 1rem;
   padding: 0;
   span:hover {
@@ -54,8 +57,12 @@ const Aligner = styled.span`
 `
 
 const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
-  margin: 0 0.25rem 0 0.5rem;
+  margin: 0;
   height: 35%;
+
+  @media (min-width: 700px) {
+    margin: 0 0.25rem 0 0.5rem;
+  }
 
   path {
     stroke: ${({ selected, theme }) => (selected ? theme.text1 : theme.white)};
@@ -75,16 +82,21 @@ const InputPanel = styled.div<{ hideInput?: boolean }>`
 const Container = styled.div<{ hideInput: boolean }>`
   border-radius: ${({ hideInput }) => (hideInput ? '8px' : '17px')};
   background-color: ${({ theme }) => theme.anchorFloatBadge};
+  height: 100%;
   width: 100%;
 `
 
 const StyledTokenName = styled.span<{ active?: boolean }>`
-  ${({ active }) => (active ? '  margin: 0 0.75rem 0 0.75rem;' : '  margin: 0 0.25rem 0 0.25rem;')}
-  font-size:  16px;
+  ${({ active }) => (active ? '  margin: 0 0 0 0.25rem;' : '  margin: 0 0.25rem 0 0.25rem;')}
+  font-size:  13px;
   align-self: center;
   display: flex;
+  height: 100%;
   align-items: center;
-
+  @media (min-width: 700px) {
+    font-size: 16px;
+    ${({ active }) => (active ? '  margin: 0 0.75 0.75rem;' : '  margin: 0 0.25rem 0 0.25rem;')}
+  }
 `
 
 
@@ -126,6 +138,7 @@ export default function CurrencyInputPanel({
     setModalOpen(false)
   }, [setModalOpen])
   const theme = useTheme()
+  const { width } = useWindowDimensions()
 
   return (
     <InputPanel id={id}>
@@ -161,7 +174,9 @@ export default function CurrencyInputPanel({
                         ? currency.symbol.slice(0, 4) +
                           '...' +
                           currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
-                        : <><p>{currency?.symbol}</p><span style={{color: theme.whiteHalf, marginLeft: '5px'}}>{anchor ? 'ANCHOR' : 'FLOAT'}</span></>) || t('selectToken')}
+                        : <><p>{currency?.symbol}</p>
+                        <span style={{color: theme.whiteHalf, marginLeft: '5px', fontSize: width > 700 ? '16px' : '13px'}}>{anchor ? 'ANCHOR' : 'FLOAT'}</span></>) 
+                        || t('selectToken')}
                     </StyledTokenName>
                   )}
                   </div>

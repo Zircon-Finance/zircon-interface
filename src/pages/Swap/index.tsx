@@ -268,7 +268,7 @@ export default function Swap() {
   const singleTokenPrice = useSingleTokenSwapInfo(inputCurrencyId, inputCurrency, outputCurrencyId, outputCurrency)
 
   return (
-    <div style={{width: '100%', display: 'flex', justifyContent: width > 700 ? 'space-evenly' : 'center', alignItems: 'flex-start'}}>
+    <div style={{width: '100%', display: 'flex', justifyContent: width >= 700 ? 'space-evenly' : 'center', alignItems: 'flex-start'}}>
     { width > 1000 && (
     <div style={{
       height: '450px',

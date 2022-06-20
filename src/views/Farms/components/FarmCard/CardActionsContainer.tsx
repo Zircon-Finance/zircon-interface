@@ -20,7 +20,7 @@ import { useCallWithGasPrice } from '../../../../hooks/useCallWithGasPrice'
 
 const Action = styled.div`
   padding: 0px;
-  height: 230px;
+  min-height: 230px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -122,11 +122,11 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
         <Text fontSize="13px" fontWeight={300} color={theme.text1}>
           {t('Earned')}
         </Text>
-        <HarvestAction earnings={pendingReward} pid={sousId} />
+        <HarvestAction earningToken={farm.earningToken} earnings={pendingReward} pid={sousId} />
         </ActionContainer>
         </>)}
       {!account ? 
-      <ButtonPinkGamma m="auto" mb='15px' width="100%" disabled={pendingTx} onClick={toggleWalletModal}>
+      <ButtonPinkGamma m="auto" width="100%" disabled={pendingTx} onClick={toggleWalletModal}>
         {'Connect Wallet'}
       </ButtonPinkGamma>
        : renderApprovalOrStakeButton()}

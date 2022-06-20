@@ -21,7 +21,7 @@ export enum PairDataTimeWindowEnum {
 
 const ButtonsContainer = styled.div`
   border-radius: 17px;
-  border: 1px solid #3C225F;
+  background: ${({ theme }) => theme.liquidityBg};
   display: flex;
   padding: 5px;
   font-size: 13px;
@@ -38,7 +38,7 @@ const TimeButton = styled.button`
   text-align: center;
   width: 44px;
   height: 36px;
-  color: #fff;
+  color: ${({ theme }) => theme.text1};
   border: none;
 `;
 
@@ -119,7 +119,7 @@ const BasicChart = ({
               inputCurrency && <CurrencyLogo currency={inputCurrency} size="24px" style={{ marginRight: '8px' }} />
             )}
             {inputCurrency && (
-              <Text color="text">
+              <Text color={theme.text1}>
                 {outputCurrency ? `${inputCurrency.symbol}/${outputCurrency.symbol}` : inputCurrency.symbol}
               </Text>
             )}
@@ -139,12 +139,12 @@ const BasicChart = ({
       </TopContainer>
       <div style={{borderRadius: '27px', backgroundColor: theme.bg7, padding: '15px'}}>
       <DateButtons>
-        <Text size={13} color="#9C90AC" style={{alignSelf: 'center', width: '100%', paddingLeft: '15px'}}>
+        <Text size={13} color={theme.whiteHalf} style={{alignSelf: 'center', width: '100%', paddingLeft: '15px'}}>
             {hoverDate || currentDate}
           </Text>
           <ButtonsContainer >
-            <TimeButton style={{cursor: 'pointer', backgroundColor: timeWindow === 0 ? '#4D346C' : 'transparent'}} onClick={()=> setTimeWindow(0)}>{'24H'}</TimeButton>
-            <TimeButton style={{cursor: 'pointer', backgroundColor: timeWindow === 1 ? '#4D346C' : 'transparent'}} onClick={()=> setTimeWindow(1)}>{'1W'}</TimeButton>
+            <TimeButton style={{cursor: 'pointer', backgroundColor: timeWindow === 0 ? theme.badgeSmall : 'transparent'}} onClick={()=> setTimeWindow(0)}>{'24H'}</TimeButton>
+            <TimeButton style={{cursor: 'pointer', backgroundColor: timeWindow === 1 ? theme.badgeSmall : 'transparent'}} onClick={()=> setTimeWindow(1)}>{'1W'}</TimeButton>
             {/* <TimeButton style={{backgroundColor: timeWindow === 2 ? '#4D346C' : 'transparent'}} onClick={()=> setTimeWindow(2)}>{'1M'}</TimeButton>
             <TimeButton style={{backgroundColor: timeWindow === 3 ? '#4D346C' : 'transparent'}} onClick={()=> setTimeWindow(3)}>{'1Y'}</TimeButton> */}
           </ButtonsContainer>

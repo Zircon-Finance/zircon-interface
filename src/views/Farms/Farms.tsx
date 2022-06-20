@@ -19,6 +19,7 @@ import { getBalanceNumber } from '../../utils/formatBalance'
 // import { latinise } from '../../utils/latinise'
 import { useIsDarkMode, useShowMobileSearchBarManager, useUserFarmsFilterAnchorFloat, useUserFarmsFilterPylonClassic, useUserFarmStakedOnly, useUserFarmsViewMode } from '../../state/user/hooks'
 import { 
+  FarmFilter,
   // FarmFilter,
   FarmFilterAnchorFloat, 
   ViewMode } from '../../state/user/actions'
@@ -38,6 +39,7 @@ import { fetchPoolsUserDataAsync } from '../../state/pools'
 import { DeserializedPool, DeserializedPoolVault } from '../../state/types'
 import orderBy from 'lodash/orderBy'
 import { formatUnits } from 'ethers/lib/utils'
+import { getPoolAprAddress } from '../../utils/apr'
 
 const Loading = styled.div`
   border: 8px solid #f3f3f3;
@@ -206,7 +208,7 @@ export const ModalContainer = styled.div`
     border-bottom: none;
   }
   svg {
-    fill: #fff;
+    fill: ${({ theme }) => theme.text1};
   }
 `
 
@@ -341,6 +343,11 @@ const Farms: React.FC = ({ children }) => {
     sortedPools.filter((pool) => !pool.isAnchor === true) :
     sortedPools
 
+    sortedPools = 
+    filter === FarmFilter.CLASSIC ?
+    sortedPools.filter((pool) => pool.isClassic === true) :
+    sortedPools.filter((pool) => !pool.isClassic === true)
+
     // sortedPools =
     // filter === FarmFilter.CLASSIC ?
     // sortedPools.filter((pool) => pool.isClassic === true) :
@@ -360,7 +367,7 @@ const Farms: React.FC = ({ children }) => {
 
     const row: RowProps = {
       apr: {
-        value: 'farm.apr',
+        value: getPoolAprAddress(farm.contractAddress),
         // getDisplayApr(farm.apr, farm.lpRewardsApr),
         pid: farm.sousId,
         lpLabel,
@@ -443,7 +450,7 @@ const Farms: React.FC = ({ children }) => {
           <Flex position={'relative'} width={width < 500 ? showMobileSearchBar ? '100%' : 'auto' : 'auto'} height={'70px'}>
             { (!showMobileSearchBar || width > 500) && <ViewControls>
               <ToggleWrapper style={{marginRight: '20px', position: 'relative'}}> 
-                <Text fontSize='13px' color={theme.text1} mr={'10px'} width={'max-content'} letterSpacing={'0.05em'}> {t('STAKED ONLY')}</Text>
+                <Text fontSize='13px' color={theme.text1} mr={'10px'} width={'max-content'} letterSpacing={'0.05em'}> {width > 700 ? 'STAKED ONLY' : 'STAKED'}</Text>
                 <Toggle
                   id="staked-only-farms"
                   checked={stakedOnly}

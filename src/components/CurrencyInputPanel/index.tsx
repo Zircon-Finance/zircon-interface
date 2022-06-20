@@ -40,8 +40,8 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
 
   :focus,
   :hover {
-    background-color: ${({ theme }) => theme.bg1};
-    color: white !important;
+    background-color: ${({ theme }) => theme.bg9};
+    color: ${({ theme }) => theme.text1} !important;
   }
 `
 
@@ -54,7 +54,6 @@ const LabelRow = styled.div`
   padding: 5px;
   span:hover {
     cursor: pointer;
-    color: white;
   }
 `
 
@@ -230,7 +229,8 @@ export default function CurrencyInputPanel({
                            padding: showMaxButton ? '0px' : !hideBalance && '10px 0 5px 5px'
                   }}
                 >
-                  <div style={{display: 'flex', alignItems: 'center', fontSize: '13px', marginTop: showMaxButton ? '10px' : '0px'}}>
+                  <div style={{display: 'flex', alignItems: 'center', fontSize: '13px', marginTop: showMaxButton ? '10px' : '0px'
+                , color: theme.whiteHalf}}>
                   {account && currency && showMaxButton && label !== 'To' && (
                   <StyledBalanceMax onClick={onMax}>MAX</StyledBalanceMax>
                   )}

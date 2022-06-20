@@ -26,6 +26,15 @@ export const getPoolApr = (
   return apr.isNaN() || !apr.isFinite() ? null : apr.toNumber()
 }
 
+export const getPoolAprAddress = (
+  address: string): string => {
+  const lpApr = lpAprs[address]
+  if (!lpApr) {
+    return null
+  }
+  return lpApr
+}
+
 /**
  * Get farm APR value in %
  * @param poolWeight allocationPoint / totalAllocationPoint

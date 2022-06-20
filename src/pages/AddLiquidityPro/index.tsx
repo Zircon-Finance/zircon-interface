@@ -709,13 +709,13 @@ export default function AddLiquidityPro({
                     gap="10px"
                     style={{ fontSize: width > 700 ? "16px" : "15px" }}
                   >
-                    <TYPE.link fontWeight={400} color={"primaryText1"}>
+                    <TYPE.link fontWeight={400} color={theme.text1}>
                       You are the first liquidity provider.
                     </TYPE.link>
-                    <TYPE.link fontWeight={400} color={"primaryText1"}>
+                    <TYPE.link fontWeight={400} color={theme.text1}>
                       This will create the Pylon for this pair
                     </TYPE.link>
-                    <TYPE.link fontWeight={400} color={"primaryText1"}>
+                    <TYPE.link fontWeight={400} color={theme.text1}>
                       Once you are happy with the pair click 'Create pair' to
                       review.
                     </TYPE.link>

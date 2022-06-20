@@ -318,6 +318,111 @@ export function useDerivedPylonBurnInfo(
   return { pylon, parsedAmounts, error }
 }
 
+export function useDerivedPylonBurnInfoFixedPercentage(
+  currencyA: Currency | undefined,
+  currencyB: Currency | undefined,
+  isFloat: boolean,
+  isSync: boolean,
+  percentage: string,
+  field: Field,
+): {
+pylon?: Pylon | null
+parsedAmounts: {
+  [Field.LIQUIDITY_PERCENT]: Percent
+  [Field.LIQUIDITY]?: TokenAmount
+  [Field.CURRENCY_A]?: CurrencyAmount
+  [Field.CURRENCY_B]?: CurrencyAmount
+}
+error?: string
+} {
+const { account, chainId } = useActiveWeb3React()
+
+// pair + totalsupply
+const [, pylon] = usePylon(currencyA, currencyB)
+
+
+const [tokenA, tokenB] = [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)]
+
+const userLiquidity = useTokenBalance(account ?? undefined, isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken)
+const pylonPoolBalance = useTokenBalance(pylon?.address, pylon?.pair.liquidityToken)
+const ptTotalSupply = useTotalSupply(isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken)
+const totalSupply = useTotalSupply(pylon?.pair.liquidityToken)
+const vab = useVirtualAnchorBalance(pylon?.address)
+const vfb = useVirtualFloatBalance(pylon?.address)
+const lastK = useLastK(pylon?.address)
+const gamma = useGamma(pylon?.address)
+const lpt = useLastPoolTokens(pylon?.address)
+
+
+function getLiquidityValues():  [TokenAmount | undefined, TokenAmount | undefined] {
+  if( !!pylon &&
+      !!userLiquidity &&
+      !!pylonPoolBalance &&
+      !!totalSupply &&
+      !!ptTotalSupply &&
+      !! tokenB &&
+      !! tokenA
+  ) {
+    if(isSync) {
+      if(JSBI.greaterThanOrEqual(ptTotalSupply.raw, userLiquidity.raw)) {
+        return isFloat ? [pylon.burnFloat(totalSupply, ptTotalSupply, userLiquidity, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt)),
+              new TokenAmount(tokenB!, BigInt(0))] :
+            [
+              new TokenAmount(tokenA!, BigInt(0)),
+              pylon.burnAnchor(totalSupply!, ptTotalSupply, userLiquidity, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
+            ]
+      }else{
+        return [undefined, undefined]
+      }
+    }else{
+      return isFloat ?
+          pylon.burnAsyncFloat(totalSupply, ptTotalSupply, userLiquidity, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt)) :
+          pylon.burnAsyncAnchor(totalSupply, ptTotalSupply, userLiquidity, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
+    }
+  }else{
+    return [undefined, undefined]
+  }
+}
+
+
+
+const [liquidityValueA, liquidityValueB] = getLiquidityValues()
+
+let percentToRemove: Percent = new Percent(Math.round(parseFloat(percentage)).toString(), '100')
+
+const parsedAmounts: {
+  [Field.LIQUIDITY_PERCENT]: Percent
+  [Field.LIQUIDITY]?: TokenAmount
+  [Field.CURRENCY_A]?: TokenAmount
+  [Field.CURRENCY_B]?: TokenAmount
+} = {
+  [Field.LIQUIDITY_PERCENT]: percentToRemove,
+  [Field.LIQUIDITY]:
+      userLiquidity && percentToRemove && percentToRemove.greaterThan('0')
+          ? new TokenAmount(userLiquidity.token, percentToRemove.multiply(userLiquidity.raw).quotient)
+          : undefined,
+  [Field.CURRENCY_A]:
+      tokenA && percentToRemove && percentToRemove.greaterThan('0') && liquidityValueA
+          ? new TokenAmount(tokenA, percentToRemove.multiply(liquidityValueA.raw).quotient)
+          : undefined,
+  [Field.CURRENCY_B]:
+      tokenB && percentToRemove && percentToRemove.greaterThan('0') && liquidityValueB
+          ? new TokenAmount(tokenB, percentToRemove.multiply(liquidityValueB.raw).quotient)
+          : undefined
+}
+
+let error: string | undefined
+if (!account) {
+  error = 'Connect Wallet'
+}
+
+if (!parsedAmounts[Field.LIQUIDITY] || !parsedAmounts[Field.CURRENCY_A] || !parsedAmounts[Field.CURRENCY_B]) {
+  error = error ?? 'Enter an amount'
+}
+
+return { pylon, parsedAmounts, error }
+}
+
 export function useBurnActionHandlers(): {
   onUserInput: (field: Field, typedValue: string) => void
 } {

@@ -22,7 +22,6 @@ const StyledDialogOverlay = styled(AnimatedDialogOverlay)`
     background-color: ${({ theme }) => theme.modalBG};
   }
 `
-
 const AnimatedDialogContent = animated(DialogContent)
 // destructure to not pass custom props to Dialog DOM element
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -33,7 +32,7 @@ const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, ...r
 })`
   &[data-reach-dialog-content] {
     margin: 0 0 2rem 0;
-    background-color: ${({ theme }) => theme.bg10};
+    background-color: ${({ theme }) => theme.walletModal};
     box-shadow: 0 4px 8px 0 ${({ theme }) => transparentize(0.95, theme.shadow1)};
     padding: 0px;
     width: 350px;

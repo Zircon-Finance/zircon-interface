@@ -341,7 +341,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                 {account ? (
                   isApproved ? (stakedAmount ? (
                     <>
-                      <span style={{color: theme.whiteHalf, fontSize: '13px'}}>{'Earned: '}</span>
+                      <span style={{color: theme.whiteHalf, fontSize: '13px', marginRight: '5px'}}>{'Earned: '}</span>
                       <Earned {...props.earned} userDataReady={userDataReady} />
                     </>
                   ) : (

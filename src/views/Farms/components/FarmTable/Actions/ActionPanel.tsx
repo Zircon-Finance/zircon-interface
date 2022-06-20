@@ -238,6 +238,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const { width } = useWindowDimensions()
   const sousChefContract = useSousChef(pool.sousId)
   const { callWithGasPrice } = useCallWithGasPrice()
+  console.log('Pending rewards: ',farm.userData.pendingReward.toFixed(6))
   const handleApproval = useCallback(async () => {
     const receipt = await fetchWithCatchTxError(() => {
       return callWithGasPrice(lpContract, 'approve', [sousChefContract.address, MaxUint256])
@@ -345,7 +346,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                     </Flex>
                     </>
                   )) : (
-                    <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{earningToken.symbol} - {}</Text>
+                    <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{token1.symbol} - {token2.symbol}</Text>
                   )}
                   </div>
                   <DoubleCurrencyLogo currency0={token1} currency1={token2} size={25} />
@@ -433,7 +434,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
         {isApproved ? (
         <StakeAdd clickAction={() => {setShowModal(true)}} row={true} margin={false} width={width > 992 ? '30%' : '60%'} />)
         : (
-          <ButtonOutlined style={{background: theme.poolPinkButton, border: 'none', color: '#FFF'}} 
+          <ButtonOutlined style={{background: theme.hoveredButton, border: 'none', color: '#FFF'}} 
           m="auto" width="50%" disabled={pendingTx} onClick={account ? handleApproval : toggleWalletModal}>
             {account ? 'Enable Contract' : 'Connect Wallet'}
           </ButtonOutlined>
@@ -452,9 +453,11 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
             <Text color={theme.text1} fontSize='13px' fontWeight={300}>{t('Liquidity')}</Text>
             <Liquidity {...liquidity} />
           </ValueWrapper>
-          <Link to={`/add-pro/${earningToken.address}/${stakingToken.address}`}>
-            <ButtonOutlined style={{margin: '10px 0', padding: '10px', fontSize: '13px', color: theme.poolPinkButton, background: theme.contrastLightButton, border: 'none'}}>
-              {`Get ${earningToken.name} - ${stakingToken.name} Anchor LP`}</ButtonOutlined>
+          <Link to={farm.isClassic ?
+                      `/add/${farm.token1.address}/${farm.token2.address}` :
+                      `/add-pro/${farm.token1.address}/${farm.token2.address}`}>
+            <ButtonOutlined style={{margin: '10px 0', padding: '10px', fontSize: '13px', color: theme.hoveredButton, background: theme.contrastLightButton, border: 'none'}}>
+              {`Get ${token1.name} - ${token2.name} ${isClassic ? 'Classic' : isAnchor ? 'Anchor' : 'Float'} LP`}</ButtonOutlined>
           </Link>
         </ValueContainer>
       </QuarterContainer>

@@ -17,7 +17,7 @@ interface Props {
 }
 
 const SearchButton = styled.button`
-  background: ${({ theme }) => theme.anchorFloatBadge};
+  background: ${({ theme }) => theme.farmTabsBg};
   border: none;
   border-radius: 12px;
   padding: 0.5rem;
@@ -52,7 +52,7 @@ const SearchInputFarm: React.FC<Props> = ({ onChange: onChangeCallback, placehol
 
   return (
     width >= 500 ? (
-      <SearchInput expanded={true} style={{backgroundColor: theme.anchorFloatBadge, height: '30px', borderRadius: '12px'}}
+      <SearchInput expanded={true} style={{backgroundColor: theme.farmTabsBg, height: '30px', borderRadius: '12px'}}
       value={searchText} onChange={onChange} placeholder={t(placeholder)} />
       ) : (
         <Flex style={{width: '100%'}}>

@@ -7,6 +7,7 @@ import PlusIcon from '../PlusIcon'
 import { Link } from 'react-router-dom'
 import { Flex } from 'rebass'
 import { useWindowDimensions } from '../../../../hooks'
+import { usePairLiquidity, usePylonLiquidity } from '../../../../state/pools/hooks'
 
 
 export interface LiquidityProps {
@@ -70,6 +71,8 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
   const theme = useTheme()
   const { width } = useWindowDimensions()
   const [hoverPlus, setHoverPlus] = React.useState(false)
+  const pylonLiquidity = usePylonLiquidity(farm.token1, farm.token2)
+  const pairLiquidity = usePairLiquidity(farm.token1, farm.token2)
   const plusContent = (
       <DialogContainer show={hoverPlus}>
         <Text style={{color: '#FFF'}} fontSize='13px'>
@@ -81,29 +84,43 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
   return (
     <Container>
       <LiquidityWrapper>
-        <Text color={theme.text1}>{'1000$'}</Text>
-        { 
-        // liquidity.gt(0) && 
-        hovered && width >= 1100 &&
-        <AbsContainer onMouseEnter={()=>setHovered(true)}>
-          <Link to={farm.isClassic ?
-                      `/add/${farm.token1.address}/${farm.token2.address}` :
-                      `/add-pro/${farm.token1.address}/${farm.token2.address}`}>
-            <IconButton 
-            style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%'}}
+        <Text fontSize="13px" color={theme.text1}>
+          {farm.isClassic
+            ? pairLiquidity
+            : pylonLiquidity}
+        </Text>
+        {// liquidity.gt(0) &&
+        hovered && width >= 1100 && (
+          <AbsContainer onMouseEnter={() => setHovered(true)}>
+            <Link
+              to={
+                farm.isClassic
+                  ? `/add/${farm.token1.address}/${farm.token2.address}`
+                  : `/add-pro/${farm.token1.address}/${farm.token2.address}`
+              }
             >
-            <Flex 
-              onMouseEnter={()=>setHoverPlus(true)}
-              onMouseLeave={()=>setHoverPlus(false)}>
-              <PlusIcon />
-            </Flex>
-            </IconButton>
-          </Link>
-          {hoverPlus && plusContent}
-        </AbsContainer>}
+              <IconButton
+                style={{
+                  background: theme.hoveredButton,
+                  width: "29px",
+                  height: "28px",
+                  borderRadius: "100%",
+                }}
+              >
+                <Flex
+                  onMouseEnter={() => setHoverPlus(true)}
+                  onMouseLeave={() => setHoverPlus(false)}
+                >
+                  <PlusIcon />
+                </Flex>
+              </IconButton>
+            </Link>
+            {hoverPlus && plusContent}
+          </AbsContainer>
+        )}
       </LiquidityWrapper>
     </Container>
-  )
+  );
 }
 
 export default Liquidity

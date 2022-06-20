@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import React, { useCallback, useMemo, useState } from 'react'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { Flex, Text, Modal, Skeleton } from '@pancakeswap/uikit'
 import { ModalActions, ModalInput } from '../../../components/ModalFarm'
 import RoiCalculatorModal from '../../../components/RoiCalculatorModal'
@@ -91,6 +91,7 @@ const DepositModal: React.FC<DepositModalProps> = ({
   const handleSelectMax = useCallback(() => {
     setVal(fullBalance)
   }, [fullBalance, setVal])
+  const theme = useTheme()
 
   if (showRoiCalculator) {
     return (
@@ -129,21 +130,18 @@ const DepositModal: React.FC<DepositModalProps> = ({
       )}
       <ButtonOutlined style={{ alignSelf: 'center', width: 'auto', height: '30px', margin: '15px 0',
       background: isBalanceZero ? '#C16BAD' : 'transparent' }}>
-        <Link style={{textDecoration: 'none', color: '#fff', fontWeight: '300', fontSize: '13px'}} 
+        <Link style={{textDecoration: 'none', color: theme.text1, fontWeight: '300', fontSize: '13px'}} 
         href={addLiquidityUrl}>{'Get ' + lpLabel}</Link>
       </ButtonOutlined>
       <Flex mb="15px" alignItems="center" justifyContent="space-around">
-        <Text mr="8px" color="textSubtle" fontSize='13px' fontWeight={500}>
+        <Text mr="8px" color={theme.text1} fontSize='13px' fontWeight={400}>
           {t('Annual ROI at current rates')}:
         </Text>
         {Number.isFinite(annualRoiAsNumber) ? (
           <AnnualRoiContainer
             alignItems="center"
-            onClick={() => {
-              setShowRoiCalculator(true)
-            }}
           >
-            <AnnualRoiDisplay>${formattedAnnualRoi}</AnnualRoiDisplay>
+            <AnnualRoiDisplay color={theme.text1}>${formattedAnnualRoi}</AnnualRoiDisplay>
           </AnnualRoiContainer>
         ) : (
           <Skeleton width={60} />

@@ -42,7 +42,7 @@ const DropDownContainer = styled(Box)<{ isOpen: boolean }>`
   height: 40px;
   min-width: 136px;
   user-select: none;
-  z-index: 20;
+  z-index: 2;
 
   ${({ theme }) => theme.mediaQueries.sm} {
     min-width: 168px;
@@ -123,7 +123,7 @@ const Select: React.FunctionComponent<SelectProps> = ({
   return (
     <DropDownContainer isOpen={isOpen} {...props}>
       <DropDownHeader onClick={() => setIsOpen(!isOpen)}>
-        <Text color={!optionSelected && placeHolderText ? 'text' : undefined}>
+        <Text color={theme.text1}>
           {!optionSelected && placeHolderText ? placeHolderText : options[selectedOptionIndex].label}
         </Text>
       </DropDownHeader>
@@ -133,7 +133,7 @@ const Select: React.FunctionComponent<SelectProps> = ({
           {options.map((option, index) =>
             placeHolderText || index !== selectedOptionIndex ? (
               <ListItem onClick={onOptionClicked(index)} key={option.label}>
-                <Text>{option.label}</Text>
+                <Text color={theme.text1}>{option.label}</Text>
               </ListItem>
             ) : null,
           )}

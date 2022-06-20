@@ -2,7 +2,7 @@ import {JSBI, Pair, Percent, Pylon, TokenAmount} from 'zircon-sdk'
 import React, { useState } from 'react'
 import { ChevronDown, ChevronUp } from 'react-feather'
 import { Link } from 'react-router-dom'
-import { Text } from 'rebass'
+import { Flex, Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 import { useTotalSupply } from '../../data/TotalSupply'
 
@@ -36,7 +36,7 @@ export const HoverCard = styled(Card)`
 `
 
 const BadgeSmall = styled.span`
-  background-color: #ffffff17;
+  background-color: ${({ theme }) => theme.anchorFloatBadge};
   padding: 3px 5px;
   border-radius: 5px;
   color: ${({ theme }) => theme.whiteHalf};
@@ -330,10 +330,9 @@ export function PylonPositionCard({ isFloat, border, pylon }: PylonPositionCardP
             new TokenAmount(totalSupply.token, BigInt(0)),
           isFloat ? new TokenAmount(totalSupply.token, BigInt(0)) :
               pylon.burnAnchor(totalSupply, ptTotalSupply, userPoolBalance, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
-
         ]
       : [undefined, undefined]
-
+      
   const { width } = useWindowDimensions();
 
   return (
@@ -343,11 +342,26 @@ export function PylonPositionCard({ isFloat, border, pylon }: PylonPositionCardP
       <FixedHeightRow onClick={() => setShowMore(!showMore)} style={{ cursor: 'pointer' }}>
           <RowFixed>
             <DoubleCurrencyLogo currency0={currency0} currency1={currency1} margin={true} size={28} />
-            <Text fontWeight={400} fontSize={16} style={{display: 'flex', alignItems: 'center'}}>
-              {!currency0 || !currency1 ? <Dots>Loading</Dots> :
-              `${currency0.symbol}/${currency1.symbol}`}
-              <BadgeSmall>{isFloat? 'FLOAT' : 'ANCHOR'}</BadgeSmall>
-            </Text>
+            {!isFloat ? (
+              <>
+              <Flex>  
+                <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '10px', marginRight: '5px',  display: 'flex', alignItems: 'center'}}>
+                <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{currency0.symbol} </span>{'FLOAT'}
+                </BadgeSmall>
+                <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{` - ${currency1.symbol}`}</Text>
+              </Flex>
+              </>
+            ) : (
+              <>
+            <Flex>
+              <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{currency0.symbol} -</Text>
+              <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '5px', display: 'flex', alignItems: 'center'}}>
+                <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{`${currency1.symbol} `}</span>{'ANCHOR'}
+              </BadgeSmall>
+            </Flex>
+            </>
+              )
+            }
           </RowFixed>
           <RowFixed>
             { !showMore &&

@@ -20,6 +20,9 @@ import { usePool } from '../../../../state/pools/hooks'
 import { DeserializedPool } from '../../../../state/types'
 import { fetchPoolsUserDataAsync } from '../../../../state/pools'
 import BigNumber from 'bignumber.js'
+import { deserializeToken } from '../../../../state/user/hooks'
+import { getBalanceAmount } from '../../../../utils/formatBalance'
+import { Field } from '../../../../state/burn/actions'
 
 interface FarmCardActionsProps extends DeserializedPool {
   lpLabel?: string
@@ -32,6 +35,8 @@ const IconButtonWrapper = styled.div`
 `
 
 const StakeAction: React.FC<FarmCardActionsProps> = ({
+  isAnchor,
+  isClassic,
   token1,
   token2,
   earningToken,
@@ -90,10 +95,23 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
       })
     })
     if (receipt?.status) {
+      addPopup(
+        {
+          txn: {
+            hash: receipt.transactionHash,
+            success: receipt.status === 1,
+            summary: 'Unstake '+amount+' LP tokens from farm',
+          }
+        },
+        receipt.transactionHash
+      )
       dispatch(fetchPoolsUserDataAsync(account))
     }
   }
   const theme = useTheme()
+  const staked = parseFloat(getBalanceAmount(stakedBalance).toFixed(6))
+  const maxStake = parseFloat(getBalanceAmount(tokenBalance).toFixed(6))
+  const percentage = (staked*100/(staked + maxStake)).toString()
 
   const renderStakingButtons = () => {
     return stakedBalance.eq(0) ? (
@@ -101,12 +119,12 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
     ) : (
       <IconButtonWrapper>
         <IconButton 
-        style={{background: theme.poolPinkButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}} 
+        style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}} 
         variant="tertiary" onClick={()=>setShowModalWithdraw(true)} mr="6px">
           <MinusIcon />
         </IconButton>
         <IconButton
-          style={{background: theme.poolPinkButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}} 
+          style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}} 
           variant="tertiary"
           onClick={()=>setShowModalDeposit(true)}
           disabled={['history', 'archived'].some((item) => window.location.pathname.includes(item))}
@@ -132,24 +150,31 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
           stakedBalance={stakedBalance}
           onConfirm={handleStake}
           tokenName={'lpSymbol'}
-          addLiquidityUrl={'#/add-pro/'+earningToken.address+'/'+stakingToken.address}
+          addLiquidityUrl={'#/add-pro/'+token1.address+'/'+token2.address}
           token={earningToken}
           />
         }
 
         {showModalWithdraw &&
-          <WithdrawModal max={stakedBalance} onConfirm={handleUnstake} tokenName={'lpSymbol'} onDismiss={()=>setShowModalWithdraw(false)} token={earningToken} />
+          <WithdrawModal max={stakedBalance} onConfirm={handleUnstake} tokenName={'ZPT'} onDismiss={()=>setShowModalWithdraw(false)} token={stakingToken} />
         }
         </ModalContainer>
         }
     <Flex justifyContent="space-between" alignItems="center">
       <StakedLP
+        percentage={percentage}
+        field={Field.LIQUIDITY_PERCENT}
+        max={tokenBalance}
+        isClassic={isClassic}
+        isAnchor={isAnchor}
+        token1={deserializeToken(token1)}
+        token2={deserializeToken(token2)}
         stakedBalance={stakedBalance}
         lpSymbol={'lpSymbol'}
         quoteTokenSymbol={stakingToken.symbol}
         tokenSymbol={earningToken.symbol}
-        lpTotalSupply={10000000000000000000 as unknown as BigNumber}
-        tokenAmountTotal={100 as unknown as BigNumber}
+        lpTotalSupply={1 as unknown as BigNumber}
+        tokenAmountTotal={1 as unknown as BigNumber}
         quoteTokenAmountTotal={1 as unknown as BigNumber}
       />
       {renderStakingButtons()}

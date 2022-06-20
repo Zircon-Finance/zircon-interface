@@ -4,7 +4,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { SerializedPoolConfig, PoolCategory } from './types'
 import { serializedTokens } from './farms'
-import { ChainId, Pylon, Token } from 'zircon-sdk'
+import { ChainId, Pair, Pylon, Token } from 'zircon-sdk'
 
 export const MAX_LOCK_DURATION = 31536000
 export const UNLOCK_FREE_DURATION = 604800
@@ -19,7 +19,7 @@ const pools: SerializedPoolConfig[] = [
     token1: serializedTokens.pluto,
     token2: serializedTokens.saturn,
     isClassic: false,
-    isAnchor: true,
+    isAnchor: false,
     earningToken: serializedTokens.pluto,
     stakingToken: new Token(MOONBASE, Pylon.getLiquidityAddresses(
       new Token(MOONBASE, serializedTokens.pluto.address, 18, serializedTokens.pluto.symbol, serializedTokens.pluto.name), 
@@ -37,7 +37,7 @@ const pools: SerializedPoolConfig[] = [
     token1: serializedTokens.neptune,
     token2: serializedTokens.pluto,
     isClassic: false,
-    isAnchor: false,
+    isAnchor: true,
     earningToken: serializedTokens.pluto,
     stakingToken: new Token(MOONBASE, Pylon.getLiquidityAddresses(
       new Token(MOONBASE, serializedTokens.neptune.address, 18, serializedTokens.neptune.symbol, serializedTokens.neptune.name), 
@@ -62,6 +62,23 @@ const pools: SerializedPoolConfig[] = [
       new Token(MOONBASE, serializedTokens.pluto.address, 18, serializedTokens.pluto.symbol, serializedTokens.pluto.name), 
       )[1], 18, 'ZPT', 'Zircon'),
     contractAddress: '0x6a59351eef0407aca99c337b26f182c62a3ce8e0',
+    poolCategory: PoolCategory.CORE,
+    harvest: true,
+    tokenPerBlock: '10',
+    sortOrder: 1,
+    isFinished: false,
+  },
+  {
+    sousId: 4,
+    token1: serializedTokens.mercury,
+    token2: serializedTokens.neptune,
+    isClassic: true,
+    earningToken: serializedTokens.mercury,
+    stakingToken: new Token(MOONBASE, Pair.getAddress(
+      new Token(MOONBASE, serializedTokens.mercury.address, 18, serializedTokens.mercury.symbol, serializedTokens.mercury.name),
+      new Token(MOONBASE, serializedTokens.neptune.address, 18, serializedTokens.neptune.symbol, serializedTokens.neptune.name),
+    ), 18, 'ZPT', 'Zircon'),
+    contractAddress: '0x0cc88b625d53759b7f6d5b5c02135dbc67e2be90',
     poolCategory: PoolCategory.CORE,
     harvest: true,
     tokenPerBlock: '10',

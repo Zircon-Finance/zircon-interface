@@ -7,6 +7,9 @@ import { AutoColumn } from '../Column'
 
 export const Wrapper = styled.div`
   position: relative;
+  svg{
+    stroke: ${({ theme }) => theme.text1};
+  }
 `
 
 export const ArrowWrapper = styled.div<{ clickable: boolean }>`

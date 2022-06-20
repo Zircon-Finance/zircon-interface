@@ -2,7 +2,7 @@
 import { Flex, Text } from '@pancakeswap/uikit'
 import { FC } from 'react'
 import React from 'react'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
 interface TokenDisplayProps {
   value?: number | string
@@ -24,10 +24,11 @@ const PairPriceDisplay: FC<TokenDisplayProps> = ({
   format = true,
   ...props
 }) => {
+  const theme = useTheme()
   return value ? (
     <div style={{display: 'flex', alignItems: "center", height: '100%'}}>
       <Flex alignItems="inherit">
-        <TextLabel mr="8px">
+        <TextLabel color={theme.text1} mr="8px">
           {value}
         </TextLabel>
         {/* {inputSymbol && outputSymbol && (

@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { Text, InputProps, Flex } from '@pancakeswap/uikit'
 import { useTranslation } from 'react-i18next'
 import { parseUnits } from '@ethersproject/units'
@@ -79,6 +79,7 @@ const ModalInput: React.FC<ModalInputProps> = ({
     const balanceUnits = parseUnits(balance, decimals)
     return formatBigNumber(balanceUnits, decimals, decimals)
   }
+  const theme = useTheme()
 
   return (
     <div style={{ position: 'relative' }}>
@@ -93,10 +94,10 @@ const ModalInput: React.FC<ModalInputProps> = ({
             placeholder="0"
             value={value}
           />
-          <Text fontSize="16px">{symbol}</Text>
+          <Text fontSize="16px" color={theme.text1}>{symbol}</Text>
         </Flex>
         <Flex alignItems="flex-end" justifyContent="space-between">
-        <Text fontSize="13px">{'Balance: '+ displayBalance(max)}</Text>
+        <Text fontSize="13px" color={theme.whiteHalf}>{'Balance: '+ displayBalance(max)}</Text>
           <ButtonOutlined width={'55px'} height={'30px'} padding={'0px'} onClick={onSelectMax}>
             {t('MAX')}
           </ButtonOutlined>

@@ -203,7 +203,7 @@ export default function SettingsTab() {
             </Text>
             <RowBetween>
               <RowFixed>
-                <TYPE.black fontWeight={400} fontSize={13} color={theme.text2}>
+                <TYPE.black fontWeight={400} fontSize={13} color={theme.text1}>
                 {t('toggleExpertMode')}
                 </TYPE.black>
                 <QuestionHelper text="Bypasses confirmation modals and allows high slippage trades. Use at your own risk." />

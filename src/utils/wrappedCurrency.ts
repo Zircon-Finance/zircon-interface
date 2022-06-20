@@ -1,7 +1,7 @@
 import { ChainId, Currency, CurrencyAmount, DEV, Token, TokenAmount, WDEV } from 'zircon-sdk'
 
 export function wrappedCurrency(currency: Currency | undefined, chainId: ChainId | undefined): Token | undefined {
-  return chainId && currency === DEV ? WDEV[chainId] : currency instanceof Token ? currency : undefined
+  return chainId && currency === DEV ? WDEV[chainId] : currency as Token
 }
 
 export function wrappedCurrencyAmount(

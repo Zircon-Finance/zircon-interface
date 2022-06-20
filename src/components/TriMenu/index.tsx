@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import { MoreHorizontal } from 'react-feather'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import { AutoColumn } from '../Column'
 import { useSettingsMenuOpen, useToggleSettingsMenu } from '../../state/application/hooks'
@@ -100,6 +100,7 @@ export default function TriMenu() {
   const node = useRef<HTMLDivElement>()
   const open = useSettingsMenuOpen()
   const toggle = useToggleSettingsMenu()
+  const theme = useTheme()
 
   useOnClickOutside(node, open ? toggle : undefined)
 
@@ -112,8 +113,8 @@ export default function TriMenu() {
       {open && (
         <MenuFlyout>
           <AutoColumn gap="sm" style={{padding: '5px'}} >
-            <ButtonEmpty style={{fontWeight: 400}} as={Link} to={'/add/ETH'} onClick={() => toggle()}>Classic Liquidity</ButtonEmpty>
-            <ButtonEmpty style={{fontWeight: 400}} as={Link} to={'/pool'}onClick={() => {
+            <ButtonEmpty style={{fontWeight: 400, color: theme.text1}} as={Link} to={'/add/ETH'} onClick={() => toggle()}>Classic Liquidity</ButtonEmpty>
+            <ButtonEmpty style={{fontWeight: 400, color: theme.text1}} as={Link} to={'/pool'}onClick={() => {
               toggle()
               window.open('https://docs.zircon.finance', '_blank');
             }}>Learn</ButtonEmpty>

@@ -81,6 +81,12 @@ export interface Colors {
 
   meatPink: Color
 
+  walletModal: Color
+
+  farmTabsBg: Color
+
+  actionPanelBg: Color
+
   liquidityBg: Color
 
   badgeSmall: Color

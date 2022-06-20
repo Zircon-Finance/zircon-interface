@@ -161,7 +161,7 @@ const WalletName = styled.div`
   margin-left: 10px;
   font-size: 16px;
   font-weight: 400;
-  color: #FFF;
+  color: ${({ theme }) => theme.text1};
 `
 
 const IconWrapper = styled.div<{ size?: number }>`
@@ -303,26 +303,42 @@ export default function AccountDetails({
                 <div>
                   {connector !== injected && connector !== walletlink && (
                     <WalletAction
-                      style={{ fontSize: '.825rem', fontWeight: 400, marginRight: '8px' }}
+                      style={{
+                        fontSize: ".825rem",
+                        fontWeight: 400,
+                        marginRight: "8px",
+                      }}
                       onClick={() => {
-                        ;(connector as any).close()
+                        (connector as any).close();
                       }}
                     >
                       Disconnect
                     </WalletAction>
                   )}
                   <WalletAction
-                    style={{ fontSize: '13px', padding: '9px 12px 10px', fontWeight: 400, borderRadius: '12px' }}
+                    style={{
+                      fontSize: "13px",
+                      padding: "9px 12px 10px",
+                      fontWeight: 400,
+                      borderRadius: "12px",
+                    }}
                     onClick={() => {
-                      openOptions()
+                      openOptions();
                     }}
                   >
                     Change
                   </WalletAction>
                 </div>
               </AccountGroupingRow>
-              <AccountGroupingRow id="web3-account-identifier-row" style={{border: `1px solid ${theme.questionMarks}`, borderRadius: '12px', padding: '10px'}}>
-                <AccountControl style={{cursor: 'pointer'}}>
+              <AccountGroupingRow
+                id="web3-account-identifier-row"
+                style={{
+                  border: `1px solid ${theme.questionMarks}`,
+                  borderRadius: "12px",
+                  padding: "10px",
+                }}
+              >
+                <AccountControl style={{ cursor: "pointer" }}>
                   {ENSName ? (
                     <>
                       <div>
@@ -332,18 +348,24 @@ export default function AccountDetails({
                     </>
                   ) : (
                     <>
-                      <div style={{width: '100%'}} >
-                      {account && (
-                      <Copy toCopy={account}>
-                        <div>
-                          {getStatusIcon()}
-                          < p style={{fontSize: 30, fontWeight: 300}}> {account && shortenAddress(account)}</p>
-                        </div>
-                        <span style={{ marginLeft: '4px', fontSize: '13px',  }}>Copy</span>
-                      </Copy>
+                      <div style={{ width: "100%" }}>
+                        {account && (
+                          <Copy toCopy={account}>
+                            <div>
+                              {getStatusIcon()}
+                              <p style={{ fontSize: 30, fontWeight: 300 }}>
+                                {" "}
+                                {account && shortenAddress(account)}
+                              </p>
+                            </div>
+                            <span
+                              style={{ marginLeft: "4px", fontSize: "13px" }}
+                            >
+                              Copy
+                            </span>
+                          </Copy>
                         )}
                       </div>
-
                     </>
                   )}
                 </AccountControl>
@@ -353,15 +375,19 @@ export default function AccountDetails({
                   <>
                     <AccountControl>
                       <div>
-
                         {chainId && account && (
                           <AddressLink
                             hasENS={!!ENSName}
                             isENS={true}
-                            href={chainId && getEtherscanLink(chainId, ENSName, 'address')}
+                            href={
+                              chainId &&
+                              getEtherscanLink(chainId, ENSName, "address")
+                            }
                           >
                             <LinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>View on Etherscan</span>
+                            <span style={{ marginLeft: "4px" }}>
+                              View on Etherscan
+                            </span>
                           </AddressLink>
                         )}
                       </div>
@@ -375,9 +401,11 @@ export default function AccountDetails({
                           <AddressLink
                             hasENS={!!ENSName}
                             isENS={false}
-                            href={getEtherscanLink(chainId, account, 'address')}
+                            href={getEtherscanLink(chainId, account, "address")}
                           >
-                            <span style={{marginLeft: '5px'}}>View on Moonbeam ↗</span>
+                            <span style={{ marginLeft: "5px" }}>
+                              View on Moonbeam ↗
+                            </span>
                           </AddressLink>
                         )}
                       </div>
@@ -391,10 +419,19 @@ export default function AccountDetails({
       </UpperSection>
       {!!pendingTransactions.length || !!confirmedTransactions.length ? (
         <LowerSection>
-          <AutoRow mb={'1rem'} style={{ justifyContent: 'space-between' }}>
+          <AutoRow mb={"1rem"} style={{ justifyContent: "space-between" }}>
             <TYPE.body>Recent Transactions</TYPE.body>
-            <ButtonPositionsMobile style={{width: 'auto', backgroundColor: 'transparent', border: '1px solid #503E66', padding: '9px 12px 10px'}}
-              onClick={clearAllTransactionsCallback}>Clear all
+            <ButtonPositionsMobile
+              style={{
+                width: "auto",
+                backgroundColor: "transparent",
+                border: `1px solid ${theme.whiteHalf} `,
+                color: theme.text1,
+                padding: "9px 12px 10px",
+              }}
+              onClick={clearAllTransactionsCallback}
+            >
+              Clear all
             </ButtonPositionsMobile>
           </AutoRow>
           {renderTransactions(pendingTransactions)}
@@ -402,9 +439,11 @@ export default function AccountDetails({
         </LowerSection>
       ) : (
         <LowerSection>
-          <TYPE.body color={theme.text1}>Your transactions will appear here...</TYPE.body>
+          <TYPE.body color={theme.text1}>
+            Your transactions will appear here...
+          </TYPE.body>
         </LowerSection>
       )}
     </>
-  )
+  );
 }

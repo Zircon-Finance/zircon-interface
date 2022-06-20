@@ -1,13 +1,21 @@
-import React from 'react'
-import styled, { useTheme } from 'styled-components'
-import { darken } from 'polished'
-import { useTranslation } from 'react-i18next'
-import { NavLink } from 'react-router-dom'
-import { useWindowDimensions } from '../../hooks'
-import { useUserFarmsFilterAnchorFloat, useUserFarmsFilterPylonClassic, useUserFarmsViewMode } from '../../state/user/hooks'
-import { FarmFilter, FarmFilterAnchorFloat, ViewMode } from '../../state/user/actions'
-import CardIcon from '../ViewCardIcon'
-import TableIcon from '../ViewTableIcon'
+import React from "react";
+import styled, { useTheme } from "styled-components";
+import { darken } from "polished";
+import { useTranslation } from "react-i18next";
+import { NavLink } from "react-router-dom";
+import { useWindowDimensions } from "../../hooks";
+import {
+  useUserFarmsFilterAnchorFloat,
+  useUserFarmsFilterPylonClassic,
+  useUserFarmsViewMode,
+} from "../../state/user/hooks";
+import {
+  FarmFilter,
+  FarmFilterAnchorFloat,
+  ViewMode,
+} from "../../state/user/actions";
+import CardIcon from "../ViewCardIcon";
+import TableIcon from "../ViewTableIcon";
 
 const Tabs = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -16,13 +24,13 @@ const Tabs = styled.div`
   justify-content: space-evenly;
   padding: 5px;
   margin: auto;
-  background: ${({ theme }) => theme.anchorFloatBadge};
-`
+  background: ${({ theme }) => theme.farmTabsBg};
+`;
 
-const activeClassName = 'ACTIVE'
+const activeClassName = "ACTIVE";
 
 const StyledNavLink = styled(NavLink).attrs({
-  activeClassName
+  activeClassName,
 })`
   ${({ theme }) => theme.flexRowNoWrap}
   align-items: center;
@@ -52,97 +60,153 @@ const StyledNavLink = styled(NavLink).attrs({
   @media (min-width: 700px) {
     width: auto;
   }
-`
+`;
 
-export function PylonClassicTab({ active }: { active: 'PYLON' | 'CLASSIC' }) {
+export function PylonClassicTab({ active }: { active: "PYLON" | "CLASSIC" }) {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
-  const [filter, setuserFarmsFilterPylonClassic] = useUserFarmsFilterPylonClassic()
+  const [
+    filter,
+    setuserFarmsFilterPylonClassic,
+  ] = useUserFarmsFilterPylonClassic();
+  const [, setuserFarmsFilterAnchorFloat] = useUserFarmsFilterAnchorFloat();
 
   return (
-    <Tabs style={{ marginRight: '20px', width: width >= 700 ? 'auto' : '100%' }}>
-      <StyledNavLink id={`pylon-select-tab`} to={'#'} 
-        onClick={()=> {setuserFarmsFilterPylonClassic(FarmFilter.PYLON)}} 
-        isActive={() => filter === FarmFilter.PYLON}>
-        {t('PYLON')}
+    <Tabs
+      style={{ marginRight: "20px", width: width >= 700 ? "auto" : "100%" }}
+    >
+      <StyledNavLink
+        id={`pylon-select-tab`}
+        to={"#"}
+        onClick={() => {
+          setuserFarmsFilterPylonClassic(FarmFilter.PYLON);
+          setuserFarmsFilterAnchorFloat(FarmFilterAnchorFloat.ALL);
+        }}
+        isActive={() => filter === FarmFilter.PYLON}
+      >
+        {t("PYLON")}
       </StyledNavLink>
-      <StyledNavLink id={`classic-select-tab`} to={'#'} 
-        onClick={()=> {setuserFarmsFilterPylonClassic(FarmFilter.CLASSIC)}} 
-        isActive={() => filter === FarmFilter.CLASSIC}>
-        {t('CLASSIC')}
+      <StyledNavLink
+        id={`classic-select-tab`}
+        to={"#"}
+        onClick={() => {
+          setuserFarmsFilterPylonClassic(FarmFilter.CLASSIC);
+          setuserFarmsFilterAnchorFloat(FarmFilterAnchorFloat.ALL);
+        }}
+        isActive={() => filter === FarmFilter.CLASSIC}
+      >
+        {t("CLASSIC")}
       </StyledNavLink>
     </Tabs>
-  )
+  );
 }
 
-export function AnchorFloatTab({ active }: { active: 'ALL' | 'ANCHOR' | 'FLOAT' }) {
+export function AnchorFloatTab({
+  active,
+}: {
+  active: "ALL" | "ANCHOR" | "FLOAT";
+}) {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
-  const [filter, setuserFarmsFilterAnchorFloat] = useUserFarmsFilterAnchorFloat()
+  const [
+    filter,
+    setuserFarmsFilterAnchorFloat,
+  ] = useUserFarmsFilterAnchorFloat();
+  const [, setuserFarmsFilterPylonClassic] = useUserFarmsFilterPylonClassic();
 
   return (
-    <Tabs style={{ width: width >= 700 ? 'auto' : '100%' }}>
-      <StyledNavLink id={`all-select-tab`} to={'#'} 
-        onClick={()=> {setuserFarmsFilterAnchorFloat(FarmFilterAnchorFloat.ALL)}} 
-        isActive={() => filter === FarmFilterAnchorFloat.ALL}>
-        {t('ALL')}
+    <Tabs style={{ width: width >= 700 ? "auto" : "100%" }}>
+      <StyledNavLink
+        id={`all-select-tab`}
+        to={"#"}
+        onClick={() => {
+          setuserFarmsFilterAnchorFloat(FarmFilterAnchorFloat.ALL);
+        }}
+        isActive={() => filter === FarmFilterAnchorFloat.ALL}
+      >
+        {t("ALL")}
       </StyledNavLink>
-      <StyledNavLink id={`anchor-select-tab`} to={'#'} 
-        onClick={()=> {setuserFarmsFilterAnchorFloat(FarmFilterAnchorFloat.ANCHOR)}} 
-        isActive={() => filter === FarmFilterAnchorFloat.ANCHOR}>
-        {t('ANCHOR')}
+      <StyledNavLink
+        id={`anchor-select-tab`}
+        to={"#"}
+        onClick={() => {
+            setuserFarmsFilterAnchorFloat(FarmFilterAnchorFloat.ANCHOR);
+            setuserFarmsFilterPylonClassic(FarmFilter.PYLON);
+        }}
+        isActive={() => filter === FarmFilterAnchorFloat.ANCHOR}
+      >
+        {t("ANCHOR")}
       </StyledNavLink>
-      <StyledNavLink id={`float-select-tab`} to={'#'} 
-        onClick={()=> {setuserFarmsFilterAnchorFloat(FarmFilterAnchorFloat.FLOAT)}} 
-        isActive={() => filter === FarmFilterAnchorFloat.FLOAT}>
-        {t('FLOAT')}
+      <StyledNavLink
+        id={`float-select-tab`}
+        to={"#"}
+        onClick={() => {
+            setuserFarmsFilterAnchorFloat(FarmFilterAnchorFloat.FLOAT);
+            setuserFarmsFilterPylonClassic(FarmFilter.PYLON);
+        }}
+        isActive={() => filter === FarmFilterAnchorFloat.FLOAT}
+      >
+        {t("FLOAT")}
       </StyledNavLink>
     </Tabs>
-  )
+  );
 }
 
-export function ViewModeTabs({ active }: { active: 'TABLE' | 'CARD'}) {
-  const [viewMode, setViewMode] = useUserFarmsViewMode()
-  const theme = useTheme()
+export function ViewModeTabs({ active }: { active: "TABLE" | "CARD" }) {
+  const [viewMode, setViewMode] = useUserFarmsViewMode();
+  const theme = useTheme();
   return (
-    <div style={{width: '100%'}}>
-      <Tabs style={{background: theme.maxButton, width: '70px', margin: '0'}}>
+    <div style={{ width: "100%" }}>
+      <Tabs style={{ background: theme.maxButton, width: "70px", margin: "0" }}>
         <StyledNavLink
-          style={{padding: '5px'}}
-          id={`anchor-select-tab`} to={'#'}
-          onClick={()=> {setViewMode(ViewMode.TABLE)}} 
-          isActive={() => viewMode === ViewMode.TABLE}>
+          style={{ padding: "5px" }}
+          id={`anchor-select-tab`}
+          to={"#"}
+          onClick={() => {
+            setViewMode(ViewMode.TABLE);
+          }}
+          isActive={() => viewMode === ViewMode.TABLE}
+        >
           <TableIcon />
         </StyledNavLink>
-        <StyledNavLink 
-          style={{padding: '5px'}}
-          id={`all-select-tab`} to={'#'} 
-          onClick={()=> {setViewMode(ViewMode.CARD)}} 
-          isActive={() => viewMode === ViewMode.CARD}>
+        <StyledNavLink
+          style={{ padding: "5px" }}
+          id={`all-select-tab`}
+          to={"#"}
+          onClick={() => {
+            setViewMode(ViewMode.CARD);
+          }}
+          isActive={() => viewMode === ViewMode.CARD}
+        >
           <CardIcon />
         </StyledNavLink>
       </Tabs>
     </div>
-    
-  )
+  );
 }
 
-export function FarmTabButtons({ active }: { active: 'Active' | 'Finished'}) {
-  const { t } = useTranslation()
+export function FarmTabButtons({ active }: { active: "Active" | "Finished" }) {
+  const { t } = useTranslation();
   const { width } = useWindowDimensions();
 
-  const { hash } = window.location
+  const { hash } = window.location;
 
   return (
-    <Tabs style={{padding: '5px',  width: width >= 700 ? 'auto' : '100%' }}>
-      <StyledNavLink id={`live-farms-select`} to={'/farm'} 
-        isActive={() => hash === '#/farm'}>
-        {t('ACTIVE')}
+    <Tabs style={{ padding: "5px", width: width >= 700 ? "auto" : "100%" }}>
+      <StyledNavLink
+        id={`live-farms-select`}
+        to={"/farm"}
+        isActive={() => hash === "#/farm"}
+      >
+        {t("ACTIVE")}
       </StyledNavLink>
-      <StyledNavLink id={`finished-farms-select`} to={'/farm/history'} 
-        isActive={() => hash === '#/farm/history'}>
-        {t('FINISHED')}
+      <StyledNavLink
+        id={`finished-farms-select`}
+        to={"/farm/history"}
+        isActive={() => hash === "#/farm/history"}
+      >
+        {t("FINISHED")}
       </StyledNavLink>
     </Tabs>
-  )
+  );
 }

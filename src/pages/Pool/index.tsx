@@ -38,6 +38,7 @@ export default function Pool() {
   const { t } = useTranslation()
   const { account } = useActiveWeb3React()
   const [filter, setFilter] = useState('ALL')
+  const { chainId } = useActiveWeb3React()
 
   // fetch the user's balances of all tracked V2 LP tokens
   const trackedTokenPairs = useTrackedTokenPairs()
@@ -133,7 +134,7 @@ export default function Pool() {
                 {/* <Question text="When you add liquidity, you are given pool tokens that represent your share. If you don’t see a pool you joined in this list, try importing a pool below." /> */}
               </RowBetween>
 
-              {!account ? (
+              {!account || chainId !== 1287 ? (
                   <LightCard padding="40px">
                     <TYPE.body color={theme.text3} textAlign="center">
                       {t('connectToViewLiquidity')}

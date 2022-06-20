@@ -32,6 +32,9 @@ import { Token } from 'zircon-sdk'
 import { usePool } from '../../../../../state/pools/hooks'
 import { fetchPoolsUserDataAsync } from '../../../../../state/pools'
 import { useCallWithGasPrice } from '../../../../../hooks/useCallWithGasPrice'
+import { deserializeToken } from '../../../../../state/user/hooks'
+import { getBalanceAmount } from '../../../../../utils/formatBalance'
+import { Field } from '../../../../../state/burn/actions'
 
 const IconButtonWrapper = styled.div`
   display: flex;
@@ -48,6 +51,10 @@ interface StackedActionProps extends DeserializedPool {
 
 const Staked: React.FunctionComponent<StackedActionProps> = ({
   sousId,
+  isClassic,
+  isAnchor,
+  token1,
+  token2,
   apr,
   lpLabel,
   contractAddress,
@@ -131,6 +138,9 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
   const dispatch = useDispatch()
   const sousChefContract = useSousChef(sousId)
   const { callWithGasPrice } = useCallWithGasPrice()
+  const staked = parseFloat(getBalanceAmount(stakedBalance).toFixed(6))
+  const maxStake = parseFloat(getBalanceAmount(tokenBalance).toFixed(6))
+  const percentage = (staked*100/(staked + maxStake)).toString()
 
   const handleApproval = useCallback(async () => {
     const receipt = await fetchWithCatchTxError(() => {
@@ -172,7 +182,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
 
   if (!account) {
     return (
-      <ActionContainer style={{background: theme.farmPoolCardsBg}}>
+      <ActionContainer style={{background: theme.actionPanelBg}}>
         <ActionTitles>
           <Text fontSize="13px">
             {t('Start Farming')}
@@ -219,7 +229,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
         </Portal>
           
         }
-        <ActionContainer style={{background: theme.farmPoolCardsBg}}>
+        <ActionContainer style={{background: theme.actionPanelBg}}>
           <ActionTitles>
             <Text color={theme.text1} fontSize="13px">
               {t('Staked')}
@@ -227,17 +237,24 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
           </ActionTitles>
           <ActionContent>
             <StakedLP
+              isClassic={isClassic}
+              percentage={percentage}
+              field={Field.LIQUIDITY_PERCENT}
+              isAnchor={isAnchor}
+              max={tokenBalance}
+              token1={deserializeToken(token1)}
+              token2={deserializeToken(token2)}
               stakedBalance={stakedBalance}
               lpSymbol={pool.token1.symbol+'-'+pool.token2.symbol}
-              quoteTokenSymbol={pool.earningToken.symbol}
-              tokenSymbol={pool.stakingToken.symbol}
+              quoteTokenSymbol={pool.token2.symbol}
+              tokenSymbol={pool.token1.symbol}
               lpTotalSupply={1 as unknown as BigNumber}
               tokenAmountTotal={1 as unknown as BigNumber}
               quoteTokenAmountTotal={1 as unknown as BigNumber}
             />
             <IconButtonWrapper>
             <IconButton 
-              style={{background: theme.poolPinkButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}} 
+              style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}} 
               variant="tertiary" 
               onClick={()=>setshowModalWithdraw(true)} mr="6px">
               <Flex>
@@ -245,7 +262,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
               </Flex>
             </IconButton>
               <IconButton
-                style={{background: theme.poolPinkButton, width: '29px', height: '28px', borderRadius: '100%'}} 
+                style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%'}} 
                 variant="tertiary"
                 onClick={()=>{setshowModalDeposit(true)}}
                 disabled={['history', 'archived'].some((item) => window.location.pathname.includes(item))}
@@ -262,7 +279,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
     }
 
     return (
-      <ActionContainer style={{background: theme.farmPoolCardsBg}}>
+      <ActionContainer style={{background: theme.actionPanelBg}}>
         <ActionTitles>
           <Text bold textTransform="uppercase" color="textSubtle" fontSize="12px" pr="4px">
             {t('Stake')}
@@ -287,7 +304,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
 
   if (!userDataReady) {
     return (
-      <ActionContainer style={{background: theme.farmPoolCardsBg}}>
+      <ActionContainer style={{background: theme.actionPanelBg}}>
         <ActionTitles>
           <Text fontSize="13px">
             {t('Start Farming')}

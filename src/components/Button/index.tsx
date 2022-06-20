@@ -41,9 +41,6 @@ const Base = styled(RebassButton)<{
 export const ButtonPrimary = styled(Base)`
   background-color: ${({ theme }) => theme.bg8};
   color: white;
-  &:focus {
-    background-color: ${({ theme }) => darken(0.05, theme.primary1)};
-  }
   &:hover {
     background-color: ${({ theme }) => theme.navigationTabs};
   }
@@ -64,7 +61,7 @@ export const ButtonPrimary = styled(Base)`
 export const ButtonPositionsMobile = styled(Base)`
   background-color: ${({ theme }) => theme.positionsButtons};
   padding: 10px;
-  color: white;
+  color: ${({ theme }) => theme.text1};
   width: 90%;
   height: 50px;
   font-size: 13px;

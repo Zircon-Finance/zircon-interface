@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import ReactGA from 'react-ga4'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { isMobile } from 'react-device-detect'
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
 import usePrevious from '../../hooks/usePrevious'
@@ -33,7 +33,7 @@ const CloseIcon = styled.div`
 
 const CloseColor = styled(Close)`
   path {
-    stroke: ${({ theme }) => theme.text4};
+    stroke: ${({ theme }) => theme.text1};
   }
 `
 
@@ -48,7 +48,7 @@ const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
   padding: 2rem;
   font-weight: 400;
-  color: white;
+  color: ${({ theme }) => theme.text1};
   ${({ theme }) => theme.mediaWidth.upToMedium`
     padding: 1rem;
   `};
@@ -105,6 +105,7 @@ const OptionGrid = styled.div`
 `
 
 const HoverText = styled.div`
+color: ${({ theme }) => theme.text1};
   :hover {
     cursor: pointer;
   }
@@ -260,7 +261,7 @@ export default function WalletModal({
       toggleWalletModal()
     })
   }, [toggleWalletModal])
-
+  const theme = useTheme()
   // get wallets user can switch too, depending on device/browser
   function getOptions() {
     const isMetamask = window.ethereum && window.ethereum.isMetaMask
@@ -382,6 +383,7 @@ export default function WalletModal({
         />
       )
     }
+    
     return (
       <UpperSection>
         {walletView !== WALLET_VIEWS.ACCOUNT ? (
@@ -398,7 +400,7 @@ export default function WalletModal({
         ) : (
           <HeaderRow>
             <HoverText>Connect to a wallet</HoverText>
-            <CloseIcon style={{top: 'auto'}} onClick={toggleWalletModal}>
+            <CloseIcon style={{top: 'auto', stroke: theme.text1}} onClick={toggleWalletModal}>
               <CloseColor />
             </CloseIcon>
           </HeaderRow>
@@ -424,7 +426,7 @@ export default function WalletModal({
                         width: '100%', 
                         textAlign: 'center', 
                         borderRadius: '25px', 
-                        color: 'white',
+                        color: theme.text1,
                         }}>Learn how to connect</ExternalLink>
             </Blurb>
           )}

@@ -54,8 +54,8 @@ export function colors(chainId: any, darkMode: boolean): Colors {
 
     // backgrounds / greys
     bg1: chainId !== 1287 ? '#221237' : darkMode ? '#3A1C29' : '#FCFBFC', // Dark purple
-    bg2: '#020202', //Black
-    bg3: '#40444F', // Dark gray
+    bg2: chainId !== 1287 ? '#221237' : darkMode ? '#3f1f29' : '#FCFBFC', // Light purple
+    bg3: '#40444F', // Dark gray221237
     bg4: '#565A69', // Lighter gray
     bg5: '#6C7284',
     // light purple - inputs
@@ -63,7 +63,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     // darker purple - container
     bg7: chainId !== 1287 ? '#402d58' : darkMode ? '#3c2330' : '#f5f3f3',
     // connect wallet button - dark purple
-    bg8: chainId !== 1287 ? '#4a207c' : '#874955',
+    bg8: chainId !== 1287 ? '#4a207c' : darkMode ? '#874955' : '#EFEDEE',
     // max button - very light purple
     bg9: chainId !== 1287 ? '#443455' : darkMode ? '#634d58' : '#edebeb',
     //modal bg
@@ -76,7 +76,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     bg13: chainId !== 1287 ? '#5F299F' : '#361E2A',
     bg14: chainId !== 1287 ? '#4E386B' : darkMode ? '#523946' : '#f5f3f3',
     //specialty colors
-    modalBG: 'rgba(0,0,0,.425)',
+    modalBG: chainId !== 1287 ? '#3c2955A1' : darkMode ? '#3a1c29a0' : '#FCFCFDA1',
     advancedBG: 'rgba(0,0,0,0.1)',
 
     //primary colors
@@ -95,21 +95,25 @@ export function colors(chainId: any, darkMode: boolean): Colors {
 
     navigationBorder: chainId !== 1287 ? '#413055' : darkMode ? '#66393D' : '#e7e2e2',
 
-    anchorFloatBadge: chainId !== 1287 ? '#311f48' : darkMode ? '#583834' : '#e7e2e2',
+    anchorFloatBadge: chainId !== 1287 ? '#311f48' : darkMode ? '#442734' : '#eee6e8',
+
+    farmTabsBg: chainId !== 1287 ? '#341853' : darkMode ? '#543334' : '#eae7ed',
 
     questionMarks: chainId !== 1287 ? '#604C7A' : darkMode ? '#5b434f' : '#F2E9EB',
 
-    slippageActive: chainId !== 1287 ? '#997aaf' : '#755351',
+    slippageActive: chainId !== 1287 ? '#997aaf' : darkMode ? '#755351' : '#a69997',
 
     walletActive: chainId !== 1287 ? '#25123C' : darkMode ? '#4e3430' : '#edebea',
 
-    hoveredButton: chainId !== 1287 ? '#604C7A' : darkMode ? '#5b434f' : '#9e4d86',
+    hoveredButton: chainId !== 1287 ? '#604C7A' : darkMode ? '#9e4d86' : '#874955',
 
     poolPinkButton: '#9E4D86',
 
     meatPink: '#D5AEAF',
 
-    farmPoolCardsBg: chainId !== 1287 ? '#3C2955' : darkMode ? '#5a2f41' : '#efedee',
+    farmPoolCardsBg: chainId !== 1287 ? '#3C2955' : darkMode ? '#39202b' : '#eeecf0',
+
+    actionPanelBg: chainId !== 1287 ? '#3C2955' : darkMode ? '#5a2f41' : '#efedee',
 
     contrastLightButton: chainId !== 1287 ? '#604C7A' : darkMode ? '#582b40' : '#f1ebef',
 
@@ -120,10 +124,12 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     cardExpanded: chainId !== 1287 ? '#3C2955' : darkMode ? '#3c2330' : '#f2f0f1',
     badgeSmall: chainId !== 1287 ? '#604C7A' : darkMode ? '#442734' : '#f2f0f1',
 
-    positionsButtons: chainId !== 1287 ? '#7a628c' : darkMode ? '#755452' : '#fcfbfc',
+    positionsButtons: chainId !== 1287 ? '#7a628c' : darkMode ? '#755452' : '#EAE5E8',
     modalBg : chainId !== 1287 ? 'rgba(0,0,0,0.5)' : darkMode ? 'rgba(0,0,0,0.5)' : 'rgba(36, 17, 26, 0.5)',
 
     liquidityBg: chainId !== 1287 ? '#260B42' : darkMode ? '#331924' : '#F5F3F6',
+
+    walletModal: chainId !== 1287 ? '#3c2955' : darkMode ? '#492F3D' : '#fff',
 
     // color text
     primaryText1: '#ffffff',
@@ -163,7 +169,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
       success: "#2ECC71",
     },
     card: {
-      background: chainId !== 1287 ? '#2B1840' : darkMode ? '#52273a' : '#f5f3f4',
+      background: chainId !== 1287 ? '#2B1840' : darkMode ? '#52273a' : '#f5f3f6',
     },
     lightColors: {
       card: chainId !== 1287 ? '#2B1840' : '#361E2A' ,

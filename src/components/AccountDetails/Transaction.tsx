@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { Triangle } from 'react-feather'
 import Check from '../CheckIcon'
 
@@ -46,16 +46,18 @@ export default function Transaction({ hash }: { hash: string }) {
   const pending = !tx?.receipt
   const success = !pending && tx && (tx.receipt?.status === 1 || typeof tx.receipt?.status === 'undefined')
 
+  const theme = useTheme()
+
   if (!chainId) return null
 
   return (
     <TransactionWrapper>
       <TransactionState href={getEtherscanLink(chainId, hash, 'transaction')} pending={pending} success={success}>
         <RowFixed style={{maxWidth: '240px'}}>
-          <TransactionStatusText style={{color: 'white'}}>{summary ?? hash} ↗</TransactionStatusText>
+          <TransactionStatusText style={{color: theme.text1}}>{summary ?? hash} ↗</TransactionStatusText>
         </RowFixed>
         <IconWrapper pending={pending} success={success}>
-          {pending ? <Loader /> : success ? <Check /> : <Triangle size="16" stroke="white" />}
+          {pending ? <Loader /> : success ? <Check /> : <Triangle size="16" stroke={theme.text1} />}
         </IconWrapper>
       </TransactionState>
     </TransactionWrapper>

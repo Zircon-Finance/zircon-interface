@@ -1,15 +1,13 @@
 import React, { useState } from 'react'
 import BigNumber from 'bignumber.js'
 import styled, { useTheme } from 'styled-components'
-import { Card, Flex, Text, Skeleton } from '@pancakeswap/uikit'
+import { Card, Flex, Text } from '@pancakeswap/uikit'
 import { useTranslation } from 'react-i18next'
 // import { BASE_ADD_LIQUIDITY_URL } from 'config'
 // import getLiquidityUrlPathParts from 'utils/getLiquidityUrlPathParts'
 import CardHeading from './CardHeading'
 import CardActionsContainer from './CardActionsContainer'
-import ApyButton from './ApyButton'
 import { ButtonOutlined } from '../../../../components/Button'
-import { SpaceBetween, StyledLinkExternal } from '../FarmTable/Actions/ActionPanel'
 import StakeAdd from './StakeAdd'
 import { ModalContainer } from '../../Farms'
 import DepositModal from '../DepositModal'
@@ -21,6 +19,8 @@ import { Link } from 'react-router-dom'
 import { useTransactionAdder } from '../../../../state/transactions/hooks'
 import { DeserializedPool } from '../../../../state/types'
 import { fetchPoolsUserDataAsync } from '../../../../state/pools'
+import { usePairLiquidity, usePylonLiquidity } from '../../../../state/pools/hooks'
+import { getPoolAprAddress } from '../../../../utils/apr'
 
 const StyledCard = styled(Card)`
   align-self: baseline;
@@ -37,9 +37,10 @@ const StyledCard = styled(Card)`
 
 const FarmCardInnerContainer = styled(Flex)`
   flex-direction: column;
+  background: ${({ theme }) => theme.liquidityBg};
   justify-content: space-around;
   padding: 10px;
-  height: 500px;
+  height: 550px;
   a {
     text-decoration: none;
   }
@@ -99,90 +100,104 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
       dispatch(fetchPoolsUserDataAsync(account))
     }
   }
-
+  const pairLiquidity = usePairLiquidity(farm.token1, farm.token2)
+  const pylonLiquidity = usePylonLiquidity(farm.token1, farm.token2)
 
   return (
     <StyledCard isActive={isPromotedFarm}>
       <FarmCardInnerContainer>
         <CardHeading
+          earningToken={farm.earningToken}
+          isClassic={farm.isClassic}
+          isAnchor={farm.isAnchor}
           lpLabel={lpLabel}
           token={farm.token1}
           quoteToken={farm.token2}
         />
-        {
-          farm.userData.stakedBalance.gt(0) || !isApproved ? (
-            <CardActionsContainer
-              farm={farm}
-              lpLabel={lpLabel}
-              account={account}
-              addLiquidityUrl={addLiquidityUrl}
-              displayApr={displayApr}
-            /> ) : (
-              <>
-              {showModalDeposit && 
-                <ModalContainer>   
-                  <DepositModal
-                    max={farm.userData.stakingTokenBalance}
-                    lpLabel={lpLabel}
-                    apr={farm.apr}
-                    onDismiss={() => setShowModalDeposit(false)}
-                    displayApr={'111'}
-                    stakedBalance={farm.userData.stakedBalance}
-                    onConfirm={handleStake}
-                    tokenName={farm.token2.symbol}
-                    addLiquidityUrl={farm.isClassic ?
-                      `#/add/${farm.token1.address}/${farm.token2.address}` :
-                      `#/add-pro/${farm.token1.address}/${farm.token2.address}`}
-                    cakePrice={112 as unknown as BigNumber}
-                    token = {farm.earningToken}/>
-                </ModalContainer>
-              }
-                
-                <StakeAdd clickAction={()=>setShowModalDeposit(true)} row={false} disabled = {pendingTx} />
-              </>
-            )
-        }
-        
-        {!removed && (
-          <Flex justifyContent="space-between" alignItems="center">
-            <Text fontSize='13px'>{t('APR')}:</Text>
-            <Text fontSize='13px' style={{ display: 'flex', alignItems: 'center' }}>
-              {farm.apr ? (
-                <ApyButton
-                  variant="text-and-button"
-                  pid={farm.sousId}
-                  lpSymbol={'farm.lpSymbol'}
-                  multiplier={'Multiplier placeholder'}
+        {farm.userData.stakedBalance.gt(0) || !isApproved ? (
+          <CardActionsContainer
+            farm={farm}
+            lpLabel={lpLabel}
+            account={account}
+            addLiquidityUrl={addLiquidityUrl}
+            displayApr={displayApr}
+          />
+        ) : (
+          <>
+            {showModalDeposit && (
+              <ModalContainer>
+                <DepositModal
+                  max={farm.userData.stakingTokenBalance}
                   lpLabel={lpLabel}
-                  addLiquidityUrl={addLiquidityUrl}
-                  cakePrice={cakePrice}
                   apr={farm.apr}
-                  displayApr={displayApr}
+                  onDismiss={() => setShowModalDeposit(false)}
+                  displayApr={"111"}
+                  stakedBalance={farm.userData.stakedBalance}
+                  onConfirm={handleStake}
+                  tokenName={farm.token2.symbol}
+                  addLiquidityUrl={
+                    farm.isClassic
+                      ? `#/add/${farm.token1.address}/${farm.token2.address}`
+                      : `#/add-pro/${farm.token1.address}/${farm.token2.address}`
+                  }
+                  cakePrice={(112 as unknown) as BigNumber}
+                  token={farm.earningToken}
                 />
-              ) : (
-                <Skeleton height={24} width={80} />
-              )}
+              </ModalContainer>
+            )}
+
+            <StakeAdd
+              clickAction={() => setShowModalDeposit(true)}
+              row={false}
+              disabled={pendingTx}
+            />
+          </>
+        )}
+
+        {!removed && (
+          <Flex justifyContent="space-between" alignItems="center" mt="15px">
+            <Text fontSize="13px">{t("APR")}:</Text>
+            <Text
+              fontSize="13px"
+              style={{ display: "flex", alignItems: "center" }}
+            >
+              {" "}
+              {getPoolAprAddress(farm.contractAddress)}%
             </Text>
           </Flex>
         )}
-        <Flex mt='10px' justifyContent="space-between">
-          <Text color={theme.text1} fontSize='13px'>{t('Liquidity')}:</Text>
-          <Text color={theme.text1} fontSize='13px'>{'farm.liquidity.toNumber()'}</Text>
+        <Flex mt="10px" justifyContent="space-between">
+          <Text color={theme.text1} fontSize="13px">
+            {t("Liquidity")}:
+          </Text>
+          <Text color={theme.text1} fontSize="13px">
+            {farm.isClassic ? pairLiquidity : pylonLiquidity}
+          </Text>
         </Flex>
-        <Link to={farm.isClassic ?
-                      `#/add/${farm.token1.address}/${farm.token2.address}` :
-                      `#/add-pro/${farm.token1.address}/${farm.token2.address}`}>
-          <ButtonOutlined mt='20px' style={{padding: '10px', fontSize: '13px'}}>
+        <Link
+          to={
+            farm.isClassic
+              ? `/add/${farm.token1.address}/${farm.token2.address}`
+              : `/add-pro/${farm.token1.address}/${farm.token2.address}`
+          }
+        >
+          <ButtonOutlined
+            mt="15px"
+            style={{
+              margin: "10px 0",
+              padding: "10px",
+              fontSize: "13px",
+              color: theme.hoveredButton,
+              background: theme.contrastLightButton,
+              border: "none",
+            }}
+          >
             {`Get ${farm.token1.name} - ${farm.token2.name} LP tokens`}
           </ButtonOutlined>
         </Link>
-        <SpaceBetween style={{marginTop:'20px'}}>
-            <StyledLinkExternal color={theme.meatPink} href={'Placeholder'}>{t('View Contract ↗')}</StyledLinkExternal>
-            <StyledLinkExternal color={theme.meatPink} href={'Placeholder'}>{t('See Pair Info ↗')}</StyledLinkExternal>
-          </SpaceBetween>
       </FarmCardInnerContainer>
     </StyledCard>
-  )
+  );
 }
 
 export default FarmCard

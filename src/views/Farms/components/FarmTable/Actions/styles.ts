@@ -54,6 +54,6 @@ export const HarvestButton = styled.button`
   width: 74px;
   height: 33px;
 
-  background: ${({ theme }) => theme.poolPinkButton};
+  background: ${({ theme }) => theme.hoveredButton};
   border-radius: 12px;
 `

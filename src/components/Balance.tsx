@@ -4,7 +4,7 @@ import CountUp from 'react-countup'
 import styled, { keyframes } from 'styled-components'
 
 interface BalanceProps extends TextProps {
-  value: number
+  value: any
   decimals?: number
   unit?: string
   isDisabled?: boolean

@@ -1,5 +1,5 @@
 import React, { useRef, useMemo, useCallback } from 'react'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import { AutoColumn } from '../Column'
 import { useSettingsTransactionsOpen, useToggleTransactionsMenu } from '../../state/application/hooks'
@@ -128,7 +128,7 @@ export default function HistoryTransactions() {
 
   const pendingTransactions = sortedRecentTransactions.filter(tx => !tx.receipt).map(tx => tx.hash)
   const confirmedTransactions = sortedRecentTransactions.filter(tx => tx.receipt).map(tx => tx.hash)
-
+  const theme = useTheme()
   return (
     <StyledMenu ref={node as any}>
       <StyledMenuButton onClick={toggle} id="open-settings-dialog-button">
@@ -136,28 +136,40 @@ export default function HistoryTransactions() {
       </StyledMenuButton>
       {open && (
         <MenuFlyout>
-          <AutoColumn gap="sm" style={{padding: '5px'}} >
-          {!!pendingTransactions.length || !!confirmedTransactions.length ? (
-        <LowerSection>
-          <AutoRow mb={'1rem'} style={{ justifyContent: 'space-between' }}>
-            <TYPE.body>Recent Transactions</TYPE.body>
-            <ButtonPositionsMobile style={{width: 'auto', backgroundColor: 'transparent', border: '1px solid rgba(255,255,255,0.3)', padding: '9px 12px 10px'}} 
-              onClick={clearAllTransactionsCallback}>Clear all
-            </ButtonPositionsMobile>
-          </AutoRow>
-          {renderTransactions(pendingTransactions)}
-          {renderTransactions(confirmedTransactions)}
-        </LowerSection>
-      ) : (
-        <LowerSection>
-          <TYPE.body color={'white'}>Your transactions will appear here...</TYPE.body>
-        </LowerSection>
-      )}
-            
-
+          <AutoColumn gap="sm" style={{ padding: "5px" }}>
+            {!!pendingTransactions.length || !!confirmedTransactions.length ? (
+              <LowerSection>
+                <AutoRow
+                  mb={"1rem"}
+                  style={{ justifyContent: "space-between" }}
+                >
+                  <TYPE.body>Recent Transactions</TYPE.body>
+                  <ButtonPositionsMobile
+                    style={{
+                      width: "auto",
+                      backgroundColor: "transparent",
+                      border: `1px solid ${theme.whiteHalf}`,
+                      color: theme.text1,
+                      padding: "9px 12px 10px",
+                    }}
+                    onClick={clearAllTransactionsCallback}
+                  >
+                    Clear all
+                  </ButtonPositionsMobile>
+                </AutoRow>
+                {renderTransactions(pendingTransactions)}
+                {renderTransactions(confirmedTransactions)}
+              </LowerSection>
+            ) : (
+              <LowerSection>
+                <TYPE.body color={theme.text1}>
+                  Your transactions will appear here...
+                </TYPE.body>
+              </LowerSection>
+            )}
           </AutoColumn>
         </MenuFlyout>
       )}
     </StyledMenu>
-  )
+  );
 }

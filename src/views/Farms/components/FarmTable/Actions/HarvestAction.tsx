@@ -5,38 +5,35 @@ import BigNumber from 'bignumber.js'
 import Balance from '../../../../../components/Balance'
 import { useTranslation } from 'react-i18next'
 
-import { ToastDescriptionWithTx } from '../../../../../components/Toast'
-import useToast from '../../../../../hooks/useToast'
 import useCatchTxError from '../../../../../hooks/useCatchTxError'
 
 import { useDispatch } from 'react-redux'
-import { fetchFarmUserDataAsync } from '../../../../../state/farms'
-import { usePriceCakeBusd } from '../../../../../state/farms/hooks'
 import { BIG_ZERO } from '../../../../../utils/bigNumber'
 import { getBalanceAmount } from '../../../../../utils/formatBalance'
 import useHarvestFarm from '../../../hooks/useHarvestFarm'
 import { ActionContainer, ActionContent, HarvestButton } from './styles'
 import { useTheme } from 'styled-components'
 import { DeserializedPool } from '../../../../../state/types'
+import { useAddPopup } from '../../../../../state/application/hooks'
+import { useTransactionAdder } from '../../../../../state/transactions/hooks'
+import { fetchPoolsUserDataAsync } from '../../../../../state/pools'
 
 interface HarvestActionProps extends DeserializedPool {
   userDataReady: boolean
 }
 
-const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ sousId, userData, userDataReady }) => {
-  const { toastSuccess } = useToast()
+const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningToken ,sousId, userData, userDataReady }) => {
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
   const earningsBigNumber = new BigNumber(userData.pendingReward)
-  const cakePrice = usePriceCakeBusd()
+  console.log('earningsBigNumber', earningsBigNumber)
   let earnings = BIG_ZERO
   let earningsBusd = 0
-  let displayBalance = userDataReady ? earnings.toLocaleString() : <Skeleton width={60} />
+  let displayBalance = userDataReady ? userData.pendingReward.toLocaleString() : <Skeleton width={60} />
 
   // If user didn't connect wallet default balance will be 0
   if (!earningsBigNumber.isZero()) {
     earnings = getBalanceAmount(earningsBigNumber)
-    earningsBusd = earnings.multipliedBy(cakePrice).toNumber()
-    displayBalance = earnings.toFixed(3, BigNumber.ROUND_DOWN)
+    displayBalance = earnings.toFixed(6, BigNumber.ROUND_DOWN)
   }
 
   const { onReward } = useHarvestFarm(sousId)
@@ -44,9 +41,11 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ sousId, us
   const dispatch = useDispatch()
   const { account } = useWeb3React()
   const theme = useTheme()
+  const addPopup = useAddPopup()
+  const addTransaction = useTransactionAdder()
 
   return (
-    <ActionContainer style={{background: theme.farmPoolCardsBg}}>
+    <ActionContainer style={{background: theme.actionPanelBg}}>
       <ActionContent>
         <div style={{display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center'}}>
           <div style={{display: 'flex', flexFlow: 'column', height: '100%', justifyContent: 'space-between'}}>
@@ -62,16 +61,25 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ sousId, us
           disabled={earnings.eq(0) || pendingTx || !userDataReady}
           onClick={async () => {
             const receipt = await fetchWithCatchTxError(() => {
-              return onReward()
+              return onReward().then((response) => {
+                addTransaction(response, {
+                  summary: 'Harvest '+earningToken.symbol+' tokens'
+                })
+                return response
+              })
             })
             if (receipt?.status) {
-              toastSuccess(
-                `${t('Harvested')}!`,
-                <ToastDescriptionWithTx txHash={receipt.transactionHash}>
-                  {t('Your %symbol% earnings have been sent to your wallet!', { symbol: 'CAKE' })}
-                </ToastDescriptionWithTx>,
+              addPopup(
+                {
+                  txn: {
+                    hash: receipt.transactionHash,
+                    success: receipt.status === 1,
+                    summary: 'Harvest tokens',
+                  }
+                },
+                receipt.transactionHash
               )
-              dispatch(fetchFarmUserDataAsync({ account, pids: [sousId] }))
+              dispatch(fetchPoolsUserDataAsync(account))
             }
           }}
         >

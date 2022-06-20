@@ -275,13 +275,15 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
               case 'earned':
                 return (
                   <TableData key={key}>
-                    {props.staked.staked.gt(0) && (
+                    {props.staked.staked.gt(0) ? (
                       <CellInner>
                         <CellLayout hovered={hovered} label={t('Earned')}>
                           {createElement(cells[key], { ...props[key], userDataReady, hovered, setHovered })}
                         </CellLayout>
                       </CellInner>
-                    )}
+                    ) : (
+                      <Text color={theme.whiteHalf}>{`Earn ${props.farm.earningToken.symbol}`}</Text>
+                  )}
                   </TableData>
                 )
               case 'staked':

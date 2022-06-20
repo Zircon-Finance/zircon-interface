@@ -21,6 +21,7 @@ export interface FarmProps {
   farmHealth: number
   isAnchor: boolean
   isClassic: boolean
+  earningToken: SerializedToken
 }
 
 const Container = styled.div`

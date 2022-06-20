@@ -378,6 +378,7 @@ const Farms: React.FC = ({ children }) => {
         originalValue: 1,
       },
       farm: {
+        earningToken: farm.earningToken,
         label: lpLabel,
         pid: farm.sousId,
         token: farm.token1,

@@ -817,7 +817,7 @@ export default function AddLiquidityPro({
                       margin={"0 10px"}
                       style={{
                         borderBottom:
-                          !fakeAdvancedMode &&
+                          (!fakeAdvancedMode || pylonState !== PylonState.EXISTS) &&
                           `1px solid ${theme.navigationBorder}`,
                         paddingBottom: !fakeAdvancedMode && "10px",
                       }}
@@ -887,7 +887,7 @@ export default function AddLiquidityPro({
                 <Flex
                   margin={"0 10px"}
                   style={{
-                    borderBottom: `1px solid ${theme.navigationBorder}`,
+                    borderBottom: pylonState !== PylonState.EXISTS ? 'none' : `1px solid ${theme.navigationBorder}`,
                   }}
                   justifyContent={"space-evenly"}
                 >

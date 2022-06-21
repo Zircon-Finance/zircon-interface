@@ -71,8 +71,8 @@ export const usePylonLiquidity = (token1, token2) => {
   // const pylonPoolBalance = useTokenBalance(pylon?.address, pylon?.pair.liquidityToken)
   const anchorPoolBalance = useTokenBalance(pylon?.address,pylon?.token0)
   const floatPoolBalance = useTokenBalance(pylon?.address,pylon?.token1)
-  return `${anchorPoolBalance?.toFixed(3) as unknown as number} ${tokenA.symbol} - 
-  ${floatPoolBalance?.toFixed(3) as unknown as number} ${tokenB.symbol}`
+  return `${anchorPoolBalance?.toFixed(3) as unknown as number} ${tokenA?.symbol} - 
+  ${floatPoolBalance?.toFixed(3) as unknown as number} ${tokenB?.symbol}`
 }
 
 export const usePairLiquidity = (token1, token2) => {
@@ -81,8 +81,8 @@ export const usePairLiquidity = (token1, token2) => {
   // const pylonPoolBalance = useTokenBalance(pylon?.address, pylon?.pair.liquidityToken)
   // const token1Balance = useTokenBalance(pair?.reserve0,pair?.token0)
   // const token2Balance = useTokenBalance(pair?.address,pair?.token1)
-  return `${pair?.reserve0?.toFixed(3) as unknown as number} ${tokenA.symbol} - 
-  ${pair?.reserve1?.toFixed(3) as unknown as number} ${tokenB.symbol}`
+  return `${pair?.reserve0?.toFixed(3) as unknown as number} ${tokenA?.symbol} - 
+  ${pair?.reserve1?.toFixed(3) as unknown as number} ${tokenB?.symbol}`
 }
 
 // export const usePoolsWithVault = () => {

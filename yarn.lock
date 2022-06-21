@@ -8013,6 +8013,13 @@ getpass@^0.1.1:
   dependencies:
     assert-plus "^1.0.0"
 
+git@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/git/-/git-0.1.5.tgz#9ef62df93f851c27542143bf52d1c68b1017ca15"
+  integrity sha512-N+bfOrXyKMU/fQtCj6D/U9MQOEN0DAA8TLHSLdUQRSWBOkeRvsjJHdrdkvcq05xO7GSDKWc3nDEGoTZ4DfCCSg==
+  dependencies:
+    mime "1.2.9"
+
 glob-parent@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/glob-parent/-/glob-parent-3.1.0.tgz#9e6af6299d8d3bd2bd40430832bd113df906c5ae"
@@ -10722,6 +10729,11 @@ mime-types@^2.1.12, mime-types@~2.1.17, mime-types@~2.1.19, mime-types@~2.1.24, 
   integrity sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==
   dependencies:
     mime-db "1.52.0"
+
+mime@1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/mime/-/mime-1.2.9.tgz#009cd40867bd35de521b3b966f04e2f8d4d13d09"
+  integrity sha512-WiLgbHTIq5AYUvU/Luli4mZ1bUcHpGNHyCsbl+KPMg4zt+XUDpQehWjuBjdLaEvDTinvKj/FgfQt3fPoT7j08g==
 
 mime@1.6.0:
   version "1.6.0"
@@ -16602,10 +16614,10 @@ zircon-protocol@1.0.3-alpha.1:
     dotenv "^10.0.0"
     hardhat-watcher "^2.1.1"
 
-zircon-sdk@1.0.6-alpha.1:
-  version "1.0.6-alpha.1"
-  resolved "https://registry.yarnpkg.com/zircon-sdk/-/zircon-sdk-1.0.6-alpha.1.tgz#0b19a8d010fdaf0504e0483f2544ef2b47598df0"
-  integrity sha512-AaDPJ+HwY4X7D+lF2biAmYBiQK6pz39ADTA3b0QlGyv4OYaBECQUUXILcVgNMgEblKX43cLo/2B9CV9px2o/dA==
+zircon-sdk@1.0.6-alpha.2:
+  version "1.0.6-alpha.2"
+  resolved "https://registry.yarnpkg.com/zircon-sdk/-/zircon-sdk-1.0.6-alpha.2.tgz#9707879f48a82ff0ee624058691712add076e240"
+  integrity sha512-thcX/8k+BGHqaQlcwyuJsAsg2kdYVKGHovJBZGkLL3sxLeO3wV4pp4njPtudRlDo9VUfQ6UvgFXSueZt3j22vw==
   dependencies:
     "@uniswap/v2-core" "^1.0.0"
     big.js "^5.2.2"

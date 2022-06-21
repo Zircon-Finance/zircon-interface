@@ -20,7 +20,7 @@ import { useCallWithGasPrice } from '../../../../hooks/useCallWithGasPrice'
 
 const Action = styled.div`
   padding: 0px;
-  min-height: 230px;
+  min-height: 270px;
   display: flex;
   flex-direction: column;
   justify-content: center;

@@ -32,7 +32,9 @@ export const FixedHeightRow = styled(RowBetween)`
 `
 
 export const HoverCard = styled(Card)`
-  
+  &:hover {
+    cursor: pointer;
+    background-color: ${({ theme }) => theme.cardExpanded};
 `
 
 const BadgeSmall = styled.span`
@@ -180,7 +182,7 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
 
 
   return (
-    <HoverCard border={'none'} padding={showMore ? '0px' : '1.25rem'} backgroundColor={showMore ? theme.cardExpanded : theme.cardSmall}>
+    <HoverCard border={'none'} padding={showMore ? '0px' : '1.25rem'} backgroundColor={showMore ? theme.cardExpanded : 'transparent'}>
       <AutoColumn gap="12px">
       <div style={{ padding: showMore ? '1.25rem 1.25rem 0 1.25rem' : '0px'}}>
         <FixedHeightRow onClick={() => setShowMore(!showMore)} style={{ cursor: 'pointer' }}>
@@ -336,7 +338,7 @@ export function PylonPositionCard({ isFloat, border, pylon }: PylonPositionCardP
   const { width } = useWindowDimensions();
 
   return (
-    <HoverCard border={'none'} padding={showMore ? '0px' : '1.25rem'} backgroundColor={showMore ? theme.cardExpanded : theme.cardSmall}>
+    <HoverCard border={'none'} padding={showMore ? '0px' : '1.25rem'} backgroundColor={showMore ? theme.cardExpanded : 'transparent'}>
       <AutoColumn gap="12px">
       <div style={{ padding: showMore ? '1.25rem 1.25rem 0 1.25rem' : '0px'}}>
       <FixedHeightRow onClick={() => setShowMore(!showMore)} style={{ cursor: 'pointer' }}>
@@ -504,65 +506,142 @@ export function MinimalPositionPylonCard({ pylon, showUnwrapped = false, border,
           : [undefined, undefined]
 
   const { width } = useWindowDimensions();
+  const theme = useTheme()
 
   return (
-      <>
-        {userPoolBalance && (
-            <OutlineCard border={border} style={{width: '340px', margin: 'auto' }}>
-              <AutoColumn gap="12px">
-                <FixedHeightRow>
+    <>
+      {userPoolBalance && (
+        <OutlineCard border={border} style={{ width: "340px", margin: "auto" }}>
+          <AutoColumn gap="12px">
+            <FixedHeightRow>
+              <RowFixed>
+                <Text fontWeight={400} fontSize={13}>
+                  {"YOUR POSITION"}
+                </Text>
+              </RowFixed>
+            </FixedHeightRow>
+            <FixedHeightRow onClick={() => setShowMore(!showMore)}>
+              <RowFixed>
+                <DoubleCurrencyLogo
+                  currency0={currency0}
+                  currency1={currency1}
+                  margin={true}
+                  size={24}
+                />
+                {isFloat ? (
+                  <>
+                    <Flex>
+                      <BadgeSmall
+                        style={{
+                          fontSize: "16px",
+                          height: "23px",
+                          alignSelf: "center",
+                          marginLeft: "0px",
+                          marginRight: "5px",
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        <span
+                          style={{
+                            color: theme.text1,
+                            fontSize: "16px",
+                            marginRight: "3px",
+                          }}
+                        >
+                          {currency0.symbol}{" "}
+                        </span>
+                        {"FLOAT"}
+                      </BadgeSmall>
+                      <Text
+                        color={theme.text1}
+                        style={{ minWidth: "max-content" }}
+                        fontWeight={400}
+                      >{` - ${currency1.symbol}`}</Text>
+                    </Flex>
+                  </>
+                ) : (
+                  <>
+                    <Flex>
+                      <Text
+                        color={theme.text1}
+                        style={{ minWidth: "max-content" }}
+                        fontWeight={400}
+                      >
+                        {currency0.symbol} -
+                      </Text>
+                      <BadgeSmall
+                        style={{
+                          fontSize: "16px",
+                          height: "23px",
+                          alignSelf: "center",
+                          marginLeft: "5px",
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        <span
+                          style={{
+                            color: theme.text1,
+                            fontSize: "16px",
+                            marginRight: "3px",
+                          }}
+                        >{`${currency1.symbol} `}</span>
+                        {"ANCHOR"}
+                      </BadgeSmall>
+                    </Flex>
+                  </>
+                )}
+              </RowFixed>
+              <RowFixed>
+                <Text fontWeight={400} fontSize={width > 500 ? 16 : 10}>
+                  {userPoolBalance ? userPoolBalance.toSignificant(4) : "-"}
+                </Text>
+              </RowFixed>
+            </FixedHeightRow>
+            <AutoColumn gap="4px">
+              <FixedHeightRow>
+                <Text color="#FFF" fontSize={13} fontWeight={400}>
+                  Pooled {currency0.symbol}
+                </Text>
+                {token0Deposited ? (
                   <RowFixed>
-                    <Text fontWeight={400} fontSize={13}>
-                      {"Your " + (isFloat ? "Float" : "Anchor") + " position"}
+                    <Text
+                      color="#FFF"
+                      fontSize={13}
+                      fontWeight={400}
+                      marginLeft={"6px"}
+                    >
+                      {token0Deposited?.toSignificant(6)}
                     </Text>
                   </RowFixed>
-                </FixedHeightRow>
-                <FixedHeightRow onClick={() => setShowMore(!showMore)}>
+                ) : (
+                  "-"
+                )}
+              </FixedHeightRow>
+              <FixedHeightRow>
+                <Text color="#FFF" fontSize={13} fontWeight={400}>
+                  Pooled {currency1.symbol}
+                </Text>
+                {token1Deposited ? (
                   <RowFixed>
-                    <DoubleCurrencyLogo currency0={currency0} currency1={currency1} margin={true} size={20} />
-                    <Text fontWeight={400} fontSize={16}>
-                      {currency0.symbol}/{currency1.symbol}
+                    <Text
+                      color="#FFF"
+                      fontSize={13}
+                      fontWeight={400}
+                      marginLeft={"6px"}
+                    >
+                      {token1Deposited?.toSignificant(6)}
                     </Text>
                   </RowFixed>
-                  <RowFixed>
-                    <Text fontWeight={400} fontSize={width > 500 ? 16 : 10}>
-                      {userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}
-                    </Text>
-                  </RowFixed>
-                </FixedHeightRow>
-                <AutoColumn gap="4px">
-                  <FixedHeightRow>
-                    <Text color="#FFF" fontSize={13} fontWeight={400}>
-                      Pooled {currency0.symbol}
-                    </Text>
-                    {token0Deposited ? (
-                        <RowFixed>
-                          <Text color="#FFF" fontSize={13} fontWeight={400} marginLeft={'6px'}>
-                            {token0Deposited?.toSignificant(6)}
-                          </Text>
-                        </RowFixed>
-                    ) : (
-                        '-'
-                    )}
-                  </FixedHeightRow>
-                  <FixedHeightRow>
-                    <Text color="#FFF" fontSize={13} fontWeight={400}>
-                      Pooled {currency1.symbol}
-                    </Text>
-                    {token1Deposited ? (
-                        <RowFixed>
-                          <Text color="#FFF" fontSize={13} fontWeight={400} marginLeft={'6px'}>
-                            {token1Deposited?.toSignificant(6)}
-                          </Text>
-                        </RowFixed>
-                    ) : (
-                        '-'
-                    )}
-                  </FixedHeightRow>
-                </AutoColumn>
-              </AutoColumn>
-            </OutlineCard>
-        )}
-      </>
-  )
+                ) : (
+                  "-"
+                )}
+              </FixedHeightRow>
+            </AutoColumn>
+          </AutoColumn>
+        </OutlineCard>
+      )}
+    </>
+  );
 }

@@ -181,8 +181,8 @@ export default function Pool() {
                 <TriMenu />
               </div>
               <div style={{width: '85%',display: 'flex', justifyContent: 'center'}}>
-                <ButtonOutlined style={{marginRight: '5px', padding: '0px'}} as={Link} to={'/find'}>{'Import'}</ButtonOutlined>
-                <ButtonPrimary id="add-liquidity-button" as={Link} to={'/add-pro/ETH'} style={{padding: '18px 0 18px 0'}}>{'Add liquidity'}</ButtonPrimary>
+                <ButtonOutlined style={{marginRight: '5px', padding: '0px', fontWeight: '500'}} as={Link} to={'/find'}>{'Import'}</ButtonOutlined>
+                <ButtonPrimary id="add-liquidity-button" as={Link} to={'/add-pro/ETH'} style={{padding: '18px 0 18px 0', fontWeight: '500'}}>{'Add liquidity'}</ButtonPrimary>
               </div>
             </AutoRow>
           </AutoColumn>

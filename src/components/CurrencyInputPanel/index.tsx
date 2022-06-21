@@ -28,7 +28,7 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
   height: 100%;
   font-weight: 200;
   background-color: ${({ selected, theme }) => (selected ? theme.bg7 : theme.inputSelect1)};
-  color: ${({ selected, theme }) => (selected ? theme.text1 : theme.white)};
+  color: ${({ selected, theme }) => (selected ? theme.text1 : theme.black)};
   border-radius: 12px;
   box-shadow: ${({ selected }) => (selected ? 'none' : '0px 6px 10px rgba(0, 0, 0, 0.075)')};
   outline: none;
@@ -101,13 +101,13 @@ const StyledBalanceMax = styled.button`
   border: 0;
   letter-spacing: 0.05em
   border-radius: 0.9rem;
-  font-size: 10px;
+  font-size: 13px;
   outline: none;
   border-radius: 27px;
-  font-weight: 300;
+  font-weight: 500;
   cursor: pointer;
   margin-right: 0.5rem;
-  color: ${({ theme }) => theme.whiteBlackPink};
+  color: ${({ theme }) => theme.pinkGamma};
 
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     margin-right: 0.5rem;

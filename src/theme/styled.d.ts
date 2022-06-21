@@ -81,6 +81,8 @@ export interface Colors {
 
   meatPink: Color
 
+  pinkGamma: Color
+
   walletModal: Color
 
   farmTabsBg: Color

@@ -63,7 +63,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     // darker purple - container
     bg7: chainId !== 1287 ? '#402d58' : darkMode ? '#3c2330' : '#f5f3f3',
     // connect wallet button - dark purple
-    bg8: chainId !== 1287 ? '#4a207c' : darkMode ? '#874955' : '#EFEDEE',
+    bg8: chainId !== 1287 ? '#4a207c' : darkMode ? '#874955' : '#874955',
     // max button - very light purple
     bg9: chainId !== 1287 ? '#443455' : darkMode ? '#634d58' : '#edebeb',
     //modal bg
@@ -74,7 +74,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     bg12: chainId !== 1287 ? '#5B4874' : '#634d58',
     // button purple
     bg13: chainId !== 1287 ? '#5F299F' : '#361E2A',
-    bg14: chainId !== 1287 ? '#4E386B' : darkMode ? '#523946' : '#f5f3f3',
+    bg14: chainId !== 1287 ? '#4E386B' : darkMode ? '#5C2C40' : '#f5f3f3',
     //specialty colors
     modalBG: chainId !== 1287 ? '#3c2955A1' : darkMode ? '#3a1c29a0' : '#FCFCFDA1',
     advancedBG: 'rgba(0,0,0,0.1)',
@@ -89,7 +89,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
 
     disabled1: chainId !== 1287 ? '#36195A' : darkMode ? '#44232E' : '#dfced2',
 
-    inputSelect1: chainId !== 1287 ? '#A987C2' : darkMode ? '#7D5F77' : '#a69997',
+    inputSelect1: chainId !== 1287 ? '#A987C2' : darkMode ? '#d5aeaf' : '#a69997',
 
     navigationTabs: chainId !== 1287 ? '#402D54' : darkMode ? '#583935' : '#e7e2e2',
 
@@ -101,13 +101,15 @@ export function colors(chainId: any, darkMode: boolean): Colors {
 
     questionMarks: chainId !== 1287 ? '#604C7A' : darkMode ? '#5b434f' : '#F2E9EB',
 
-    slippageActive: chainId !== 1287 ? '#997aaf' : darkMode ? '#755351' : '#a69997',
+    slippageActive: chainId !== 1287 ? '#997aaf' : darkMode ? '#9E4D86' : '#a69997',
 
     walletActive: chainId !== 1287 ? '#25123C' : darkMode ? '#4e3430' : '#edebea',
 
     hoveredButton: chainId !== 1287 ? '#604C7A' : darkMode ? '#9e4d86' : '#874955',
 
-    poolPinkButton: '#9E4D86',
+    poolPinkButton: '#874955',
+
+    pinkGamma: '#CB74B1',
 
     meatPink: '#D5AEAF',
 
@@ -121,7 +123,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
 
     cardSmall: chainId !== 1287 ? '#2B1840' : darkMode ? '#361E2A' : '#fcfbfc',
     cardLightBorder: '#f2f0f1',
-    cardExpanded: chainId !== 1287 ? '#3C2955' : darkMode ? '#3c2330' : '#f2f0f1',
+    cardExpanded: chainId !== 1287 ? '#3C2955' : darkMode ? '#52273a' : '#f2f0f1',
     badgeSmall: chainId !== 1287 ? '#604C7A' : darkMode ? '#442734' : '#f2f0f1',
 
     positionsButtons: chainId !== 1287 ? '#7a628c' : darkMode ? '#755452' : '#EAE5E8',

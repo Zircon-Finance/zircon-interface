@@ -90,6 +90,7 @@ const AccountElement = styled.div<{ active: boolean }>`
   align-items: center;
   background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.walletActive)};
   border-radius: 17px;
+  height: 100%;
   white-space: nowrap;
   :focus {
     border: 1px solid blue;

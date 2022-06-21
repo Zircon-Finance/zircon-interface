@@ -259,7 +259,7 @@ const Farms: React.FC = ({ children }) => {
 
   const [stakedOnly, setStakedOnly] = useUserFarmStakedOnly(isActive)
 
-  const activeFarms = pools
+  let activeFarms = pools
 
   const stakedOnlyFarms = activeFarms.filter(
     (farm) => farm.userData && new BigNumber(farm.userData.stakedBalance).gt(0),
@@ -347,14 +347,9 @@ const Farms: React.FC = ({ children }) => {
     filter === FarmFilter.CLASSIC ?
     sortedPools.filter((pool) => pool.isClassic === true) :
     sortedPools.filter((pool) => !pool.isClassic === true)
-
-    // sortedPools =
-    // filter === FarmFilter.CLASSIC ?
-    // sortedPools.filter((pool) => pool.isClassic === true) :
-    // sortedPools.filter((pool) => !pool.isClassic === true)
     
     return sortedPools
-  }, [activeFarms, query, stakedOnly, stakedOnlyFarms, chosenPools, sortOption, filterAnchorFloat])
+  }, [query, stakedOnly, stakedOnlyFarms, chosenPools, sortOption, filterAnchorFloat, filter])
 
   chosenFarmsLength.current = activeFarms.length
 
@@ -440,6 +435,7 @@ const Farms: React.FC = ({ children }) => {
     return <FlexLayout><FarmsPage /></FlexLayout>
   }
   const darkMode = useIsDarkMode()
+  activeFarms = chosenPools
   return (
     <FarmsContext.Provider value={{ activeFarms }}>
       <Page>

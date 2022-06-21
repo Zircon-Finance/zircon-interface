@@ -9,10 +9,11 @@ const FarmsPage = () => {
   const { account } = useWeb3React()
   const { activeFarms } = useContext(FarmsContext)
   const cakePrice = usePriceCakeBusd()
+  console.log('activeFarms', activeFarms)
 
   return (
     <>
-      {activeFarms.map((farm) => (
+      {activeFarms.length > 0 ? activeFarms.map((farm) => (
         <FarmCard
           key={farm.sousId}
           farm={farm}
@@ -21,7 +22,7 @@ const FarmsPage = () => {
           account={account}
           removed={false}
         />
-      ))}
+      )) : <p style={{width: '100%', textAlign: 'center', fontSize: '20px', fontWeight: '500'}}>No farms found</p>}
     </>
   )
 }

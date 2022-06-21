@@ -6,6 +6,7 @@ import ReactGA from "react-ga4";
 import { RouteComponentProps } from "react-router-dom";
 import { Flex, Text } from "rebass";
 import styled, { css, keyframes, useTheme } from "styled-components";
+import farmsConfig from "../../constants/pools";
 import {
   ButtonAnchor,
   ButtonError,
@@ -60,6 +61,9 @@ import { MobileWrapper } from "../App";
 import LearnIcon from "../../components/LearnIcon";
 import { Toggle } from "@pancakeswap/uikit";
 import CheckIcon from "../../components/CheckIcon";
+import { getPoolAprAddress } from "../../utils/apr";
+import { SpaceBetween } from "../../views/Farms/components/FarmTable/Actions/ActionPanel";
+import RepeatIcon from "../../components/RepeatIcon";
 // import { PoolPriceBar } from './PoolPriceBar'
 // import { ArrowDown } from 'react-feather'
 
@@ -103,6 +107,21 @@ animation: ${({ expanded }) =>
   padding: 0 10px;
   background-color: ${({ theme }) => theme.liquidityBg};
   border-radius: 17px;`
+
+const IconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  background: ${({ theme }) => theme.badgeSmall};
+  width: 45px;
+  height: 40px;
+  align-self: center;
+  cursor: pointer;
+  &:hover {
+    background: ${({ theme }) => theme.bg14};
+  }
+`
 
 export default function AddLiquidityPro({
   match: {
@@ -207,6 +226,16 @@ export default function AddLiquidityPro({
     PYLON_ROUTER_ADDRESS[chainId ? chainId : ""]
   );
   const addTransaction = useTransactionAdder();
+
+  //pool values
+  const {AddressZero} = require("@ethersproject/constants");
+  const { contractAddress } = farmsConfig.filter((f) => 
+    f.token1.symbol === currencyA?.symbol && 
+    f.token2.symbol === currencyB?.symbol && 
+    f.isAnchor === !isFloat)[0] ?? AddressZero;
+  const apr = getPoolAprAddress(contractAddress) ?? '0'
+  console.log('contractAddress', contractAddress)
+
   const [showAdvancedMode, setShowAdvancedMode] = useState(false);
   const [fakeAdvancedMode, setFakeAdvancedMode] = useState(false);
   async function addPylon() {
@@ -301,7 +330,7 @@ export default function AddLiquidityPro({
       });
   }
 
-  async function onAdd() {
+  async function onAdd(stake?: boolean) {
     if (!chainId || !library || !account) return;
     const router = getPylonRouterContract(chainId, library, account);
 
@@ -325,6 +354,16 @@ export default function AddLiquidityPro({
       args: Array<string | string[] | number | boolean>,
       value: BigNumber | null;
     const tokenBIsETH = float.currency_b === DEV;
+    console.log('args', [
+      wrappedCurrency(
+        tokenBIsETH ? float.currency_a : float.currency_b,
+        chainId
+      )?.address ?? "", // token
+      DEV === currencies[Field.CURRENCY_A], // second option is anchor so it should mint anchor when float.currency a is equal to b
+      account,
+      stake ? contractAddress : AddressZero,
+      deadlineFromNow,
+    ])
     if (sync === "off") {
       if (float.currency_a === DEV) {
         estimate = router.estimateGas.addSyncLiquidityETH;
@@ -336,6 +375,7 @@ export default function AddLiquidityPro({
           )?.address ?? "", // token
           DEV === currencies[Field.CURRENCY_A], // second option is anchor so it should mint anchor when float.currency a is equal to b
           account,
+          stake ? contractAddress : AddressZero,
           deadlineFromNow,
         ];
         value = !tokenBIsETH
@@ -358,6 +398,7 @@ export default function AddLiquidityPro({
           ).raw.toString(),
           float.currency_a === currencies[Field.CURRENCY_B],
           account,
+          stake ? contractAddress : AddressZero,
           deadlineFromNow,
         ];
         value = null;
@@ -373,6 +414,7 @@ export default function AddLiquidityPro({
           )?.address ?? "", // token
           DEV === currencies[Field.CURRENCY_A], // second option is anchor so it should mint anchor when float.currency a is equal to b
           account,
+          stake ? contractAddress : AddressZero,
           deadlineFromNow,
         ];
         value = !tokenBIsETH
@@ -395,6 +437,7 @@ export default function AddLiquidityPro({
           ).raw.toString(),
           float.currency_a === currencies[Field.CURRENCY_B],
           account,
+          stake ? contractAddress : AddressZero,
           deadlineFromNow,
         ];
         value = null;
@@ -417,6 +460,7 @@ export default function AddLiquidityPro({
           currencies[Field.CURRENCY_A] === DEV,
           float.currency_a === currencies[Field.CURRENCY_B], // second option is anchor so it should mint anchor when float.currency a is equal to b
           account,
+          stake ? contractAddress : AddressZero,
           deadlineFromNow,
         ];
         value = BigNumber.from(
@@ -440,6 +484,7 @@ export default function AddLiquidityPro({
           "1",
           float.currency_a === currencies[Field.CURRENCY_B],
           account,
+          stake ? contractAddress : AddressZero,
           deadlineFromNow,
         ];
         value = null;
@@ -629,6 +674,12 @@ export default function AddLiquidityPro({
     },
     [currencyIdB, history, currencyIdA, currencies]
   );
+  const handleSwapCurrencies = useCallback(() => {
+        history.push(`/add-pro/${currencyIdB}/${currencyIdA}`);
+      },
+    [currencyIdB, history, currencyIdA]
+  );
+
   const handleCurrencyBSelect = useCallback(
     (currencyB: Currency) => {
       const newCurrencyIdB = currencyId(currencyB);
@@ -741,6 +792,12 @@ export default function AddLiquidityPro({
                 showCommonBases
                 anchor={false}
               />
+              <IconContainer
+                onClick={handleSwapCurrencies}
+              >
+                <RepeatIcon />
+              </IconContainer>
+
               <CurrencyInputPanelInputOnly
                 onCurrencySelect={handleCurrencyBSelect}
                 currency={currencies[Field.CURRENCY_B]}
@@ -793,29 +850,34 @@ export default function AddLiquidityPro({
                             background: "transparent",
                             height: "50px",
                             borderBottom: `1px solid ${theme.navigationTabs}`,
-                            width: '100%',
+                            width: "100%",
                           }}
                           onClick={() => setSync("full")}
                           justifyContent={"space-between"}
                         >
-                          <span style={{padding: '15px'}}>{"FAST MODE"}</span>
+                          <span style={{ padding: "15px" }}>{"FAST MODE"}</span>
                           {sync === "full" && (
-                            <div style={{margin: '12px 0'}}>
-                            <CheckIcon />
-                          </div>
+                            <div style={{ margin: "12px 0" }}>
+                              <CheckIcon />
+                            </div>
                           )}
                         </Flex>
                         <Flex
-                          style={{ background: "transparent", height: "50px", width: '100%',}}
+                          style={{
+                            background: "transparent",
+                            height: "50px",
+                            width: "100%",
+                          }}
                           onClick={() => setSync("half")}
                           justifyContent={"space-between"}
                         >
-                          <span style={{padding: '15px'}}>{"SWAP AND ADD"}</span>
+                          <span style={{ padding: "15px" }}>
+                            {"SWAP AND ADD"}
+                          </span>
                           {sync === "half" && (
-                            <div style={{margin: '12px 0'}}>
+                            <div style={{ margin: "12px 0" }}>
                               <CheckIcon />
                             </div>
-                            
                           )}
                         </Flex>
                       </AdvancedContainer>
@@ -829,31 +891,13 @@ export default function AddLiquidityPro({
                   }}
                   justifyContent={"space-evenly"}
                 >
-                  <span
-                    style={{
-                      display: "inline",
-                      alignSelf: "center",
-                      // textAlign: "center",
-                      fontSize: width > 700 ? "16px" : "13px",
-                      marginBottom: "10px",
-                    }}
-                    id="pylon-check"
-                  >
-                    {/* Pylon condition */}
-                    {pylonState === PylonState.EXISTS
-                      ? sync === "half"
-                        ? "SHARES RECEIVED FROM INVESTMENT"
-                        : "TOKEN USED FOR INVESTMENT"
-                      : pylonState === PylonState.ONLY_PAIR
-                      ? "Create Pylon"
-                      : "Create Pair & Pylon"}
-                  </span>
                   {pylonState === PylonState.EXISTS && (
                     <div
                       style={{
                         display: "flex",
                         justifyContent: "space-evenly",
                         marginBottom: "10px",
+                        width: "100%",
                       }}
                     >
                       <div
@@ -862,12 +906,15 @@ export default function AddLiquidityPro({
                           background: theme.maxButton,
                           borderRadius: "17px",
                           padding: "5px",
+                          width: "100%",
                         }}
                       >
                         <ButtonAnchor
                           borderRadius={"12px"}
                           padding={"5px"}
                           style={{
+                            padding: "1px",
+                            width: "50%",
                             backgroundColor:
                               float.currency_a === currencies[Field.CURRENCY_A]
                                 ? theme.badgeSmall
@@ -903,6 +950,8 @@ export default function AddLiquidityPro({
                           borderRadius={"12px"}
                           padding={"5px"}
                           style={{
+                            width: "50%",
+                            padding: "1px",
                             backgroundColor:
                               float.currency_a === currencies[Field.CURRENCY_B]
                                 ? theme.badgeSmall
@@ -1047,7 +1096,7 @@ export default function AddLiquidityPro({
                 <div
                   style={{
                     backgroundColor: theme.bg1,
-                    padding: "10px",
+                    padding: "0 10px 10px 10px",
                     borderRadius: "27px",
                   }}
                 >
@@ -1159,7 +1208,9 @@ export default function AddLiquidityPro({
                                   disabled={approvalA === ApprovalState.PENDING}
                                   width={
                                     approvalB !== ApprovalState.APPROVED
-                                      ? "48%"
+                                      ? sync === "half"
+                                        ? "48%"
+                                        : "48%"
                                       : "100%"
                                   }
                                 >
@@ -1200,32 +1251,79 @@ export default function AddLiquidityPro({
                               )}
                             </RowBetween>
                           )}
-                        <ButtonError
-                          onClick={() => {
-                            expertMode ? onAdd() : setShowConfirm(true);
-                          }}
-                          disabled={
-                            !isValid ||
-                            approvalA !== ApprovalState.APPROVED ||
-                            (sync === "half" &&
-                              approvalB !== ApprovalState.APPROVED)
-                          }
-                          error={
-                            sync === "half" &&
-                            !isValid &&
-                            !!parsedAmounts[Field.CURRENCY_A] &&
-                            !!parsedAmounts[Field.CURRENCY_B]
-                          }
-                        >
-                          <Text fontSize={20} fontWeight={400}>
-                            {error ??
-                              (pylonState === PylonState.EXISTS
-                                ? "Add Liquidity"
-                                : pylonState === PylonState.ONLY_PAIR
-                                ? "Create Pylon"
-                                : "Create Pair & Pylon")}
-                          </Text>
-                        </ButtonError>
+                        <SpaceBetween>
+                          <ButtonError
+                            style={{ height: "65px" }}
+                            width={
+                              pylonState === PylonState.EXISTS ? "48%" : "100%"
+                            }
+                            onClick={() => {
+                              expertMode ? onAdd() : setShowConfirm(true);
+                            }}
+                            disabled={
+                              !isValid ||
+                              approvalA !== ApprovalState.APPROVED ||
+                              (sync === "half" &&
+                                approvalB !== ApprovalState.APPROVED)
+                            }
+                            error={
+                              sync === "half" &&
+                              !isValid &&
+                              !!parsedAmounts[Field.CURRENCY_A] &&
+                              !!parsedAmounts[Field.CURRENCY_B]
+                            }
+                          >
+                            <Text
+                              fontSize={width > 700 ? 20 : 16}
+                              fontWeight={400}
+                            >
+                              {error ??
+                                (pylonState === PylonState.EXISTS
+                                  ? "Add Liquidity"
+                                  : pylonState === PylonState.ONLY_PAIR
+                                  ? "Create Pylon"
+                                  : "Create Pair & Pylon")}
+                            </Text>
+                          </ButtonError>
+                          {pylonState === PylonState.EXISTS && (
+                            <ButtonError
+                              style={{ height: "65px" }}
+                              width={"48%"}
+                              onClick={() => {
+                                expertMode ? onAdd(true) : onAdd(true);
+                              }}
+                              disabled={
+                                !isValid ||
+                                approvalA !== ApprovalState.APPROVED ||
+                                (sync === "half" &&
+                                  approvalB !== ApprovalState.APPROVED)
+                              }
+                              error={
+                                sync === "half" &&
+                                !isValid &&
+                                !!parsedAmounts[Field.CURRENCY_A] &&
+                                !!parsedAmounts[Field.CURRENCY_B]
+                              }
+                            >
+                              <Flex flexDirection={"column"}>
+                                <Text
+                                  fontSize={width > 700 ? 20 : 16}
+                                  fontWeight={400}
+                                >
+                                  {error ??
+                                    (pylonState === PylonState.EXISTS &&
+                                      "Add & Farm")}
+                                </Text>
+                                <Text
+                                  fontSize={width > 700 ? 14 : 13}
+                                  fontWeight={400}
+                                >
+                                  {`${apr}% APR`}
+                                </Text>
+                              </Flex>
+                            </ButtonError>
+                          )}
+                        </SpaceBetween>
                       </AutoColumn>
                     )}
                   </LightCard>

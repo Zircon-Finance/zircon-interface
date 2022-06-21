@@ -90,11 +90,14 @@ const StyledTokenName = styled.span<{ active?: boolean }>`
   ${({ active }) => (active ? '  margin: 0 0 0 0.25rem;' : '  margin: 0 0.25rem 0 0.25rem;')}
   font-size:  13px;
   align-self: center;
+  text-align: left;
   display: flex;
   height: 100%;
+  flex-flow: column;
   align-items: center;
   @media (min-width: 700px) {
     font-size: 16px;
+    flex-flow: row;
     ${({ active }) => (active ? '  margin: 0 0.75 0.75rem;' : '  margin: 0 0.25rem 0 0.25rem;')}
   }
 `
@@ -146,45 +149,80 @@ export default function CurrencyInputPanel({
         {!hideInput && (
           <LabelRow>
             {/* <RowBetween style={{display: 'flex', flexFlow: 'column'}}> */}
-              {/* <span style={{alignSelf: 'start',padding: '5px 5px 5px 10px', fontSize: '10px', letterSpacing: '0.05em'}}>{anchor ? 'ANCHOR' : 'FLOAT'}</span> */}
-              {/* <div style={{display: 'flex', width: '100%'}}> */}
-                <CurrencySelect
-                selected={!!currency}
-                className="open-currency-select-button"
-                onClick={() => {
-                  if (!disableCurrencySelect) {
-                    setModalOpen(true)
-                  }
-                }}
-              >
-                <Aligner>
-                  <div style={{display: 'flex', alignItems: 'center'}}>
+            {/* <span style={{alignSelf: 'start',padding: '5px 5px 5px 10px', fontSize: '10px', letterSpacing: '0.05em'}}>{anchor ? 'ANCHOR' : 'FLOAT'}</span> */}
+            {/* <div style={{display: 'flex', width: '100%'}}> */}
+            <CurrencySelect
+              selected={!!currency}
+              className="open-currency-select-button"
+              onClick={() => {
+                if (!disableCurrencySelect) {
+                  setModalOpen(true);
+                }
+              }}
+            >
+              <Aligner>
+                <div style={{ display: "flex", alignItems: "center" }}>
                   {pair ? (
-                    <DoubleCurrencyLogo currency0={pair.token0} currency1={pair.token1} size={24} margin={true} />
+                    <DoubleCurrencyLogo
+                      currency0={pair.token0}
+                      currency1={pair.token1}
+                      size={24}
+                      margin={true}
+                    />
                   ) : currency ? (
-                    <CurrencyLogo currency={currency} size={'24px'} />
+                    <CurrencyLogo currency={currency} size={"24px"} />
                   ) : null}
                   {pair ? (
                     <StyledTokenName className="pair-name-container">
                       {pair?.token0.symbol}:{pair?.token1.symbol}
                     </StyledTokenName>
                   ) : (
-                    <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>
-                      {(currency && currency.symbol && currency.symbol.length > 20
-                        ? currency.symbol.slice(0, 4) +
-                          '...' +
-                          currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
-                        : <><p>{currency?.symbol}</p>
-                        <span style={{color: theme.whiteHalf, marginLeft: '5px', fontSize: width > 700 ? '16px' : '13px'}}>{anchor ? 'ANCHOR' : 'FLOAT'}</span></>) 
-                        || t('selectToken')}
+                    <StyledTokenName
+                      className="token-symbol-container"
+                      active={Boolean(currency && currency.symbol)}
+                    >
+                      {(currency &&
+                      currency.symbol &&
+                      currency.symbol.length > 20 ? (
+                        currency.symbol.slice(0, 4) +
+                        "..." +
+                        currency.symbol.slice(
+                          currency.symbol.length - 5,
+                          currency.symbol.length
+                        )
+                      ) : (
+                        <>
+                          <p
+                            style={{
+                              margin: width > 700 ? "10px 0" : "10px 0 0 0",
+                              width: '100%',
+                            }}
+                          >
+                            {currency?.symbol}
+                          </p>
+                          <span
+                            style={{
+                              width: '100%',
+                              color: theme.whiteHalf,
+                              marginBottom: width > 700 ? "0" : "10px",
+                              marginLeft: width < 700 ? '0' : "5px",
+                              fontSize: width > 700 ? "16px" : "13px",
+                            }}
+                          >
+                            {anchor ? "ANCHOR" : "FLOAT"}
+                          </span>
+                        </>
+                      )) || t("selectToken")}
                     </StyledTokenName>
                   )}
-                  </div>
-                  {!disableCurrencySelect && <StyledDropDown selected={!!currency} />}
-                </Aligner>
-              </CurrencySelect>
-              {/* </div> */}
-              {/* Line below should be {account && ( */}
+                </div>
+                {!disableCurrencySelect && (
+                  <StyledDropDown selected={!!currency} />
+                )}
+              </Aligner>
+            </CurrencySelect>
+            {/* </div> */}
+            {/* Line below should be {account && ( */}
             {/* </RowBetween> */}
           </LabelRow>
         )}
@@ -200,5 +238,5 @@ export default function CurrencyInputPanel({
         />
       )}
     </InputPanel>
-  )
+  );
 }

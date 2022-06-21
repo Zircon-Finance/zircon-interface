@@ -38,6 +38,7 @@ const StyledMenuButton = styled.button`
 
   svg {
     margin-top: 2px;
+    stroke: ${({ theme }) => theme.meatPink};
   }
 `
 
@@ -59,7 +60,7 @@ const MenuFlyout = styled.span`
   flex-direction: column;
   font-size: 1rem;
   position: absolute;
-  top: -100px;
+  top: -110px;
   left: 0rem;
   z-index: 100;
 

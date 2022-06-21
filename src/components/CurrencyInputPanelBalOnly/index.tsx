@@ -15,7 +15,7 @@ const InputRow = styled.div<{ selected: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
   align-items: end;
   width: 100%;
-  padding: ${({ selected }) => (selected ? '0.75rem 0.5rem 0.75rem 0' : '0.75rem 0.75rem 0.75rem 0')};
+  padding: ${({ selected }) => (selected ? '0 0.5rem 0.75rem 0' : '0 0.75rem 0.75rem 0')};
 `
 
 const LabelRow = styled.div`
@@ -58,7 +58,7 @@ const StyledBalanceMax = styled.button`
   font-weight: 500;
   cursor: pointer;
   margin-right: 0.5rem;
-  color: ${({ theme }) => theme.poolPinkButton};
+  color: ${({ theme }) => theme.pinkGamma};
 
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     margin-right: 0.5rem;

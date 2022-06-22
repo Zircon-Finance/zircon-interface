@@ -1,7 +1,7 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import { TransactionResponse } from "@ethersproject/providers";
 import { Currency, currencyEquals, DEV, TokenAmount, WDEV } from "zircon-sdk";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ReactGA from "react-ga4";
 import { RouteComponentProps } from "react-router-dom";
 import { Flex, Text } from "rebass";
@@ -64,6 +64,11 @@ import CheckIcon from "../../components/CheckIcon";
 import { getPoolAprAddress } from "../../utils/apr";
 import { SpaceBetween } from "../../views/Farms/components/FarmTable/Actions/ActionPanel";
 import RepeatIcon from "../../components/RepeatIcon";
+import { usePool } from "../../state/pools/hooks";
+import { useERC20 } from "../../hooks/useContract";
+import useApprovePool from "../../views/Farms/hooks/useApproveFarm";
+import { fetchPoolsUserDataAsync } from "../../state/pools";
+import { useDispatch } from "react-redux";
 // import { PoolPriceBar } from './PoolPriceBar'
 // import { ArrowDown } from 'react-feather'
 
@@ -140,6 +145,11 @@ export default function AddLiquidityPro({
       ((currencyA && currencyEquals(currencyA, WDEV[chainId])) ||
         (currencyB && currencyEquals(currencyB, WDEV[chainId])))
   );
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(fetchPoolsUserDataAsync(account))
+  }, [account, dispatch])
 
   const toggleWalletModal = useWalletModalToggle(); // toggle wallet when disconnected
 
@@ -177,6 +187,24 @@ export default function AddLiquidityPro({
   });
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noPylon);
   const isValid = !error;
+
+  // handle pool button values
+  const farmExists = farmsConfig.find(
+    (f) =>
+      f.token1.symbol === currencyA.symbol &&
+      f.token2.symbol === currencyB.symbol &&
+      f.isAnchor === !isFloat
+  );
+  const { pool } = usePool(farmExists ? farmExists?.sousId : 3)
+  const addTransaction = useTransactionAdder()
+  const lpContract = useERC20(pool?.stakingToken.address)
+  const farmIsApproved = useCallback(() => {
+    const isApproved = account && pool.userData.allowance && pool.userData.allowance.isGreaterThan(0)
+    return isApproved
+  }, [account, pool])
+  console.log('farmIsApproved', farmIsApproved())
+  const {handleApprove} = useApprovePool(farmExists, lpContract, farmExists?.sousId ?? 3)
+
 
   // modal and loading
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
@@ -225,7 +253,6 @@ export default function AddLiquidityPro({
     parsedAmounts[float.field_b],
     PYLON_ROUTER_ADDRESS[chainId ? chainId : ""]
   );
-  const addTransaction = useTransactionAdder();
 
   //pool values
   const {AddressZero} = require("@ethersproject/constants");
@@ -514,7 +541,7 @@ export default function AddLiquidityPro({
           } else {
             addTransaction(response, {
               summary:
-                (sync === "off" ? "Add sync " : "Add Async-100 ") +
+                (sync === "off" ? !stake ? "Add sync " : "Add and stake sync " :  stake ? "Add and stake Async-100 " : "Add Async-100 ") +
                 parsedAmounts[float.field_a]?.toSignificant(3) +
                 " " +
                 currencies[float.field_a]?.symbol,
@@ -937,6 +964,7 @@ export default function AddLiquidityPro({
                           />
                           <span
                             style={{
+                              color: theme.text1,
                               marginLeft: "5px",
                               fontSize: "13px",
                               letterSpacing: "0.05em",
@@ -974,6 +1002,7 @@ export default function AddLiquidityPro({
                           />
                           <span
                             style={{
+                              color: theme.text1,
                               marginLeft: "5px",
                               fontSize: "13px",
                               letterSpacing: "0.05em",
@@ -1255,7 +1284,7 @@ export default function AddLiquidityPro({
                           <ButtonError
                             style={{ height: "65px" }}
                             width={
-                              pylonState === PylonState.EXISTS ? "48%" : "100%"
+                              pylonState === PylonState.EXISTS ? farmExists ? "48%" : '100%' : "100%"
                             }
                             onClick={() => {
                               expertMode ? onAdd() : setShowConfirm(true);
@@ -1285,12 +1314,13 @@ export default function AddLiquidityPro({
                                   : "Create Pair & Pylon")}
                             </Text>
                           </ButtonError>
-                          {pylonState === PylonState.EXISTS && (
+                          {pylonState === PylonState.EXISTS && farmExists && (
                             <ButtonError
                               style={{ height: "65px" }}
                               width={"48%"}
                               onClick={() => {
-                                expertMode ? onAdd(true) : onAdd(true);
+                                farmExists ? !farmIsApproved() ? handleApprove()
+                                : onAdd(true) : onAdd(true);
                               }}
                               disabled={
                                 !isValid ||
@@ -1311,15 +1341,17 @@ export default function AddLiquidityPro({
                                   fontWeight={400}
                                 >
                                   {error ??
-                                    (pylonState === PylonState.EXISTS &&
-                                      "Add & Farm")}
+                                    (farmIsApproved() ?
+                                      "Add & Farm" : "Enable farm contract")}
                                 </Text>
+                                {farmIsApproved() && 
                                 <Text
                                   fontSize={width > 700 ? 14 : 13}
                                   fontWeight={400}
                                 >
                                   {`${apr}% APR`}
                                 </Text>
+                                }
                               </Flex>
                             </ButtonError>
                           )}

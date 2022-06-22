@@ -40,7 +40,6 @@ const Web3StatusGeneric = styled(ButtonSecondary)`
   ${({ theme }) => theme.flexRowNoWrap}
   width: 100%;
   align-items: center;
-  padding: 8px 10px 8px 12px;
   border-radius: 12px;
   cursor: pointer;
   user-select: none;
@@ -109,10 +108,8 @@ const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean }>`
 const Text = styled.p`
   color: ${({ theme }) => theme.whiteHalf};
   flex: 1 1 auto;
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
-  margin: 0 0.5rem 0 0.25rem;
+  margin: 0 0.5rem 0 0rem;
   font-size: 1rem;
   width: fit-content;
   font-weight: 400;

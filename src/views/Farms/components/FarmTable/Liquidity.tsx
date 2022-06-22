@@ -7,7 +7,7 @@ import PlusIcon from '../PlusIcon'
 import { Link } from 'react-router-dom'
 import { Flex } from 'rebass'
 import { useWindowDimensions } from '../../../../hooks'
-import { usePairLiquidity, usePylonLiquidity } from '../../../../state/pools/hooks'
+import { usePairLiquidity } from '../../../../state/pools/hooks'
 
 
 export interface LiquidityProps {
@@ -71,7 +71,7 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
   const theme = useTheme()
   const { width } = useWindowDimensions()
   const [hoverPlus, setHoverPlus] = React.useState(false)
-  const pylonLiquidity = usePylonLiquidity(farm.token1, farm.token2)
+  const pylonLiquidity = usePairLiquidity(farm.token1, farm.token2)
   const pairLiquidity = usePairLiquidity(farm.token1, farm.token2)
   const plusContent = (
       <DialogContainer show={hoverPlus}>

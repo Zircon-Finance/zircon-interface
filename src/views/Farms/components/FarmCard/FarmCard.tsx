@@ -19,7 +19,7 @@ import { Link } from 'react-router-dom'
 import { useTransactionAdder } from '../../../../state/transactions/hooks'
 import { DeserializedPool } from '../../../../state/types'
 import { fetchPoolsUserDataAsync } from '../../../../state/pools'
-import { usePairLiquidity, usePylonLiquidity } from '../../../../state/pools/hooks'
+import { usePairLiquidity } from '../../../../state/pools/hooks'
 import { getPoolAprAddress } from '../../../../utils/apr'
 
 const StyledCard = styled(Card)`
@@ -101,7 +101,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
     }
   }
   const pairLiquidity = usePairLiquidity(farm.token1, farm.token2)
-  const pylonLiquidity = usePylonLiquidity(farm.token1, farm.token2)
+  const pylonLiquidity = usePairLiquidity(farm.token1, farm.token2)
 
   return (
     <StyledCard isActive={isPromotedFarm}>

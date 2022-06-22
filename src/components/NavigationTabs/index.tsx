@@ -39,7 +39,7 @@ const StyledNavLink = styled(NavLink).attrs({
   text-decoration: none;
   color: ${({ theme }) => theme.tabsText};
   font-size: 16px;
-  padding: 10px 12px;
+  padding: 9px 13px;
   width: 50%;
 
   &.${activeClassName} {

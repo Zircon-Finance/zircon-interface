@@ -112,12 +112,12 @@ export function MinimalPositionCard({ pair, showUnwrapped = false, border }: Pos
             </FixedHeightRow>
             <AutoColumn gap="4px">
               <FixedHeightRow>
-                <Text color="#FFF" fontSize={13} fontWeight={400}>
+                <Text color={theme.text1} fontSize={13} fontWeight={400}>
                   Pooled {currency0.symbol}
                 </Text>
                 {token0Deposited ? (
                   <RowFixed>
-                    <Text color="#FFF" fontSize={13} fontWeight={400} marginLeft={'6px'}>
+                    <Text color={theme.text1} fontSize={13} fontWeight={400} marginLeft={'6px'}>
                       {token0Deposited?.toSignificant(6)}
                     </Text>
                   </RowFixed>
@@ -126,12 +126,12 @@ export function MinimalPositionCard({ pair, showUnwrapped = false, border }: Pos
                 )}
               </FixedHeightRow>
               <FixedHeightRow>
-                <Text color="#FFF" fontSize={13} fontWeight={400}>
+                <Text color={theme.text1} fontSize={13} fontWeight={400}>
                 Pooled {currency1.symbol}
                 </Text>
                 {token1Deposited ? (
                   <RowFixed>
-                    <Text color="#FFF" fontSize={13} fontWeight={400} marginLeft={'6px'}>
+                    <Text color={theme.text1} fontSize={13} fontWeight={400} marginLeft={'6px'}>
                       {token1Deposited?.toSignificant(6)}
                     </Text>
                   </RowFixed>
@@ -344,7 +344,7 @@ export function PylonPositionCard({ isFloat, border, pylon }: PylonPositionCardP
       <FixedHeightRow onClick={() => setShowMore(!showMore)} style={{ cursor: 'pointer' }}>
           <RowFixed>
             <DoubleCurrencyLogo currency0={currency0} currency1={currency1} margin={true} size={28} />
-            {!isFloat ? (
+            {isFloat ? (
               <>
               <Flex>  
                 <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '10px', marginRight: '5px',  display: 'flex', alignItems: 'center'}}>
@@ -466,8 +466,8 @@ export function PylonPositionCard({ isFloat, border, pylon }: PylonPositionCardP
 export function MinimalPositionPylonCard({ pylon, showUnwrapped = false, border, isFloat}: PylonPositionCardProps) {
   const { account } = useActiveWeb3React()
 
-  const currency0 = showUnwrapped ? pylon.pair.token0 : unwrappedToken(pylon.pair.token0)
-  const currency1 = showUnwrapped ? pylon.pair.token1 : unwrappedToken(pylon.pair.token1)
+  const currency0 = showUnwrapped ? pylon.token1 : unwrappedToken(pylon.token0)
+  const currency1 = showUnwrapped ? pylon.token0 : unwrappedToken(pylon.token1)
 
   const [showMore, setShowMore] = useState(false)
 
@@ -601,13 +601,13 @@ export function MinimalPositionPylonCard({ pylon, showUnwrapped = false, border,
             </FixedHeightRow>
             <AutoColumn gap="4px">
               <FixedHeightRow>
-                <Text color="#FFF" fontSize={13} fontWeight={400}>
+                <Text color={theme.text1} fontSize={13} fontWeight={400}>
                   Pooled {currency0.symbol}
                 </Text>
                 {token0Deposited ? (
                   <RowFixed>
                     <Text
-                      color="#FFF"
+                      color={theme.text1}
                       fontSize={13}
                       fontWeight={400}
                       marginLeft={"6px"}
@@ -620,13 +620,13 @@ export function MinimalPositionPylonCard({ pylon, showUnwrapped = false, border,
                 )}
               </FixedHeightRow>
               <FixedHeightRow>
-                <Text color="#FFF" fontSize={13} fontWeight={400}>
+                <Text color={theme.text1} fontSize={13} fontWeight={400}>
                   Pooled {currency1.symbol}
                 </Text>
                 {token1Deposited ? (
                   <RowFixed>
                     <Text
-                      color="#FFF"
+                      color={theme.text1}
                       fontSize={13}
                       fontWeight={400}
                       marginLeft={"6px"}

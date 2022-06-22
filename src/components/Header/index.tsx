@@ -4,7 +4,7 @@ import React from 'react'
 import { Text } from 'rebass'
 import { useLocation } from 'react-router-dom';
 
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
 import Logo from '../../assets/images/mainlogo.png'
 import DarkLogo from '../../assets/images/mainlogo-dark.png'
@@ -85,7 +85,6 @@ const Title = styled.a`
 
 const AccountElement = styled.div<{ active: boolean }>`
   display: flex;
-  justify-content: space-between;
   flex-direction: row;
   align-items: center;
   background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.walletActive)};
@@ -96,7 +95,6 @@ const AccountElement = styled.div<{ active: boolean }>`
     border: 1px solid blue;
   }
   @media (min-width: 700px) {
-    width: 250px;
     height: 60px;
   }
   @media (max-width: 700px) {
@@ -174,7 +172,7 @@ export default function Header() {
   const { chainId } = useActiveWeb3React();
   const [darkMode, toggleSetDarkMode] = useDarkModeManager();
   const [showClaimTokens, setShowClaimTokens] = React.useState(false);
-  // const theme = useTheme();
+  const theme = useTheme();
 
   return (
     <HeaderFrame>
@@ -227,11 +225,11 @@ export default function Header() {
               outline: 'none', 
               backgroundColor: 'transparent', 
               cursor: 'pointer',
-            marginRight: '20px'}} 
+            marginRight: '10px'}} 
               onClick={() => darkMode ? toggleSetDarkMode() : toggleSetDarkMode()}>
             <SunLogo  />
             </button>
-            <ButtonOutlined mr="10px" onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined>
+            <ButtonOutlined mr="10px" style={{border: `1px solid ${theme.navigationTabs}`}} onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined>
            {/* <ChainPoolTab active={chainId !== 1287 ? 'moonbeam' : 'moonriver'} /> */}
           </HeaderElement> </> :
           <div style={{display: 'grid', gridGap: '15px'}}>
@@ -240,11 +238,11 @@ export default function Header() {
               outline: 'none', 
               backgroundColor: 'transparent', 
               cursor: 'pointer',
-            marginRight: '20px'}} 
+            marginRight: '10px'}} 
               onClick={() => darkMode ? toggleSetDarkMode() : toggleSetDarkMode()}>
             <SunLogo  />
             </button>
-            <ButtonOutlined mr="10px" onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined>
+            <ButtonOutlined mr="10px" style={{border: `1px solid ${theme.navigationTabs}`}} onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined>
            {/* <ChainPoolTab active={chainId !== 1287 ? 'moonbeam' : 'moonriver'} /> */}
            </HeaderElement>
            <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : location.pathname === '/farm' ? 'farm' : 'pool'} />
@@ -252,7 +250,7 @@ export default function Header() {
           <HeaderControls>
           <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
               {account && userEthBalance ? (
-                <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={400}>
+                <BalanceText style={{ flexShrink: 0 }} pl="1.25rem" pr="0.5rem" fontWeight={400}>
                   {userEthBalance?.toSignificant(4)} DEV
                 </BalanceText>
               ) : null}
@@ -276,11 +274,11 @@ export default function Header() {
               outline: 'none', 
               backgroundColor: 'transparent', 
               cursor: 'pointer',
-            marginRight: '20px'}} 
+            marginRight: '10px'}} 
               onClick={() => darkMode ? toggleSetDarkMode() : toggleSetDarkMode()}>
             <SunLogo  />
             </button>
-            <ButtonOutlined mr="10px" onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined>
+            <ButtonOutlined mr="10px" style={{border: `1px solid ${theme.navigationTabs}`}} onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined>
            {/* <ChainPoolTab active={chainId !== 1287 ? 'moonbeam' : 'moonriver'} /> */}
            </> 
           </HeaderElement>

@@ -68,7 +68,6 @@ export const usePool = (sousId: number): { pool: DeserializedPool; userDataLoade
 export const usePylonLiquidity = (token1, token2) => {
   const [tokenA, tokenB] = [useCurrency(token1.address), useCurrency(token2.address)]
   const [, pylon] = usePylon(tokenA, tokenB)
-  // const pylonPoolBalance = useTokenBalance(pylon?.address, pylon?.pair.liquidityToken)
   const anchorPoolBalance = useTokenBalance(pylon?.address,pylon?.token0)
   const floatPoolBalance = useTokenBalance(pylon?.address,pylon?.token1)
   return `${anchorPoolBalance?.toFixed(3) as unknown as number} ${tokenA?.symbol} - 
@@ -78,11 +77,12 @@ export const usePylonLiquidity = (token1, token2) => {
 export const usePairLiquidity = (token1, token2) => {
   const [tokenA, tokenB] = [useCurrency(token1.address), useCurrency(token2.address)]
   const [, pair] = usePair(tokenA, tokenB)
-  // const pylonPoolBalance = useTokenBalance(pylon?.address, pylon?.pair.liquidityToken)
-  // const token1Balance = useTokenBalance(pair?.reserve0,pair?.token0)
-  // const token2Balance = useTokenBalance(pair?.address,pair?.token1)
-  return `${pair?.reserve0?.toFixed(3) as unknown as number} ${tokenA?.symbol} - 
-  ${pair?.reserve1?.toFixed(3) as unknown as number} ${tokenB?.symbol}`
+  const [, pylon] = usePylon(tokenA, tokenB)
+
+  const anchorPoolBalance = useTokenBalance(pair?.liquidityToken.address,pylon?.token0)
+  const floatPoolBalance = useTokenBalance(pair?.liquidityToken.address,pylon?.token1)
+  return `${anchorPoolBalance?.toFixed(3) as unknown as number} ${tokenA?.symbol} - 
+  ${floatPoolBalance?.toFixed(3) as unknown as number} ${tokenB?.symbol}`
 }
 
 // export const usePoolsWithVault = () => {

@@ -36,7 +36,7 @@ export const LightPinkCard = styled(Card)`
 `
 
 export const OutlineCard = styled(Card)`
-  border: 1px solid ${({ theme }) => theme.whiteHalf};
+  border: 1px solid ${({ theme }) => theme.navigationTabs};
 `
 
 export const YellowCard = styled(Card)`

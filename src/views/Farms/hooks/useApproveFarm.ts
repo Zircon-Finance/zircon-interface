@@ -9,100 +9,46 @@ import { useSousChef } from '../../../hooks/useContract'
 // import { useSWRContract, UseSWRContractKey } from 'hooks/useSWRContract'
 import useCatchTxError from '../../../hooks/useCatchTxError'
 import { useDispatch } from 'react-redux'
-import { updateUserAllowance } from '../../../state/pools'
+import { fetchPoolsUserDataAsync } from '../../../state/pools'
+import { useAddPopup } from '../../../state/application/hooks'
+import { useTransactionAdder } from '../../../state/transactions/hooks'
 
-const useApprovePool = (lpContract: Contract, sousId, earningTokenSymbol) => {
+const useApprovePool = (pool,lpContract: Contract, sousId) => {
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
   const { callWithGasPrice } = useCallWithGasPrice()
   const dispatch = useDispatch()
   const { account } = useWeb3React()
+  const addPopup = useAddPopup()
+  const addTransaction = useTransactionAdder()
   const sousChefContract = useSousChef(sousId)
 
   const handleApprove = useCallback(async () => {
     const receipt = await fetchWithCatchTxError(() => {
-      return callWithGasPrice(lpContract, 'approve', [sousChefContract.address, MaxUint256])
+      return callWithGasPrice(lpContract, 'approve', [sousChefContract.address, MaxUint256]).then(response => {
+        addTransaction(response, {
+          summary:  `Enable ${pool.token1.symbol}-${pool.token2.symbol} stake contract`
+        })
+        return response
+      })
     })
+
     if (receipt?.status) {
-      // toastSuccess(
-      //   t('Contract Enabled'),
-      //   <ToastDescriptionWithTx txHash={receipt.transactionHash}>
-      //     {t('You can now stake in the %symbol% pool!', { symbol: earningTokenSymbol })}
-      //   </ToastDescriptionWithTx>,
-      // )
-      dispatch(updateUserAllowance({ sousId, account }))
+      addPopup(
+        {
+          txn: {
+            hash: receipt.transactionHash,
+            success: true,
+            summary: 'Contract enabled!',
+          }
+        },
+        receipt.transactionHash
+      )  
+      dispatch(fetchPoolsUserDataAsync(account))
     }
-  }, [
-    account,
-    dispatch,
-    lpContract,
-    sousChefContract,
-    sousId,
-    callWithGasPrice,
-    fetchWithCatchTxError,
-  ])
+  }
+  , [account, addPopup, addTransaction, dispatch, lpContract, pool, sousChefContract, fetchWithCatchTxError, callWithGasPrice])
 
   return { handleApprove, pendingTx }
 }
 
 export default useApprovePool
-
-// Approve CAKE auto pool
-// export const useVaultApprove = (vaultKey: VaultKey, setLastUpdated: () => void) => {
-//   const { t } = useTranslation()
-//   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
-//   const vaultPoolContract = useVaultPoolContract(vaultKey)
-//   const { callWithGasPrice } = useCallWithGasPrice()
-//   const { signer: cakeContract } = useCake()
-
-//   const handleApprove = async () => {
-//     const receipt = await fetchWithCatchTxError(() => {
-//       return callWithGasPrice(cakeContract, 'approve', [vaultPoolContract.address, MaxUint256])
-//     })
-//     if (receipt?.status) {
-//       // toastSuccess(
-//       //   t('Contract Enabled'),
-//       //   <ToastDescriptionWithTx txHash={receipt.transactionHash}>
-//       //     {t('You can now stake in the %symbol% vault!', { symbol: 'CAKE' })}
-//       //   </ToastDescriptionWithTx>,
-//       // )
-//       setLastUpdated()
-//     }
-//   }
-
-//   return { handleApprove, pendingTx }
-// }
-
-// export const useCheckVaultApprovalStatus = (vaultKey: VaultKey) => {
-//   const { account } = useWeb3React()
-//   const { reader: cakeContract } = useCake()
-//   const vaultPoolContract = useVaultPoolContract(vaultKey)
-
-//   const key = useMemo<UseSWRContractKey>(
-//     () =>
-//       account
-//         ? {
-//             contract: cakeContract,
-//             methodName: 'allowance',
-//             params: [account, vaultPoolContract.address],
-//           }
-//         : null,
-//     [account, cakeContract, vaultPoolContract.address],
-//   )
-
-//   const { data, mutate } = useSWRContract(key)
-
-//   return { isVaultApproved: data ? data.gt(0) : false, setLastUpdated: mutate }
-// }
-
-
-// const useApproveFarm = (lpContract: Contract) => {
-//   const masterChefContract = useMasterchef()
-//   const { callWithGasPrice } = useCallWithGasPrice()
-//   const handleApprove = useCallback(async () => {
-//     return callWithGasPrice(lpContract, 'approve', [masterChefContract.address, MaxUint256])
-//   }, [lpContract, masterChefContract, callWithGasPrice])
-
-//   return { onApprove: handleApprove }
-// }
-
-// export default useApproveFarm

@@ -24,7 +24,7 @@ const pools: SerializedPoolConfig[] = [
     stakingToken: new Token(MOONBASE, Pylon.getLiquidityAddresses(
       new Token(MOONBASE, serializedTokens.saturn.address, 18, serializedTokens.saturn.symbol, serializedTokens.saturn.name), 
       new Token(MOONBASE, serializedTokens.mars.address, 18, serializedTokens.mars.symbol, serializedTokens.mars.name), 
-      )[1], 18, 'ZPT', 'Zircon'),
+      )[0], 18, 'ZPT', 'Zircon'),
     contractAddress: '0xB47fD62Fe0F5B71C88276D18464B39Ea53b7eD02',
     poolCategory: PoolCategory.CORE,
     harvest: true,
@@ -42,7 +42,7 @@ const pools: SerializedPoolConfig[] = [
     stakingToken: new Token(MOONBASE, Pylon.getLiquidityAddresses(
       new Token(MOONBASE, serializedTokens.saturn.address, 18, serializedTokens.saturn.symbol, serializedTokens.saturn.name), 
       new Token(MOONBASE, serializedTokens.mars.address, 18, serializedTokens.mars.symbol, serializedTokens.mars.name), 
-      )[0], 18, 'ZPT', 'Zircon'),
+      )[1], 18, 'ZPT', 'Zircon'),
     contractAddress: '0xd85371C379eF223BE4703C6B5c98b40EA45BD9E6',
     poolCategory: PoolCategory.CORE,
     harvest: true,
@@ -60,7 +60,7 @@ const pools: SerializedPoolConfig[] = [
     stakingToken: new Token(MOONBASE, Pylon.getLiquidityAddresses(
       new Token(MOONBASE, serializedTokens.neptune.address, 18, serializedTokens.neptune.symbol, serializedTokens.neptune.name), 
       new Token(MOONBASE, serializedTokens.mercury.address, 18, serializedTokens.mercury.symbol, serializedTokens.mercury.name), 
-      )[1], 18, 'ZPT', 'Zircon'),
+      )[0], 18, 'ZPT', 'Zircon'),
     contractAddress: '0x484b1b67448135f9bf598Ffa2868F61A9D8BA28d',
     poolCategory: PoolCategory.CORE,
     harvest: true,
@@ -78,7 +78,7 @@ const pools: SerializedPoolConfig[] = [
     stakingToken: new Token(MOONBASE, Pylon.getLiquidityAddresses(
       new Token(MOONBASE, serializedTokens.neptune.address, 18, serializedTokens.neptune.symbol, serializedTokens.neptune.name), 
       new Token(MOONBASE, serializedTokens.mercury.address, 18, serializedTokens.mercury.symbol, serializedTokens.mercury.name), 
-      )[0], 18, 'ZPT', 'Zircon'),
+      )[1], 18, 'ZPT', 'Zircon'),
     contractAddress: '0x7e17376890d2AFB6Ce87E4606891c78961e16533',
     poolCategory: PoolCategory.CORE,
     harvest: true,

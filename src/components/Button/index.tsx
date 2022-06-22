@@ -42,7 +42,7 @@ export const ButtonPrimary = styled(Base)`
   background-color: ${({ theme }) => theme.bg8};
   color: white;
   &:hover {
-    background-color: ${({ theme }) => theme.navigationTabs};
+    background-color: ${({ theme }) => theme.colors.input};
   }
   &:active {
     background-color: ${({ theme }) => theme.navigationBorder};

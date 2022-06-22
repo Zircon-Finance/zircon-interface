@@ -74,7 +74,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     bg12: chainId !== 1287 ? '#5B4874' : '#634d58',
     // button purple
     bg13: chainId !== 1287 ? '#5F299F' : '#361E2A',
-    bg14: chainId !== 1287 ? '#4E386B' : darkMode ? '#5C2C40' : '#f5f3f3',
+    bg14: chainId !== 1287 ? '#4E386B' : darkMode ? '#592e40' : '#f5f3f3',
     //specialty colors
     modalBG: chainId !== 1287 ? '#3c2955A1' : darkMode ? '#3a1c29a0' : '#FCFCFDA1',
     advancedBG: 'rgba(0,0,0,0.1)',
@@ -131,7 +131,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
 
     liquidityBg: chainId !== 1287 ? '#260B42' : darkMode ? '#331924' : '#F5F3F6',
 
-    walletModal: chainId !== 1287 ? '#3c2955' : darkMode ? '#492F3D' : '#fff',
+    walletModal: chainId !== 1287 ? '#3c2955' : darkMode ? '#52273a' : '#fff',
 
     // color text
     primaryText1: '#ffffff',
@@ -308,7 +308,6 @@ export const TYPE = {
 export const FixedGlobalStyle = createGlobalStyle`
 html, input, textarea, button {
   font-family: 'DM sans', sans-serif;
-  letter-spacing: -0.018em;
   font-display: fallback;
 }
 @supports (font-variation-settings: normal) {

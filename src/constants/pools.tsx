@@ -20,7 +20,7 @@ const pools: SerializedPoolConfig[] = [
     token2: serializedTokens.mars,
     isClassic: false,
     isAnchor: false,
-    earningToken: serializedTokens.pluto,
+    earningToken: serializedTokens.saturn,
     stakingToken: new Token(MOONBASE, Pylon.getLiquidityAddresses(
       new Token(MOONBASE, serializedTokens.saturn.address, 18, serializedTokens.saturn.symbol, serializedTokens.saturn.name), 
       new Token(MOONBASE, serializedTokens.mars.address, 18, serializedTokens.mars.symbol, serializedTokens.mars.name), 
@@ -38,7 +38,7 @@ const pools: SerializedPoolConfig[] = [
     token2: serializedTokens.mars,
     isClassic: false,
     isAnchor: true,
-    earningToken: serializedTokens.pluto,
+    earningToken: serializedTokens.saturn,
     stakingToken: new Token(MOONBASE, Pylon.getLiquidityAddresses(
       new Token(MOONBASE, serializedTokens.saturn.address, 18, serializedTokens.saturn.symbol, serializedTokens.saturn.name), 
       new Token(MOONBASE, serializedTokens.mars.address, 18, serializedTokens.mars.symbol, serializedTokens.mars.name), 
@@ -56,7 +56,7 @@ const pools: SerializedPoolConfig[] = [
     token2: serializedTokens.mercury,
     isClassic: false,
     isAnchor: false,
-    earningToken: serializedTokens.pluto,
+    earningToken: serializedTokens.neptune,
     stakingToken: new Token(MOONBASE, Pylon.getLiquidityAddresses(
       new Token(MOONBASE, serializedTokens.neptune.address, 18, serializedTokens.neptune.symbol, serializedTokens.neptune.name), 
       new Token(MOONBASE, serializedTokens.mercury.address, 18, serializedTokens.mercury.symbol, serializedTokens.mercury.name), 
@@ -74,7 +74,7 @@ const pools: SerializedPoolConfig[] = [
     token2: serializedTokens.mercury,
     isClassic: false,
     isAnchor: true,
-    earningToken: serializedTokens.pluto,
+    earningToken: serializedTokens.neptune,
     stakingToken: new Token(MOONBASE, Pylon.getLiquidityAddresses(
       new Token(MOONBASE, serializedTokens.neptune.address, 18, serializedTokens.neptune.symbol, serializedTokens.neptune.name), 
       new Token(MOONBASE, serializedTokens.mercury.address, 18, serializedTokens.mercury.symbol, serializedTokens.mercury.name), 

@@ -70,31 +70,6 @@ const initialState: PoolsState = {
   // cakeVault: initialPoolVaultState,
 }
 
-// const cakeVaultAddress = getCakeVaultAddress()
-
-export const fetchCakePoolPublicDataAsync = () => async (dispatch, getState) => {
-  const farmsData = getState().farms.data
-  const prices = getTokenPricesFromFarm(farmsData)
-
-  const cakePool = poolsConfig.filter((p) => p.sousId === 0)[0]
-
-  const stakingTokenAddress = cakePool.stakingToken.address ? cakePool.stakingToken.address.toLowerCase() : null
-  const stakingTokenPrice = stakingTokenAddress ? prices[stakingTokenAddress] : 0
-
-  const earningTokenAddress = cakePool.earningToken.address ? cakePool.earningToken.address.toLowerCase() : null
-  const earningTokenPrice = earningTokenAddress ? prices[earningTokenAddress] : 0
-
-  dispatch(
-    setPoolPublicData({
-      sousId: 0,
-      data: {
-        stakingTokenPrice,
-        earningTokenPrice,
-      },
-    }),
-  )
-}
-
 export const fetchCakePoolUserDataAsync = (account: string) => async (dispatch) => {
   const allowanceCall = {
     address: tokens.cake.address,
@@ -136,7 +111,7 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
     const activePriceHelperLpsConfig = priceHelperLpsConfig.filter((priceHelperLpConfig) => {
       return (
         poolsConfig
-          .filter((pool) => pool.earningToken.address.toLowerCase() === priceHelperLpConfig.token.address.toLowerCase())
+          .filter((pool) => pool.earningToken.map((token) => token.address.toLowerCase() === priceHelperLpConfig.token.address.toLowerCase()))
           .filter((pool) => {
             // const poolBlockLimit = blockLimits.find((blockLimit) => blockLimit.sousId === pool.sousId)
             // if (poolBlockLimit) {
@@ -169,14 +144,15 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
       const stakingTokenAddress = pool.stakingToken.address ? pool.stakingToken.address.toLowerCase() : null
       const stakingTokenPrice = stakingTokenAddress ? prices[stakingTokenAddress] : 0
 
-      const earningTokenAddress = pool.earningToken.address ? pool.earningToken.address.toLowerCase() : null
-      const earningTokenPrice = earningTokenAddress ? prices[earningTokenAddress] : 0
+      const earningTokenAddress = pool.earningToken.map((token) => token.address ? token.address.toLowerCase() : null)
+      const earningTokenPrice = earningTokenAddress ? earningTokenAddress.map((token) => prices[token]) : [0,0]
       const apr = !isPoolFinished
         ? getPoolApr(
             stakingTokenPrice,
             earningTokenPrice,
             getBalanceNumber(new BigNumber(totalStaking.totalStaked), pool.stakingToken.decimals),
-            parseFloat(pool.tokenPerBlock),
+            // parseFloat(pool.tokenPerBlock),
+            1,
           )
         : 0
 

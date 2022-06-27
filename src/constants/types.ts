@@ -90,8 +90,8 @@ export interface PoolDeployedBlockNumber {
 interface PoolConfigBaseProps {
   sousId: number
   contractAddress: string
+  vaultAddress: string
   poolCategory: PoolCategory
-  tokenPerBlock: string
   sortOrder?: number
   harvest?: boolean
   isFinished?: boolean
@@ -106,7 +106,7 @@ export interface SerializedPoolConfig extends PoolConfigBaseProps {
   isAnchor?: boolean
   token1: SerializedToken
   token2: SerializedToken
-  earningToken: SerializedToken
+  earningToken: SerializedToken[]
   stakingToken: SerializedToken
 }
 
@@ -115,7 +115,7 @@ export interface DeserializedPoolConfig extends PoolConfigBaseProps {
   isAnchor?: boolean
   token1: SerializedToken
   token2: SerializedToken
-  earningToken: Token
+  earningToken: Token[]
   stakingToken: Token
 }
 

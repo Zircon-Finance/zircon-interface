@@ -20,11 +20,10 @@ const StyledMenuButton = styled.button`
   position: relative;
   width: 100%;
   height: 100%;
-  border: 1px solid rgba(89, 73, 110, 0.4);
-  background-color: transparent;
+  background-color: ${({ theme }) => theme.colors.inputSecondary};
   margin: 0;
   padding: 0;
-  background-color: ${({ theme }) => theme.bg1};
+  border: none;
   margin-right: 5px;
   padding: 15px 0 15px 0;
   border-radius: 17px;
@@ -33,7 +32,7 @@ const StyledMenuButton = styled.button`
   :focus {
     cursor: pointer;
     outline: none;
-    background-color: ${({ theme }) => theme.bg9};
+    background-color: ${({ theme }) => theme.bg12};
   }
 
   svg {

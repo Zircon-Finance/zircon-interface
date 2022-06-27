@@ -65,7 +65,7 @@ const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
   }
 
   path {
-    stroke: ${({ selected, theme }) => (selected ? theme.text1 : theme.white)};
+    stroke: ${({ selected, theme }) => (selected ? theme.whiteHalf : theme.whiteHalf)};
     stroke-width: 1.5px;
   }
 `

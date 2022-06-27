@@ -19,7 +19,7 @@ export interface ExpandableSectionProps {
   quoteToken: SerializedToken;
   isClassic: boolean;
   isAnchor?: boolean;
-  earningToken: SerializedToken;
+  earningToken: SerializedToken[];
 }
 
 const Wrapper = styled(Flex)`
@@ -36,6 +36,8 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
   quoteToken,
 }) => {
   const theme = useTheme();
+  let rewardTokens = ''
+  earningToken.forEach(token => rewardTokens += `${token.symbol} `)
   return (
     <div style={{ padding: "10px", marginBottom: "10px", color: theme.text1 }}>
       <Wrapper justifyContent="space-between" alignItems="center" mb="12px">
@@ -150,7 +152,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
         <div>
           <p
             style={{ margin: "0", marginBottom: "5px" }}
-          >{`Earn ${earningToken.symbol}`}</p>
+          >{`Earn ${rewardTokens}`}</p>
           <p style={{ margin: "0", textAlign: "right" }}>{"254.15"}</p>
         </div>
       </SpaceBetween>

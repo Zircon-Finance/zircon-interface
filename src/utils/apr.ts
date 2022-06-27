@@ -16,11 +16,12 @@ export const CAKE_PER_YEAR = CAKE_PER_BLOCK * BLOCKS_PER_YEAR
  */
 export const getPoolApr = (
   stakingTokenPrice: number,
-  rewardTokenPrice: number,
+  rewardTokenPrice: number[],
   totalStaked: number,
   tokenPerBlock: number,
 ): number => {
-  const totalRewardPricePerYear = new BigNumber(rewardTokenPrice).times(tokenPerBlock).times(BLOCKS_PER_YEAR)
+  const totalRewardPricePerYear = new BigNumber(rewardTokenPrice[0]).times(tokenPerBlock).times(BLOCKS_PER_YEAR)
+  // To fix ^ 
   const totalStakingTokenInPool = new BigNumber(stakingTokenPrice).times(totalStaked)
   const apr = totalRewardPricePerYear.div(totalStakingTokenInPool).times(100)
   return apr.isNaN() || !apr.isFinite() ? null : apr.toNumber()

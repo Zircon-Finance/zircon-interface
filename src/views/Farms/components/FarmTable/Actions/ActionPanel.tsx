@@ -209,7 +209,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const farm = details
   const staked = details.userData.stakedBalance.gt(0)
   const { t } = useTranslation()
-  const { earningToken, stakingToken, isAnchor, token1, token2, isClassic } = farm
+  const { isAnchor, token1, token2, isClassic } = farm
   const lpLabel = `${farm.token1.symbol}-${farm.token2.symbol}`
   // getLiquidityUrlPathParts({
   //   quoteTokenAddress: quoteToken.address,
@@ -290,7 +290,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           txn: {
             hash: receipt.transactionHash,
             success: receipt.status === 1,
-            summary: 'Staked '+amount+' '+earningToken.symbol+"-"+stakingToken.symbol+' LP to farm',
+            summary: 'Staked '+amount+' '+token1.symbol+"-"+token2.symbol+' LP to farm',
           }
         },
         receipt.transactionHash

@@ -49,7 +49,7 @@ export const ButtonPrimary = styled(Base)`
   }
   &:disabled {
     background-color: ${({ theme, altDisabledStyle }) => (altDisabledStyle ? theme.primary1 : theme.disabled1)};
-    color: ${({ theme, altDisabledStyle }) => (altDisabledStyle ? 'white' : theme.text3)};
+    color: ${({ theme, altDisabledStyle }) => (altDisabledStyle ? 'white' : theme.whiteHalf)};
     cursor: auto;
     box-shadow: none;
     border: 1px solid transparent;
@@ -138,8 +138,8 @@ export const ButtonGray = styled(Base)`
 `
 
 export const ButtonSecondary = styled(Base)`
-  background-color: ${({ theme }) => theme.bg11};
-  color: ${({ theme }) => theme.primaryText1};
+  background-color: ${({ theme }) => theme.colors.inputSecondary};
+  color: ${({ theme }) => theme.text1};
   font-size: 16px;
   border-radius: 8px;
   padding: ${({ padding }) => (padding ? padding : '10px')};
@@ -192,7 +192,8 @@ export const ButtonOutlined = styled(Base)`
     box-shadow: 0 0 0 1px ${({ theme }) => theme.bg4};
   }
   &:hover {
-    background-color: ${({ theme }) => theme.bg14};
+    background-color: ${({ theme }) => theme.outlinedHover};
+    color: ${({ theme }) => theme.text1} !important;
   }
   &:active {
     box-shadow: 0 0 0 1px ${({ theme }) => theme.bg4};

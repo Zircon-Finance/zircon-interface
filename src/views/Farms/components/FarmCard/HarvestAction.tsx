@@ -20,7 +20,7 @@ import { Token } from 'zircon-sdk'
 interface FarmCardActionsProps {
   earnings?: BigNumber
   pid?: number
-  earningToken: Token
+  earningToken: Token[]
 }
 
 const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken,earnings, pid }) => {
@@ -36,6 +36,8 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken,earnings, 
   const theme = useTheme()
   const addPopup = useAddPopup()
   const addTransaction = useTransactionAdder()
+  let rewardTokens = ''
+  earningToken.forEach(token => rewardTokens += `${token.symbol} `)
 
   return (
     <Flex mb="8px" justifyContent="space-between" alignItems="center">
@@ -50,7 +52,7 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken,earnings, 
           const receipt = await fetchWithCatchTxError(() => {
             return onReward().then((response) => {
               addTransaction(response, {
-                summary: 'Harvest '+earningToken.symbol+' tokens'
+                summary: 'Harvest '+ rewardTokens + ' tokens'
               })
               return response
             })

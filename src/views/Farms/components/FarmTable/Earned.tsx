@@ -5,6 +5,7 @@ import MinusIcon from '../MinusIcon'
 import { expandAnimation, collapseAnimation } from './Staked'
 import { Flex, Text } from 'rebass'
 import { useWindowDimensions } from '../../../../hooks'
+import Balance from '../../../../components/Balance'
 
 export interface EarnedProps {
   earnings: number
@@ -48,16 +49,17 @@ const DialogContainer = styled.div<{ show }>`
 
 const AbsContainer = styled.div`
   position: absolute;
-  left: 50px;
+  left: 65px;
   svg {
     pointer-events: none;
   }
 `
 
-const Earned: React.FunctionComponent<EarnedPropsWithLoading> = ({ earnings, userDataReady, hovered, setHovered }) => {
+const Earned: React.FunctionComponent<EarnedPropsWithLoading> = ({ pid, earnings, userDataReady, hovered, setHovered }) => {
   const [hoverMinus, setHoverMinus] = React.useState(false)
   const theme = useTheme()
   const { width } = useWindowDimensions()
+
   const minusContent = (
     <DialogContainer show={hoverMinus}>
       <Text style={{color: '#FFF'}}>
@@ -67,7 +69,9 @@ const Earned: React.FunctionComponent<EarnedPropsWithLoading> = ({ earnings, use
   )
   if (userDataReady) {
     return <div style={{position: 'relative', display: 'flex', alignItems: 'center'}}>
-    <Amount earned={earnings}>{earnings.toLocaleString()}</Amount>
+    <Amount earned={earnings}>
+      <Balance fontSize="13px" color={theme.whiteHalf} decimals={2} value={earnings} unit="" prefix="~ $" />
+    </Amount>
     { 
     // earnings > 0 && 
     width >= 1100 && hovered &&

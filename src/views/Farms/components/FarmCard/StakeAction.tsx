@@ -87,7 +87,7 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
 
   const handleUnstake = async (amount: string) => {
     const receipt = await fetchWithCatchTxError(() => {
-      return onUnstake(amount, earningToken.decimals).then((response) => {
+      return onUnstake(amount, token1.decimals).then((response) => {
         addTransaction(response, {
           summary: 'Unstake '+ amount+ ' ' + pool.token1.symbol+ "-" +pool.token2.symbol+' LP tokens'
         })
@@ -112,6 +112,9 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
   const staked = parseFloat(getBalanceAmount(stakedBalance).toFixed(6))
   const maxStake = parseFloat(getBalanceAmount(tokenBalance).toFixed(6))
   const percentage = (staked*100/(staked + maxStake)).toString()
+
+  let rewardTokens = ''
+  earningToken.forEach(token => rewardTokens += `${token.symbol} `)
 
   const renderStakingButtons = () => {
     return stakedBalance.eq(0) ? (
@@ -151,7 +154,7 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
           onConfirm={handleStake}
           tokenName={'lpSymbol'}
           addLiquidityUrl={'#/add-pro/'+token1.address+'/'+token2.address}
-          token={earningToken}
+          token={stakingToken}
           />
         }
 
@@ -172,7 +175,7 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
         stakedBalance={stakedBalance}
         lpSymbol={'lpSymbol'}
         quoteTokenSymbol={stakingToken.symbol}
-        tokenSymbol={earningToken.symbol}
+        tokenSymbol={`${rewardTokens}`}
         lpTotalSupply={1 as unknown as BigNumber}
         tokenAmountTotal={1 as unknown as BigNumber}
         quoteTokenAmountTotal={1 as unknown as BigNumber}

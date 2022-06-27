@@ -215,6 +215,8 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const stakedAmount = usePool(details.sousId).pool.userData.stakedBalance.toNumber()
   const toggleWalletModal = useWalletModalToggle()
   const darkMode = useIsDarkMode()
+  let rewardTokens = ''
+  props.farm.earningToken.forEach((token) => rewardTokens += `${token.symbol} `)
 
   const handleRenderRow = () => {
     if (!mobileVer) {
@@ -251,7 +253,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                             <div style={{width: '40%', display: 'flex', marginLeft: '20px', alignItems: 'center'}}>
                             {risk ?
                             <RiskHealthIcon /> : <TrendingHealthIcon /> }
-                            <Text ml={'10px'}>{risk ? 'High Risk' : props[key].farmHealth}</Text>
+                            <Text width={"max-content"} ml={'10px'}>{risk ? 'High Risk' : props[key].farmHealth}</Text>
                             <ReferenceElement ref={targetRef}>
                             <div style={{marginLeft: '10px'}}><QuestionMarkIcon /></div>
                             </ReferenceElement>
@@ -282,7 +284,9 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                         </CellLayout>
                       </CellInner>
                     ) : (
-                      <Text color={theme.whiteHalf}>{`Earn ${props.farm.earningToken.symbol}`}</Text>
+                      <Text color={theme.whiteHalf}>
+                        {`Earn ${rewardTokens}`}
+                        </Text>
                   )}
                   </TableData>
                 )

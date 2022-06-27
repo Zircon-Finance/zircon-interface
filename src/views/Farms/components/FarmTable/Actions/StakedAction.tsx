@@ -4,7 +4,6 @@ import { useWeb3React } from '@web3-react/core'
 // import ConnectWalletButton from 'components/ConnectWalletButton'
 // import { BASE_ADD_LIQUIDITY_URL } from 'config'
 import { useTranslation } from 'react-i18next'
-
 import { useERC20, useSousChef } from '../../../../../hooks/useContract'
 import useCatchTxError from '../../../../../hooks/useCatchTxError'
 // import { useRouter } from 'next/router'
@@ -58,6 +57,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
   apr,
   lpLabel,
   contractAddress,
+  vaultAddress,
   earningToken,
   stakingToken,
   userDataReady,
@@ -137,6 +137,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
   const lpContract = useERC20(stakingToken.address)
   const dispatch = useDispatch()
   const sousChefContract = useSousChef(sousId)
+
   const { callWithGasPrice } = useCallWithGasPrice()
   const staked = parseFloat(getBalanceAmount(stakedBalance).toFixed(6))
   const maxStake = parseFloat(getBalanceAmount(tokenBalance).toFixed(6))
@@ -209,10 +210,10 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
         displayApr = '1'
         stakedBalance = {stakedBalance}
         onConfirm = {handleStake}
-        tokenName = {earningToken.name}
+        tokenName = {stakingToken.name}
         addLiquidityUrl = {`#/add-pro/${pool.token1.address}/${pool.token2.address}`}
         cakePrice = {1 as unknown as BigNumber}
-        token = {earningToken}
+        token = {stakingToken}
         />
         }
 
@@ -230,28 +231,10 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
           
         }
         <ActionContainer style={{background: theme.actionPanelBg}}>
-          <ActionTitles>
+          <ActionTitles style={{justifyContent: 'space-between'}}>
             <Text color={theme.text1} fontSize="13px">
-              {t('Staked')}
+              {t('STAKED')}
             </Text>
-          </ActionTitles>
-          <ActionContent>
-            <StakedLP
-              isClassic={isClassic}
-              percentage={percentage}
-              field={Field.LIQUIDITY_PERCENT}
-              isAnchor={isAnchor}
-              max={tokenBalance}
-              token1={deserializeToken(token1)}
-              token2={deserializeToken(token2)}
-              stakedBalance={stakedBalance}
-              lpSymbol={pool.token1.symbol+'-'+pool.token2.symbol}
-              quoteTokenSymbol={pool.token2.symbol}
-              tokenSymbol={pool.token1.symbol}
-              lpTotalSupply={1 as unknown as BigNumber}
-              tokenAmountTotal={1 as unknown as BigNumber}
-              quoteTokenAmountTotal={1 as unknown as BigNumber}
-            />
             <IconButtonWrapper>
             <IconButton 
               style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}} 
@@ -272,6 +255,25 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
                 </Flex>
               </IconButton>
             </IconButtonWrapper>
+          </ActionTitles>
+          <ActionContent>
+            <StakedLP
+              isClassic={isClassic}
+              percentage={percentage}
+              field={Field.LIQUIDITY_PERCENT}
+              isAnchor={isAnchor}
+              max={tokenBalance}
+              token1={deserializeToken(token1)}
+              token2={deserializeToken(token2)}
+              stakedBalance={stakedBalance}
+              lpSymbol={pool.token1.symbol+'-'+pool.token2.symbol}
+              quoteTokenSymbol={pool.token2.symbol}
+              tokenSymbol={pool.token1.symbol}
+              lpTotalSupply={1 as unknown as BigNumber}
+              tokenAmountTotal={1 as unknown as BigNumber}
+              quoteTokenAmountTotal={1 as unknown as BigNumber}
+            />
+            
           </ActionContent>
         </ActionContainer>
         </>

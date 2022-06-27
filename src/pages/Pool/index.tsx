@@ -28,7 +28,7 @@ import { Dots } from '../../components/swap/styleds'
 import {usePylons} from "../../data/PylonReserves";
 import {PylonPositionCard} from "../../components/PositionCard";
 import TriMenu from '../../components/TriMenu'
-import { ButtonOutlined, ButtonPrimary } from '../../components/Button'
+import { ButtonPrimary, ButtonSecondary } from '../../components/Button'
 import { Link } from 'react-router-dom'
 import HistoryTransactions from '../../components/HistoryTransactions'
 import LearnIcon, { SmallerQuestionmark } from '../../components/LearnIcon'
@@ -178,10 +178,11 @@ export default function Pool() {
             <AutoRow style={{padding: '10px'}}>
               {width <= 700 && (<SmallerQuestionmark />)}
               <div style={{width: '15%', height: '100%'}}>
-                <TriMenu />
+                  <TriMenu />
+                
               </div>
               <div style={{width: '85%',display: 'flex', justifyContent: 'center'}}>
-                <ButtonOutlined style={{marginRight: '5px', padding: '0px', fontWeight: '500'}} as={Link} to={'/find'}>{'Import'}</ButtonOutlined>
+                <ButtonSecondary style={{borderRadius: '17px', marginRight: '5px', padding: '0px', fontWeight: '500'}} as={Link} to={'/find'}>{'Import'}</ButtonSecondary>
                 <ButtonPrimary id="add-liquidity-button" as={Link} to={'/add-pro/ETH'} style={{padding: '18px 0 18px 0', fontWeight: '500'}}>{'Add liquidity'}</ButtonPrimary>
               </div>
             </AutoRow>

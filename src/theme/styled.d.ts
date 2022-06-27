@@ -83,6 +83,8 @@ export interface Colors {
 
   pinkGamma: Color
 
+  outlinedHover: Color
+
   walletModal: Color
 
   farmTabsBg: Color

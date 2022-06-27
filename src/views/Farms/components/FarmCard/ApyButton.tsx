@@ -7,11 +7,13 @@ import { useTranslation } from 'react-i18next'
 import { usePool } from '../../../../state/pools/hooks'
 
 const ApyLabelContainer = styled(Flex)`
-  cursor: pointer;
-  color: ${({ theme }) => theme.text1};
-
-  &:hover {
-    opacity: 0.5;
+  font-size: 13px;
+  color: ${({ theme }) => theme.whiteHalf};
+  margin-left: 3px;
+  @media (min-width: 992px) {
+    font-size: 16px;
+    margin-left: 0;
+    color: ${({ theme }) => theme.text1};
   }
 `
 

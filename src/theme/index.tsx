@@ -45,7 +45,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     black: darkMode ? '#000000' : '#FFFFFF',
 
     // text
-    text1: darkMode ? '#FFFFFF' : '#000000',
+    text1: darkMode ? 'rgba(255, 255, 255, 0.9)' : '#000000',
     text2: darkMode ? '#C3C5CB' : '#000f0f',
     text3: darkMode ?'#6C7284'  : '#000f0f',
     text4: darkMode ?'#565A69'  : '#000f0f',
@@ -71,7 +71,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     //button bg
     bg11: chainId !== 1287 ? '#604C7A' : '#5b4450',
     // hover button
-    bg12: chainId !== 1287 ? '#5B4874' : '#634d58',
+    bg12: chainId !== 1287 ? '#5B4874' : darkMode ? '#61414A' : '#EAE0E3',
     // button purple
     bg13: chainId !== 1287 ? '#5F299F' : '#361E2A',
     bg14: chainId !== 1287 ? '#4E386B' : darkMode ? '#592e40' : '#f5f3f3',
@@ -87,13 +87,15 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     primary5: '#BA73ED70',
     maxButton: chainId !== 1287 ? '#311149' : darkMode ? '#3e1f2e' : '#efe7ee',
 
-    disabled1: chainId !== 1287 ? '#36195A' : darkMode ? '#44232E' : '#dfced2',
+    outlinedHover: chainId !== 1287 ? '#381E52' : darkMode ? '#5C3D3B' : '#dfced2',
+
+    disabled1: chainId !== 1287 ? '#36195A' : darkMode ? '#4D2734' : '#dfced2',
 
     inputSelect1: chainId !== 1287 ? '#A987C2' : darkMode ? '#d5aeaf' : '#a69997',
 
-    navigationTabs: chainId !== 1287 ? '#402D54' : darkMode ? '#583935' : '#e7e2e2',
+    navigationTabs: chainId !== 1287 ? '#381956' : darkMode ? '#603D39' : '#e7e2e2',
 
-    navigationBorder: chainId !== 1287 ? '#413055' : darkMode ? '#66393D' : '#e7e2e2',
+    navigationBorder: chainId !== 1287 ? '#3B1F57' : darkMode ? '#61403C' : '#e7e2e2',
 
     anchorFloatBadge: chainId !== 1287 ? '#311f48' : darkMode ? '#442734' : '#eee6e8',
 
@@ -103,7 +105,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
 
     slippageActive: chainId !== 1287 ? '#997aaf' : darkMode ? '#9E4D86' : '#a69997',
 
-    walletActive: chainId !== 1287 ? '#25123C' : darkMode ? '#4e3430' : '#edebea',
+    walletActive: chainId !== 1287 ? '#2A1145' : darkMode ? '#4E302D' : '#edebea',
 
     hoveredButton: chainId !== 1287 ? '#604C7A' : darkMode ? '#9e4d86' : '#874955',
 
@@ -161,8 +163,8 @@ export function colors(chainId: any, darkMode: boolean): Colors {
       dropdown: "#F6F6F6",
       dropdownDeep: "#EEEEEE",
       invertedContrast: chainId !== 1287 ? '#311f48' : darkMode ? '#583834' : '#EAEAEA',
-      input: chainId !== 1287 ? '#311f48' : '#4A303E',
-      inputSecondary: chainId !== 1287 ? '#311f48' : '#4A303E',
+      input: chainId !== 1287 ? '#311f48' : '#8F5661',
+      inputSecondary: chainId !== 1287 ? '#311f48' : darkMode ? '#492B36' : '#F6F2F4',
       tertiary: chainId !== 1287 ? '#311f48' : '#4A303E',
       text: "#FFFFFF",
       textDisabled: "#BDC2C4",

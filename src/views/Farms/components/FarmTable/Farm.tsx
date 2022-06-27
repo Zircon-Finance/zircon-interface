@@ -21,7 +21,7 @@ export interface FarmProps {
   farmHealth: number
   isAnchor: boolean
   isClassic: boolean
-  earningToken: SerializedToken
+  earningToken: SerializedToken[]
 }
 
 const Container = styled.div`
@@ -69,7 +69,7 @@ const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pi
             !isAnchor ? (
             <>
             <Flex>  
-              <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '10px', marginRight: '5px',  display: 'flex', alignItems: 'center'}}>
+              <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', marginRight: '5px',  display: 'flex', alignItems: 'center'}}>
               <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{token.symbol} </span>{'FLOAT'}
               </BadgeSmall>
               <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{` - ${quoteToken.symbol}`}</Text>

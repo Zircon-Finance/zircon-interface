@@ -94,6 +94,9 @@ const AccountElement = styled.div<{ active: boolean }>`
   :focus {
     border: 1px solid blue;
   }
+  :hover {
+    background-color: ${({ theme }) => theme.outlinedHover};
+  }
   @media (min-width: 700px) {
     height: 60px;
   }
@@ -214,7 +217,9 @@ export default function Header() {
             <UniIcon id="z-logo">
               <img style={{ height: 50 }} src={!darkMode ? DarkLogo : Logo} alt="logo" />
             </UniIcon>
-            {chainId === 1287 && <BadgeSmall>{'GAMMA'}</BadgeSmall>}
+            {chainId === 1287 && <BadgeSmall style={{fontSize: '13px', padding: '5px 10px', background: '#56332e', color: '#FFF'}}>
+              {'GAMMA'}
+              </BadgeSmall>}
           </Title>
         </HeaderElement>
         {width > 1100 ? 
@@ -229,7 +234,7 @@ export default function Header() {
               onClick={() => darkMode ? toggleSetDarkMode() : toggleSetDarkMode()}>
             <SunLogo  />
             </button>
-            <ButtonOutlined mr="10px" style={{border: `1px solid ${theme.navigationTabs}`}} onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined>
+            <ButtonOutlined mr="10px" style={{border: `1px solid ${theme.navigationTabs}`, color: theme.meatPink}} onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined>
            {/* <ChainPoolTab active={chainId !== 1287 ? 'moonbeam' : 'moonriver'} /> */}
           </HeaderElement> </> :
           <div style={{display: 'grid', gridGap: '15px'}}>
@@ -242,7 +247,7 @@ export default function Header() {
               onClick={() => darkMode ? toggleSetDarkMode() : toggleSetDarkMode()}>
             <SunLogo  />
             </button>
-            <ButtonOutlined mr="10px" style={{border: `1px solid ${theme.navigationTabs}`}} onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined>
+            <ButtonOutlined mr="10px" style={{border: `1px solid ${theme.navigationTabs}`, color: theme.meatPink}} onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined>
            {/* <ChainPoolTab active={chainId !== 1287 ? 'moonbeam' : 'moonriver'} /> */}
            </HeaderElement>
            <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : location.pathname === '/farm' ? 'farm' : 'pool'} />
@@ -267,7 +272,9 @@ export default function Header() {
               <UniIcon id="z-logo">
                 <ZirconSmall />
               </UniIcon>
-              {chainId === 1287 && <BadgeSmall>{'GAMMA'}</BadgeSmall>}
+              {chainId === 1287 && <BadgeSmall style={{fontSize: '13px', padding: '5px 10px', background: '#56332e', color: '#FFF'}}>
+                {'GAMMA'}
+                </BadgeSmall>}
             </Title>
              <>
             <button  style={{border: 'none', 
@@ -278,7 +285,7 @@ export default function Header() {
               onClick={() => darkMode ? toggleSetDarkMode() : toggleSetDarkMode()}>
             <SunLogo  />
             </button>
-            <ButtonOutlined mr="10px" style={{border: `1px solid ${theme.navigationTabs}`}} onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined>
+            <ButtonOutlined mr="10px" style={{border: `1px solid ${theme.navigationTabs}`, color: theme.meatPink}} onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined>
            {/* <ChainPoolTab active={chainId !== 1287 ? 'moonbeam' : 'moonriver'} /> */}
            </> 
           </HeaderElement>

@@ -3,6 +3,7 @@ import { useWeb3React } from '@web3-react/core'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { useFastRefreshEffect, useSlowRefreshEffect } from '../../hooks/useRefreshEffect'
 import { farms } from '../../constants/farms'
+import {providers} from "ethers";
 import {
   fetchPoolsPublicDataAsync,
   fetchPoolsUserDataAsync,
@@ -25,6 +26,7 @@ import { usePylon } from '../../data/PylonReserves'
 import { useCurrency } from '../../hooks/Tokens'
 import { useTokenBalance } from '../wallet/hooks'
 import { usePair } from '../../data/Reserves'
+import { useSousChef } from '../../hooks/useContract'
 
 export const useFetchPublicPoolsData = () => {
   const dispatch = useDispatch()
@@ -88,6 +90,25 @@ export const usePairLiquidity = (token1, token2) => {
 // export const usePoolsWithVault = () => {
 //   return useSelector(poolsWithVaultSelector)
 // }
+
+export const useStartBlock = async(sousId) => {
+  const sousChefContract = useSousChef(sousId)
+  const startBlock = await sousChefContract.startBlock().then((value) => value.toNumber())
+  return startBlock
+}
+
+export const useEndBlock = async(sousId) => {
+  const sousChefContract = useSousChef(sousId)
+  const endBlock = await sousChefContract.bonusEndBlock().then((value) => value.toNumber())
+  return endBlock
+}
+
+export const useCurrentBlock = async() => {
+  const provider = new providers.Web3Provider(window.ethereum)
+  const blockNumber = await provider.getBlockNumber()
+  return blockNumber
+}
+
 
 export const usePoolsPageFetch = () => {
   const { account } = useWeb3React()

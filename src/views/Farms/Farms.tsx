@@ -5,6 +5,7 @@ import BigNumber from 'bignumber.js'
 import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber'
 import { useWeb3React } from '@web3-react/core'
 import { RowType, Toggle, Text, Flex } from '@pancakeswap/uikit'
+import lpAprs from '../../constants/lpAprs.json'
 // import { ChainId } from 'zircon-sdk'
 // import { NextLinkFromReactRouter } from 'components/NextLink'
 import styled, { useTheme } from 'styled-components'
@@ -277,7 +278,8 @@ const Farms: React.FC = ({ children }) => {
       switch (sortOption) {
         case 'apr':
           // Ternary is needed to prevent pools without APR (like MIX) getting top spot
-          return orderBy(poolsToSort, (pool: DeserializedPool) => (pool.apr ? pool.apr : 0), 'desc')
+          return orderBy(poolsToSort, (pool: DeserializedPool) => 
+          lpAprs[pool.contractAddress] || 0, 'desc')
         case 'earned':
           return orderBy(
             poolsToSort,
@@ -355,9 +357,9 @@ const Farms: React.FC = ({ children }) => {
 
 
   const rowData = chosenPools.map((farm) => {
-    const { earningToken, stakingToken } = farm
-    const tokenAddress = earningToken.address
-    const quoteTokenAddress = stakingToken.address
+    const { token1, token2 } = farm
+    const tokenAddress = token1.address
+    const quoteTokenAddress = token2.address
     const lpLabel = `${farm.token1.symbol}-${farm.token2.symbol}`
 
     const row: RowProps = {

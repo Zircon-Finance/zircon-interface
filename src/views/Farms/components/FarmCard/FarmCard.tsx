@@ -141,7 +141,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
                       : `#/add-pro/${farm.token1.address}/${farm.token2.address}`
                   }
                   cakePrice={(112 as unknown) as BigNumber}
-                  token={farm.earningToken}
+                  token={farm.stakingToken}
                 />
               </ModalContainer>
             )}

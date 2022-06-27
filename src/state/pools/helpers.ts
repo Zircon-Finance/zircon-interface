@@ -57,7 +57,7 @@ export const transformPool = (pool: SerializedPool): DeserializedPool => {
     startBlock,
     profileRequirement: transformProfileRequirement(profileRequirement),
     stakingToken: deserializeToken(stakingToken),
-    earningToken: deserializeToken(earningToken),
+    earningToken: earningToken.map((token) => deserializeToken(token)),
     userData: transformUserData(userData),
     totalStaked: new BigNumber(totalStaked),
     stakingLimit: new BigNumber(stakingLimit),

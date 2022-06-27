@@ -39,6 +39,16 @@ export const ActionContent = styled.div`
   h2 {
     margin: 8px 0;
   }
+  .swiper {
+    max-width: 100%;
+  }
+  .swiper-pagination-bullet {
+    display: none;
+  }
+  .swiper-slide {
+    border-right: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+  }
 `
 
 export const HarvestButton = styled.button`
@@ -50,9 +60,7 @@ export const HarvestButton = styled.button`
   padding: 8px 12px 9px;
   gap: 40px;
   border: none;
-
-  width: 74px;
-  height: 33px;
+  height: 27px;
 
   background: ${({ theme }) => theme.hoveredButton};
   border-radius: 12px;

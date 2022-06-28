@@ -36,6 +36,9 @@ import { usePool } from '../../../../../state/pools/hooks'
 import { fetchPoolsUserDataAsync } from '../../../../../state/pools'
 import { useCallWithGasPrice } from '../../../../../hooks/useCallWithGasPrice'
 import { BIG_ZERO } from '../../../../../utils/bigNumber'
+import RiskHealthIcon from '../../../../../components/RiskHealthIcon'
+import TrendingHealthIcon from '../../../../../components/TrendingHealthIcon'
+import QuestionMarkIcon from '../../../../../components/QuestionMarkIcon'
 
 export interface ActionPanelProps {
   apr: AprProps
@@ -46,6 +49,7 @@ export interface ActionPanelProps {
   userDataReady: boolean
   expanded: boolean
   clickAction: Dispatch<SetStateAction<boolean>>
+  gamma: BigNumber
 }
 
 const expandAnimation = keyframes`
@@ -205,6 +209,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   userDataReady,
   clickAction,
   expanded,
+  gamma,
 }) => {
   const farm = details
   const staked = details.userData.stakedBalance.gt(0)
@@ -298,6 +303,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
       dispatch(fetchPoolsUserDataAsync(account))
     }
   }
+  const risk = gamma && (gamma.isLessThanOrEqualTo(0.7) || gamma.isGreaterThanOrEqualTo(0.5))
 
   return (
     <>
@@ -390,11 +396,17 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           {width >= 800 ? (
           <>
           <SpaceBetween>
-            <Flex flexDirection={'column'}>
-              <StyledLinkExternal style={{marginBottom: '5px'}} color={theme.meatPink} href={bsc}>{t('View Contract')}</StyledLinkExternal>
-              <StyledLinkExternal color={theme.meatPink} href={info}>{t('See Pair Info')}</StyledLinkExternal>
-            </Flex>
-            <span>{'High risk'}</span>
+              <Text color={theme.text1}>{`Earn ${farm.earningToken.map((token) => `${token.symbol}`)}`}</Text>
+              <div style={{width: '50%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
+              {risk ?
+                <RiskHealthIcon /> : <TrendingHealthIcon /> }
+                <Text width={"max-content"} ml={'10px'} color={theme.text1}>{risk ? gamma.toFixed(2) : 'High Risk'}</Text>
+                <div style={{marginLeft: '10px'}}><QuestionMarkIcon /></div>
+              </div>
+          </SpaceBetween>
+          <SpaceBetween>
+              <StyledLinkExternal style={{marginBottom: '5px'}} color={theme.meatPink} href={bsc}>{t('View Contract ↗')}</StyledLinkExternal>
+              <StyledLinkExternal color={theme.meatPink} href={info}>{t('See Pair Info ↗')}</StyledLinkExternal>
           </SpaceBetween>
           </> ) : (
             <>
@@ -432,7 +444,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
     ) : (
       <QuarterContainer >
         {isApproved ? (
-        <StakeAdd clickAction={() => {setShowModal(true)}} row={true} margin={false} width={width > 992 ? '30%' : '60%'} />)
+        <StakeAdd pink={true} clickAction={() => {setShowModal(true)}} row={true} margin={false} width={width > 992 ? '30%' : '60%'} />)
         : (
           <ButtonOutlined style={{background: theme.hoveredButton, border: 'none', color: '#FFF'}} 
           m="auto" width="50%" disabled={pendingTx} onClick={account ? handleApproval : toggleWalletModal}>
@@ -456,7 +468,15 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           <Link to={farm.isClassic ?
                       `/add/${farm.token1.address}/${farm.token2.address}` :
                       `/add-pro/${farm.token1.address}/${farm.token2.address}`}>
-            <ButtonOutlined style={{margin: '10px 0', padding: '10px', fontSize: '13px', color: theme.hoveredButton, background: theme.contrastLightButton, border: 'none'}}>
+              <ButtonOutlined style={{ 
+                margin: '10px 0', 
+                padding: '10px', 
+                fontSize: '13px', 
+                color: theme.pinkGamma, 
+                background: theme.contrastLightButton, 
+                border: 'none',
+                borderRadius: '12px',
+                fontWeight: '500' }}>
               {`Get ${token1.name} - ${token2.name} ${isClassic ? 'Classic' : isAnchor ? 'Anchor' : 'Float'} LP`}</ButtonOutlined>
           </Link>
         </ValueContainer>

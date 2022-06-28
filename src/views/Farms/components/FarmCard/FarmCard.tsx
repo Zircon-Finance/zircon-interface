@@ -156,8 +156,8 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
 
         {!removed && (
           <Flex justifyContent="space-between" alignItems="center" mt="15px">
-            <Text fontSize="13px">{t("APR")}:</Text>
-            <Text
+            <Text color={theme.text1} fontSize="13px">{t("APR")}:</Text>
+            <Text color={theme.text1}
               fontSize="13px"
               style={{ display: "flex", alignItems: "center" }}
             >
@@ -187,9 +187,10 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
               margin: "10px 0",
               padding: "10px",
               fontSize: "13px",
-              color: theme.hoveredButton,
-              background: theme.contrastLightButton,
+              color: theme.pinkGamma,
+              background: theme.tableButton,
               border: "none",
+              fontWeight: '500',
             }}
           >
             {`Get ${farm.token1.name} - ${farm.token2.name} LP tokens`}

@@ -115,6 +115,8 @@ export function colors(chainId: any, darkMode: boolean): Colors {
 
     meatPink: '#D5AEAF',
 
+    pinkBrown : chainId !== 1287 ? '#604C7A' : darkMode ? '#D5AEAF' : '#874955',
+
     farmPoolCardsBg: chainId !== 1287 ? '#3C2955' : darkMode ? '#39202b' : '#eeecf0',
 
     actionPanelBg: chainId !== 1287 ? '#3C2955' : darkMode ? '#5a2f41' : '#efedee',
@@ -127,6 +129,8 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     cardLightBorder: '#f2f0f1',
     cardExpanded: chainId !== 1287 ? '#3C2955' : darkMode ? '#52273a' : '#f2f0f1',
     badgeSmall: chainId !== 1287 ? '#604C7A' : darkMode ? '#442734' : '#f2f0f1',
+
+    tableButton: chainId !== 1287 ? '#604C7A' : darkMode ? '#3d1e2d' : '#f1ebf0',
 
     positionsButtons: chainId !== 1287 ? '#7a628c' : darkMode ? '#755452' : '#EAE5E8',
     modalBg : chainId !== 1287 ? 'rgba(0,0,0,0.5)' : darkMode ? 'rgba(0,0,0,0.5)' : 'rgba(36, 17, 26, 0.5)',
@@ -161,7 +165,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
       cardBorder: chainId !== 1287 ? '#311f48' : '#361E2A',
       contrast: "#191326",
       dropdown: "#F6F6F6",
-      dropdownDeep: "#EEEEEE",
+      dropdownDeep: "#D5AEAF",
       invertedContrast: chainId !== 1287 ? '#311f48' : darkMode ? '#583834' : '#EAEAEA',
       input: chainId !== 1287 ? '#311f48' : '#8F5661',
       inputSecondary: chainId !== 1287 ? '#311f48' : darkMode ? '#492B36' : '#F6F2F4',
@@ -207,9 +211,8 @@ export function colors(chainId: any, darkMode: boolean): Colors {
       inset: "inset 0px 2px 2px -1px rgba(74, 74, 104, 0.1)",
       tooltip: "0px 0px 2px rgba(0, 0, 0, 0.2), 0px 4px 12px -8px rgba(14, 14, 44, 0.1)",
     },
-    // toggle: chainId !== 1287 ? '#311f48' : '#4A303E',
     toggle: {
-      handleBackground: chainId !== 1287 ? '#644a7c' : darkMode ? '#d5aeaf' : '#FFF',
+      handleBackground: chainId !== 1287 ? '#644a7c' : darkMode ? '#755452' : '#FFF',
     },
     modal: {
       background: chainId !== 1287 ? '#2B1840' : darkMode ? '#361E2A' : '#f1eff1' ,

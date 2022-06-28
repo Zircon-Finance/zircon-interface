@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { ChevronDownIcon } from '@pancakeswap/uikit'
+import { ReactComponent as DropDown } from '../../../../assets/images/dropdown.svg'
 
 
 interface DetailsProps {
@@ -16,10 +16,9 @@ const Container = styled.div`
   justify-content: flex-end;
 `
 
-export const ArrowIcon = styled(ChevronDownIcon)<{ toggled: boolean }>`
+export const ArrowIcon = styled(DropDown)<{ toggled: boolean }>`
   transform: ${({ toggled }) => (toggled ? 'rotate(180deg)' : 'rotate(0)')};
   height: 20px;
-  fill: ${({ theme }) => theme.text1};
 `
 
 const Details: React.FC<DetailsProps> = ({ actionPanelToggled }) => {

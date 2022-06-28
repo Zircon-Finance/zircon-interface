@@ -361,6 +361,7 @@ const Farms: React.FC = ({ children }) => {
     const tokenAddress = token1.address
     const quoteTokenAddress = token2.address
     const lpLabel = `${farm.token1.symbol}-${farm.token2.symbol}`
+    
 
     const row: RowProps = {
       apr: {
@@ -380,7 +381,6 @@ const Farms: React.FC = ({ children }) => {
         pid: farm.sousId,
         token: farm.token1,
         quoteToken: farm.token2,
-        farmHealth: Math.floor(Math.random() * (500 - 100 + 1)) + 100,
         isAnchor: farm.isAnchor,
         isClassic: farm.isClassic,
         // This will be the function to get the health of the farm
@@ -448,21 +448,22 @@ const Farms: React.FC = ({ children }) => {
           </Flex>
           <Flex position={'relative'} width={width < 500 ? showMobileSearchBar ? '100%' : 'auto' : 'auto'} height={'70px'}>
             { (!showMobileSearchBar || width > 500) && <ViewControls>
-              <ToggleWrapper style={{marginRight: '20px', position: 'relative'}}> 
+              <ToggleWrapper style={{marginRight: '10px', position: 'relative'}}> 
                 <Text fontSize='13px' color={theme.text1} mr={'10px'} width={'max-content'} letterSpacing={'0.05em'}> {width > 700 ? 'STAKED ONLY' : 'STAKED'}</Text>
                 <Toggle
                   id="staked-only-farms"
                   checked={stakedOnly}
-                  checkedColor={'invertedContrast'}
+                  checkedColor={'dropdownDeep'}
                   defaultColor={'invertedContrast'}
                   onChange={() => setStakedOnly(!stakedOnly)}
                   scale="sm"
+                  
                 />
               </ToggleWrapper>
               <FarmTabButtons active='Active' />
             </ViewControls>}
             <FilterContainer>
-              <LabelWrapper style={{ marginLeft: showMobileSearchBar ? 0 : 16, width: '100%' }}>
+              <LabelWrapper style={{ marginLeft: showMobileSearchBar ? 0 : 10, width: '100%' }}>
                 <SearchInput onChange={handleChangeQuery} placeholder="SEARCH FARMS" />
               </LabelWrapper>
             </FilterContainer>

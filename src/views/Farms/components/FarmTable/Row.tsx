@@ -29,8 +29,14 @@ import { useTransactionAdder } from '../../../../state/transactions/hooks'
 import { useDispatch } from 'react-redux'
 import { fetchFarmUserDataAsync } from '../../../../state/farms'
 import { useIsDarkMode } from '../../../../state/user/hooks'
-import { usePool } from '../../../../state/pools/hooks'
+import { useCurrentBlock, useEndBlock, usePool, useStartBlock } from '../../../../state/pools/hooks'
 import { useCallWithGasPrice } from '../../../../hooks/useCallWithGasPrice'
+import { useTokenBalance } from '../../../../state/wallet/hooks'
+import { Token } from 'zircon-sdk'
+import { useCurrency } from '../../../../hooks/Tokens'
+import { usePylon } from '../../../../data/PylonReserves'
+import { useGamma } from '../../../../data/PylonData'
+import BigNumber from 'bignumber.js'
 // import { useFarmUser } from '../../../../state/farms/hooks'
 
 export interface RowProps {
@@ -132,6 +138,10 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     details,
      userDataReady, 
   } = props
+  const [currency1,currency2] = [useCurrency(details.token1.address),useCurrency(details.token2.address)]
+  const [, pylonPair] = usePylon(currency1, currency2)
+  const gammaBig = useGamma(pylonPair?.address)
+  const gamma = new BigNumber(gammaBig).div(new BigNumber(10).pow(18))
   const hasStakedAmount = !!usePool(details.sousId).pool.userData.stakedBalance.toNumber()
   const [actionPanelExpanded, setActionPanelExpanded] = useState(false)
   const [hovered, setHovered] = useState(false)
@@ -140,12 +150,41 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const theme = useTheme()
   const {width} = useWindowDimensions()
   const tooltipContent = (
-    <div style={{background: theme.bg3, borderRadius: '17px', padding: '10px'}}>
+    <div style={{background: theme.cardExpanded, borderRadius: '17px', padding: '10px'}}>
       <Text>
         {t(
           'This will be text regarding informations about the farm-s risk and health',
         )}
       </Text>
+    </div>
+  )
+
+  // POOL HARVEST DATA
+  const [startBlock, setStartBlock] = useState(0)
+  const [endBlock, setEndBlock] = useState(0)
+  const [currentBlock, setCurrentBlock] = useState(0)
+  useStartBlock(details.sousId).then((block) => setStartBlock(block))
+  useEndBlock(details.sousId).then((block) => setEndBlock(block))
+  useCurrentBlock().then((block) => setCurrentBlock(block))
+
+  const RewardPerBlock = ({ token }: { token: Token }) => {
+    const { pool } = usePool(details.sousId)
+    const balance = useTokenBalance(pool.vaultAddress, token)
+    const blocksLeft = endBlock - Math.max(currentBlock, startBlock)
+    const rewardBlocksPerDay = parseFloat((balance?.toFixed(6)))/(blocksLeft)*5500
+    return (
+      <Text>
+        {`${rewardBlocksPerDay}  ${token.symbol}`}
+      </Text>
+    )}
+  //--------------------------------------------------------------------------------------------------//
+
+  const tooltipContentEarned = (
+    <div style={{background: theme.cardExpanded, borderRadius: '17px', padding: '10px'}}>
+      <Text>
+        {'Tokens rewarded per block:'}
+      </Text>
+      {details.earningToken.map((token) => <RewardPerBlock token={token} />)}
     </div>
   )
 
@@ -211,6 +250,10 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     placement: 'top-end',
     tooltipOffset: [20, 10],
   })
+  const { targetRef: targetRefEarned, tooltip: tooltipEarned, tooltipVisible: tooltipVisibleEarned } = useTooltip(tooltipContentEarned, {
+    placement: 'top-end',
+    tooltipOffset: [20, 10],
+  })
   const isApproved = account && details.userData.allowance && details.userData.allowance.isGreaterThan(0)
   const stakedAmount = usePool(details.sousId).pool.userData.stakedBalance.toNumber()
   const toggleWalletModal = useWalletModalToggle()
@@ -224,7 +267,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
         !actionPanelExpanded && (
         <StyledTr expanded={isVisible} onClick={toggleActionPanel} onMouseOver={() => setHovered(true)} 
         onMouseOut={() => setHovered(false)} 
-        style={{backgroundColor: hovered ? theme.cardSmall : null, borderBottom: !darkMode ? `1px solid ${theme.cardExpanded}` : null}} >
+        style={{backgroundColor: hovered ? theme.cardExpanded : null, borderBottom: !darkMode ? `1px solid ${theme.cardExpanded}` : null}} >
           {Object.keys(props).map((key) => {
             const columnIndex = columnNames.indexOf(key)
             if (columnIndex === -1) {
@@ -243,7 +286,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                   </TableData>
                 )
               case 'farm':
-                const risk = props[key].farmHealth && props[key].farmHealth > 300
+                const risk = gamma && (gamma.isLessThanOrEqualTo(0.7) || gamma.isGreaterThanOrEqualTo(0.5))
                 return (
                   <TableData style={{minWidth: width > 1400 ? '502px' : width > 992 ? '405px' : 'auto'}} key={key}>
                     <CellInner style={{width: '100%',justifyContent: 'flex-start'}}>
@@ -253,7 +296,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                             <div style={{width: '40%', display: 'flex', marginLeft: '20px', alignItems: 'center'}}>
                             {risk ?
                             <RiskHealthIcon /> : <TrendingHealthIcon /> }
-                            <Text width={"max-content"} ml={'10px'}>{risk ? 'High Risk' : props[key].farmHealth}</Text>
+                            <Text width={"max-content"} ml={'10px'} color={theme.text1}>{risk ? gamma.toFixed(2) : 'High Risk'}</Text>
                             <ReferenceElement ref={targetRef}>
                             <div style={{marginLeft: '10px'}}><QuestionMarkIcon /></div>
                             </ReferenceElement>
@@ -284,9 +327,17 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                         </CellLayout>
                       </CellInner>
                     ) : (
-                      <Text color={theme.whiteHalf}>
-                        {`Earn ${rewardTokens}`}
+                      <Flex>
+                        <>
+                        <Text color={theme.whiteHalf}>
+                          {`Earn ${rewardTokens}`}
                         </Text>
+                          <ReferenceElement ref={targetRefEarned}>
+                            <div style={{marginLeft: '10px'}}><QuestionMarkIcon /></div>
+                          </ReferenceElement>
+                        {tooltipVisibleEarned && tooltipEarned}
+                        </>
+                      </Flex>
                   )}
                   </TableData>
                 )
@@ -391,7 +442,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
       {shouldRenderChild && (
         <tr style={{display: 'flex', flexDirection: 'column'}}>
           <td colSpan={6}>
-            <ActionPanel {...props} expanded={actionPanelExpanded} clickAction={setActionPanelExpanded} />
+            <ActionPanel {...props} expanded={actionPanelExpanded} clickAction={setActionPanelExpanded} gamma={gamma} />
           </td>
         </tr>
       )}

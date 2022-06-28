@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Text } from '@pancakeswap/uikit'
 import { useWeb3React } from '@web3-react/core'
 import BigNumber from 'bignumber.js'
@@ -21,7 +21,6 @@ import { Swiper, SwiperSlide } from 'swiper/react/swiper-react'
 
 import 'swiper/swiper.min.css'
 import 'swiper/modules/pagination/pagination.min.css'
-import { useCurrentBlock, useEndBlock, useStartBlock } from '../../../../../state/pools/hooks'
 import { useTokenBalance } from '../../../../../state/wallet/hooks'
 import { useTotalSupply } from '../../../../../data/TotalSupply'
 import { Flex } from 'rebass'
@@ -29,7 +28,7 @@ import { useWindowDimensions } from '../../../../../hooks'
 import { Token } from 'zircon-sdk'
 import CurrencyLogo from '../../../../../components/CurrencyLogo'
 
-const Shader = styled.div`
+export const Shader = styled.div`
   position: absolute;
   top: 0;
   right: 0;
@@ -42,6 +41,7 @@ const Shader = styled.div`
 interface HarvestActionProps extends DeserializedPool {
   userDataReady: boolean
 }
+
 
 const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningToken ,sousId, userData, userDataReady, vaultAddress }) => {
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
@@ -63,20 +63,6 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
   const addTransaction = useTransactionAdder()
   let rewardTokens = ''
   earningToken.forEach(token => rewardTokens += `${token.symbol} `)
-
-    // POOL HARVEST DATA
-    const [startBlock, setStartBlock] = useState(0)
-    const [endBlock, setEndBlock] = useState(0)
-    const [currentBlock, setCurrentBlock] = useState(0)
-    useStartBlock(sousId).then((block) => setStartBlock(block))
-    useEndBlock(sousId).then((block) => setEndBlock(block))
-    useCurrentBlock().then((block) => setCurrentBlock(block))
-    
-    console.log('endBlock', endBlock)
-    console.log('startBlock', startBlock)
-    console.log('currentBlock', currentBlock)
-    
-    //--------------------------------------------------------------------------------------------------//
 
     const { width } = useWindowDimensions()
 

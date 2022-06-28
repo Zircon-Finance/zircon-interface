@@ -73,7 +73,7 @@ export function PylonClassicTab({ active }: { active: "PYLON" | "CLASSIC" }) {
 
   return (
     <Tabs
-      style={{ marginRight: "20px", width: width >= 700 ? "auto" : "100%" }}
+      style={{ marginRight: "10px", width: width >= 700 ? "auto" : "100%" }}
     >
       <StyledNavLink
         id={`pylon-select-tab`}

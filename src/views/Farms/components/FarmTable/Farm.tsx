@@ -18,7 +18,6 @@ export interface FarmProps {
   pid: number
   token: SerializedToken
   quoteToken: SerializedToken
-  farmHealth: number
   isAnchor: boolean
   isClassic: boolean
   earningToken: SerializedToken[]

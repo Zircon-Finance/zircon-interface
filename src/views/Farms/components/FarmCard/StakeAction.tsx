@@ -32,6 +32,9 @@ interface FarmCardActionsProps extends DeserializedPool {
 
 const IconButtonWrapper = styled.div`
   display: flex;
+  height: 100%;
+  align-items: center;
+  padding-bottom: 20px;
 `
 
 const StakeAction: React.FC<FarmCardActionsProps> = ({
@@ -165,6 +168,7 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
         }
     <Flex justifyContent="space-between" alignItems="center">
       <StakedLP
+        stakingToken = {stakingToken}
         percentage={percentage}
         field={Field.LIQUIDITY_PERCENT}
         max={tokenBalance}

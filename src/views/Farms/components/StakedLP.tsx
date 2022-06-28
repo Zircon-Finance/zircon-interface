@@ -25,10 +25,12 @@ interface StackedLPProps {
   quoteTokenAmountTotal: BigNumber
   percentage: string,
   field: Field,
+  stakingToken: Token,
 }
 
 const StakedLP: React.FunctionComponent<StackedLPProps> = ({
   stakedBalance,
+  stakingToken,
   isClassic,
   isAnchor,
   max,
@@ -69,7 +71,9 @@ const StakedLP: React.FunctionComponent<StackedLPProps> = ({
     !isAnchor, 
     true,
     percentage,
-    field)
+    field,
+    stakedBalance,
+  )
 
   const formattedAmounts = {
     [Field.LIQUIDITY_PERCENT]: parsedAmounts[Field.LIQUIDITY_PERCENT].equalTo('0')

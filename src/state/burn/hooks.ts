@@ -18,6 +18,7 @@ import {
   useVirtualFloatBalance
 } from "../../data/PylonData";
 import {usePylon} from "../../data/PylonReserves";
+import BigNumber from 'bignumber.js'
 
 export function useBurnState(): AppState['burn'] {
   return useSelector<AppState, AppState['burn']>(state => state.burn)
@@ -325,6 +326,7 @@ export function useDerivedPylonBurnInfoFixedPercentage(
   isSync: boolean,
   percentage: string,
   field: Field,
+  balance: any,
 ): {
 pylon?: Pylon | null
 parsedAmounts: {
@@ -343,7 +345,15 @@ const [, pylon] = usePylon(currencyA, currencyB)
 
 const [tokenA, tokenB] = [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)]
 
-const userLiquidity = useTokenBalance(account ?? undefined, isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken)
+const userLiquidityToken = useTokenBalance(account ?? undefined, isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken)
+const amount = userLiquidityToken?.toFixed(6)
+const total = parseFloat(amount) + parseFloat(balance?.div(new BigNumber(10).pow(18)))
+const userLiquidity = total > 0 && new TokenAmount(
+  (isFloat ? 
+  pylon?.floatLiquidityToken : 
+  pylon?.anchorLiquidityToken), 
+  BigInt(Math.floor(total)*10**18)
+)
 const pylonPoolBalance = useTokenBalance(pylon?.address, pylon?.pair.liquidityToken)
 const ptTotalSupply = useTotalSupply(isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken)
 const totalSupply = useTotalSupply(pylon?.pair.liquidityToken)
@@ -364,7 +374,7 @@ function getLiquidityValues():  [TokenAmount | undefined, TokenAmount | undefine
       !! tokenA
   ) {
     if(isSync) {
-      if(JSBI.greaterThanOrEqual(ptTotalSupply.raw, userLiquidity.raw)) {
+      if(JSBI.greaterThanOrEqual(ptTotalSupply.raw, userLiquidity?.raw)) {
         return isFloat ? [pylon.burnFloat(totalSupply, ptTotalSupply, userLiquidity, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt)),
               new TokenAmount(tokenB!, BigInt(0))] :
             [

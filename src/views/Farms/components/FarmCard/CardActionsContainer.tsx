@@ -17,6 +17,7 @@ import { useTransactionAdder } from '../../../../state/transactions/hooks'
 import { DeserializedPool } from '../../../../state/types'
 import { updateUserAllowance } from '../../../../state/pools'
 import { useCallWithGasPrice } from '../../../../hooks/useCallWithGasPrice'
+import { usePools } from '../../../../state/pools/hooks'
 
 const Action = styled.div`
   padding: 0px;
@@ -32,6 +33,16 @@ const ActionContainer = styled.div`
   border-radius: 7px;
   margin-bottom: 10px;
   padding: 10px;
+  .swiper {
+    max-width: 100%;
+  }
+  .swiper-pagination-bullet {
+    display: none;
+  }
+  .swiper-slide {
+    border-right: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+  }
 `
 
 interface FarmCardActionsProps {
@@ -47,7 +58,7 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
   const theme = useTheme()
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
   const { sousId, stakingToken } = farm
-  const { allowance, pendingReward } = farm.userData || {}
+  const { allowance } = farm.userData || {}
   const isApproved = account && allowance && allowance.isGreaterThan(0)
   const dispatch = useDispatch()
   const addPopup = useAddPopup()
@@ -55,6 +66,9 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
   const toggleWalletModal = useWalletModalToggle()
   const sousChefContract = useSousChef(sousId)
   const { callWithGasPrice } = useCallWithGasPrice()
+  const { userDataLoaded } = usePools()
+  const userDataReady = !!account || (!!account && !userDataLoaded)
+
   
 
   const lpContract = useERC20(stakingToken.address)
@@ -119,10 +133,7 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
       ) : (
         <>
         <ActionContainer style={{backgroundColor: theme.farmPoolCardsBg}}>
-        <Text fontSize="13px" fontWeight={300} color={theme.text1}>
-          {t('Earned')}
-        </Text>
-        <HarvestAction earningToken={farm.earningToken} earnings={pendingReward} pid={sousId} />
+        <HarvestAction {...farm} userDataReady={userDataReady} />
         </ActionContainer>
         </>)}
       {!account ? 

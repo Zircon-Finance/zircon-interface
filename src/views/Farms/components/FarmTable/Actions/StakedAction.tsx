@@ -258,6 +258,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
           </ActionTitles>
           <ActionContent>
             <StakedLP
+              stakingToken = {stakingToken}
               isClassic={isClassic}
               percentage={percentage}
               field={Field.LIQUIDITY_PERCENT}

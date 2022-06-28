@@ -220,8 +220,9 @@ export const ButtonLighter = styled(Base)`
 
 export const ButtonPinkGamma = styled(Base)`
   border: none;
-  background-color: ${({ theme }) => theme.darkerContrastPink};
-  color: ${({ theme }) => theme.poolPinkButton};
+  font-weight: 500;
+  background-color: ${({ theme }) => theme.tableButton};
+  color: ${({ theme }) => theme.pinkGamma};
 
   &:hover {
     background-color: ${({ theme }) => theme.maxButton};

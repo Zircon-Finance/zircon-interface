@@ -134,7 +134,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
         <Flex flexDirection={"column"}>
           <StyledLinkExternal
             style={{
-              color: theme.meatPink,
+              color: theme.pinkBrown,
               fontWeight: 500,
               marginBottom: "5px",
             }}
@@ -143,7 +143,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
             {"View Contract ↗"}
           </StyledLinkExternal>
           <StyledLinkExternal
-            style={{ color: theme.meatPink, fontWeight: 500 }}
+            style={{ color: theme.pinkBrown, fontWeight: 500 }}
             href={"Placeholder"}
           >
             {"See Pair Info ↗"}

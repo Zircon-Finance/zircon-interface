@@ -70,6 +70,8 @@ export interface Colors {
 
   contrastLightButton: Color
 
+  tableButton: Color
+
   darkerContrastPink: Color
 
   farmPoolCardsBg: Color
@@ -82,6 +84,8 @@ export interface Colors {
   meatPink: Color
 
   pinkGamma: Color
+
+  pinkBrown: Color
 
   outlinedHover: Color
 

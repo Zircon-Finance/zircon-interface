@@ -268,7 +268,7 @@ export default function Swap() {
   const singleTokenPrice = useSingleTokenSwapInfo(inputCurrencyId, inputCurrency, outputCurrencyId, outputCurrency)
 
   return (
-    <div style={{width: '100%', display: 'flex', justifyContent: width >= 700 ? 'space-evenly' : 'center', alignItems: 'flex-start'}}>
+    <div style={{width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', gap: '20px'}}>
     { width > 1000 && (
     <div style={{
       height: '450px',
@@ -312,7 +312,7 @@ export default function Swap() {
       />
 
         <div>
-        <div style={{display: 'flex', padding: '25px', justifyContent: 'space-between'}}>
+        <div style={{display: 'flex', padding: '11px 25px', justifyContent: 'space-between'}}>
         <p>{'Swap'}</p>
         <Settings />
         </div>
@@ -333,7 +333,7 @@ export default function Swap() {
           />
 
 
-          <AutoColumn gap={'md'} style={{backgroundColor: theme.bg7, borderRadius: '27px', padding: '10px'}}>
+          <AutoColumn gap={'md'} style={{borderRadius: '27px', padding: '10px'}}>
             <CurrencyInputPanel
               label={independentField === Field.OUTPUT && !showWrap && trade ? 'From (estimated)' : 'From'}
               value={formattedAmounts[Field.INPUT]}
@@ -346,7 +346,7 @@ export default function Swap() {
               id="swap-currency-input"
             />
             <AutoColumn>
-              <AutoRow justify={isExpertMode ? recipient === null ? 'space-between' : 'center' : 'center'} style={{ padding: '0 1rem', backgroundColor: theme.bg7 }}>
+              <AutoRow justify={isExpertMode ? recipient === null ? 'space-between' : 'center' : 'center'} style={{ padding: '0 1rem'}}>
                 { recipient === null && isExpertMode && (<LinkButtonHidden>
                     + Add a send (optional)
                   </LinkButtonHidden>)}

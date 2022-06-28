@@ -64,7 +64,7 @@ const Aligner = styled.span`
 `
 
 const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
-  margin: 0 0.25rem 0 0.5rem;
+  margin: 0 0 0 10px;
   height: 35%;
 
   path {
@@ -87,7 +87,7 @@ const Container = styled.div<{ hideInput: boolean }>`
 `
 
 const StyledTokenName = styled.span<{ active?: boolean }>`
-  ${({ active }) => (active ? '  margin: 0 0.75rem 0 0.75rem;' : '  margin: 0 0.25rem 0 0.25rem;')}
+  ${({ active }) => (active ? '  margin: 0 5px;' : '  margin: 0 0.25rem 0 0.25rem;')}
   font-size:  16px;
   align-self: center;
 
@@ -96,7 +96,6 @@ const StyledTokenName = styled.span<{ active?: boolean }>`
 const StyledBalanceMax = styled.button`
   height: 30px;
   width: 50px;
-  padding: 6px 10px 7px;
   background-color: ${({ theme }) => theme.maxButton};
   border: 0;
   letter-spacing: 0.05em

@@ -155,7 +155,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
         </div>
         {width >= 992 ? (
         <Swiper
-        slidesPerView={earningToken.length <= 2 ? 1 : 2.3}
+        slidesPerView={earningToken.length <= 2 ? 1.7 : 2.3}
         spaceBetween={2}
         freeMode={true}
         pagination={{

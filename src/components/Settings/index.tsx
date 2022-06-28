@@ -51,7 +51,6 @@ const StyledMenuButton = styled.button`
   border: none;
   background-color: transparent;
   margin: 0;
-  padding: 12px;
   background-color: ${({ theme }) => theme.bg1};
   border-radius: 12px;
 

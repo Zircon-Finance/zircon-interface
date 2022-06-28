@@ -61,7 +61,7 @@ const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
   height: 35%;
 
   @media (min-width: 700px) {
-    margin: 0 0.25rem 0 0.5rem;
+    margin: 0 0 0 10px;
   }
 
   path {

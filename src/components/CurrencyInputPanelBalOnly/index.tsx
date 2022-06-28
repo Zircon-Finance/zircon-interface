@@ -47,7 +47,6 @@ const Container = styled.div<{ hideInput: boolean }>`
 const StyledBalanceMax = styled.button`
   height: 30px;
   width: 50px;
-  padding: 6px 10px 7px;
   background-color: ${({ theme }) => theme.maxButton};
   border: 0;
   letter-spacing: 0.05em

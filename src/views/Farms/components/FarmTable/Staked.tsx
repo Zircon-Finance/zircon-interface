@@ -104,7 +104,7 @@ const Staked: React.FunctionComponent<StakedProps> = ({ staked, hovered, setHove
       <LiquidityWrapper>
         <Text style={{position: 'relative'}} textAlign={'left'} color={theme.text1}>{displayBalance}</Text>
         {staked > new BigNumber(0) && hovered && width >= 1100 &&
-        <div style={{display: 'flex', position: 'absolute', left: '55px', alignItems: 'center'}} 
+        <div style={{display: 'flex', position: 'sticky', marginLeft: '5px', alignItems: 'center'}} 
         onMouseEnter={()=>setHovered(true)}>
           <IconButton 
             style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}} 

@@ -10,6 +10,9 @@ import {
 } from "../FarmTable/Actions/ActionPanel";
 import { SerializedToken } from "../../../../constants/types";
 import { Text } from "rebass";
+import RiskHealthIcon from "../../../../components/RiskHealthIcon";
+import TrendingHealthIcon from "../../../../components/TrendingHealthIcon";
+import QuestionMarkIcon from "../../../../components/QuestionMarkIcon";
 
 export interface ExpandableSectionProps {
   lpLabel?: string;
@@ -20,6 +23,7 @@ export interface ExpandableSectionProps {
   isClassic: boolean;
   isAnchor?: boolean;
   earningToken: SerializedToken[];
+  gamma: any;
 }
 
 const Wrapper = styled(Flex)`
@@ -34,10 +38,11 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
   earningToken,
   token,
   quoteToken,
+  gamma,
 }) => {
   const theme = useTheme();
-  let rewardTokens = ''
-  earningToken.forEach(token => rewardTokens += `${token.symbol} `)
+  const risk = gamma && (gamma.isLessThanOrEqualTo(0.7) || gamma.isGreaterThanOrEqualTo(0.5))
+
   return (
     <div style={{ padding: "10px", marginBottom: "10px", color: theme.text1 }}>
       <Wrapper justifyContent="space-between" alignItems="center" mb="12px">
@@ -149,12 +154,15 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
             {"See Pair Info ↗"}
           </StyledLinkExternal>
         </Flex>
-        <div>
-          <p
-            style={{ margin: "0", marginBottom: "5px" }}
-          >{`Earn ${rewardTokens}`}</p>
-          <p style={{ margin: "0", textAlign: "right" }}>{"254.15"}</p>
-        </div>
+        <Flex flexDirection={"column"}>
+          <Text color={theme.text1}>{`Earn ${earningToken.map((token) => `${token.symbol}`)}`}</Text>
+            <div style={{display: 'flex', marginLeft: '10px', alignItems: 'center'}}>
+            {risk ?
+              <RiskHealthIcon /> : <TrendingHealthIcon /> }
+              <Text width={"max-content"} ml={'10px'} color={theme.text1}>{risk ? gamma.toFixed(2) : 'High Risk'}</Text>
+              <div style={{marginLeft: '10px'}}><QuestionMarkIcon /></div>
+            </div>
+          </Flex>
       </SpaceBetween>
     </div>
   );

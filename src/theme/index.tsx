@@ -130,7 +130,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     cardExpanded: chainId !== 1287 ? '#3C2955' : darkMode ? '#52273a' : '#f2f0f1',
     badgeSmall: chainId !== 1287 ? '#604C7A' : darkMode ? '#442734' : '#f2f0f1',
 
-    tableButton: chainId !== 1287 ? '#604C7A' : darkMode ? '#3d1e2d' : '#f1ebf0',
+    tableButton: chainId !== 1287 ? '#604C7A' : darkMode ? '#442233' : '#f1ebf0',
 
     positionsButtons: chainId !== 1287 ? '#7a628c' : darkMode ? '#755452' : '#EAE5E8',
     modalBg : chainId !== 1287 ? 'rgba(0,0,0,0.5)' : darkMode ? 'rgba(0,0,0,0.5)' : 'rgba(36, 17, 26, 0.5)',

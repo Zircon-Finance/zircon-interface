@@ -21,6 +21,9 @@ import { DeserializedPool } from '../../../../state/types'
 import { fetchPoolsUserDataAsync } from '../../../../state/pools'
 import { usePairLiquidity } from '../../../../state/pools/hooks'
 import { getPoolAprAddress } from '../../../../utils/apr'
+import { useCurrency } from '../../../../hooks/Tokens'
+import { usePylon } from '../../../../data/PylonReserves'
+import { useGamma } from '../../../../data/PylonData'
 
 const StyledCard = styled(Card)`
   align-self: baseline;
@@ -75,6 +78,10 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
   const dispatch = useDispatch()
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
   const addTransaction = useTransactionAdder()
+  const [currency1,currency2] = [useCurrency(farm.token1.address),useCurrency(farm.token2.address)]
+  const [, pylonPair] = usePylon(currency1, currency2)
+  const gammaBig = useGamma(pylonPair?.address)
+  const gamma = new BigNumber(gammaBig).div(new BigNumber(10).pow(18))
 
 
   const handleStake = async (amount: string) => {
@@ -113,6 +120,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
           lpLabel={lpLabel}
           token={farm.token1}
           quoteToken={farm.token2}
+          gamma={gamma}
         />
         {farm.userData.stakedBalance.gt(0) || !isApproved ? (
           <CardActionsContainer

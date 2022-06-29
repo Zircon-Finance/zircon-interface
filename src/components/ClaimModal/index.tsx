@@ -75,6 +75,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
         <Text my={'20px'} fontSize={'13px'} color={theme.text1} textAlign={'center'}>{'ZPT token is launched by Zircon Finance.'}</Text>
         <Text mb={'20px'} fontSize={'13px'} color={theme.text1} textAlign={'center'}>{'Read more about token distribution here.'}</Text>
       <ButtonOutlined style={{ alignSelf: 'center', background: theme.poolPinkButton, width: '100%', marginTop: '20px' }}
+      disabled={!dataUser?.amount}
       onClick={
         () => airdropWithSigner.claim(
                 BigNumber.from(dataUser?.index),  

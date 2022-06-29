@@ -21,7 +21,7 @@ import TrendingHealthIcon from '../../../../components/TrendingHealthIcon'
 import QuestionMarkIcon from '../../../../components/QuestionMarkIcon'
 import StakeAdd from '../FarmCard/StakeAdd'
 import { useActiveWeb3React, useWindowDimensions } from '../../../../hooks'
-import { ButtonLighter, ButtonPinkGamma } from '../../../../components/Button'
+import { ButtonPinkGamma } from '../../../../components/Button'
 import { useAddPopup, useWalletModalToggle } from '../../../../state/application/hooks'
 import { useERC20, useSousChef } from '../../../../hooks/useContract'
 import useCatchTxError from '../../../../hooks/useCatchTxError'
@@ -88,6 +88,7 @@ animation: ${({ expanded }) =>
   border-bottom: 1px solid ${({ theme }) => theme.bg7};
   @media (min-width: 992px) {
     display: table;
+    height: 80px;
 `
 
 const EarnedMobileCell = styled.td`
@@ -327,7 +328,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                         </CellLayout>
                       </CellInner>
                     ) : (
-                      <Flex>
+                      <Flex style={{alignItems: 'center'}}>
                         <>
                         <Text color={theme.whiteHalf}>
                           {`Earn ${rewardTokens}`}
@@ -402,7 +403,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                       <Earned {...props.earned} userDataReady={userDataReady} />
                     </>
                   ) : (
-                    <ButtonLighter style={{fontSize: '13px', padding: '10px', borderRadius: '12px', maxHeight: '38px'}}>
+                    <ButtonPinkGamma style={{fontSize: '13px', padding: '10px', borderRadius: '12px', maxHeight: '38px'}}>
                       <Flex justifyContent={'space-between'} flexDirection={'row'} alignItems={'center'}>
                         <svg width="25" height="25" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M22.75 9.875V36.125" stroke="#9D94AA" strokeLinecap="round" strokeLinejoin="round"/>
@@ -410,13 +411,13 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                         </svg>
                         <Text style={{minWidth: 'auto'}}>Stake</Text>
                       </Flex>
-                    </ButtonLighter>
+                    </ButtonPinkGamma>
                   )) : (
-                    <ButtonLighter style={{fontSize: '13px', padding: '10px', borderRadius: '12px'}}
-                    onClick={handleApproval}>{'Enable contract'}</ButtonLighter>
+                    <ButtonPinkGamma style={{fontSize: '13px', padding: '10px', borderRadius: '12px'}}
+                    onClick={handleApproval}>{'Enable contract'}</ButtonPinkGamma>
                   )) : (
-                    <ButtonLighter style={{fontSize: '13px', padding: '10px', borderRadius: '12px'}}
-                    onClick={toggleWalletModal}>{'Connect wallet'}</ButtonLighter>
+                    <ButtonPinkGamma style={{fontSize: '13px', padding: '10px', borderRadius: '12px'}}
+                    onClick={toggleWalletModal}>{'Connect wallet'}</ButtonPinkGamma>
                   )}
                 
               </CellLayout>

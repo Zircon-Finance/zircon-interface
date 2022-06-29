@@ -412,10 +412,18 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
             <>
             <SpaceBetween style={{marginBottom: '16px'}}>
               <Flex style={{flexDirection: 'column'}}>
-              <StyledLinkExternal style={{margin: '5px 0 5px 0'}} color={theme.meatPink} href={bsc}>{t('View Contract ↗')}</StyledLinkExternal>
-              <StyledLinkExternal color={theme.meatPink} href={info}>{t('See Pair Info ↗')}</StyledLinkExternal>
+                <StyledLinkExternal style={{margin: '5px 0 5px 0'}} color={theme.meatPink} href={bsc}>{t('View Contract ↗')}</StyledLinkExternal>
+                <StyledLinkExternal color={theme.meatPink} href={info}>{t('See Pair Info ↗')}</StyledLinkExternal>
               </Flex>
-              <span>{'High risk'}</span>
+              <Flex flexDirection={"column"}>
+                <Text color={theme.text1}>{`Earn ${farm.earningToken.map((token) => `${token.symbol}`)}`}</Text>
+                <div style={{display: 'flex', marginLeft: '10px', alignItems: 'center'}}>
+                {risk ?
+                  <RiskHealthIcon /> : <TrendingHealthIcon /> }
+                  <Text width={"max-content"} ml={'10px'} color={theme.text1}>{risk ? gamma.toFixed(2) : 'High Risk'}</Text>
+                  <div style={{marginLeft: '10px'}}><QuestionMarkIcon /></div>
+                </div>
+              </Flex>
             </SpaceBetween>
             </>
           )}

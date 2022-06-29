@@ -94,7 +94,7 @@ animation: ${({ expanded }) =>
   font-size: 16px;
   transition: border 100ms;
   :focus {
-    border: 1px solid ${({ theme }) => theme.bg6};
+    border: 1px solid ${({ theme }) => theme.pinkGamma};
     outline: none;
     background-color: ${({ theme}) => theme.bg1}
   }

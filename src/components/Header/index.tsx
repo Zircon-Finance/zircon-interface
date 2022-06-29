@@ -75,12 +75,12 @@ const Title = styled.a`
   pointer-events: auto;
   text-decoration: none;
   text-decoration-style: unset;
-  width: 250px;
+  width: 290px;
   :hover {
     cursor: pointer;
   }
   @media (min-width: 1100px) {
-    width: 442px;
+    width: 475px;
 `
 
 const AccountElement = styled.div<{ active: boolean }>`

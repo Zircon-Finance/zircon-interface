@@ -18,7 +18,6 @@ const Tabs = styled.div`
   align-items: center;
   border-radius: 17px;
   justify-content: space-evenly;
-  padding: 5px;
   margin: auto;
   border: 1px solid ${({ theme }) => theme.navigationBorder};
 `
@@ -71,7 +70,7 @@ export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' }) {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
   return (
-    <Tabs style={{ marginBottom: '20px', width: width >= 700 ? 'auto' : '100%' }}>
+    <Tabs style={{ marginBottom: '20px', width: width >= 700 ? 'auto' : '100%', padding: '5px' }}>
       <StyledNavLink id={`swap-nav-link`} to={'/swap'} isActive={() => active === 'swap'}>
         {t('swap')}
       </StyledNavLink>
@@ -102,7 +101,7 @@ export function ChainPoolTab({ active }: { active: 'moonbeam' | 'moonriver' }) {
 export function FindPoolTabs() {
   return (
     <Tabs style={{border: 'none'}}>
-      <RowBetween style={{ padding: '1rem' }}>
+      <RowBetween style={{ padding: '11px 16px' }}>
         <HistoryLink to="/pool">
           <StyledArrowLeft strokeWidth={1} />
         </HistoryLink>
@@ -115,8 +114,8 @@ export function FindPoolTabs() {
 
 export function AddRemoveTabs({ adding }: { adding: boolean }) {
   return (
-    <Tabs style={{border: 'none', padding: '1rem'}}>
-      <RowBetween style={{ padding: '1rem' }}>
+    <Tabs style={{border: 'none'}}>
+      <RowBetween style={{ padding: '11px 16px' }}>
         <HistoryLink to="/pool">
           <StyledArrowLeft strokeWidth={1} />
         </HistoryLink>
@@ -136,8 +135,8 @@ export function AddRemoveTabs({ adding }: { adding: boolean }) {
 
 export function AddRemoveTabsClassic({ adding }: { adding: boolean }) {
   return (
-    <Tabs style={{border: 'none', padding: '1rem'}}>
-      <RowBetween style={{ padding: '1rem' }}>
+    <Tabs style={{border: 'none'}}>
+      <RowBetween style={{ padding: '11px 16px' }}>
         <HistoryLink to="/pool">
           <StyledArrowLeft strokeWidth={1} />
         </HistoryLink>

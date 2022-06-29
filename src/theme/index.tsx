@@ -128,7 +128,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     cardSmall: chainId !== 1287 ? '#2B1840' : darkMode ? '#361E2A' : '#fcfbfc',
     cardLightBorder: '#f2f0f1',
     cardExpanded: chainId !== 1287 ? '#3C2955' : darkMode ? '#52273a' : '#f2f0f1',
-    badgeSmall: chainId !== 1287 ? '#604C7A' : darkMode ? '#442734' : '#f2f0f1',
+    badgeSmall: chainId !== 1287 ? '#604C7A' : darkMode ? '#442734' : '#fcfbfc',
 
     tableButton: chainId !== 1287 ? '#604C7A' : darkMode ? '#442233' : '#f1ebf0',
 

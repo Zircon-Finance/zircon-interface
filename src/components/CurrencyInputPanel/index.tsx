@@ -12,6 +12,7 @@ import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useTranslation } from 'react-i18next'
+import { Text } from 'rebass'
 
 const InputRow = styled.div<{ selected: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -233,14 +234,16 @@ export default function CurrencyInputPanel({
                   {account && currency && showMaxButton && label !== 'To' && (
                   <StyledBalanceMax onClick={onMax}>MAX</StyledBalanceMax>
                   )}
-                  {!hideBalance && !!currency && selectedCurrencyBalance
+                  <Text color={theme.whiteHalf}>
+                    {!hideBalance && !!currency && selectedCurrencyBalance
                     ? 'Balance: ' + selectedCurrencyBalance?.toSignificant(6)
                     : !hideBalance && ' -'}
+                  </Text>
                   </div>
                   {currency && !hideBalance &&
-                  <div style={{paddingRight: '0.75rem', alignSelf: 'center', marginTop: showMaxButton ? '10px' : '0px'}}>
+                  <Text style={{paddingRight: '0.75rem', alignSelf: 'center', marginTop: showMaxButton ? '10px' : '0px'}} color={theme.whiteHalf}>
                     {'0$' /* This was added, it's supposed to convert to $ */}
-                  </div>
+                  </Text>
                   }
                 </TYPE.body>
               )}

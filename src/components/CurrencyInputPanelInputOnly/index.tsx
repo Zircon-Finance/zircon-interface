@@ -74,7 +74,7 @@ const InputPanel = styled.div<{ hideInput?: boolean }>`
   ${({ theme }) => theme.flexColumnNoWrap}
   position: relative;
   width: 50%;
-  margin: 5px;
+  margin: 0 5px;
   border-radius: ${({ hideInput }) => (hideInput ? '8px' : '20px')};
   z-index: 1;
 `

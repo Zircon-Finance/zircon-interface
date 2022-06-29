@@ -118,13 +118,25 @@ const IconContainer = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 100%;
-  background: ${({ theme }) => theme.badgeSmall};
+  background: ${({ theme }) => theme.contrastLightButton};
   width: 45px;
   height: 40px;
   align-self: center;
   cursor: pointer;
   &:hover {
-    background: ${({ theme }) => theme.bg14};
+    background: ${({ theme }) => theme.pinkGamma};
+    svg {
+      path {
+        stroke: #fff !important;
+      }
+      transform: rotate(90deg);
+    }
+  }
+  svg {
+    path {
+      stroke: ${({ theme }) => theme.pinkGamma} !important;
+    }
+    transform: rotate(90deg);
   }
 `
 
@@ -807,9 +819,8 @@ export default function AddLiquidityPro({
             <div
               style={{
                 display: "flex",
-                borderBottom: `1px solid ${theme.navigationBorder}`,
-                paddingBottom: "5px",
-                margin: "0px 10px",
+                margin: "0px 5px",
+                paddingBottom: currencies[Field.CURRENCY_B] !== undefined ? '0' : '10px',
               }}
             >
               <CurrencyInputPanelInputOnly
@@ -842,12 +853,6 @@ export default function AddLiquidityPro({
                   <>
                     <Flex
                       margin={"0 10px"}
-                      style={{
-                        borderBottom:
-                          (!fakeAdvancedMode || pylonState !== PylonState.EXISTS) &&
-                          `1px solid ${theme.navigationBorder}`,
-                        paddingBottom: !fakeAdvancedMode && "10px",
-                      }}
                       justifyContent={"space-between"}
                     >
                       <span style={{ alignSelf: "center" }}>
@@ -876,7 +881,6 @@ export default function AddLiquidityPro({
                           style={{
                             background: "transparent",
                             height: "50px",
-                            borderBottom: `1px solid ${theme.navigationTabs}`,
                             width: "100%",
                           }}
                           onClick={() => setSync("full")}
@@ -913,9 +917,6 @@ export default function AddLiquidityPro({
                 )}
                 <Flex
                   margin={"0 10px"}
-                  style={{
-                    borderBottom: pylonState !== PylonState.EXISTS ? 'none' : `1px solid ${theme.navigationBorder}`,
-                  }}
                   justifyContent={"space-evenly"}
                 >
                   {pylonState === PylonState.EXISTS && (
@@ -923,17 +924,17 @@ export default function AddLiquidityPro({
                       style={{
                         display: "flex",
                         justifyContent: "space-evenly",
-                        marginBottom: "10px",
                         width: "100%",
                       }}
                     >
                       <div
                         style={{
                           display: "flex",
-                          background: theme.maxButton,
+                          background: theme.liquidityBg,
                           borderRadius: "17px",
                           padding: "5px",
                           width: "100%",
+                          marginTop: "10px",
                         }}
                       >
                         <ButtonAnchor
@@ -964,7 +965,7 @@ export default function AddLiquidityPro({
                           />
                           <span
                             style={{
-                              color: theme.text1,
+                              color: isFloat ? theme.text1 : theme.tabsText,
                               marginLeft: "5px",
                               fontSize: "13px",
                               letterSpacing: "0.05em",
@@ -1002,7 +1003,7 @@ export default function AddLiquidityPro({
                           />
                           <span
                             style={{
-                              color: theme.text1,
+                              color: !isFloat ? theme.text1 : theme.tabsText,
                               marginLeft: "5px",
                               fontSize: "13px",
                               letterSpacing: "0.05em",
@@ -1033,7 +1034,7 @@ export default function AddLiquidityPro({
                                 display: "inline",
                                 alignSelf: "center",
                                 fontSize: "13px",
-                                margin: "auto",
+                                padding: "0 0 0 10px",
                                 letterSpacing: "0.05em",
                               }}
                             >
@@ -1046,7 +1047,7 @@ export default function AddLiquidityPro({
                                 padding: "5px",
                                 fontSize: "13px",
                                 width: width >= 700 ? "inherit" : "100%",
-                                background: theme.maxButton,
+                                background: theme.liquidityBg,
                               }}
                             >
                               <ButtonAnchor
@@ -1060,7 +1061,7 @@ export default function AddLiquidityPro({
                                   color:
                                     sync === "off"
                                       ? theme.text1
-                                      : theme.meatPink,
+                                      : theme.tabsText,
                                   width: width >= 700 ? "auto" : "inherit",
                                 }}
                                 onClick={() => {
@@ -1080,7 +1081,7 @@ export default function AddLiquidityPro({
                                   color:
                                     sync === "full"
                                       ? theme.text1
-                                      : theme.meatPink,
+                                      : theme.tabsText,
                                   width: width >= 700 ? "auto" : "inherit",
                                 }}
                                 onClick={() => {
@@ -1100,7 +1101,7 @@ export default function AddLiquidityPro({
                                   color:
                                     sync === "half"
                                       ? theme.text1
-                                      : theme.meatPink,
+                                      : theme.tabsText,
                                   width: width >= 700 ? "auto" : "inherit",
                                 }}
                                 onClick={() => {
@@ -1125,13 +1126,13 @@ export default function AddLiquidityPro({
                 <div
                   style={{
                     backgroundColor: theme.bg1,
-                    padding: "0 10px 10px 10px",
+                    padding: "10px",
                     borderRadius: "27px",
                   }}
                 >
                   {/* Pylon condition  */}
 
-                  <div style={{ display: "grid", gridGap: "10px" }}>
+                  <div style={{ display: "grid", gridGap: "5px" }}>
                     <CurrencyInputPanelBalOnly
                       value={formattedAmounts[float.field_a]}
                       onUserInput={
@@ -1196,8 +1197,8 @@ export default function AddLiquidityPro({
             pylonState !== PylonState.INVALID && (
               <>
                 <GreyCard
-                  padding="0.5rem"
-                  borderRadius={"20px"}
+                  padding="10px"
+                  borderRadius={"17px"}
                   style={{ backgroundColor: "transparent" }}
                 >
                   {/* <RowBetween padding="1rem">

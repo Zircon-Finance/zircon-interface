@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
 import CurrencyLogo from '../CurrencyLogo'
+import { Text } from 'rebass'
 
 const InputRow = styled.div<{ selected: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -40,7 +41,7 @@ const InputPanel = styled.div<{ hideInput?: boolean }>`
 `
 
 const Container = styled.div<{ hideInput: boolean }>`
-  border-radius: ${({ hideInput }) => (hideInput ? '8px' : '14px')};
+  border-radius: ${({ hideInput }) => (hideInput ? '8px' : '17px')};
   background-color: ${({ theme }) => theme.liquidityBg};
 `
 
@@ -108,6 +109,7 @@ export default function CurrencyInputPanel({
 
   const [modalOpen, setModalOpen] = useState(false)
   const { account } = useActiveWeb3React()
+  const [focus, setIsFocus] = useState(false)
 
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
 
@@ -122,7 +124,7 @@ export default function CurrencyInputPanel({
 
   return (
     <InputPanel id={id}>
-      <Container hideInput={hideInput}>
+      <Container hideInput={hideInput} style={{boxShadow: focus ? `0px 0px 1px 1px ${theme.pinkGamma}` : 'none'}}>
         {!hideInput && (
           <LabelRow>
             <RowBetween style={{display: 'flex', flexFlow: 'column'}}>
@@ -130,7 +132,7 @@ export default function CurrencyInputPanel({
                 <InputRow style={hideInput ? { alignItems: 'center', padding: '0', borderRadius: '8px' } : {alignItems: 'center'}} selected={disableCurrencySelect}>
                 {!hideInput && (
                   <>
-                      <span style={{padding: '12px 5px 12px 12px'}}>
+                      <span style={{padding: '10px 5px 0px 10px'}}>
                         <CurrencyLogo currency={currency} size={'30px'} />
                         </span>
                       <span style={{fontSize: '16px', alignSelf: 'center', paddingRight: '12px'}}>
@@ -143,6 +145,8 @@ export default function CurrencyInputPanel({
                       <span style={{fontSize: width < 700 ? '13px' : '16px', color: theme.whiteHalf}}>{isFloat ? 'FLOAT' : 'ANCHOR'}</span>
 
                     <NumericalInput
+                      onFocus={()=>setIsFocus(true)}
+                      onBlur={()=>setIsFocus(false)}
                       style={{background: 'transparent', textAlign: 'end'}}
                       className="token-amount-input"
                       value={value}
@@ -172,14 +176,17 @@ export default function CurrencyInputPanel({
                   {account && currency && showMaxButton && label !== 'To' && (
                   <StyledBalanceMax onClick={onMax}>MAX</StyledBalanceMax>
                   )}
-                  {!hideBalance && !!currency && selectedCurrencyBalance
+                  <Text color={theme.whiteHalf}>
+                    {!hideBalance && !!currency && selectedCurrencyBalance
                     ? 'Balance: ' + selectedCurrencyBalance?.toSignificant(6)
                     : ' -'}
+                  </Text>
+                  
                   </div>
                   {currency &&
-                  <div style={{paddingRight: '0.75rem', alignSelf: 'center'}}>
+                  <Text style={{paddingRight: '0.75rem', alignSelf: 'center'}} color={theme.whiteHalf}>
                     {'0$' /* This was added, it's supposed to convert to $ */}
-                  </div>
+                  </Text>
                   }
                 </TYPE.body>
               )}

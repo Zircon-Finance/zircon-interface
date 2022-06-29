@@ -27,7 +27,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
   token,
   }) => {
   const provider = new providers.Web3Provider(window.ethereum)
-  const airdrop_address = '0x08Ed2beD63A7a127d95F3Da455e79674553d90bD'
+  const airdrop_address = '0x0dB43854E3143b383461a0Df4054d820fc4Be4D2'
   const abi = airdrop_abi
 
   // call contract airdrop
@@ -75,7 +75,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
         <Text my={'20px'} fontSize={'13px'} color={theme.text1} textAlign={'center'}>{'ZPT token is launched by Zircon Finance.'}</Text>
         <Text mb={'20px'} fontSize={'13px'} color={theme.text1} textAlign={'center'}>{'Read more about token distribution here.'}</Text>
       <ButtonOutlined style={{ alignSelf: 'center', background: theme.poolPinkButton, width: '100%', marginTop: '20px' }}
-      disabled={!dataUser?.amount}
+      disabled={!dataUser?.amount || claimStatus}
       onClick={
         () => airdropWithSigner.claim(
                 BigNumber.from(dataUser?.index),  
@@ -86,11 +86,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
                         setHash(transaction.hash)
                     }
                 ).catch((error) => {
-                    if (error.reason === "Already Claimed"){
                         setClaimStatus(true)
-                    } else {
-                        console.log(error)
-                    }
                 })}>
         <Text style={{textDecoration: 'none', color: '#fff'}} >{claimStatus ? 'Already claimed' : 'Claim tokens'}</Text>
       </ButtonOutlined>

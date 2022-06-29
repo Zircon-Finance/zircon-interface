@@ -24,7 +24,7 @@ const StakeAdd : React.FC<StakeAddProps> = ({clickAction, row, margin, width, di
         <path d="M22.75 9.875V36.125" stroke={pink ? '#fff' : theme.pinkGamma} strokeLinecap="round" strokeLinejoin="round"/>
         <path d="M9.625 23H35.875" stroke={pink ? '#fff' : theme.pinkGamma} strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
-            <Text style={{minWidth: 'auto', color: pink ? theme.text1 : theme.pinkGamma}}>Stake</Text>
+            <Text style={{minWidth: 'auto', color: '#fff'}}>Stake</Text>
         </Flex>
     </ButtonPinkGamma>
     </div>

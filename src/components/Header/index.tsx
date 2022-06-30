@@ -270,9 +270,12 @@ export default function Header() {
           <HeaderElement>
             <Title href=".">
               <UniIcon id="z-logo">
-                <ZirconSmall />
+                {!darkMode ? (
+              <img style={{ height: 30 }} src={!darkMode ? DarkLogo : Logo} alt="logo" />
+            ) : (
+            <ZirconSmall />)}
               </UniIcon>
-              {chainId === 1287 && <BadgeSmall style={{fontSize: '13px', padding: '5px 10px', background: '#56332e', color: '#FFF'}}>
+              {chainId === 1287 && <BadgeSmall style={{fontSize: '13px', padding: '5px 10px', marginRight: '5px', background: '#56332e', color: '#FFF'}}>
                 {'GAMMA'}
                 </BadgeSmall>}
             </Title>

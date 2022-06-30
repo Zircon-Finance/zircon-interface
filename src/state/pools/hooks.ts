@@ -67,22 +67,19 @@ export const usePool = (sousId: number): { pool: DeserializedPool; userDataLoade
   return useSelector(poolWithUserDataLoadingSelector)
 }
 
-export const usePylonLiquidity = (token1, token2) => {
-  const [tokenA, tokenB] = [useCurrency(token1.address), useCurrency(token2.address)]
-  const [, pylon] = usePylon(tokenA, tokenB)
-  const anchorPoolBalance = useTokenBalance(pylon?.address,pylon?.token0)
-  const floatPoolBalance = useTokenBalance(pylon?.address,pylon?.token1)
-  return `${anchorPoolBalance?.toFixed(3) as unknown as number} ${tokenA?.symbol} - 
-  ${floatPoolBalance?.toFixed(3) as unknown as number} ${tokenB?.symbol}`
-}
-
 export const usePairLiquidity = (token1, token2) => {
   const [tokenA, tokenB] = [useCurrency(token1.address), useCurrency(token2.address)]
   const [, pair] = usePair(tokenA, tokenB)
   const [, pylon] = usePylon(tokenA, tokenB)
 
-  const anchorPoolBalance = useTokenBalance(pair?.liquidityToken.address,pylon?.token0)
-  const floatPoolBalance = useTokenBalance(pair?.liquidityToken.address,pylon?.token1)
+  const anchorPoolBalancePylon = useTokenBalance(pylon?.address,pylon?.token0)
+  const floatPoolBalancePylon = useTokenBalance(pylon?.address,pylon?.token1)
+
+  const anchorPoolBalancePair = useTokenBalance(pair?.liquidityToken.address,pylon?.token0)
+  const floatPoolBalancePair = useTokenBalance(pair?.liquidityToken.address,pylon?.token1)
+  
+  const anchorPoolBalance = anchorPoolBalancePylon?.add(anchorPoolBalancePair)
+  const floatPoolBalance = floatPoolBalancePylon?.add(floatPoolBalancePair)
   return `${anchorPoolBalance?.toFixed(3) as unknown as number} ${tokenA?.symbol} - 
   ${floatPoolBalance?.toFixed(3) as unknown as number} ${tokenB?.symbol}`
 }
@@ -92,20 +89,23 @@ export const usePairLiquidity = (token1, token2) => {
 // }
 
 export const useStartBlock = async(sousId) => {
+  const {account} = useWeb3React()
   const sousChefContract = useSousChef(sousId)
-  const startBlock = await sousChefContract.startBlock().then((value) => value.toNumber())
+  const startBlock = account ? await sousChefContract.startBlock().then((value) => value.toNumber()) : 0
   return startBlock
 }
 
 export const useEndBlock = async(sousId) => {
+  const {account} = useWeb3React()
   const sousChefContract = useSousChef(sousId)
-  const endBlock = await sousChefContract.bonusEndBlock().then((value) => value.toNumber())
+  const endBlock = account ? await sousChefContract.bonusEndBlock().then((value) => value.toNumber()) : 0
   return endBlock
 }
 
 export const useCurrentBlock = async() => {
-  const provider = new providers.Web3Provider(window.ethereum)
-  const blockNumber = await provider.getBlockNumber()
+  const {account} = useWeb3React()
+  const provider = window.ethereum ? new providers.Web3Provider(window.ethereum) : null
+  const blockNumber = account ? await provider.getBlockNumber() : 0
   return blockNumber
 }
 

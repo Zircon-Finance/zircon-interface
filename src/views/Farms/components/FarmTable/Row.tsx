@@ -1,6 +1,6 @@
 import React, { useEffect, useState, createElement, useCallback } from 'react'
 import styled, { css, keyframes, useTheme } from 'styled-components'
-import { useMatchBreakpoints, useTooltip } from '@pancakeswap/uikit'
+import { useMatchBreakpoints } from '@pancakeswap/uikit'
 import { useTranslation } from 'react-i18next'
 // import { useFarmUser } from '../../../../state/farms/hooks'
 
@@ -71,6 +71,38 @@ const CellInner = styled.div`
   position: relative;
 `
 
+export const QuestionMarkContainer = styled.div`
+  position: relative;
+  margin-left: 10px;
+  svg {
+    pointer-events: none;
+  }
+  &:hover {
+    path {
+      fill: ${({theme}) => theme.blackBrown};
+      stroke: ${({theme}) => !theme.darkMode && '#fff' };
+    }
+`
+
+export const ToolTip = styled.div<{ show }>`
+animation: ${({ show }) =>
+  show
+    ? css`
+        ${expandAnimation} 200ms
+      `
+    : css`
+        ${collapseAnimation} 200ms linear forwards
+      `};
+background: ${({theme}) => theme.questionMarkBg};
+border-radius: 17px; 
+padding: 10px;
+position: absolute; 
+bottom: 30px;
+width: 230px;
+left: -100px;
+z-index: 999;
+`
+
 const StyledTr = styled.tr<{ expanded }>`
 animation: ${({ expanded }) =>
   expanded
@@ -81,6 +113,7 @@ animation: ${({ expanded }) =>
         ${collapseAnimation} 200ms linear forwards
       `};
   cursor: pointer;
+  border-radius: 17px;
   margin: ${({ expanded }) => expanded ? '0 0 5px 0' : '10px 0 10px 0'};
   display: flex;
   flex-direction: column;
@@ -110,10 +143,6 @@ const FarmMobileCell = styled.td`
 
 export const TableData = styled.td`
   width: 12%;
-`
-
-const ReferenceElement = styled.div`
-  display: inline-block;
 `
 
 const expandAnimation = keyframes`
@@ -148,46 +177,51 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const [hovered, setHovered] = useState(false)
   const shouldRenderChild = actionPanelExpanded
   const { t } = useTranslation()
+  const { account } = useActiveWeb3React()
   const theme = useTheme()
   const {width} = useWindowDimensions()
-  const tooltipContent = (
-    <div style={{background: theme.cardExpanded, borderRadius: '17px', padding: '10px'}}>
-      <Text>
-        {t(
-          'This will be text regarding informations about the farm-s risk and health',
-        )}
+
+  const TooltipContentRisk = () => {return (
+    <ToolTip show={hoverRisk}>
+      <Text fontSize='13px' fontWeight={500} color={theme.text1}>
+        {`The risk factor keeps track of the farms' stability. `}
       </Text>
-    </div>
-  )
+    </ToolTip>
+  )}
 
   // POOL HARVEST DATA
   const [startBlock, setStartBlock] = useState(0)
   const [endBlock, setEndBlock] = useState(0)
   const [currentBlock, setCurrentBlock] = useState(0)
-  useStartBlock(details.sousId).then((block) => setStartBlock(block))
-  useEndBlock(details.sousId).then((block) => setEndBlock(block))
-  useCurrentBlock().then((block) => setCurrentBlock(block))
+  useStartBlock(details.sousId).then((block?) => setStartBlock(block))
+  useEndBlock(details.sousId).then((block?) => setEndBlock(block))
+  useCurrentBlock().then((block?) => setCurrentBlock(block))
 
   const RewardPerBlock = ({ token }: { token: Token }) => {
     const { pool } = usePool(details.sousId)
     const balance = useTokenBalance(pool.vaultAddress, token)
     const blocksLeft = endBlock - Math.max(currentBlock, startBlock)
     const rewardBlocksPerDay = parseFloat((balance?.toFixed(6)))/(blocksLeft)*5500
-    return (
-      <Text>
-        {`${rewardBlocksPerDay}  ${token.symbol}`}
-      </Text>
-    )}
+    return(
+        <Text fontSize='13px' fontWeight={500}>
+          {`~ ${rewardBlocksPerDay}  ${token.symbol}`}
+        </Text>
+      )
+    }
   //--------------------------------------------------------------------------------------------------//
 
-  const tooltipContentEarned = (
-    <div style={{background: theme.cardExpanded, borderRadius: '17px', padding: '10px'}}>
-      <Text>
+  const TooltipContentEarned = () => {return (
+    <ToolTip show={hoverEarned}>
+      <Text fontSize='13px' fontWeight={500} color={theme.text1}>
         {'Tokens rewarded per block:'}
       </Text>
-      {details.earningToken.map((token) => <RewardPerBlock token={token} />)}
-    </div>
-  )
+      { account ? details.earningToken.map((token) => <RewardPerBlock token={token} />) : 
+        <Text fontSize='13px' fontWeight={500} color={theme.text1}>
+          {'Please connect your wallet'}
+        </Text>
+      }
+    </ToolTip>
+  )}
 
   const toggleActionPanel = () => {
     setActionPanelExpanded(!actionPanelExpanded)
@@ -202,7 +236,6 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const addTransaction = useTransactionAdder()
   const addPopup = useAddPopup()
   const dispatch = useDispatch()
-  const { account } = useActiveWeb3React()
   const sousChefContract = useSousChef(details.sousId)
   const { callWithGasPrice } = useCallWithGasPrice()
 
@@ -247,20 +280,14 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const isSmallerScreen = !isDesktop
   const tableSchema = isSmallerScreen ? MobileColumnSchema : DesktopColumnSchema
   const columnNames = tableSchema.map((column) => column.name)
-  const { targetRef, tooltip, tooltipVisible } = useTooltip(tooltipContent, {
-    placement: 'top-end',
-    tooltipOffset: [20, 10],
-  })
-  const { targetRef: targetRefEarned, tooltip: tooltipEarned, tooltipVisible: tooltipVisibleEarned } = useTooltip(tooltipContentEarned, {
-    placement: 'top-end',
-    tooltipOffset: [20, 10],
-  })
   const isApproved = account && details.userData.allowance && details.userData.allowance.isGreaterThan(0)
   const stakedAmount = usePool(details.sousId).pool.userData.stakedBalance.toNumber()
   const toggleWalletModal = useWalletModalToggle()
   const darkMode = useIsDarkMode()
   let rewardTokens = ''
   props.farm.earningToken.forEach((token) => rewardTokens += `${token.symbol} `)
+  const [hoverEarned, setHoverEarned] = useState(false)
+  const [hoverRisk, setHoverRisk] = useState(false)
 
   const handleRenderRow = () => {
     if (!mobileVer) {
@@ -296,13 +323,17 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                         {createElement(cells[key], { ...props[key] })}
                             <div style={{width: '40%', display: 'flex', marginLeft: '20px', alignItems: 'center'}}>
                             {risk ?
-                            <RiskHealthIcon /> : <TrendingHealthIcon /> }
+                              <RiskHealthIcon /> : <TrendingHealthIcon /> }
                             <Text width={"max-content"} ml={'10px'} color={theme.text1}>{risk ? gamma.toFixed(2) : 'High Risk'}</Text>
-                            <ReferenceElement ref={targetRef}>
-                            <div style={{marginLeft: '10px'}}><QuestionMarkIcon /></div>
-                            </ReferenceElement>
-                            {tooltipVisible && tooltip}
-                              </div>                            
+                            <QuestionMarkContainer
+                              onMouseEnter={() => setHoverRisk(true)}
+                              onMouseLeave={() => setHoverRisk(false)}
+                              >{hoverRisk && (
+                                <TooltipContentRisk />
+                              )}
+                            <QuestionMarkIcon />
+                            </QuestionMarkContainer>
+                            </div>                            
                         </Flex>
                       </CellLayout>
                     </CellInner>
@@ -333,10 +364,14 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                         <Text color={theme.whiteHalf}>
                           {`Earn ${rewardTokens}`}
                         </Text>
-                          <ReferenceElement ref={targetRefEarned}>
-                            <div style={{marginLeft: '10px'}}><QuestionMarkIcon /></div>
-                          </ReferenceElement>
-                        {tooltipVisibleEarned && tooltipEarned}
+                            <QuestionMarkContainer
+                            onMouseEnter={() => setHoverEarned(true)}
+                            onMouseLeave={() => setHoverEarned(false)}
+                            >{hoverEarned && (
+                              <TooltipContentEarned />
+                            )}
+                            <QuestionMarkIcon />
+                            </QuestionMarkContainer>
                         </>
                       </Flex>
                   )}

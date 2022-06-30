@@ -59,7 +59,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     bg4: '#565A69', // Lighter gray
     bg5: '#6C7284',
     // light purple - inputs
-    bg6: chainId !== 1287 ? '#534169' : darkMode ? '#492f3a' : '#EFEDEE',
+    bg6: chainId !== 1287 ? '#534169' : darkMode ? '#492f3a' : '#f5f3f6',
     // darker purple - container
     bg7: chainId !== 1287 ? '#402d58' : darkMode ? '#3c2330' : '#f5f3f3',
     // connect wallet button - dark purple
@@ -91,13 +91,15 @@ export function colors(chainId: any, darkMode: boolean): Colors {
 
     disabled1: chainId !== 1287 ? '#36195A' : darkMode ? '#4D2734' : '#dfced2',
 
-    inputSelect1: chainId !== 1287 ? '#A987C2' : darkMode ? '#d5aeaf' : '#a69997',
+    inputSelect1: chainId !== 1287 ? '#A987C2' : darkMode ? '#d5aeaf' : '#f5f3f3',
 
     navigationTabs: chainId !== 1287 ? '#381956' : darkMode ? '#603D39' : '#e7e2e2',
 
     navigationBorder: chainId !== 1287 ? '#3B1F57' : darkMode ? '#61403C' : '#e7e2e2',
 
     anchorFloatBadge: chainId !== 1287 ? '#311f48' : darkMode ? '#442734' : '#eee6e8',
+
+    questionMarkBg: chainId !== 1287 ? '#3B1F57' : darkMode ? '#653047' : '#FCFCFD',
 
     farmTabsBg: chainId !== 1287 ? '#341853' : darkMode ? '#543334' : '#eae7ed',
 
@@ -108,6 +110,10 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     walletActive: chainId !== 1287 ? '#2A1145' : darkMode ? '#4E302D' : '#edebea',
 
     hoveredButton: chainId !== 1287 ? '#604C7A' : darkMode ? '#9e4d86' : '#874955',
+
+    blackBrown: chainId !== 1287 ? '#3B1F57' : darkMode ? '#331924' : '#331924',
+
+    meatPinkBrown: chainId !== 1287 ? '#604C7A' : darkMode ? '#D5AEAF' : '#874955',
 
     poolPinkButton: '#874955',
 

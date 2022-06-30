@@ -225,7 +225,11 @@ export const ButtonPinkGamma = styled(Base)`
   color: ${({ theme }) => theme.pinkGamma};
 
   &:hover {
-    background-color: ${({ theme }) => theme.maxButton};
+    path {
+      stroke: #fff;
+    }
+    background-color: ${({ theme }) => theme.pinkGamma};
+    color: #fff !important;
   }
   &:disabled {
     opacity: 50%;

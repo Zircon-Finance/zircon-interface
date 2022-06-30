@@ -13,6 +13,7 @@ import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
 import { useActiveWeb3React } from '../../hooks'
 import { useTranslation } from 'react-i18next'
 import { Text } from 'rebass'
+import { useIsDarkMode } from '../../state/user/hooks'
 
 const InputRow = styled.div<{ selected: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -29,7 +30,7 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
   height: 100%;
   font-weight: 200;
   background-color: ${({ selected, theme }) => (selected ? theme.bg7 : theme.inputSelect1)};
-  color: ${({ selected, theme }) => (selected ? theme.text1 : theme.black)};
+  color: ${({ selected, theme }) => (selected ? theme.text1 : theme.blackBrown)};
   border-radius: 12px;
   box-shadow: ${({ selected }) => (selected ? 'none' : '0px 6px 10px rgba(0, 0, 0, 0.075)')};
   outline: none;
@@ -41,8 +42,8 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
 
   :focus,
   :hover {
-    background-color: ${({ theme }) => theme.bg9};
-    color: ${({ theme }) => theme.text1} !important;
+    background-color: ${({ theme, selected }) => !selected ? theme.meatPinkBrown : theme.darkMode ? '#513642' : '#E5D9DB'};
+    color: ${({ theme, selected }) => !selected ? '#fff' : theme.darkMode ? '#fff' : theme.blackBrown};
   }
 `
 
@@ -107,7 +108,7 @@ const StyledBalanceMax = styled.button`
   font-weight: 500;
   cursor: pointer;
   margin-right: 0.5rem;
-  color: ${({ theme }) => theme.pinkGamma};
+  color: ${({ theme }) => theme.hoveredButton};
 
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     margin-right: 0.5rem;
@@ -157,6 +158,7 @@ export default function CurrencyInputPanel({
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
 
   const theme = useTheme()
+  const darkMode = useIsDarkMode()
 
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
@@ -171,6 +173,7 @@ export default function CurrencyInputPanel({
               <div style={{display: 'flex', width: '100%'}}>
                 <CurrencySelect
                 selected={!!currency}
+                style={{border: !darkMode ? !currency ? `1px solid ${theme.bg8}` : `1px solid rgba(0,0,0,0.2)` : 'none'}}
                 className="open-currency-select-button"
                 onClick={() => {
                   if (!disableCurrencySelect) {

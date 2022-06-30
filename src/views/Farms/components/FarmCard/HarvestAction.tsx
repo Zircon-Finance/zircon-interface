@@ -68,7 +68,7 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, u
     const totalSupply = useTotalSupply(token)
     const rewards = getBalanceAmount(earningsBigNumber).times(rewardTokenBalance?.toFixed(6)).div(totalSupply?.toFixed(6))
     return (
-      <Flex justifyContent={'space-between'} style={{borderBottom: '1px solid rgba(255,255,255,0.1)', padding: '10px 0'}}>
+      <Flex justifyContent={'space-between'} style={{borderBottom: '1px solid rgba(255,255,255,0.1)', padding: '10px 0', alignItems: 'center'}}>
         <Flex>
           <CurrencyLogo style={{marginRight: '3px'}} currency={token} />
           <Text color={theme.text1} fontSize='16px'>
@@ -147,12 +147,12 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, u
         className="swipe-container"
         >
         <Shader />
-        {earningToken.map((token, index) => <SwiperSlide><SwipeTokenCard key={index} token={token} index={index} /></SwiperSlide>)}
+        {earningToken.map((token, index) => <SwiperSlide><SwipeTokenCard key={token.symbol} token={token} index={index} /></SwiperSlide>)}
         </Swiper>
         ) : (
           <div style={{width: '100%', overflow: 'scroll', marginTop: '5px'}}>
             {earningToken.map((token, index) => (
-              <TokenRow key={index} token={token} index={index} />
+              <TokenRow key={token.symbol} token={token} index={index} />
             ))}
           </div>
         )}  

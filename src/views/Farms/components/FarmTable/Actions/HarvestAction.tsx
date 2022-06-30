@@ -71,7 +71,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
       const totalSupply = useTotalSupply(token)
       const rewards = getBalanceAmount(earningsBigNumber).times(rewardTokenBalance?.toFixed(6)).div(totalSupply?.toFixed(6))
       return (
-        <Flex justifyContent={'space-between'} style={{borderBottom: '1px solid rgba(255,255,255,0.1)', padding: '10px 0'}}>
+        <Flex justifyContent={'space-between'} style={{borderBottom: '1px solid rgba(255,255,255,0.1)', padding: '10px 0', alignItems: 'center'}}>
           <Flex>
             <CurrencyLogo style={{marginRight: '3px'}} currency={token} />
             <Text color={theme.text1} fontSize='16px'>

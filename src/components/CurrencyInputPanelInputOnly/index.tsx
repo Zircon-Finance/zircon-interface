@@ -10,6 +10,7 @@ import DoubleCurrencyLogo from '../DoubleLogo'
 import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
 import { useTranslation } from 'react-i18next'
 import { useWindowDimensions } from '../../hooks'
+import { useIsDarkMode } from '../../state/user/hooks'
 
 
 
@@ -18,7 +19,7 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
   font-size: 16px;
   font-weight: 200;
   background-color: ${({ selected, theme }) => (selected ? theme.bg7 : theme.inputSelect1)};
-  color: ${({ selected, theme }) => (selected ? theme.text1 : theme.white)};
+  color: ${({ selected, theme }) => (selected ? theme.text1 : theme.blackBrown)};
   border-radius: 17px;
   box-shadow: ${({ selected }) => (selected ? 'none' : '0px 6px 10px rgba(0, 0, 0, 0.075)')};
   outline: none;
@@ -31,8 +32,8 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
 
   :focus,
   :hover {
-    background-color: ${({ theme }) => theme.bg14};
-    color: white !important;
+    background-color: ${({ theme, selected }) => !selected ? theme.meatPinkBrown : theme.darkMode ? '#513642' : '#E5D9DB'};
+    color: ${({ theme, selected }) => !selected ? '#fff' : theme.darkMode ? '#fff' : theme.blackBrown};
   }
 `
 
@@ -46,7 +47,6 @@ const LabelRow = styled.div`
   padding: 0;
   span:hover {
     cursor: pointer;
-    color: white;
   }
 `
 
@@ -142,6 +142,7 @@ export default function CurrencyInputPanel({
   }, [setModalOpen])
   const theme = useTheme()
   const { width } = useWindowDimensions()
+  const darkMode = useIsDarkMode()
 
   return (
     <InputPanel id={id}>
@@ -152,6 +153,7 @@ export default function CurrencyInputPanel({
             {/* <span style={{alignSelf: 'start',padding: '5px 5px 5px 10px', fontSize: '10px', letterSpacing: '0.05em'}}>{anchor ? 'ANCHOR' : 'FLOAT'}</span> */}
             {/* <div style={{display: 'flex', width: '100%'}}> */}
             <CurrencySelect
+              style={{border: !darkMode ? !currency ? `1px solid ${theme.bg8}` : `1px solid rgba(0,0,0,0.2)` : 'none'}}
               selected={!!currency}
               className="open-currency-select-button"
               onClick={() => {

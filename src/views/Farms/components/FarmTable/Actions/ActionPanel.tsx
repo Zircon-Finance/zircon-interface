@@ -39,6 +39,7 @@ import { BIG_ZERO } from '../../../../../utils/bigNumber'
 import RiskHealthIcon from '../../../../../components/RiskHealthIcon'
 import TrendingHealthIcon from '../../../../../components/TrendingHealthIcon'
 import QuestionMarkIcon from '../../../../../components/QuestionMarkIcon'
+import { QuestionMarkContainer, ToolTip } from '../Row'
 
 export interface ActionPanelProps {
   apr: AprProps
@@ -243,7 +244,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const { width } = useWindowDimensions()
   const sousChefContract = useSousChef(pool.sousId)
   const { callWithGasPrice } = useCallWithGasPrice()
-  console.log('Pending rewards: ',farm.userData.pendingReward.toFixed(6))
+  const [hoverRisk, setHoverRisk] = useState(false)
   const handleApproval = useCallback(async () => {
     const receipt = await fetchWithCatchTxError(() => {
       return callWithGasPrice(lpContract, 'approve', [sousChefContract.address, MaxUint256])
@@ -304,6 +305,14 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
     }
   }
   const risk = gamma && (gamma.isLessThanOrEqualTo(0.7) || gamma.isGreaterThanOrEqualTo(0.5))
+
+  const TooltipContentRisk = () => {return (
+    <ToolTip style={{bottom: '-15px', left: width <= 992 ? '-240px' : '50px'}} show={hoverRisk}>
+      <Text fontSize='13px' fontWeight={500} color={theme.text1}>
+        {`The risk factor keeps track of the farms' stability. `}
+      </Text>
+    </ToolTip>
+  )}
 
   return (
     <>
@@ -401,7 +410,14 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
               {risk ?
                 <RiskHealthIcon /> : <TrendingHealthIcon /> }
                 <Text width={"max-content"} ml={'10px'} color={theme.text1}>{risk ? gamma.toFixed(2) : 'High Risk'}</Text>
-                <div style={{marginLeft: '10px'}}><QuestionMarkIcon /></div>
+                <QuestionMarkContainer
+                onMouseEnter={() => setHoverRisk(true)}
+                onMouseLeave={() => setHoverRisk(false)}
+              >{hoverRisk && (
+              <TooltipContentRisk />
+              )}
+              <QuestionMarkIcon />
+              </QuestionMarkContainer>
               </div>
           </SpaceBetween>
           <SpaceBetween>
@@ -421,7 +437,14 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                 {risk ?
                   <RiskHealthIcon /> : <TrendingHealthIcon /> }
                   <Text width={"max-content"} ml={'10px'} color={theme.text1}>{risk ? gamma.toFixed(2) : 'High Risk'}</Text>
-                  <div style={{marginLeft: '10px'}}><QuestionMarkIcon /></div>
+                  <QuestionMarkContainer
+                onMouseEnter={() => setHoverRisk(true)}
+                onMouseLeave={() => setHoverRisk(false)}
+              >{hoverRisk && (
+              <TooltipContentRisk />
+              )}
+              <QuestionMarkIcon />
+              </QuestionMarkContainer>
                 </div>
               </Flex>
             </SpaceBetween>

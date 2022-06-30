@@ -87,6 +87,12 @@ export interface Colors {
 
   pinkBrown: Color
 
+  blackBrown: Color
+
+  meatPinkBrown: Color
+
+  questionMarkBg: Color
+
   outlinedHover: Color
 
   walletModal: Color

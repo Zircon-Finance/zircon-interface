@@ -55,6 +55,7 @@ export const HarvestButton = styled.button`
   display: flex;
   flex-direction: row;
   color: white;
+  cursor: pointer;
   justify-content: center;
   align-items: center;
   padding: 8px 12px 9px;

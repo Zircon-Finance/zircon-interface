@@ -62,8 +62,8 @@ const ActiveText = styled.div`
 `
 
 const StyledArrowLeft = styled(ArrowLeft)`
-  color: ${({ theme }) => theme.text1};
-  margin: 12px;
+  margin: 12px 0px;
+  stroke: ${({ theme }) => theme.pinkBrown} !important;
 `
 
 export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' }) {

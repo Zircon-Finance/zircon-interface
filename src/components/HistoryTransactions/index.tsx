@@ -37,6 +37,10 @@ const StyledMenuButton = styled.button`
   }
 
   svg {
+    path {
+      stroke: ${({ theme }) => theme.pinkBrown} !important;
+    }
+    
     margin-top: 2px;
   }
 `

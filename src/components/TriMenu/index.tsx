@@ -12,7 +12,7 @@ const StyledMenuIcon = styled(MoreHorizontal)`
   width: 40px;
 
   > * {
-    stroke: ${({ theme }) => theme.text1};
+    stroke: ${({ theme }) => theme.pinkBrown};
   }
 `
 

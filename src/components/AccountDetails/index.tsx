@@ -19,7 +19,7 @@ import FortmaticIcon from '../../assets/images/fortmaticIcon.png'
 import MetamaskIcon from '../../assets/images/metamask.png'
 import PortisIcon from '../../assets/images/portisIcon.png'
 // import Identicon from '../Identicon'
-import { ButtonPositionsMobile, ButtonSecondary } from '../Button'
+import { ButtonPositionsMobile, ButtonPrimary } from '../Button'
 import { ExternalLink as LinkIcon } from 'react-feather'
 import { ExternalLink, TYPE } from '../../theme'
 
@@ -183,7 +183,7 @@ const TransactionListWrapper = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap};
 `
 
-const WalletAction = styled(ButtonSecondary)`
+const WalletAction = styled(ButtonPrimary)`
   width: fit-content;
   font-weight: 400;
   margin-left: 8px;

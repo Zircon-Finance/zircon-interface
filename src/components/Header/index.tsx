@@ -5,10 +5,8 @@ import { Text } from 'rebass'
 import { useLocation } from 'react-router-dom';
 
 import styled, { useTheme } from 'styled-components'
-
-import Logo from '../../assets/images/mainlogo.png'
 import DarkLogo from '../../assets/images/mainlogo-dark.png'
-import ZirconSmall from '../ZirconSmall';
+import WhiteLogo from '../../assets/images/mainlogo-white.png'
 import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
 //import { useDarkModeManager } from '../../state/user/hooks'
 import { useETHBalances } from '../../state/wallet/hooks'
@@ -212,7 +210,7 @@ export default function Header() {
         <HeaderElement>
           <Title href="." style={{width: account ? width < 1100 ? 'auto' : '425px' : '340px'}}>
             <UniIcon id="z-logo">
-              <img style={{ height: 50 }} src={!darkMode ? DarkLogo : Logo} alt="logo" />
+              <img style={{ height: 50 }} src={!darkMode ? DarkLogo : WhiteLogo} alt="logo" />
             </UniIcon>
             {chainId === 1287 && <BadgeSmall style={{fontSize: '13px', padding: '5px 10px', background: '#56332e', color: '#FFF'}}>
               {'GAMMA'}
@@ -227,7 +225,8 @@ export default function Header() {
               outline: 'none', 
               backgroundColor: 'transparent', 
               cursor: 'pointer',
-            marginRight: '10px'}} 
+              marginRight: '10px',
+              marginLeft: '10px'}} 
               onClick={() => darkMode ? toggleSetDarkMode() : toggleSetDarkMode()}>
             <SunLogo  />
             </button>
@@ -240,7 +239,8 @@ export default function Header() {
               outline: 'none', 
               backgroundColor: 'transparent', 
               cursor: 'pointer',
-            marginRight: '10px'}} 
+            marginRight: '10px',
+            marginLeft: '10px'}} 
               onClick={() => darkMode ? toggleSetDarkMode() : toggleSetDarkMode()}>
             <SunLogo  />
             </button>
@@ -267,10 +267,7 @@ export default function Header() {
           <HeaderElement>
             <Title href=".">
               <UniIcon id="z-logo">
-                {!darkMode ? (
-              <img style={{ height: 30 }} src={!darkMode ? DarkLogo : Logo} alt="logo" />
-            ) : (
-            <ZirconSmall />)}
+              <img style={{ height: 40 }} src={!darkMode ? DarkLogo : WhiteLogo} alt="logo" />
               </UniIcon>
               {chainId === 1287 && <BadgeSmall style={{fontSize: '13px', padding: '5px 10px', marginRight: '5px', background: '#56332e', color: '#FFF'}}>
                 {'GAMMA'}
@@ -281,7 +278,8 @@ export default function Header() {
               outline: 'none', 
               backgroundColor: 'transparent', 
               cursor: 'pointer',
-            marginRight: '10px'}} 
+            marginRight: '10px',
+            marginLeft: '10px'}} 
               onClick={() => darkMode ? toggleSetDarkMode() : toggleSetDarkMode()}>
             <SunLogo  />
             </button>

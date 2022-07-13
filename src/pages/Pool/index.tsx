@@ -108,7 +108,7 @@ export default function Pool() {
             <div style={{display: 'flex', padding: '15px 15px 0px 15px', justifyContent: 'space-between', boxShadow: `inset 1px -10px 2px -10px ${theme.bg14}`}}>
               <div style={{display: 'grid', gridAutoFlow: 'column', columnGap: '20px', alignItems: 'center'}}>
                 {filterOptions.map(option => (
-                  <Text color={filter === option ? theme.white : theme.text2}
+                  <Text color={filter === option ? theme.white : theme.pinkBrown}
                         fontSize={13}
                         key = {option}
                         onClick={() => setFilter(option)}
@@ -182,8 +182,8 @@ export default function Pool() {
                 
               </div>
               <div style={{width: '85%',display: 'flex', justifyContent: 'center'}}>
-                <ButtonSecondary style={{borderRadius: '17px', marginRight: '5px', padding: '0px', fontWeight: '500'}} as={Link} to={'/find'}>{'Import'}</ButtonSecondary>
-                <ButtonPrimary id="add-liquidity-button" as={Link} to={'/add-pro/ETH'} style={{padding: '18px 0 18px 0', fontWeight: '500'}}>{'Add liquidity'}</ButtonPrimary>
+                <ButtonSecondary style={{borderRadius: '17px', marginRight: '5px', padding: '0px', fontWeight: '500', fontSize: width > 992 ? '18px' : '13px', color: theme.pinkBrown}} as={Link} to={'/find'}>{'Import'}</ButtonSecondary>
+                <ButtonPrimary id="add-liquidity-button" as={Link} to={'/add-pro/ETH'} style={{padding: '18px 0 18px 0', fontWeight: '500', fontSize: width > 992 ? '18px' : '13px'}}>{'Add liquidity'}</ButtonPrimary>
               </div>
             </AutoRow>
           </AutoColumn>

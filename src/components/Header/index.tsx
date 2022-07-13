@@ -97,9 +97,6 @@ const AccountElement = styled.div<{ active: boolean }>`
   :hover {
     background-color: ${({ theme }) => theme.outlinedHover};
   }
-  @media (min-width: 700px) {
-    height: 60px;
-  }
   @media (max-width: 700px) {
     width: 100%;
   }
@@ -213,7 +210,7 @@ export default function Header() {
         {width >= 700 ?
         <>
         <HeaderElement>
-          <Title href="." style={{width: account ? '415px' : '340px'}}>
+          <Title href="." style={{width: account ? width < 1100 ? 'auto' : '425px' : '340px'}}>
             <UniIcon id="z-logo">
               <img style={{ height: 50 }} src={!darkMode ? DarkLogo : Logo} alt="logo" />
             </UniIcon>
@@ -234,7 +231,7 @@ export default function Header() {
               onClick={() => darkMode ? toggleSetDarkMode() : toggleSetDarkMode()}>
             <SunLogo  />
             </button>
-            <ButtonOutlined mr="10px" style={{border: `1px solid ${theme.navigationTabs}`, color: theme.pinkBrown}} onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined>
+            <ButtonOutlined mr="10px" style={{border: `1px solid ${theme.navigationTabs}`, color: theme.pinkBrown, padding: '12px 20px'}} onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined>
            {/* <ChainPoolTab active={chainId !== 1287 ? 'moonbeam' : 'moonriver'} /> */}
           </HeaderElement> </> :
           <div style={{display: 'grid', gridGap: '15px'}}>
@@ -247,7 +244,7 @@ export default function Header() {
               onClick={() => darkMode ? toggleSetDarkMode() : toggleSetDarkMode()}>
             <SunLogo  />
             </button>
-            <ButtonOutlined mr="10px" style={{border: `1px solid ${theme.navigationTabs}`, color: theme.pinkBrown}} onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined>
+            <ButtonOutlined mr="10px" style={{border: `1px solid ${theme.navigationTabs}`, color: theme.pinkBrown, padding: '12px 20px'}} onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined>
            {/* <ChainPoolTab active={chainId !== 1287 ? 'moonbeam' : 'moonriver'} /> */}
            </HeaderElement>
            <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : location.pathname === '/farm' ? 'farm' : 'pool'} />
@@ -288,7 +285,7 @@ export default function Header() {
               onClick={() => darkMode ? toggleSetDarkMode() : toggleSetDarkMode()}>
             <SunLogo  />
             </button>
-            <ButtonOutlined mr="10px" style={{border: `1px solid ${theme.navigationTabs}`, color: theme.pinkBrown}} onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined>
+            <ButtonOutlined mr="10px" style={{border: `1px solid ${theme.navigationTabs}`, color: theme.pinkBrown, padding: '12px 20px'}} onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined>
            {/* <ChainPoolTab active={chainId !== 1287 ? 'moonbeam' : 'moonriver'} /> */}
            </> 
           </HeaderElement>

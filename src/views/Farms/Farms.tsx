@@ -129,7 +129,7 @@ const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
   background: ${({ theme }) => theme.bg1};
-  border-radius: 17px;
+  border-radius: 17px 17px 22px 22px;
   padding: 5px;
   max-width: 1280px;
   margin: auto;

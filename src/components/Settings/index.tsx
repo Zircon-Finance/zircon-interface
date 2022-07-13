@@ -47,7 +47,6 @@ const StyledCloseIcon = styled(X)`
 const StyledMenuButton = styled.button`
   position: relative;
   width: 100%;
-  height: 100%;
   border: none;
   background-color: transparent;
   margin: 0;

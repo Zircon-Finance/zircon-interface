@@ -208,13 +208,13 @@ export default function AddLiquidityPro({
       f.isAnchor === !isFloat
   );
   const { pool } = usePool(farmExists ? farmExists?.sousId : 3)
-  const addTransaction = useTransactionAdder()
+      const addTransaction = useTransactionAdder()
   const lpContract = useERC20(pool?.stakingToken.address)
-  const farmIsApproved = useCallback(() => {
-    const isApproved = account && pool.userData.allowance && pool.userData.allowance.isGreaterThan(0)
-    return isApproved
-  }, [account, pool])
-  console.log('farmIsApproved', farmIsApproved())
+  const farmIsApproved = useCallback(
+      () => account && pool.userData.allowance && pool.userData.allowance.isGreaterThan(0)
+      , [account, pool])
+
+  console.log('pool', pool.userData)
   const {handleApprove} = useApprovePool(farmExists, lpContract, farmExists?.sousId ?? 3)
 
 
@@ -268,9 +268,9 @@ export default function AddLiquidityPro({
 
   //pool values
   const {AddressZero} = require("@ethersproject/constants");
-  const { contractAddress } = farmsConfig.filter((f) => 
-    f.token1.symbol === currencyA?.symbol && 
-    f.token2.symbol === currencyB?.symbol && 
+  const { contractAddress } = farmsConfig.filter((f) =>
+    f.token1.symbol === currencyA?.symbol &&
+    f.token2.symbol === currencyB?.symbol &&
     f.isAnchor === !isFloat)[0] ?? AddressZero;
   const apr = getPoolAprAddress(contractAddress) ?? '0'
   console.log('contractAddress', contractAddress)
@@ -1345,7 +1345,7 @@ export default function AddLiquidityPro({
                                     (farmIsApproved() ?
                                       "Add & Farm" : "Enable farm contract")}
                                 </Text>
-                                {farmIsApproved() && 
+                                {farmIsApproved() &&
                                 <Text
                                   fontSize={width > 700 ? 14 : 13}
                                   fontWeight={400}

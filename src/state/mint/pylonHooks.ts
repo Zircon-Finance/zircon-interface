@@ -60,19 +60,19 @@ export function useDerivedPylonMintInfo(
     [currencyA, currencyB]
   )
 
-  //pylon
+  // Pylon
   const [pylonState, pylonPair] = usePylon(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B])
 
   const userLiquidity = useTokenBalance(account ?? undefined, isFloat ? pylonPair?.floatLiquidityToken : pylonPair?.anchorLiquidityToken)
   const pylonPoolBalance = useTokenBalance(pylonPair?.address, pylonPair?.pair.liquidityToken)
   const ptTotalSupply = useTotalSupply(isFloat ? pylonPair?.floatLiquidityToken : pylonPair?.anchorLiquidityToken)
   const totalSupply = useTotalSupply(pylonPair?.pair.liquidityToken)
+
   const vab = useVirtualAnchorBalance(pylonPair?.address)
   const vfb = useVirtualFloatBalance(pylonPair?.address)
   const lastK = useLastK(pylonPair?.address)
   const gamma = useGamma(pylonPair?.address)
   const lpt = useLastPoolTokens(pylonPair?.address)
-
   const pylonSupply = useTotalSupply(pylonPair?.pair.liquidityToken)
 
   const noPylon: boolean =

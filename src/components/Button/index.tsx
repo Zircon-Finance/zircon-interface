@@ -40,6 +40,8 @@ const Base = styled(RebassButton)<{
 
 export const ButtonPrimary = styled(Base)`
   background-color: ${({ theme }) => theme.bg8};
+  font-weight: 500;
+  height: 60px;
   color: white;
   &:hover {
     background-color: ${({ theme }) => theme.colors.input};

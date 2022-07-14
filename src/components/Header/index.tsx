@@ -54,7 +54,7 @@ const HeaderElement = styled.div`
   align-items: center;
   @media (max-width: 700px) {
     width: 100%;
-    margin-top: 20px;
+    margin-top: 10px;
   }
 `
 
@@ -210,7 +210,7 @@ export default function Header() {
         <HeaderElement>
           <Title href="." style={{width: account ? width < 1100 ? 'auto' : '425px' : '340px'}}>
             <UniIcon id="z-logo">
-              <img style={{ height: 50 }} src={!darkMode ? DarkLogo : WhiteLogo} alt="logo" />
+              <img style={{ height: 24, display: 'flex', margin: 'auto' }} src={!darkMode ? DarkLogo : WhiteLogo} alt="logo" />
             </UniIcon>
             {chainId === 1287 && <BadgeSmall style={{fontSize: '13px', padding: '5px 10px', background: '#56332e', color: '#FFF'}}>
               {'GAMMA'}
@@ -263,11 +263,11 @@ export default function Header() {
         </HeaderControls>
         </> :
         <>
-          <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between', marginBottom: '20px', flexFlow: 'column'}}>
+          <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between', marginBottom: '10px', flexFlow: 'column'}}>
           <HeaderElement>
             <Title href=".">
               <UniIcon id="z-logo">
-              <img style={{ height: 40 }} src={!darkMode ? DarkLogo : WhiteLogo} alt="logo" />
+              <img style={{ height: 20, display: 'flex', margin: 'auto' }} src={!darkMode ? DarkLogo : WhiteLogo} alt="logo" />
               </UniIcon>
               {chainId === 1287 && <BadgeSmall style={{fontSize: '13px', padding: '5px 10px', marginRight: '5px', background: '#56332e', color: '#FFF'}}>
                 {'GAMMA'}
@@ -283,13 +283,13 @@ export default function Header() {
               onClick={() => darkMode ? toggleSetDarkMode() : toggleSetDarkMode()}>
             <SunLogo  />
             </button>
-            <ButtonOutlined mr="10px" style={{border: `1px solid ${theme.navigationTabs}`, color: theme.pinkBrown, padding: '12px 20px'}} onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined>
+            <ButtonOutlined style={{border: `1px solid ${theme.navigationTabs}`, color: theme.pinkBrown, padding: '13.5px 20px'}} onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined>
            {/* <ChainPoolTab active={chainId !== 1287 ? 'moonbeam' : 'moonriver'} /> */}
            </> 
           </HeaderElement>
           <HeaderControls>
             <HeaderElement>
-              <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
+              <AccountElement active={!!account} style={{ pointerEvents: 'auto', padding: '2px' }}>
                 {account && userEthBalance ? (
                   <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={400}>
                     {userEthBalance?.toSignificant(4)} DEV

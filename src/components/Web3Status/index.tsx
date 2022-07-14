@@ -64,7 +64,8 @@ const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
   border: none;
   color: ${({ theme }) => theme.primaryText1};
   font-weight: 400;
-  padding: 16px 20px 16px 20px;
+  border-radius: 17px;
+  padding: 12px 20px;
   height: 100%;
 
   @media (max-width: 700px) {
@@ -94,7 +95,6 @@ const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
 `
 
 const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean }>`
-  width: 60%;
   background-color: transparent;
   margin: 5px;
   padding: 5px;

@@ -849,72 +849,6 @@ export default function AddLiquidityPro({
 
             {currencies[Field.CURRENCY_B] !== undefined ? (
               <>
-                {width <= 700 && pylonState === PylonState.EXISTS && (
-                  <>
-                    <Flex
-                      margin={"0 10px"}
-                      justifyContent={"space-between"}
-                    >
-                      <span style={{ alignSelf: "center" }}>
-                        {"ADVANCED MODE"}
-                      </span>
-                      <Toggle
-                        id="advancedModeToggle"
-                        checked={showAdvancedMode}
-                        checkedColor={"invertedContrast"}
-                        defaultColor={"invertedContrast"}
-                        onChange={() => {
-                          showAdvancedMode && setSync("off");
-                          setShowAdvancedMode(!showAdvancedMode);
-                          fakeAdvancedMode
-                            ? setTimeout(() => {
-                                setFakeAdvancedMode(!fakeAdvancedMode);
-                              }, 300)
-                            : setFakeAdvancedMode(!fakeAdvancedMode);
-                        }}
-                        scale="sm"
-                      />
-                    </Flex>
-                    {fakeAdvancedMode && (
-                      <AdvancedContainer expanded={showAdvancedMode}>
-                        <Flex
-                          style={{
-                            background: "transparent",
-                            height: "50px",
-                            width: "100%",
-                          }}
-                          onClick={() => setSync("full")}
-                          justifyContent={"space-between"}
-                        >
-                          <span style={{ padding: "15px" }}>{"FAST MODE"}</span>
-                          {sync === "full" && (
-                            <div style={{ margin: "12px 0" }}>
-                              <CheckIcon />
-                            </div>
-                          )}
-                        </Flex>
-                        <Flex
-                          style={{
-                            background: "transparent",
-                            height: "50px",
-                            width: "100%",
-                          }}
-                          onClick={() => setSync("half")}
-                          justifyContent={"space-between"}
-                        >
-                          <span style={{ padding: "15px" }}>
-                            {"SWAP AND ADD"}
-                          </span>
-                          {sync === "half" && (
-                            <div style={{ margin: "12px 0" }}>
-                              <CheckIcon />
-                            </div>
-                          )}
-                        </Flex>
-                      </AdvancedContainer>
-                    )}
-                  </>
-                )}
                 <Flex
                   margin={"0 10px"}
                   justifyContent={"space-evenly"}
@@ -1017,8 +951,75 @@ export default function AddLiquidityPro({
                   )}
                 </Flex>
 
+                {width <= 700 && pylonState === PylonState.EXISTS && (
+                  <>
+                    <Flex
+                      margin={"0 10px 0 20px"}
+                      justifyContent={"space-between"}
+                    >
+                      <span style={{ alignSelf: "center" }}>
+                        {"ADVANCED MODE"}
+                      </span>
+                      <Toggle
+                        id="advancedModeToggle"
+                        checked={showAdvancedMode}
+                        checkedColor={'dropdownDeep'}
+                        defaultColor={'invertedContrast'}
+                        onChange={() => {
+                          showAdvancedMode && setSync("off");
+                          setShowAdvancedMode(!showAdvancedMode);
+                          fakeAdvancedMode
+                            ? setTimeout(() => {
+                                setFakeAdvancedMode(!fakeAdvancedMode);
+                              }, 300)
+                            : setFakeAdvancedMode(!fakeAdvancedMode);
+                        }}
+                        scale="sm"
+                      />
+                    </Flex>
+                    {fakeAdvancedMode && (
+                      <AdvancedContainer expanded={showAdvancedMode}>
+                        <Flex
+                          style={{
+                            background: "transparent",
+                            height: "50px",
+                            width: "100%",
+                          }}
+                          onClick={() => setSync("full")}
+                          justifyContent={"space-between"}
+                        >
+                          <span style={{ padding: "15px" }}>{"FAST MODE"}</span>
+                          {sync === "full" && (
+                            <div style={{ margin: "12px 0" }}>
+                              <CheckIcon />
+                            </div>
+                          )}
+                        </Flex>
+                        <Flex
+                          style={{
+                            background: "transparent",
+                            height: "50px",
+                            width: "100%",
+                          }}
+                          onClick={() => setSync("half")}
+                          justifyContent={"space-between"}
+                        >
+                          <span style={{ padding: "15px" }}>
+                            {"SWAP AND ADD"}
+                          </span>
+                          {sync === "half" && (
+                            <div style={{ margin: "12px 0" }}>
+                              <CheckIcon />
+                            </div>
+                          )}
+                        </Flex>
+                      </AdvancedContainer>
+                    )}
+                  </>
+                )}
+
                 {currencies[Field.CURRENCY_B] !== undefined &&
-                  pylonState === PylonState.EXISTS && (
+                  pylonState === PylonState.EXISTS && width >= 700 && (
                     <div style={{ padding: "0 10px 0 10px" }}>
                       <div
                         style={{
@@ -1027,7 +1028,6 @@ export default function AddLiquidityPro({
                           justifyContent: "space-between",
                         }}
                       >
-                        {width >= 700 && (
                           <>
                             <span
                               style={{
@@ -1118,7 +1118,6 @@ export default function AddLiquidityPro({
                               </ButtonAnchor>
                             </div>
                           </>
-                        )}
                       </div>
                     </div>
                   )}
@@ -1283,7 +1282,7 @@ export default function AddLiquidityPro({
                           )}
                         <SpaceBetween>
                           <ButtonError
-                            style={{ height: "65px" }}
+                            style={{ height: "60px" }}
                             width={
                               pylonState === PylonState.EXISTS ? farmExists ? "48%" : '100%' : "100%"
                             }
@@ -1317,7 +1316,7 @@ export default function AddLiquidityPro({
                           </ButtonError>
                           {pylonState === PylonState.EXISTS && farmExists && (
                             <ButtonError
-                              style={{ height: "65px" }}
+                              style={{ height: "60px" }}
                               width={"48%"}
                               onClick={() => {
                                 farmExists ? !farmIsApproved() ? handleApprove()

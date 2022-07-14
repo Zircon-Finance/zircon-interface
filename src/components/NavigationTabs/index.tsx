@@ -31,7 +31,7 @@ const StyledNavLink = styled(NavLink).attrs({
   align-items: center;
   font-weight: 400;
   justify-content: center;
-  height: 3rem;
+  height: 2.4rem;
   border-radius: 12px;
   outline: none;
   cursor: pointer;
@@ -40,6 +40,10 @@ const StyledNavLink = styled(NavLink).attrs({
   font-size: 16px;
   padding: 9px 13px;
   width: 50%;
+
+  @media (min-width: 700px) {
+    height: 3rem;
+  }
 
   &.${activeClassName} {
     border-radius: 12px;
@@ -70,7 +74,7 @@ export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' }) {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
   return (
-    <Tabs style={{ marginBottom: '20px', width: width >= 700 ? 'auto' : '100%', padding: '5px' }}>
+    <Tabs style={{ marginBottom: '10px', width: width >= 700 ? 'auto' : '100%', padding: '5px' }}>
       <StyledNavLink id={`swap-nav-link`} to={'/swap'} isActive={() => active === 'swap'}>
         {t('swap')}
       </StyledNavLink>

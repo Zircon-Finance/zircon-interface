@@ -168,7 +168,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
       cardBorder: chainId !== 1287 ? '#311f48' : '#361E2A',
       contrast: "#191326",
       dropdown: "#F6F6F6",
-      dropdownDeep: "#874955",
+      dropdownDeep: darkMode ? "#874955" : '#d5aeaf',
       invertedContrast: chainId !== 1287 ? '#311f48' : darkMode ? '#51323D' : '#EAEAEA',
       input: chainId !== 1287 ? '#311f48' : '#8F5661',
       inputSecondary: chainId !== 1287 ? '#311f48' : darkMode ? '#492B36' : '#F6F2F4',

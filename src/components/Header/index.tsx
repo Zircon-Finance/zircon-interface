@@ -208,7 +208,7 @@ export default function Header() {
         {width >= 700 ?
         <>
         <HeaderElement>
-          <Title href="." style={{width: account ? width < 1100 ? 'auto' : '425px' : '340px'}}>
+          <Title href="." style={{width: account ? width < 1100 ? 'auto' : '425px' : '340px', height: width >= 1100 ? '60px' : '45px'}}>
             <UniIcon id="z-logo">
               <img style={{ height: 24, display: 'flex', margin: 'auto' }} src={!darkMode ? DarkLogo : WhiteLogo} alt="logo" />
             </UniIcon>

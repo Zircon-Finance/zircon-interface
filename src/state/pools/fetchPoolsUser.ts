@@ -7,7 +7,6 @@ import { getAddress } from '../../utils/addressHelpers'
 import multicall from '../../utils/multicall'
 
 export const fetchPoolsAllowance = async (account) => {
-
   const calls = poolsConfig.map((pool) => ({
     address: pool.stakingToken.address,
     name: 'allowance',
@@ -21,7 +20,6 @@ export const fetchPoolsAllowance = async (account) => {
 }
 
 export const fetchUserBalances = async (account) => {
-  // Non BNB pools
   const tokens = uniq(poolsConfig.map((pool) => pool.stakingToken.address))
   const calls = tokens.map((token) => ({
     address: token,
@@ -39,13 +37,6 @@ export const fetchUserBalances = async (account) => {
     }),
     {},
   )
-
-  // BNB pools
-  // const bnbBalance = await simpleRpcProvider.getBalance(account)
-  // const bnbBalances = bnbPools.reduce(
-  //   (acc, pool) => ({ ...acc, [pool.sousId]: new BigNumber(bnbBalance.toString()).toJSON() }),
-  //   {},
-  // )
 
   return poolTokenBalances
 }

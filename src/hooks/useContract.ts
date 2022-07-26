@@ -1,7 +1,7 @@
 import { Contract } from '@ethersproject/contracts'
 import { ChainId, WDEV } from 'zircon-sdk'
 import { abi as IUniswapV2PairABI } from '@uniswap/v2-core/build/IUniswapV2Pair.json'
-import {abi as ZirconPylon } from 'zircon-protocol/artifacts/contracts/core/ZirconPylon.sol/ZirconPylon.json'
+import { abi as ZirconPylon } from '../constants/abi/ZirconPylon.json'
 
 import { useMemo } from 'react'
 import ENS_ABI from '../constants/abis/ens-registrar.json'

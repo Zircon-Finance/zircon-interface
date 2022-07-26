@@ -12,10 +12,7 @@ import {useTokenBalance, useTokenBalances} from '../wallet/hooks'
 import { Field, typeInput } from './actions'
 import {
   useGamma,
-  useLastK,
-  useLastPoolTokens,
   useVirtualAnchorBalance,
-  useVirtualFloatBalance
 } from "../../data/PylonData";
 import {usePylon} from "../../data/PylonReserves";
 import BigNumber from 'bignumber.js'
@@ -178,11 +175,12 @@ export function useDerivedPylonBurnInfo(
   const pylonPoolBalance = useTokenBalance(pylon?.address, pylon?.pair.liquidityToken)
   const ptTotalSupply = useTotalSupply(isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken)
   const totalSupply = useTotalSupply(pylon?.pair.liquidityToken)
+  // TODO: update with new SDK Functions
   const vab = useVirtualAnchorBalance(pylon?.address)
-  const vfb = useVirtualFloatBalance(pylon?.address)
-  const lastK = useLastK(pylon?.address)
+  const vfb = useVirtualAnchorBalance(pylon?.address)
+  const lastK = useGamma(pylon?.address)
   const gamma = useGamma(pylon?.address)
-  const lpt = useLastPoolTokens(pylon?.address)
+  const lpt = useTotalSupply(pylon?.pair.liquidityToken); //useLastPoolTokens(pylon?.address)
   // console.log("values")
   // console.log("userLiquidity", userLiquidity?.raw.toString())
   // console.log("gamma", gamma?.toString())
@@ -349,19 +347,21 @@ const userLiquidityToken = useTokenBalance(account ?? undefined, isFloat ? pylon
 const amount = userLiquidityToken?.toFixed(6)
 const total = parseFloat(amount) + parseFloat(balance?.div(new BigNumber(10).pow(18)))
 const userLiquidity = total > 0 && new TokenAmount(
-  (isFloat ? 
-  pylon?.floatLiquidityToken : 
-  pylon?.anchorLiquidityToken), 
+  (isFloat ?
+  pylon?.floatLiquidityToken :
+  pylon?.anchorLiquidityToken),
   BigInt(Math.floor(total)*10**18)
 )
+
+  //TODO: update with new SDK Functions
 const pylonPoolBalance = useTokenBalance(pylon?.address, pylon?.pair.liquidityToken)
 const ptTotalSupply = useTotalSupply(isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken)
 const totalSupply = useTotalSupply(pylon?.pair.liquidityToken)
 const vab = useVirtualAnchorBalance(pylon?.address)
-const vfb = useVirtualFloatBalance(pylon?.address)
-const lastK = useLastK(pylon?.address)
+const vfb = useVirtualAnchorBalance(pylon?.address) //useVirtualFloatBalance(pylon?.address)
+const lastK = useGamma(pylon?.address) //useLastK(pylon?.address)
 const gamma = useGamma(pylon?.address)
-const lpt = useLastPoolTokens(pylon?.address)
+const lpt = useTotalSupply(pylon?.pair.liquidityToken) //useLastPoolTokens(pylon?.address)
 
 
 function getLiquidityValues():  [TokenAmount | undefined, TokenAmount | undefined] {

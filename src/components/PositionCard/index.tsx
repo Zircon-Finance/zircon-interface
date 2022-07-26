@@ -20,10 +20,7 @@ import { RowBetween, RowFixed } from '../Row'
 import { Dots } from '../swap/styleds'
 import {
   useGamma,
-  useLastK,
-  useLastPoolTokens,
   useVirtualAnchorBalance,
-  useVirtualFloatBalance
 } from "../../data/PylonData";
 import { Separator } from '../SearchModal/styleds'
 
@@ -305,11 +302,11 @@ export function PylonPositionCard({ isFloat, border, pylon }: PylonPositionCardP
   const ptTotalSupply = useTotalSupply(isFloat ? pylon.floatLiquidityToken : pylon.anchorLiquidityToken)
   const totalSupply = useTotalSupply(pylon.pair.liquidityToken)
   const vab = useVirtualAnchorBalance(pylon.address)
-  const vfb = useVirtualFloatBalance(pylon.address)
-  const lastK = useLastK(pylon.address)
+  const vfb =  useVirtualAnchorBalance(pylon.address) //useVirtualFloatBalance(pylon.address)
+  const lastK = useGamma(pylon.address) //useLastK(pylon.address)
   const gamma = useGamma(pylon.address)
-  const lpt = useLastPoolTokens(pylon.address)
-
+  const lpt = useTotalSupply(pylon.pair.liquidityToken) //useLastPoolTokens(pylon.address)
+// TODO: update
   const formattedPoolBalance = userPoolBalance.toSignificant(4) as unknown as number
   // const poolTokenPercentage =
   //   !!userPoolBalance && !!totalPoolTokens && JSBI.greaterThanOrEqual(totalPoolTokens.raw, userPoolBalance.raw)
@@ -334,7 +331,7 @@ export function PylonPositionCard({ isFloat, border, pylon }: PylonPositionCardP
               pylon.burnAnchor(totalSupply, ptTotalSupply, userPoolBalance, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
         ]
       : [undefined, undefined]
-      
+
   const { width } = useWindowDimensions();
 
   return (
@@ -346,7 +343,7 @@ export function PylonPositionCard({ isFloat, border, pylon }: PylonPositionCardP
             <DoubleCurrencyLogo currency0={currency0} currency1={currency1} margin={true} size={28} />
             {isFloat ? (
               <>
-              <Flex>  
+              <Flex>
                 <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', marginRight: '5px',  display: 'flex', alignItems: 'center'}}>
                 <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{currency0.symbol} </span>{'FLOAT'}
                 </BadgeSmall>
@@ -471,15 +468,17 @@ export function MinimalPositionPylonCard({ pylon, showUnwrapped = false, border,
 
   const [showMore, setShowMore] = useState(false)
 
+
+    // TODO: update with new SDK
   const userPoolBalance = useTokenBalance(account ?? undefined, isFloat ? pylon.floatLiquidityToken : pylon.anchorLiquidityToken)
   const pylonPoolBalance = useTokenBalance(pylon.address, pylon.pair.liquidityToken)
   const ptTotalSupply = useTotalSupply(isFloat ? pylon.floatLiquidityToken : pylon.anchorLiquidityToken)
   const totalSupply = useTotalSupply(pylon.pair.liquidityToken)
   const vab = useVirtualAnchorBalance(pylon.address)
-  const vfb = useVirtualFloatBalance(pylon.address)
-  const lastK = useLastK(pylon.address)
+  const vfb = useVirtualAnchorBalance(pylon.address) // useVirtualFloatBalance(pylon.address)
+  const lastK = useGamma(pylon.address) //useLastK(pylon.address)
   const gamma = useGamma(pylon.address)
-  const lpt = useLastPoolTokens(pylon.address)
+  const lpt = useTotalSupply(pylon.pair.liquidityToken) //useLastPoolTokens(pylon.address)
   // const poolTokenPercentage =
   //   !!userPoolBalance && !!totalPoolTokens && JSBI.greaterThanOrEqual(totalPoolTokens.raw, userPoolBalance.raw)
   //     ? new Percent(userPoolBalance.raw, totalPoolTokens.raw)

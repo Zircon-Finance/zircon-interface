@@ -12,8 +12,8 @@ import {
   // fetchCakeVaultFees,
   fetchPoolsStakingLimitsAsync,
 } from '.'
-import { DeserializedPool, 
-  // VaultKey 
+import { DeserializedPool,
+  // VaultKey
 } from '../types'
 import { fetchFarmsPublicDataAsync } from '../farms'
 import {
@@ -77,7 +77,7 @@ export const usePairLiquidity = (token1, token2) => {
 
   const anchorPoolBalancePair = useTokenBalance(pair?.liquidityToken.address,pylon?.token0)
   const floatPoolBalancePair = useTokenBalance(pair?.liquidityToken.address,pylon?.token1)
-  
+
   const anchorPoolBalance = anchorPoolBalancePylon?.add(anchorPoolBalancePair)
   const floatPoolBalance = floatPoolBalancePylon?.add(floatPoolBalancePair)
   return `${anchorPoolBalance?.toFixed(3) as unknown as number} ${tokenA?.symbol} - 

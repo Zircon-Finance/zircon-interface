@@ -1,6 +1,6 @@
 import { TokenAmount, Pair, Currency, Pylon } from 'zircon-sdk'
 import { useMemo } from 'react'
-import { abi as ZirconPylonABI } from 'zircon-protocol/artifacts/contracts/core/ZirconPylon.sol/ZirconPylon.json'
+import { abi as ZirconPylonABI } from '../constants/abi/ZirconPylon.json'
 import { Interface } from '@ethersproject/abi'
 import { useActiveWeb3React } from '../hooks'
 import { abi as IUniswapV2PairABI } from '@uniswap/v2-core/build/IUniswapV2Pair.json'

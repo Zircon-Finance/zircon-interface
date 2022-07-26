@@ -13,7 +13,7 @@ import { fetchPoolsUserDataAsync } from '../../../state/pools'
 import { useAddPopup } from '../../../state/application/hooks'
 import { useTransactionAdder } from '../../../state/transactions/hooks'
 
-const useApprovePool = (pool,lpContract: Contract, sousId) => {
+const useApprovePool = (pool, lpContract: Contract, sousId) => {
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
   const { callWithGasPrice } = useCallWithGasPrice()
   const dispatch = useDispatch()
@@ -42,7 +42,7 @@ const useApprovePool = (pool,lpContract: Contract, sousId) => {
           }
         },
         receipt.transactionHash
-      )  
+      )
       dispatch(fetchPoolsUserDataAsync(account))
     }
   }

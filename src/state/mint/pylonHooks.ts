@@ -13,10 +13,7 @@ import { Field, typeInput } from './actions'
 import { usePylon, PylonState } from '../../data/PylonReserves'
 import {
   useGamma,
-  useLastK,
-  useLastPoolTokens,
   useVirtualAnchorBalance,
-  useVirtualFloatBalance
 } from "../../data/PylonData";
 
 const ZERO = JSBI.BigInt(0)
@@ -62,17 +59,17 @@ export function useDerivedPylonMintInfo(
 
   // Pylon
   const [pylonState, pylonPair] = usePylon(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B])
-
+  // TODO: Better to use a multicall for this instead of a single call per each value
   const userLiquidity = useTokenBalance(account ?? undefined, isFloat ? pylonPair?.floatLiquidityToken : pylonPair?.anchorLiquidityToken)
   const pylonPoolBalance = useTokenBalance(pylonPair?.address, pylonPair?.pair.liquidityToken)
   const ptTotalSupply = useTotalSupply(isFloat ? pylonPair?.floatLiquidityToken : pylonPair?.anchorLiquidityToken)
   const totalSupply = useTotalSupply(pylonPair?.pair.liquidityToken)
-
+  // TODO: update with new SDK Functions
   const vab = useVirtualAnchorBalance(pylonPair?.address)
-  const vfb = useVirtualFloatBalance(pylonPair?.address)
-  const lastK = useLastK(pylonPair?.address)
+  const vfb = useVirtualAnchorBalance(pylonPair?.address); //useVirtualFloatBalance(pylonPair?.address)
+  const lastK = useGamma(pylonPair?.address); //useLastK(pylonPair?.address)
   const gamma = useGamma(pylonPair?.address)
-  const lpt = useLastPoolTokens(pylonPair?.address)
+  const lpt = useTotalSupply(pylonPair?.pair.liquidityToken); //useLastPoolTokens(pylonPair?.address)
   const pylonSupply = useTotalSupply(pylonPair?.pair.liquidityToken)
 
   const noPylon: boolean =

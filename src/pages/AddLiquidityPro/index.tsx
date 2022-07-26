@@ -69,8 +69,6 @@ import { useERC20 } from "../../hooks/useContract";
 import useApprovePool from "../../views/Farms/hooks/useApproveFarm";
 import { fetchPoolsUserDataAsync } from "../../state/pools";
 import { useDispatch } from "react-redux";
-// import { PoolPriceBar } from './PoolPriceBar'
-// import { ArrowDown } from 'react-feather'
 import {AddressZero}  from "@ethersproject/constants";
 
 const expandAnimation = keyframes`
@@ -755,7 +753,7 @@ export default function AddLiquidityPro({
         {pylonState === PylonState.LOADING && account && (
             <MobileWrapper
                 style={{ backgroundColor: "rgba(12,12,12,0.5)", position: "fixed" }}
-            ></MobileWrapper>
+            />
         )}
         <AppBody>
           <AddRemoveTabs adding={true} />

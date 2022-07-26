@@ -12,7 +12,7 @@ const DropDownHeader = styled.div`
   padding: 0px 16px;
   box-shadow: ${({ theme }) => theme.shadows.inset};
   border-radius: 16px;
-  background: ${({ theme }) => theme.cardExpanded};
+  background: ${({ theme }) => theme.anchorFloatBadge};
   transition: border-radius 0.15s;
 `
 

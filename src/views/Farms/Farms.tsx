@@ -441,6 +441,9 @@ const Farms: React.FC = ({ children }) => {
   return (
     <FarmsContext.Provider value={{ activeFarms }}>
       <Page>
+      <Text color={theme.text1} fontWeight={300} fontSize={'30px'} style={{textAlign: 'center', alignSelf: 'center', marginBottom: width >= 700 ? '30px' : '20px'}}>
+          {'Farms'}
+        </Text>
         <ControlContainer>
           <Flex m={'0px'}>
             <PylonClassicTab active={filter} />

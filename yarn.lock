@@ -16622,10 +16622,10 @@ zircon-protocol@1.0.3-alpha.1:
     dotenv "^10.0.0"
     hardhat-watcher "^2.1.1"
 
-zircon-sdk@1.0.6-alpha.3:
-  version "1.0.6-alpha.3"
-  resolved "https://registry.yarnpkg.com/zircon-sdk/-/zircon-sdk-1.0.6-alpha.3.tgz#cbfa73aa15fc7ba0bc420a979d4acf28cc0495b7"
-  integrity sha512-k8HlHqxwFBtkHylBq/X57qJUZLDJkvSBsRezDkdnki5eSqaOvR65JeGiECIaqNnfXpvtHLgEJNVBmsRa3GqNKQ==
+zircon-sdk@1.0.6-alpha.7:
+  version "1.0.6-alpha.7"
+  resolved "https://registry.yarnpkg.com/zircon-sdk/-/zircon-sdk-1.0.6-alpha.7.tgz#24695911cda8ffeee1b7138414d90ea7080ca9c9"
+  integrity sha512-FMwQaGPl7+ywOia99lkFgTe5EgmjrdMAk5cgN1i3mEMEoiEUKtclyS8i9l5pxKwvx/xP1SHZDeqlHWd8xBrj0A==
   dependencies:
     "@uniswap/v2-core" "^1.0.0"
     big.js "^5.2.2"

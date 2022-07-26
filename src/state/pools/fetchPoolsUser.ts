@@ -4,22 +4,22 @@ import erc20ABI from '../../constants/abi/erc20.json'
 import BigNumber from 'bignumber.js'
 import uniq from 'lodash/uniq'
 import { getAddress } from '../../utils/addressHelpers'
-import { simpleRpcProvider } from '../../utils/providers'
 import multicall from '../../utils/multicall'
 
 // Pool 0, Cake / Cake is a different kind of contract (master chef)
 // BNB pools use the native BNB token (wrapping ? unwrapping is done at the contract level)
 const nonBnbPools = poolsConfig.filter((pool) => pool.stakingToken.symbol !== 'BNB')
-const bnbPools = poolsConfig.filter((pool) => pool.stakingToken.symbol === 'BNB')
+// const bnbPools = poolsConfig.filter((pool) => pool.stakingToken.symbol === 'BNB')
 const nonMasterPools = poolsConfig.filter((pool) => pool.sousId !== 0)
 
 export const fetchPoolsAllowance = async (account) => {
+
   const calls = nonBnbPools.map((pool) => ({
     address: pool.stakingToken.address,
     name: 'allowance',
     params: [account, getAddress(pool.contractAddress)],
   }))
-
+  console.log("calls", calls )
   const allowances = await multicall(erc20ABI, calls)
   return nonBnbPools.reduce(
     (acc, pool, index) => ({ ...acc, [pool.sousId]: new BigNumber(allowances[index]).toJSON() }),
@@ -35,7 +35,8 @@ export const fetchUserBalances = async (account) => {
     name: 'balanceOf',
     params: [account],
   }))
-  const tokenBalancesRaw = await multicall(erc20ABI, calls)
+  console.log("calls", calls)
+    const tokenBalancesRaw = await multicall(erc20ABI, calls)
   const tokenBalances = tokens.reduce((acc, token, index) => ({ ...acc, [token]: tokenBalancesRaw[index] }), {})
   const poolTokenBalances = nonBnbPools.reduce(
     (acc, pool) => ({
@@ -48,13 +49,13 @@ export const fetchUserBalances = async (account) => {
   )
 
   // BNB pools
-  const bnbBalance = await simpleRpcProvider.getBalance(account)
-  const bnbBalances = bnbPools.reduce(
-    (acc, pool) => ({ ...acc, [pool.sousId]: new BigNumber(bnbBalance.toString()).toJSON() }),
-    {},
-  )
+  // const bnbBalance = await simpleRpcProvider.getBalance(account)
+  // const bnbBalances = bnbPools.reduce(
+  //   (acc, pool) => ({ ...acc, [pool.sousId]: new BigNumber(bnbBalance.toString()).toJSON() }),
+  //   {},
+  // )
 
-  return { ...poolTokenBalances, ...bnbBalances }
+  return poolTokenBalances
 }
 
 export const fetchUserStakeBalances = async (account) => {

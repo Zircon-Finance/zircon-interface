@@ -126,6 +126,6 @@
     "swiper": "^8.2.4",
     "swr": "^1.3.0",
     "zircon-protocol": "1.0.3-alpha.1",
-    "zircon-sdk": "1.0.6-alpha.3"
+    "zircon-sdk": "1.0.6-alpha.7"
   }
 }

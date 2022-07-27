@@ -7,68 +7,71 @@ import { getAddress } from '../../utils/addressHelpers'
 import multicall from '../../utils/multicall'
 
 export const fetchPoolsAllowance = async (account) => {
-  const calls = poolsConfig.map((pool) => ({
-    address: pool.stakingToken.address,
-    name: 'allowance',
-    params: [account, getAddress(pool.contractAddress)],
-  }))
-  const allowances = await multicall(erc20ABI, calls)
-  return poolsConfig.reduce(
-    (acc, pool, index) => ({ ...acc, [pool.sousId]: new BigNumber(allowances[index]).toJSON() }),
-    {},
-  )
+    const calls = poolsConfig.map((pool) => ({
+        address: pool.stakingToken.address,
+        name: 'allowance',
+        params: [account, getAddress(pool.contractAddress)],
+    }))
+    const allowances = await multicall(erc20ABI, calls)
+    console.log(allowances)
+    return poolsConfig.reduce(
+        (acc, pool, index) => ({ ...acc, [pool.sousId]: new BigNumber(allowances[index]).toJSON() }),
+        {},
+    )
 }
 
 export const fetchUserBalances = async (account) => {
-  const tokens = uniq(poolsConfig.map((pool) => pool.stakingToken.address))
-  const calls = tokens.map((token) => ({
-    address: token,
-    name: 'balanceOf',
-    params: [account],
-  }))
-    const tokenBalancesRaw = await multicall(erc20ABI, calls)
-  const tokenBalances = tokens.reduce((acc, token, index) => ({ ...acc, [token]: tokenBalancesRaw[index] }), {})
-  const poolTokenBalances = poolsConfig.reduce(
-    (acc, pool) => ({
-      ...acc,
-      ...(tokenBalances[pool.stakingToken.address] && {
-        [pool.sousId]: new BigNumber(tokenBalances[pool.stakingToken.address]).toJSON(),
-      }),
-    }),
-    {},
-  )
+    const tokens = uniq(poolsConfig.map((pool) => pool.stakingToken.address))
+    const calls = tokens.map((token) => ({
+        address: token,
+        name: 'balanceOf',
+        params: [account],
+    }))
+    console.log("calls", calls)
 
-  return poolTokenBalances
+    const tokenBalancesRaw = await multicall(erc20ABI, calls)
+    const tokenBalances = tokens.reduce((acc, token, index) => ({ ...acc, [token]: tokenBalancesRaw[index] }), {})
+    const poolTokenBalances = poolsConfig.reduce(
+        (acc, pool) => ({
+            ...acc,
+            ...(tokenBalances[pool.stakingToken.address] && {
+                [pool.sousId]: new BigNumber(tokenBalances[pool.stakingToken.address]).toJSON(),
+            }),
+        }),
+        {},
+    )
+
+    return poolTokenBalances
 }
 
 export const fetchUserStakeBalances = async (account) => {
-  const calls = poolsConfig.map((p) => ({
-    address: getAddress(p.contractAddress),
-    name: 'userInfo',
-    params: [account],
-  }))
-  const userInfo = await multicall(psionicFarmABI, calls)
-  return poolsConfig.reduce(
-    (acc, pool, index) => ({
-      ...acc,
-      [pool.sousId]: new BigNumber(userInfo[index].amount._hex).toJSON(),
-    }),
-    {},
-  )
+    const calls = poolsConfig.map((p) => ({
+        address: getAddress(p.contractAddress),
+        name: 'userInfo',
+        params: [account],
+    }))
+    const userInfo = await multicall(psionicFarmABI, calls)
+    return poolsConfig.reduce(
+        (acc, pool, index) => ({
+            ...acc,
+            [pool.sousId]: new BigNumber(userInfo[index].amount._hex).toJSON(),
+        }),
+        {},
+    )
 }
 
 export const fetchUserPendingRewards = async (account) => {
-  const calls = poolsConfig.map((p) => ({
-    address: getAddress(p.contractAddress),
-    name: 'pendingReward',
-    params: [account],
-  }))
-  const res = await multicall(psionicFarmABI, calls)
-  return poolsConfig.reduce(
-    (acc, pool, index) => ({
-      ...acc,
-      [pool.sousId]: new BigNumber(res[index]).toJSON(),
-    }),
-    {},
-  )
+    const calls = poolsConfig.map((p) => ({
+        address: getAddress(p.contractAddress),
+        name: 'pendingReward',
+        params: [account],
+    }))
+    const res = await multicall(psionicFarmABI, calls)
+    return poolsConfig.reduce(
+        (acc, pool, index) => ({
+            ...acc,
+            [pool.sousId]: new BigNumber(res[index]).toJSON(),
+        }),
+        {},
+    )
 }

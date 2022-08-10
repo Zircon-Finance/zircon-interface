@@ -67,7 +67,7 @@ export function ConfirmAddModalBottom({
       {/*</RowBetween>*/}
       <ButtonPrimary style={{ margin: '20px 0 0 0' }} onClick={onAdd}>
         <Text fontWeight={400} fontSize={16}>
-          {pylonState === PylonState.EXISTS ? 'Confirm Supply' : pylonState === PylonState.ONLY_PAIR ? 'Create Pylon & Supply' : 'Create Pair/Pylon' }
+          {pylonState === PylonState.EXISTS ? 'Confirm Supply' : pylonState === PylonState.ONLY_PAIR ? 'Create Pylon & Supply' : 'Create Pair' }
         </Text>
       </ButtonPrimary>
     </>

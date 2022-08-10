@@ -22,7 +22,7 @@ const FarmsPage = () => {
           account={account}
           removed={false}
         />
-      )) : <p style={{width: '100%', textAlign: 'center', fontSize: '20px', fontWeight: '500'}}>No farms found</p>}
+      )) : <p style={{width: '100%', textAlign: 'center', fontSize: '20px', fontWeight: 500}}>No farms found</p>}
     </>
   )
 }

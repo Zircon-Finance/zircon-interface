@@ -27,7 +27,7 @@ import { MinimalPositionPylonCard } from "../../components/PositionCard";
 import { RowBetween, RowFlat } from "../../components/Row";
 // import { Link } from 'react-router-dom'
 // import { ArrowRight } from 'react-feather'
-import { PYLON_ROUTER_ADDRESS } from "../../constants";
+import { PYLON_ROUTER_ADDRESS, ROUTER_ADDRESS } from "../../constants";
 import { PylonState } from "../../data/PylonReserves";
 import { useActiveWeb3React, useWindowDimensions } from "../../hooks";
 import { useCurrency } from "../../hooks/Tokens";
@@ -50,7 +50,7 @@ import {
   useUserSlippageTolerance,
 } from "../../state/user/hooks";
 import { TYPE } from "../../theme";
-import { calculateGasMargin, getPylonRouterContract } from "../../utils";
+import { calculateGasMargin, calculateSlippageAmount, getPylonRouterContract, getRouterContract } from "../../utils";
 import { maxAmountSpend } from "../../utils/maxAmountSpend";
 import { wrappedCurrency } from "../../utils/wrappedCurrency";
 import AppBody from "../AppBody";
@@ -254,7 +254,7 @@ export default function AddLiquidityPro({
     };
   }, {});
 
-  // check whether the user has approved the router on the tokens
+  // check whether the user has approved the router on the tokens (Pylon)
   const [approvalA, approveACallback] = useApproveCallback(
       parsedAmounts[float.field_a],
       PYLON_ROUTER_ADDRESS[chainId ? chainId : ""]
@@ -262,6 +262,15 @@ export default function AddLiquidityPro({
   const [approvalB, approveBCallback] = useApproveCallback(
       parsedAmounts[float.field_b],
       PYLON_ROUTER_ADDRESS[chainId ? chainId : ""]
+  );
+  // check whether the user has approved the router on the tokens (Pair)
+  const [approvalAPair, approveACallbackPair] = useApproveCallback(
+    parsedAmounts[float.field_a],
+    ROUTER_ADDRESS[chainId ? chainId : ""]
+  );
+  const [approvalBPair, approveBCallbackPair] = useApproveCallback(
+    parsedAmounts[float.field_b],
+    ROUTER_ADDRESS[chainId ? chainId : ""]
   );
 
   //pool values
@@ -362,6 +371,7 @@ export default function AddLiquidityPro({
         });
   }
 
+  // Function to create Pylon / Add liquidity to Pylon
   async function onAdd(stake?: boolean) {
     if (!chainId || !library || !account) return;
     const router = getPylonRouterContract(chainId, library, account);
@@ -573,6 +583,97 @@ export default function AddLiquidityPro({
           }
         });
   }
+
+  // Function to create only pair before Pylon
+  async function onAddPairOnly() {
+    console.log('Calling pair only creation')
+    if (!chainId || !library || !account) return
+    const router = getRouterContract(chainId, library, account)
+
+    const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts
+    if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB) {
+      return
+    }
+
+    const amountsMin = {
+      [Field.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, 0 )[0],
+      [Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, 0)[0]
+    }
+
+    const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline
+
+    let estimate,
+      method: (...args: any) => Promise<TransactionResponse>,
+      args: Array<string | string[] | number>,
+      value: BigNumber | null
+    if (currencyA === DEV || currencyB === DEV) {
+      const tokenBIsETH = currencyB === DEV
+      estimate = router.estimateGas.addLiquidityETH
+      method = router.addLiquidityETH
+      args = [
+        wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId)?.address ?? '', // token
+        (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
+        amountsMin[tokenBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(), // token min
+        amountsMin[tokenBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(), // DEV min
+        account,
+        deadlineFromNow
+      ]
+      value = BigNumber.from((tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString())
+    } else {
+      estimate = router.estimateGas.addLiquidity
+      method = router.addLiquidity
+      args = [
+        wrappedCurrency(currencyA, chainId)?.address ?? '',
+        wrappedCurrency(currencyB, chainId)?.address ?? '',
+        parsedAmountA.raw.toString(),
+        parsedAmountB.raw.toString(),
+        amountsMin[Field.CURRENCY_A].toString(),
+        amountsMin[Field.CURRENCY_B].toString(),
+        account,
+        deadlineFromNow
+      ]
+      value = null
+    }
+
+    setAttemptingTxn(true)
+    await estimate(...args, value ? { value } : {})
+      .then(estimatedGasLimit =>
+        method(...args, {
+          ...(value ? { value } : {}),
+          gasLimit: calculateGasMargin(estimatedGasLimit)
+        }).then(response => {
+          setAttemptingTxn(false)
+
+          addTransaction(response, {
+            summary:
+              'Add ' +
+              parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
+              ' ' +
+              currencies[Field.CURRENCY_A]?.symbol +
+              ' and ' +
+              parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
+              ' ' +
+              currencies[Field.CURRENCY_B]?.symbol
+          })
+
+          setTxHash(response.hash)
+
+          ReactGA.event({
+            category: 'Liquidity',
+            action: 'Add',
+            label: [currencies[Field.CURRENCY_A]?.symbol, currencies[Field.CURRENCY_B]?.symbol].join('/')
+          })
+        })
+      )
+      .catch(error => {
+        setAttemptingTxn(false)
+        // we only care if the error is something _other_ than the user rejected the tx
+        if (error?.code !== 4001) {
+          console.error(error)
+        }
+      })
+  }
+
   const formattedLiquidity = (liquidityMinted?.toSignificant(
       6
   ) as unknown) as number;
@@ -665,7 +766,8 @@ export default function AddLiquidityPro({
             currencies={currencies}
             parsedAmounts={parsedAmounts}
             pylonState={pylonState}
-            onAdd={() => (pylonState === PylonState.EXISTS ? onAdd() : addPylon())}
+            onAdd={() => pylonState === PylonState.EXISTS ? onAdd() : 
+                         (pylonState === PylonState.ONLY_PAIR ? addPylon() : onAddPairOnly())}
             //poolTokenPercentage={poolTokenPercentage}
             isFloat={isFloat}
             sync={sync}
@@ -747,6 +849,12 @@ export default function AddLiquidityPro({
 
   const { width } = useWindowDimensions();
 
+  console.log('Approval A state: ', approvalA);
+  console.log('Approval B state: ', approvalB);
+  console.log('Approval A Pair state: ', approvalAPair);
+  console.log('Approval B Pair state: ', approvalBPair);
+  console.log('Pylon State: ', pylonState);
+
   return (
       <>
         <LearnIcon />
@@ -770,7 +878,7 @@ export default function AddLiquidityPro({
                               ? "You will receive"
                               : pylonState === PylonState.ONLY_PAIR
                                   ? "You are creating a pylon"
-                                  : "You are creating a pair and a pylon"
+                                  : "You are creating a pair"
                         }
                         onDismiss={handleDismissConfirmation}
                         topContent={modalHeader}
@@ -796,7 +904,7 @@ export default function AddLiquidityPro({
                           You are the first liquidity provider.
                         </TYPE.link>
                         <TYPE.link fontWeight={400} color={theme.text1}>
-                          This will create the Pylon for this pair
+                          This will create the pair and the Pylon for this pair
                         </TYPE.link>
                         <TYPE.link fontWeight={400} color={theme.text1}>
                           Once you are happy with the pair click 'Create pair' to
@@ -1224,19 +1332,24 @@ export default function AddLiquidityPro({
                                 approvalB === ApprovalState.PENDING) &&
                             isValid && (
                                 <RowBetween>
-                                  {approvalA !== ApprovalState.APPROVED && (
+                                  {/* Currency A isn't approved or pylon doesn't exist and A isn't approved */}
+                                  {(pylonState === PylonState.NOT_EXISTS ? (approvalAPair !== ApprovalState.APPROVED ? true : false) : (approvalA !== ApprovalState.APPROVED ? true : false))
+                                   && (
                                       <ButtonPrimary
-                                          onClick={approveACallback}
-                                          disabled={approvalA === ApprovalState.PENDING}
+                                          onClick={pylonState === (PylonState.ONLY_PAIR || PylonState.EXISTS) ? 
+                                            approveACallback : approveACallbackPair}
+                                          disabled={approvalA === ApprovalState.PENDING 
+                                            || approvalAPair === ApprovalState.PENDING}
                                           width={
-                                            approvalB !== ApprovalState.APPROVED
+                                            (approvalB !== ApprovalState.APPROVED || approvalBPair !== ApprovalState.APPROVED) && pylonState === PylonState.EXISTS ? "100%" : "auto"
                                                 ? sync === "half"
                                                     ? "48%"
                                                     : "48%"
                                                 : "100%"
                                           }
                                       >
-                                        {approvalA === ApprovalState.PENDING ? (
+                                        {(approvalA === ApprovalState.PENDING 
+                                        || approvalAPair === ApprovalState.PENDING) ? (
                                             <Dots>
                                               Approving{" "}
                                               {currencies[float.field_a]?.symbol}
@@ -1247,20 +1360,19 @@ export default function AddLiquidityPro({
                                         )}
                                       </ButtonPrimary>
                                   )}
-                                  {((sync === "half" &&
-                                          approvalB !== ApprovalState.APPROVED) ||
-                                      (pylonState !== PylonState.EXISTS &&
-                                          approvalB !== ApprovalState.APPROVED)) && (
-                                      <ButtonPrimary
-                                          onClick={approveBCallback}
-                                          disabled={approvalB === ApprovalState.PENDING}
+                                  {(pylonState === PylonState.EXISTS ? (sync === "half" && (approvalB !== ApprovalState.APPROVED ? true : false)) : (pylonState === PylonState.ONLY_PAIR ? (approvalB !== ApprovalState.APPROVED ? true : false) : (approvalBPair !== ApprovalState.APPROVED ? true : false)) &&
+                                      (<ButtonPrimary
+                                          onClick={pylonState === (PylonState.NOT_EXISTS) ?
+                                            approveBCallbackPair : approveBCallback}
+                                          disabled={(approvalB === ApprovalState.PENDING || 
+                                                    approvalBPair === ApprovalState.PENDING ? true : false)}
                                           width={
                                             approvalA !== ApprovalState.APPROVED
                                                 ? "48%"
                                                 : "100%"
                                           }
                                       >
-                                        {approvalB === ApprovalState.PENDING ? (
+                                        {(approvalBPair === ApprovalState.PENDING || approvalB === ApprovalState.PENDING) ? (
                                             <Dots>
                                               Approving{" "}
                                               {currencies[float.field_b]?.symbol}
@@ -1269,7 +1381,7 @@ export default function AddLiquidityPro({
                                             "Approve " +
                                             currencies[float.field_b]?.symbol
                                         )}
-                                      </ButtonPrimary>
+                                      </ButtonPrimary>)
                                   )}
                                 </RowBetween>
                             )}
@@ -1284,9 +1396,12 @@ export default function AddLiquidityPro({
                                   }}
                                   disabled={
                                     !isValid ||
-                                    approvalA !== ApprovalState.APPROVED ||
-                                    (sync === "half" &&
-                                        approvalB !== ApprovalState.APPROVED)
+                                    pylonState === PylonState.EXISTS ?
+                                      (approvalA !== ApprovalState.APPROVED ||
+                                      (sync === "half" &&
+                                          approvalB !== ApprovalState.APPROVED)) :
+                                      (approvalAPair !== ApprovalState.APPROVED ||
+                                      approvalBPair !== ApprovalState.APPROVED)
                                   }
                                   error={
                                     sync === "half" &&
@@ -1304,7 +1419,7 @@ export default function AddLiquidityPro({
                                       ? "Add Liquidity"
                                       : pylonState === PylonState.ONLY_PAIR
                                           ? "Create Pylon"
-                                          : "Create Pair & Pylon")}
+                                          : "Create Pair")}
                                 </Text>
                               </ButtonError>
                               {pylonState === PylonState.EXISTS && farm && (

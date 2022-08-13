@@ -26,13 +26,16 @@ export const PaddedColumn = styled(AutoColumn)`
 export const MenuItem = styled(RowBetween)`
   padding: 4px 20px;
   height: auto;
+  width: 95% !important;
+  left: auto !important;
   display: grid;
+  border-radius: 17px;
   grid-template-columns: auto minmax(auto, 1fr) auto minmax(0, 72px);
   grid-gap: 16px;
   cursor: ${({ disabled }) => !disabled && 'pointer'};
   pointer-events: ${({ disabled }) => disabled && 'none'};
   :hover {
-    background-color: ${({ theme, disabled }) => !disabled && theme.bg7};
+    background-color: ${({ theme, disabled }) => !disabled && theme.bg12};
   }
   opacity: ${({ disabled, selected }) => (disabled || selected ? 0.5 : 1)};
 `
@@ -79,11 +82,11 @@ animation: ${({ expanded }) =>
   background-position-x: 95%;
   ::placeholder {
     color: ${({ theme }) => theme.text1};
-    letter-spacing: 0.05em;
+    font-weight: 400;
     opacity: 0.4;
   }
   white-space: nowrap;
-  background-color: ${({ theme}) => theme.bg9};
+  background-color: ${({ theme}) => theme.searchInput};
   border: 1px solid transparent;
   outline: none;
   border-radius: 17px;

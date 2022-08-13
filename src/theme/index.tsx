@@ -136,6 +136,9 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     cardExpanded: chainId !== 1287 ? '#3C2955' : darkMode ? '#52273a' : '#f2f0f1',
     badgeSmall: chainId !== 1287 ? '#604C7A' : darkMode ? '#442734' : '#fcfbfc',
 
+    changeButtonNormal: chainId !== 1287 ? '#604C7A' : darkMode ? '#633d4e' : '#f1ebef',
+    changeButtonHover: chainId !== 1287 ? '#604C7A' : darkMode ? '#6c4758' : '#EAE5E8',
+
     tableButton: chainId !== 1287 ? '#604C7A' : darkMode ? '#442233' : '#f1ebf0',
 
     positionsButtons: chainId !== 1287 ? '#7a628c' : darkMode ? '#755452' : '#EAE5E8',
@@ -144,6 +147,8 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     liquidityBg: chainId !== 1287 ? '#260B42' : darkMode ? '#331924' : '#F5F3F6',
 
     walletModal: chainId !== 1287 ? '#3c2955' : darkMode ? '#52273a' : '#fff',
+
+    searchInput: chainId !== 1287 ? '#604C7A' : darkMode ? '#613244' : '#f5f3f3',
 
     // color text
     primaryText1: '#ffffff',

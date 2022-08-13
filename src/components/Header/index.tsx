@@ -85,15 +85,17 @@ const AccountElement = styled.div<{ active: boolean }>`
   display: flex;
   flex-direction: row;
   align-items: center;
-  background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.walletActive)};
+  background-color: ${({ theme, active }) => (!active ? theme.poolPinkButton : theme.walletActive)};
   border-radius: 17px;
+  color: ${({ theme }) => theme.primaryText1};
   height: 100%;
   white-space: nowrap;
   :focus {
     border: 1px solid blue;
   }
   :hover {
-    background-color: ${({ theme }) => theme.outlinedHover};
+    background-color: ${({ theme }) => theme.colors.input};
+    color: ${({ theme }) => theme.primaryText1};
   }
   @media (max-width: 700px) {
     width: 100%;
@@ -197,7 +199,7 @@ export default function Header() {
             </div>
           </div>
       } */}
-      <RowBetween style={{ alignItems: 'flex-start', flexWrap: width >= 700 ? 'nowrap' : 'wrap', justifyContent: 'center'}} padding="1rem 1rem 0 1rem">
+      <RowBetween style={{ alignItems: 'flex-start', flexWrap: width >= 700 ? 'nowrap' : 'wrap', justifyContent: 'center'}} padding="20px 20px 0 20px">
         {showClaimTokens && (
           <Portal>
             <ModalContainer>
@@ -208,7 +210,7 @@ export default function Header() {
         {width >= 700 ?
         <>
         <HeaderElement>
-          <Title href="." style={{width: account ? width < 1100 ? '220px' : '435px' : width > 1100 ? '350px' : '160px', height: width >= 1100 ? '60px' : '45px'}}>
+          <Title href="." style={{width: account ? width < 1100 ? '220px' : '435px' : width > 1100 ? '350px' : '160px', height: width >= 1100 ? '50px' : '45px'}}>
             <UniIcon id="z-logo">
               <img style={{ height: 24, display: 'flex', margin: 'auto' }} src={!darkMode ? DarkLogo : WhiteLogo} alt="logo" />
             </UniIcon>
@@ -220,7 +222,7 @@ export default function Header() {
         {width > 1100 ? 
         <>
         <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : location.pathname === '/farm' ? 'farm' : 'pool'} />
-          <HeaderElement>
+          <HeaderElement style={{height: '50px'}}>
             <button  style={{border: 'none', 
               outline: 'none', 
               backgroundColor: 'transparent', 
@@ -250,7 +252,7 @@ export default function Header() {
            <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : location.pathname === '/farm' ? 'farm' : 'pool'} />
           </div>}
           <HeaderControls>
-          <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
+          <AccountElement active={!!account} style={{ pointerEvents: 'auto', height: '50px' }}>
               {account && userEthBalance ? (
                 <BalanceText style={{ flexShrink: 0 }} pl="1.25rem" pr="0.5rem" fontWeight={400}>
                   {userEthBalance?.toSignificant(4)} DEV

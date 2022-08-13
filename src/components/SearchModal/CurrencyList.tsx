@@ -1,7 +1,7 @@
 import { Currency, CurrencyAmount, currencyEquals, DEV, Token } from 'zircon-sdk'
 import React, { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 import { FixedSizeList } from 'react-window'
-import { Text } from 'rebass'
+import { Flex, Text } from 'rebass'
 import styled from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
 import { useSelectedTokenList, WrappedTokenInfo } from '../../state/lists/hooks'
@@ -116,7 +116,7 @@ function CurrencyRow({
       <Column>
         <Text title={currency.name} fontWeight={400} style={{display: 'flex', flexFlow: 'column'}}>
           <span>{currency.symbol}</span>
-          <span style={{color: '#9D94AA', fontSize: '13px'}}>{currency.name}</span>
+          <span style={{color: 'rgba(173, 149, 159, 1)', fontSize: '13px'}}>{currency.name}</span>
         </Text>
         <FadedSpan>
           {!isOnSelectedList && customAdded ? (
@@ -180,6 +180,7 @@ export default function CurrencyList({
       const otherSelected = Boolean(otherCurrency && currencyEquals(otherCurrency, currency))
       const handleSelect = () => onCurrencySelect(currency)
       return (
+        <Flex justifyContent={'center'}>
         <CurrencyRow
           style={style}
           currency={currency}
@@ -187,6 +188,8 @@ export default function CurrencyList({
           onSelect={handleSelect}
           otherSelected={otherSelected}
         />
+        </Flex>
+        
       )
     },
     [onCurrencySelect, otherCurrency, selectedCurrency]

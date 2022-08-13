@@ -107,6 +107,12 @@ export interface Colors {
 
   primaryText1: Color
 
+  searchInput: Color
+
+  changeButtonNormal: Color
+
+  changeButtonHover: Color
+
   // pinks
   secondary1: Color
   secondary2: Color

@@ -74,9 +74,9 @@ const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
 
   :hover,
   :focus {
-    background-color: ${({ theme }) => theme.bg6};
+    background-color: ${({ theme }) => theme.colors.input};
     border: 1px solid ${({ theme }) => theme.bg10};
-    color: ${({ theme }) => theme.primaryText1};
+    color: ${({ theme }) => theme.white};
   }
 
   ${({ faded }) =>
@@ -107,7 +107,7 @@ const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean }>`
 `
 
 const Text = styled.p`
-  color: ${({ theme }) => theme.whiteHalf};
+  color: ${({ theme }) => theme.primaryText1};
   flex: 1 1 auto;
   white-space: nowrap;
   margin: 0 0.5rem 0 0rem;

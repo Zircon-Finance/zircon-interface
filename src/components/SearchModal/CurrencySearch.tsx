@@ -138,6 +138,7 @@ export function CurrencySearch({
   )
 
   const selectedListInfo = useSelectedListInfo()
+  const [hover, setHover] = useState(false)
 
   return (
     <Column style={{ width: '100%', flex: '1 1' }}>
@@ -186,7 +187,7 @@ export function CurrencySearch({
       </div>
 
       <Separator />
-      <Card>
+      <Card style={{padding: '15px'}}>
         <RowBetween>
           {selectedListInfo.current ? (
             <Row>
@@ -201,9 +202,12 @@ export function CurrencySearch({
             </Row>
           ) : null}
           <ButtonPositionsMobile
-            style={{ fontWeight: 400, color: theme.white, fontSize: 13, width: 'auto', padding: '10px 15px 10px 15px' }}
+            style={{ height: '34px', padding: '10px 12px', fontWeight: 400, color: theme.white, fontSize: 13, width: 'auto', 
+            background: hover ? theme.changeButtonHover : theme.changeButtonNormal }}
             onClick={onChangeList}
             id="currency-search-change-list-button"
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
           >
             {selectedListInfo.current ? 'Change' : 'Select a list'}
           </ButtonPositionsMobile>

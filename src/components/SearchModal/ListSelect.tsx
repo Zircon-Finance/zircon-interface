@@ -1,11 +1,10 @@
 import React, { memo, useCallback, useMemo, useRef, useState } from 'react'
-import { ArrowLeft } from 'react-feather'
+import { ArrowLeft, MoreHorizontal } from 'react-feather'
 import ReactGA from 'react-ga4'
 import { usePopper } from 'react-popper'
 import { useDispatch, useSelector } from 'react-redux'
-import { Text } from 'rebass'
-import styled from 'styled-components'
-import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
+import { Flex, Link, Text } from 'rebass'
+import styled, { useTheme } from 'styled-components'
 import { useFetchListCallback } from '../../hooks/useFetchListCallback'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import { useTranslation } from 'react-i18next'
@@ -18,13 +17,13 @@ import { CloseIcon, ExternalLink, LinkStyledButton, TYPE } from '../../theme'
 import listVersionLabel from '../../utils/listVersionLabel'
 import { parseENSAddress } from '../../utils/parseENSAddress'
 import uriToHttp from '../../utils/uriToHttp'
-import { ButtonOutlined, ButtonPrimary, ButtonSecondary } from '../Button'
+import { ButtonPrimary, ButtonSecondary } from '../Button'
 
 import Column from '../Column'
 import ListLogo from '../ListLogo'
 import QuestionHelper from '../QuestionHelper'
 import Row, { RowBetween } from '../Row'
-import { PaddedColumn, SearchInput, Separator, SeparatorDark } from './styleds'
+import { PaddedColumn, SearchInput } from './styleds'
 
 const UnpaddedLinkStyledButton = styled(LinkStyledButton)`
   padding: 0;
@@ -32,13 +31,29 @@ const UnpaddedLinkStyledButton = styled(LinkStyledButton)`
   opacity: ${({ disabled }) => (disabled ? '0.4' : '1')};
 `
 
+const ButtonLight = styled(ButtonSecondary)`
+  color: ${({ theme }) => theme.text1};
+  background-color: ${({ theme }) => theme.searchInput};
+  &:hover {
+    background-color: ${({ theme }) => theme.changeButtonHover};
+  }
+`
+
+const ButtonPink = styled(ButtonSecondary)`
+  color: ${({ theme }) => theme.pinkGamma};
+  background-color: ${({ theme }) => theme.maxButton};
+  &:hover {
+    background-color: ${({ theme }) => theme.maxButtonHover};
+  }
+  border-radius: 17px;
+`
+
 const PopoverContainer = styled.div<{ show: boolean }>`
   z-index: 100;
   visibility: ${props => (props.show ? 'visible' : 'hidden')};
   opacity: ${props => (props.show ? 1 : 0)};
   transition: visibility 150ms linear, opacity 150ms linear;
-  background: ${({ theme }) => theme.bg2};
-  border: 1px solid ${({ theme }) => theme.bg3};
+  background: ${({ theme }) => theme.searchInput};
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
     0px 24px 32px rgba(0, 0, 0, 0.01);
   color: ${({ theme }) => theme.text2};
@@ -57,6 +72,9 @@ const StyledMenu = styled.div`
   align-items: center;
   position: relative;
   border: none;
+  svg {
+    transform: rotate(90deg);
+  }
 `
 
 const StyledListUrlText = styled.div`
@@ -154,9 +172,9 @@ const ListRow = memo(function ListRow({ listUrl, onBack }: { listUrl: string; on
   if (!list) return null
 
   return (
-    <Row key={listUrl} align="center" padding="16px" id={listUrlRowHTMLId(listUrl)}>
+    <Row key={listUrl} align="center" padding="10px" id={listUrlRowHTMLId(listUrl)}>
       {list.logoURI ? (
-        <ListLogo style={{ marginRight: '1rem' }} logoURI={list.logoURI} alt={`${list.name} list logo`} />
+        <ListLogo style={{ margin: '0 10px' }} logoURI={list.logoURI} alt={`${list.name} list logo`} />
       ) : (
         <div style={{ width: '24px', height: '24px', marginRight: '1rem' }} />
       )}
@@ -181,24 +199,24 @@ const ListRow = memo(function ListRow({ listUrl, onBack }: { listUrl: string; on
         </Row>
       </Column>
       <StyledMenu ref={node as any}>
-        <ButtonOutlined
+        <ButtonLight
           style={{
-            width: '2rem',
+            width: '30px',
+            height: '42px',
             padding: '.8rem .35rem',
             borderRadius: '12px',
             fontSize: '14px',
-            marginRight: '0.5rem'
+            marginRight: '5px'
           }}
           onClick={toggle}
           ref={setReferenceElement}
         >
-          <DropDown />
-        </ButtonOutlined>
+          <MoreHorizontal />
+        </ButtonLight>
 
         {open && (
           <PopoverContainer show={true} ref={setPopperElement as any} style={styles.popper} {...attributes.popper}>
             <div>{list && listVersionLabel(list.version)}</div>
-            <SeparatorDark />
             <ExternalLink href={`https://tokenlists.org/token-list?url=${listUrl}`}>View list</ExternalLink>
             <UnpaddedLinkStyledButton onClick={handleRemoveList} disabled={Object.keys(listsByUrl).length === 1}>
               Remove list
@@ -213,7 +231,8 @@ const ListRow = memo(function ListRow({ listUrl, onBack }: { listUrl: string; on
         <ButtonPrimary
           disabled={true}
           className="select-button"
-          style={{ width: '5rem', minWidth: '5rem', padding: '0.5rem .35rem', borderRadius: '12px', fontSize: '14px' }}
+          style={{ width: '5rem', minWidth: '5rem', padding: '0.5rem .35rem', borderRadius: '12px', fontSize: '16px', 
+          height: '42px', fontWeight: 400 }}
         >
           {t('selected')}
         </ButtonPrimary>
@@ -226,7 +245,8 @@ const ListRow = memo(function ListRow({ listUrl, onBack }: { listUrl: string; on
               minWidth: '4.5rem',
               padding: '0.5rem .35rem',
               borderRadius: '12px',
-              fontSize: '14px'
+              fontSize: '16px',
+              fontWeight: 400
             }}
             onClick={selectThisList}
           >
@@ -241,7 +261,7 @@ const ListRow = memo(function ListRow({ listUrl, onBack }: { listUrl: string; on
 const AddListButton = styled(ButtonSecondary)`
   /* height: 1.8rem; */
   max-width: 4rem;
-  margin-left: 1rem;
+  margin-left: 5px;
   border-radius: 12px;
   padding: 10px 18px;
 `
@@ -324,24 +344,25 @@ export function ListSelect({ onDismiss, onBack }: { onDismiss: () => void; onBac
         return 0
       })
   }, [lists])
+  const theme = useTheme()
 
   return (
     <Column style={{ width: '100%', flex: '1 1' }}>
-      <PaddedColumn>
+      <PaddedColumn style={{padding: '15px'}}>
         <RowBetween>
-          <div>
-            <ArrowLeft style={{ cursor: 'pointer' }} onClick={onBack} />
-          </div>
-          <Text fontWeight={400} fontSize={20}>
+          <Flex style={{height: '44px', width: '44px', justifyContent: 'center', alignItems: 'center'}}>
+            <ArrowLeft style={{ cursor: 'pointer', strokeWidth: '1px' }} onClick={onBack} />
+          </Flex>
+          <Text fontWeight={400} fontSize={16}>
           {t('manageList')}
           </Text>
-          <CloseIcon onClick={onDismiss} />
+          <Flex style={{height: '44px', width: '44px', justifyContent: 'center', alignItems: 'center'}}>
+            <CloseIcon onClick={onDismiss} />
+          </Flex>
         </RowBetween>
       </PaddedColumn>
 
-      <Separator />
-
-      <PaddedColumn gap="14px">
+      <PaddedColumn gap="10px">
         <Text fontWeight={400}>
           Add a list{' '}
           <QuestionHelper text="Token lists are an open specification for lists of ERC20 tokens. You can use any token list by entering its URL below. Beware that third party token lists can contain fake or malicious ERC20 tokens." />
@@ -351,7 +372,7 @@ export function ListSelect({ onDismiss, onBack }: { onDismiss: () => void; onBac
             expanded={true}
             type="text"
             id="list-add-input"
-            placeholder="https:// or ipfs:// or ENS name"
+            placeholder="https:// or ipfs://"
             value={listUrlInput}
             onChange={handleInput}
             onKeyDown={handleEnterKey}
@@ -368,17 +389,24 @@ export function ListSelect({ onDismiss, onBack }: { onDismiss: () => void; onBac
         ) : null}
       </PaddedColumn>
 
-      <Separator />
-
       <ListContainer>
         {sortedLists.map(listUrl => (
           <ListRow key={listUrl} listUrl={listUrl} onBack={onBack} />
         ))}
       </ListContainer>
-      <Separator />
-
-      <div style={{ padding: '16px', textAlign: 'center' }}>
-        <ExternalLink href="https://tokenlists.org">{t('browseList')}</ExternalLink>
+      <div style={{ padding: '10px', textAlign: 'center' }}>
+      <ButtonPink
+            style={{
+              padding: "10px",
+              fontSize: "13px",
+              border: "none",
+              fontWeight: '500',
+            }}
+          >
+            <Link style={{textDecoration: 'none', color: theme.pinkGamma}} href="https://tokenlists.org" >
+              {t('browseList')}
+            </Link>
+          </ButtonPink>
       </div>
     </Column>
   )

@@ -17,7 +17,13 @@ export const ArrowWrapper = styled.div<{ clickable: boolean }>`
   height: 2.2rem;
   width: 2.2rem;
   display: flex;
-  background-color: ${({ theme }) => theme.bg6};
+  background-color: ${({ theme }) => theme.maxButton};
+  &:hover {
+    background-color: ${({ theme }) => theme.maxButtonHover};
+  }
+  svg {
+    stroke: ${({ theme }) => theme.pinkGamma};
+  }
   border-radius: 100%;
   justify-content: center;
 

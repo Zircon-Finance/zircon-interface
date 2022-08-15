@@ -87,14 +87,14 @@ const AccountElement = styled.div<{ active: boolean }>`
   align-items: center;
   background-color: ${({ theme, active }) => (!active ? theme.poolPinkButton : theme.walletActive)};
   border-radius: 17px;
-  color: ${({ theme }) => theme.primaryText1};
+  color: ${({ theme }) => theme.text1};
   height: 100%;
   white-space: nowrap;
   :focus {
     border: 1px solid blue;
   }
   :hover {
-    background-color: ${({ theme }) => theme.colors.input};
+    background-color: ${({ theme }) => theme.advancedBG};
     color: ${({ theme }) => theme.primaryText1};
   }
   @media (max-width: 700px) {
@@ -148,6 +148,7 @@ const HeaderControls = styled.div`
 
 const BalanceText = styled(Text)`
   display: block;
+  color: ${({ theme }) => theme.text1};
   @media (max-width: 300px) {
     display: none;
   }

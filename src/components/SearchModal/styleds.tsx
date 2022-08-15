@@ -99,7 +99,6 @@ animation: ${({ expanded }) =>
   :focus {
     border: 1px solid ${({ theme }) => theme.pinkGamma};
     outline: none;
-    background-color: ${({ theme}) => theme.bg1}
   }
 `
 export const Separator = styled.div`

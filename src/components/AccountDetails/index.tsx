@@ -320,7 +320,7 @@ export default function AccountDetails({
                       fontSize: "13px",
                       padding: "9px 12px 10px",
                       fontWeight: 400,
-                      borderRadius: "12px",
+                      borderRadius: "12px",height: "34px",
                     }}
                     onClick={() => {
                       openOptions();

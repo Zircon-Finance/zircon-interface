@@ -37,6 +37,7 @@ export interface Colors {
   bg13: Color
   bg14: Color
   maxButton: Color
+  maxButtonHover: Color
   modalBg: Color
   hoveredButton: Color
 

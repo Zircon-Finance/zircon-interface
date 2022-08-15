@@ -62,7 +62,7 @@ const Web3StatusError = styled(Web3StatusGeneric)`
 const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
   background-color: transparent;
   border: none;
-  color: ${({ theme }) => theme.primaryText1};
+  color: ${({ theme }) => theme.text1};
   font-weight: 400;
   border-radius: 17px;
   padding: 12px 20px;
@@ -107,7 +107,7 @@ const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean }>`
 `
 
 const Text = styled.p`
-  color: ${({ theme }) => theme.primaryText1};
+  color: ${({ theme }) => theme.text1};
   flex: 1 1 auto;
   white-space: nowrap;
   margin: 0 0.5rem 0 0rem;

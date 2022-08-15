@@ -1,21 +1,21 @@
 import React from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
-import QuestionMarkIcon from '../QuestionMarkIcon'
+import CoffeeIcon from '../CoffeeIcon'
 
 const LearnBadge = styled.span`
-  background-color: ${({ theme }) => theme.bg7};
+  background-color: rgba(213, 174, 175, 0.1);
   display: flex;
   position: fixed;
   bottom: 20px;
-  padding: 15px;
+  padding: 16px 20px 16px 16px;
   border-radius: 30px;
   color: ${({ theme }) => theme.white};
   font-size: 10px;
   cursor: pointer;
   z-index: 100;
   &:hover {
-      background-color: ${({ theme }) => theme.bg10};
+      background-color:  rgba(213, 174, 175, 0.2);
   }
   @media (min-width: 700px) {
     font-size: 16px;
@@ -44,7 +44,7 @@ const LearnIcon = () => {
   return (
     <LearnBadge onClick={() => {
         window.open('https://docs.zircon.finance', '_blank');
-      }}><QuestionMarkIcon /><Text style={{marginLeft: '10px'}} fontSize={16}>{'Learn'}</Text>  </LearnBadge>
+      }}><CoffeeIcon /><Text style={{marginLeft: '8px'}} fontSize={16}>{'Learn'}</Text>  </LearnBadge>
   )
 }
 

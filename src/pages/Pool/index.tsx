@@ -105,14 +105,14 @@ export default function Pool() {
         {/* <SwapPoolTabs active={'pool'} /> */}
         <AppBody>
           <AutoColumn gap='1px' justify="center" style={{display: 'flex', flexFlow: 'column'}}>
-            <div style={{display: 'flex', padding: '15px 15px 0px 15px', justifyContent: 'space-between', boxShadow: `inset 1px -10px 2px -10px ${theme.bg14}`}}>
+            <div style={{display: 'flex', padding: '15px 25px 0px 25px', justifyContent: 'space-between', boxShadow: `inset 1px -10px 2px -10px ${theme.anchorFloatBadge}`}}>
               <div style={{display: 'grid', gridAutoFlow: 'column', columnGap: '20px', alignItems: 'center'}}>
                 {filterOptions.map(option => (
                   <Text color={filter === option ? theme.white : theme.pinkBrown}
                         fontSize={13}
                         key = {option}
                         onClick={() => setFilter(option)}
-                        style={{borderBottom: `${filter === option ? ('1px solid'+theme.bg5) : 'none'}`,
+                        style={{borderBottom: `${filter === option ? ('1px solid #A19399') : 'none'}`,
                               cursor: 'pointer',
                               height: '50px',
                               display: 'flex',
@@ -135,14 +135,14 @@ export default function Pool() {
               </RowBetween>
 
               {!account || chainId !== 1287 ? (
-                  <LightCard padding="40px">
-                    <TYPE.body color={theme.text3} textAlign="center">
+                  <LightCard padding="40px" style={{border: 'none'}}>
+                    <TYPE.body color={theme.text5} textAlign="center">
                       {t('connectToViewLiquidity')}
                     </TYPE.body>
                   </LightCard>
               ) : v2IsLoading ? (
-                  <LightCard padding="40px">
-                    <TYPE.body color={theme.text3} textAlign="center">
+                  <LightCard padding="40px" style={{border: 'none'}}>
+                    <TYPE.body color={theme.text5} textAlign="center">
                       <Dots>{t('loading')}</Dots>
                     </TYPE.body>
                   </LightCard>
@@ -159,8 +159,8 @@ export default function Pool() {
                     )}
                   </>
               ) : (
-                  <LightCard padding="40px">
-                    <TYPE.body color={theme.text3} textAlign="center">
+                  <LightCard padding="40px" style={{border: 'none'}}>
+                    <TYPE.body color={theme.text5} textAlign="center">
                       {t('noLiquidityFound')}
                     </TYPE.body>
                   </LightCard>

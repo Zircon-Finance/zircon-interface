@@ -49,6 +49,9 @@ const StyledBalanceMax = styled.button`
   height: 30px;
   width: 50px;
   background-color: ${({ theme }) => theme.maxButton};
+  &:hover {
+    background-color: ${({ theme }) => theme.maxButtonHover};
+  }
   border: 0;
   letter-spacing: 0.05em
   border-radius: 0.9rem;

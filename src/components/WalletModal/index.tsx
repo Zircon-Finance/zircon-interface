@@ -11,15 +11,14 @@ import AccountDetails from '../AccountDetails'
 import PendingView from './PendingView'
 import Option from './Option'
 import { SUPPORTED_WALLETS } from '../../constants'
-import { ExternalLink } from '../../theme'
 import MetamaskIcon from '../../assets/images/metamask.png'
 import { ReactComponent as Close } from '../../assets/images/x.svg'
 import { injected, fortmatic, portis } from '../../connectors'
 import { OVERLAY_READY } from '../../connectors/Fortmatic'
 // import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { AbstractConnector } from '@web3-react/abstract-connector'
-import { ButtonPrimary } from '../Button'
-import { Text } from 'rebass'
+import { ButtonPrimary, ButtonSecondary } from '../Button'
+import { Link, Text } from 'rebass'
 
 const CloseIcon = styled.div`
   position: absolute;
@@ -63,6 +62,15 @@ const ContentWrapper = styled.div`
   ${({ theme }) => theme.mediaWidth.upToMedium`padding: 1rem`};
 `
 
+const ButtonPink = styled(ButtonSecondary)`
+  color: ${({ theme }) => theme.pinkGamma};
+  background-color: ${({ theme }) => theme.maxButton};
+  &:hover {
+    background-color: ${({ theme }) => theme.maxButtonHover};
+  }
+  border-radius: 17px;
+`
+
 const UpperSection = styled.div`
   position: relative;
 
@@ -96,12 +104,8 @@ const Blurb = styled.div`
 `
 
 const OptionGrid = styled.div`
-  display: grid;
-  grid-gap: 10px;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    grid-template-columns: 1fr;
-    grid-gap: 10px;
-  `};
+  display: flex;
+  gap: 5px;
 `
 
 const HoverText = styled.div`
@@ -419,15 +423,19 @@ export default function WalletModal({
           {walletView !== WALLET_VIEWS.PENDING && (
             <Blurb style={{display: 'flex', flexFlow: 'column'}}>
               <span style={{marginBottom: '10px'}}>Haven't got a crypto wallet yet? &nbsp;</span>{' '}
-              <ExternalLink 
-                href="https://ethereum.org/wallets/"
-                style={{padding: '10px 0 10px 0',
-                        border: `1px solid #59496E`, 
-                        width: '100%', 
-                        textAlign: 'center', 
-                        borderRadius: '25px', 
-                        color: theme.text1,
-                        }}>Learn how to connect</ExternalLink>
+
+            <ButtonPink
+            style={{
+              padding: "10px",
+              fontSize: "13px",
+              border: "none",
+              fontWeight: '500',
+            }}
+            >
+            <Link style={{textDecoration: 'none', color: theme.pinkGamma}} href="https://tokenlists.org" >
+              {'Learn how to connect'}
+            </Link>
+            </ButtonPink>
             </Blurb>
           )}
         </ContentWrapper>

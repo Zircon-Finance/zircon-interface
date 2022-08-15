@@ -49,7 +49,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     text2: darkMode ? '#C3C5CB' : '#000f0f',
     text3: darkMode ?'#6C7284'  : '#000f0f',
     text4: darkMode ?'#565A69'  : '#000f0f',
-    text5: darkMode ?'#2C2F36'  : '#000f0f',
+    text5: '#9C8D94',
     tabsText: chainId !== 1287 ? '#FFF' : darkMode ? '#D5AEAF' : '#945c67',
 
     // backgrounds / greys
@@ -85,7 +85,8 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     primary3: '#BA73ED',
     primary4: '#A548E970',
     primary5: '#BA73ED70',
-    maxButton: chainId !== 1287 ? '#311149' : darkMode ? '#3e1f2e' : '#efe7ee',
+    maxButton: chainId !== 1287 ? '#311149' : 'rgba(203, 116, 177, 0.1)',
+    maxButtonHover: chainId !== 1287 ? '#311149' : 'rgba(203, 116, 177, 0.25)' ,
 
     outlinedHover: chainId !== 1287 ? '#381E52' : darkMode ? '#5C3D3B' : '#dfced2',
 

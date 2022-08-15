@@ -117,17 +117,14 @@ const IconContainer = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 100%;
-  background: ${({ theme }) => theme.contrastLightButton};
+  background: ${({ theme }) => theme.maxButton};
   width: 45px;
   height: 40px;
   align-self: center;
   cursor: pointer;
   &:hover {
-    background: ${({ theme }) => theme.pinkGamma};
+    background: ${({ theme }) => theme.maxButtonHover};
     svg {
-      path {
-        stroke: #fff !important;
-      }
       transform: rotate(90deg);
     }
   }

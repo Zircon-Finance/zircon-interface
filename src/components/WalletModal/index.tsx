@@ -310,6 +310,9 @@ export default function WalletModal({
                 color={'#E8831D'}
                 header={'Install Metamask'}
                 subheader={null}
+                onClick={() => {
+                    window.open('https://metamask.io/', '_blank');
+                }}
                 link={'https://metamask.io/'}
                 icon={MetamaskIcon}
               />

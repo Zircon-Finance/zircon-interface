@@ -11,7 +11,7 @@ import AccountDetails from '../AccountDetails'
 import PendingView from './PendingView'
 import Option from './Option'
 import { SUPPORTED_WALLETS } from '../../constants'
-import MetamaskIcon from '../../assets/images/metamask.png'
+import MetamaskIcon from '../../assets/images/metamask.svg'
 import { ReactComponent as Close } from '../../assets/images/x.svg'
 import { injected, fortmatic, portis } from '../../connectors'
 import { OVERLAY_READY } from '../../connectors/Fortmatic'
@@ -359,7 +359,7 @@ export default function WalletModal({
     if (error) {
       return (
         <UpperSection>
-          
+
           <HeaderRow style={{display: 'flex', justifyContent: 'space-between'}}>
             <Text style={{alignSelf: 'center'}}>{error instanceof UnsupportedChainIdError ? 'Wrong Network' : 'Error connecting'}</Text>
             <CloseIcon style={{position: 'inherit'}} onClick={toggleWalletModal}>
@@ -390,7 +390,7 @@ export default function WalletModal({
         />
       )
     }
-    
+
     return (
       <UpperSection>
         {walletView !== WALLET_VIEWS.ACCOUNT ? (
@@ -432,7 +432,7 @@ export default function WalletModal({
               padding: "10px",
               fontSize: "13px",
               border: "none",
-              fontWeight: '500',
+              fontWeight: 500
             }}
             >
             <Link style={{textDecoration: 'none', color: theme.pinkGamma}} href="https://tokenlists.org" >

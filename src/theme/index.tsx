@@ -22,15 +22,15 @@ const MEDIA_WIDTHS = {
 }
 
 const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } = Object.keys(MEDIA_WIDTHS).reduce(
-  (accumulator, size) => {
-    ;(accumulator as any)[size] = (a: any, b: any, c: any) => css`
-      @media (max-width: ${(MEDIA_WIDTHS as any)[size]}px) {
-        ${css(a, b, c)}
-      }
-    `
-    return accumulator
-  },
-  {}
+    (accumulator, size) => {
+      ;(accumulator as any)[size] = (a: any, b: any, c: any) => css`
+        @media (max-width: ${(MEDIA_WIDTHS as any)[size]}px) {
+          ${css(a, b, c)}
+        }
+      `
+      return accumulator
+    },
+    {}
 ) as any
 
 
@@ -320,87 +320,87 @@ export const TYPE = {
 }
 
 export const FixedGlobalStyle = createGlobalStyle`
-html, input, textarea, button {
-  font-family: 'DM sans', sans-serif;
-  font-display: fallback;
-}
-@supports (font-variation-settings: normal) {
   html, input, textarea, button {
     font-family: 'DM sans', sans-serif;
+    font-display: fallback;
   }
-}
-
-::-webkit-scrollbar {
-  width: 0;  
-  background: transparent;  
-}
-::-webkit-scrollbar-thumb {
-  background: A9A0B4;
-}
-
-html,
-body {
-  margin: 0;
-  padding: 0;
-  -ms-overflow-style: none; 
+  @supports (font-variation-settings: normal) {
+    html, input, textarea, button {
+      font-family: 'DM sans', sans-serif;
+    }
   }
-}
 
-body::-webkit-scrollbar {
-  display: none; 
-}
+  ::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #A9A0B4;
+  }
 
-* {
-  box-sizing: border-box;
-  transition: all 0.1s ease-out;
-  scrollbar-width: thin;
-}
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    -ms-overflow-style: none;
+  }
 
-button {
-  user-select: none;
-}
 
-html {
-  font-size: 16px;
-  font-variant: none;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-}
+  body::-webkit-scrollbar {
+    display: none;
+  }
+
+  * {
+    box-sizing: border-box;
+    transition: all 0.1s ease-out;
+    scrollbar-width: thin;
+  }
+
+  button {
+    user-select: none;
+  }
+
+  html {
+    font-size: 16px;
+    font-variant: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
 
 `
 //background-color: ${({ theme }) => theme.bg2};
 export const ThemedGlobalStyle = createGlobalStyle`
-html {
-  color: ${({ theme }) => theme.text1};
-  background-color: ${({ theme }) => theme.bg2};
-}
+  html {
+    color: ${({ theme }) => theme.text1};
+    background-color: ${({ theme }) => theme.bg2};
+  }
 
-body {
-  min-height: 100vh;
-  background-repeat: no-repeat;
-  background-size: cover;
-  color: ${({ theme }) => theme.text1};
-  ${({ theme }) => theme.chainId !== 1287 ? 
-      (theme.darkMode ? (`
+  body {
+    min-height: 100vh;
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: ${({ theme }) => theme.text1};
+    ${({ theme }) => theme.chainId !== 1287 ?
+        (theme.darkMode ? (`
         background: rgb(43,12,74);
         background: -moz-radial-gradient(circle, rgba(43,12,74,1) 0%, rgba(34,10,59,1) 100%);
         background: -webkit-radial-gradient(circle, rgba(43,12,74,1) 0%, rgba(34,10,59,1) 100%);
         background: radial-gradient(circle, rgba(43,12,74,1) 0%, rgba(34,10,59,1) 100%);
-        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#2B0C4A",endColorstr="#220A3B",GradientType=1);`) 
-      : 
-      (`background: #371057;`)) 
-    :
-    (theme.darkMode ? (`
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#2B0C4A",endColorstr="#220A3B",GradientType=1);`)
+            :
+            (`background: #371057;`))
+        :
+        (theme.darkMode ? (`
       background: rgb(87,51,46);
       background: -moz-radial-gradient(circle, rgba(87,51,46,1) 0%, rgba(70,41,37,1) 100%);
       background: -webkit-radial-gradient(circle, rgba(87,51,46,1) 0%, rgba(70,41,37,1) 100%);
       background: radial-gradient(circle, rgba(87,51,46,1) 0%, rgba(70,41,37,1) 100%);
       filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#57332E",endColorstr="#462925",GradientType=1);`
-    ) : (`background: #F5F4F4;`)) }
-  background-attachment: fixed;
+        ) : (`background: #F5F4F4;`)) }
+    background-attachment: fixed;
 
-}
+  }
 
 `
 

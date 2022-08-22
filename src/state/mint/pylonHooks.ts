@@ -130,34 +130,36 @@ export function useDerivedPylonMintInfo(
 
   // liquidity minted
   const liquidityMinted = useMemo(() => {
-    const { [Field.CURRENCY_A]: currencyAAmount, [Field.CURRENCY_B]: currencyBAmount } = parsedAmounts
-    const [tokenAmountA, tokenAmountB] = [
-      wrappedCurrencyAmount(currencyAAmount, chainId),
-      wrappedCurrencyAmount(currencyBAmount, chainId)
-    ]
-    if (pylonPair && pylonSupply && tokenAmountA && tokenAmountB && totalSupply && ptTotalSupply && userLiquidity && pylonPoolBalance) {
-      if (sync === "off") {
-        if (isFloat) {
-          return pylonPair.getFloatSyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
-        }else{
-          return pylonPair.getAnchorSyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountB, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
-        }
-      }else if (sync === "full") {
-        if (isFloat) {
-          return pylonPair.getFloatAsync100LiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
-        }else{
-          return pylonPair.getAnchorAsync100LiquidityMinted(totalSupply, ptTotalSupply, tokenAmountB, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
-        }
-      }else {
-        if (isFloat) {
-          return pylonPair.getFloatAsyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA, tokenAmountB, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
-        }else{
-          return pylonPair.getAnchorAsyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA, tokenAmountB, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
-        }
-      }
-    } else {
-      return undefined
-    }
+    // const { [Field.CURRENCY_A]: currencyAAmount, [Field.CURRENCY_B]: currencyBAmount } = parsedAmounts
+    // const [tokenAmountA, tokenAmountB] = [
+    //   wrappedCurrencyAmount(currencyAAmount, chainId),
+    //   wrappedCurrencyAmount(currencyBAmount, chainId)
+    // ]
+    return undefined
+
+    // if (pylonPair && pylonSupply && tokenAmountA && tokenAmountB && totalSupply && ptTotalSupply && userLiquidity && pylonPoolBalance) {
+    //   if (sync === "off") {
+    //     if (isFloat) {
+    //       return pylonPair.getFloatSyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
+    //     }else{
+    //       return pylonPair.getAnchorSyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountB, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
+    //     }
+    //   }else if (sync === "full") {
+    //     if (isFloat) {
+    //       return pylonPair.getFloatAsync100LiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
+    //     }else{
+    //       return pylonPair.getAnchorAsync100LiquidityMinted(totalSupply, ptTotalSupply, tokenAmountB, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
+    //     }
+    //   }else {
+    //     if (isFloat) {
+    //       return pylonPair.getFloatAsyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA, tokenAmountB, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
+    //     }else{
+    //       return pylonPair.getAnchorAsyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA, tokenAmountB, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
+    //     }
+    //   }
+    // } else {
+    //   return undefined
+    // }
   }, [parsedAmounts, chainId, pylonPair, pylonSupply, totalSupply, ptTotalSupply, vab, vfb, gamma, lastK, pylonPoolBalance, lpt, isFloat, sync, userLiquidity])
 
   // const poolTokenPercentage = useMemo(() => {

@@ -1,4 +1,5 @@
-import {JSBI, Pair, Percent, Pylon, TokenAmount} from 'zircon-sdk'
+import {JSBI, Pair, Percent, Pylon,
+} from 'zircon-sdk'
 import React, { useState } from 'react'
 import { ChevronDown, ChevronUp } from 'react-feather'
 import { Link } from 'react-router-dom'
@@ -18,10 +19,10 @@ import CurrencyLogo from '../CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { RowBetween, RowFixed } from '../Row'
 import { Dots } from '../swap/styleds'
-import {
-  useGamma,
-  useVirtualAnchorBalance,
-} from "../../data/PylonData";
+// import {
+//   useGamma,
+//   useVirtualAnchorBalance,
+// } from "../../data/PylonData";
 import { Separator } from '../SearchModal/styleds'
 
 export const FixedHeightRow = styled(RowBetween)`
@@ -298,14 +299,14 @@ export function PylonPositionCard({ isFloat, border, pylon }: PylonPositionCardP
   const [showMore, setShowMore] = useState(false)
 
   const userPoolBalance = useTokenBalance(account ?? undefined, isFloat ? pylon.floatLiquidityToken : pylon.anchorLiquidityToken)
-  const pylonPoolBalance = useTokenBalance(pylon.address, pylon.pair.liquidityToken)
-  const ptTotalSupply = useTotalSupply(isFloat ? pylon.floatLiquidityToken : pylon.anchorLiquidityToken)
-  const totalSupply = useTotalSupply(pylon.pair.liquidityToken)
-  const vab = useVirtualAnchorBalance(pylon.address)
-  const vfb =  useVirtualAnchorBalance(pylon.address) //useVirtualFloatBalance(pylon.address)
-  const lastK = useGamma(pylon.address) //useLastK(pylon.address)
-  const gamma = useGamma(pylon.address)
-  const lpt = useTotalSupply(pylon.pair.liquidityToken) //useLastPoolTokens(pylon.address)
+  // const pylonPoolBalance = useTokenBalance(pylon.address, pylon.pair.liquidityToken)
+  // const ptTotalSupply = useTotalSupply(isFloat ? pylon.floatLiquidityToken : pylon.anchorLiquidityToken)
+  // const totalSupply = useTotalSupply(pylon.pair.liquidityToken)
+  // const vab = useVirtualAnchorBalance(pylon.address)
+  // const vfb =  useVirtualAnchorBalance(pylon.address) //useVirtualFloatBalance(pylon.address)
+  // const lastK = useGamma(pylon.address) //useLastK(pylon.address)
+  // const gamma = useGamma(pylon.address)
+  // const lpt = useTotalSupply(pylon.pair.liquidityToken) //useLastPoolTokens(pylon.address)
 // TODO: update
   const formattedPoolBalance = userPoolBalance.toSignificant(4) as unknown as number
   // const poolTokenPercentage =
@@ -313,24 +314,24 @@ export function PylonPositionCard({ isFloat, border, pylon }: PylonPositionCardP
   //     ? new Percent(userPoolBalance.raw, totalPoolTokens.raw)
   //     : undefined
   // pylon.pair.token0, totalPoolTokens, userPoolBalance, false) : new TokenAmount(totalPoolTokens.token, BigInt(0)
-  const [token0Deposited, token1Deposited] =
-    !!pylon &&
-    !!userPoolBalance &&
-    !!pylonPoolBalance &&
-    !!totalSupply &&
-    !!ptTotalSupply &&
-    !!userPoolBalance &&
-    // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
-
-  JSBI.greaterThanOrEqual(ptTotalSupply.raw, userPoolBalance.raw)
-      ? [
-        isFloat ?
-             pylon.burnFloat(totalSupply, ptTotalSupply, userPoolBalance, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt)) :
-            new TokenAmount(totalSupply.token, BigInt(0)),
-          isFloat ? new TokenAmount(totalSupply.token, BigInt(0)) :
-              pylon.burnAnchor(totalSupply, ptTotalSupply, userPoolBalance, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
-        ]
-      : [undefined, undefined]
+  const [token0Deposited, token1Deposited] = [undefined, undefined]
+  //   !!pylon &&
+  //   !!userPoolBalance &&
+  //   !!pylonPoolBalance &&
+  //   !!totalSupply &&
+  //   !!ptTotalSupply &&
+  //   !!userPoolBalance &&
+  //   // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
+  //
+  // JSBI.greaterThanOrEqual(ptTotalSupply.raw, userPoolBalance.raw)
+  //     ? [
+  //       isFloat ?
+  //            pylon.burnFloat(totalSupply, ptTotalSupply, userPoolBalance, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt)) :
+  //           new TokenAmount(totalSupply.token, BigInt(0)),
+  //         isFloat ? new TokenAmount(totalSupply.token, BigInt(0)) :
+  //             pylon.burnAnchor(totalSupply, ptTotalSupply, userPoolBalance, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
+  //       ]
+  //     : [undefined, undefined]
 
   const { width } = useWindowDimensions();
 
@@ -471,38 +472,38 @@ export function MinimalPositionPylonCard({ pylon, showUnwrapped = false, border,
 
     // TODO: update with new SDK
   const userPoolBalance = useTokenBalance(account ?? undefined, isFloat ? pylon.floatLiquidityToken : pylon.anchorLiquidityToken)
-  const pylonPoolBalance = useTokenBalance(pylon.address, pylon.pair.liquidityToken)
-  const ptTotalSupply = useTotalSupply(isFloat ? pylon.floatLiquidityToken : pylon.anchorLiquidityToken)
-  const totalSupply = useTotalSupply(pylon.pair.liquidityToken)
-  const vab = useVirtualAnchorBalance(pylon.address)
-  const vfb = useVirtualAnchorBalance(pylon.address) // useVirtualFloatBalance(pylon.address)
-  const lastK = useGamma(pylon.address) //useLastK(pylon.address)
-  const gamma = useGamma(pylon.address)
-  const lpt = useTotalSupply(pylon.pair.liquidityToken) //useLastPoolTokens(pylon.address)
+  // const pylonPoolBalance = useTokenBalance(pylon.address, pylon.pair.liquidityToken)
+  // const ptTotalSupply = useTotalSupply(isFloat ? pylon.floatLiquidityToken : pylon.anchorLiquidityToken)
+  // const totalSupply = useTotalSupply(pylon.pair.liquidityToken)
+  // const vab = useVirtualAnchorBalance(pylon.address)
+  // const vfb = useVirtualAnchorBalance(pylon.address) // useVirtualFloatBalance(pylon.address)
+  // const lastK = useGamma(pylon.address) //useLastK(pylon.address)
+  // const gamma = useGamma(pylon.address)
+  // const lpt = useTotalSupply(pylon.pair.liquidityToken) //useLastPoolTokens(pylon.address)
   // const poolTokenPercentage =
   //   !!userPoolBalance && !!totalPoolTokens && JSBI.greaterThanOrEqual(totalPoolTokens.raw, userPoolBalance.raw)
   //     ? new Percent(userPoolBalance.raw, totalPoolTokens.raw)
   //     : undefined
   // pylon.pair.token0, totalPoolTokens, userPoolBalance, false) : new TokenAmount(totalPoolTokens.token, BigInt(0)
-  const [token0Deposited, token1Deposited] =
-      !!pylon &&
-      !!userPoolBalance &&
-      !!pylonPoolBalance &&
-      !!totalSupply &&
-      !!ptTotalSupply &&
-      !!userPoolBalance &&
-      // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
-
-      JSBI.greaterThanOrEqual(ptTotalSupply.raw, userPoolBalance.raw)
-          ? [
-            isFloat ?
-                pylon.burnFloat(totalSupply, ptTotalSupply, userPoolBalance, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt)) :
-                new TokenAmount(totalSupply.token, BigInt(0)),
-            isFloat ? new TokenAmount(totalSupply.token, BigInt(0)) :
-                pylon.burnAnchor(totalSupply, ptTotalSupply, userPoolBalance, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
-
-          ]
-          : [undefined, undefined]
+  const [token0Deposited, token1Deposited] = [undefined, undefined]
+      // !!pylon &&
+      // !!userPoolBalance &&
+      // !!pylonPoolBalance &&
+      // !!totalSupply &&
+      // !!ptTotalSupply &&
+      // !!userPoolBalance &&
+      // // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
+      //
+      // JSBI.greaterThanOrEqual(ptTotalSupply.raw, userPoolBalance.raw)
+      //     ? [
+      //       isFloat ?
+      //           pylon.burnFloat(totalSupply, ptTotalSupply, userPoolBalance, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt)) :
+      //           new TokenAmount(totalSupply.token, BigInt(0)),
+      //       isFloat ? new TokenAmount(totalSupply.token, BigInt(0)) :
+      //           pylon.burnAnchor(totalSupply, ptTotalSupply, userPoolBalance, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
+      //
+      //     ]
+      //     : [undefined, undefined]
 
   const { width } = useWindowDimensions();
   const theme = useTheme()

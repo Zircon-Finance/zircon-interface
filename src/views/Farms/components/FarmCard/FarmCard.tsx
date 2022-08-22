@@ -103,7 +103,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
           }
         },
         receipt.transactionHash
-      )  
+      )
       dispatch(fetchPoolsUserDataAsync(account))
     }
   }
@@ -198,7 +198,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
               color: theme.pinkGamma,
               background: theme.tableButton,
               border: "none",
-              fontWeight: '500',
+              fontWeight: 500,
             }}
           >
             {`Get ${farm.token1.name} - ${farm.token2.name} LP tokens`}

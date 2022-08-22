@@ -10,10 +10,10 @@ import { AppDispatch, AppState } from '../index'
 import { tryParseAmount } from '../swap/hooks'
 import {useTokenBalance, useTokenBalances} from '../wallet/hooks'
 import { Field, typeInput } from './actions'
-import {
-  useGamma,
-  useVirtualAnchorBalance,
-} from "../../data/PylonData";
+// import {
+//   useGamma,
+//   useVirtualAnchorBalance,
+// } from "../../data/PylonData";
 import {usePylon} from "../../data/PylonReserves";
 import BigNumber from 'bignumber.js'
 
@@ -172,15 +172,15 @@ export function useDerivedPylonBurnInfo(
   // liquidity values
 
   const userLiquidity = useTokenBalance(account ?? undefined, isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken)
-  const pylonPoolBalance = useTokenBalance(pylon?.address, pylon?.pair.liquidityToken)
-  const ptTotalSupply = useTotalSupply(isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken)
-  const totalSupply = useTotalSupply(pylon?.pair.liquidityToken)
-  // TODO: update with new SDK Functions
-  const vab = useVirtualAnchorBalance(pylon?.address)
-  const vfb = useVirtualAnchorBalance(pylon?.address)
-  const lastK = useGamma(pylon?.address)
-  const gamma = useGamma(pylon?.address)
-  const lpt = useTotalSupply(pylon?.pair.liquidityToken); //useLastPoolTokens(pylon?.address)
+  // const pylonPoolBalance = useTokenBalance(pylon?.address, pylon?.pair.liquidityToken)
+  // const ptTotalSupply = useTotalSupply(isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken)
+  // const totalSupply = useTotalSupply(pylon?.pair.liquidityToken)
+  // // TODO: update with new SDK Functions
+  // const vab = useVirtualAnchorBalance(pylon?.address)
+  // const vfb = useVirtualAnchorBalance(pylon?.address)
+  // const lastK = useGamma(pylon?.address)
+  // const gamma = useGamma(pylon?.address)
+  // const lpt = useTotalSupply(pylon?.pair.liquidityToken); //useLastPoolTokens(pylon?.address)
   // console.log("values")
   // console.log("userLiquidity", userLiquidity?.raw.toString())
   // console.log("gamma", gamma?.toString())
@@ -197,33 +197,35 @@ export function useDerivedPylonBurnInfo(
   // console.log("values")
 
   function getLiquidityValues():  [TokenAmount | undefined, TokenAmount | undefined] {
-    if( !!pylon &&
-        !!userLiquidity &&
-        !!pylonPoolBalance &&
-        !!totalSupply &&
-        !!ptTotalSupply &&
-        !! tokenB &&
-        !! tokenA
-    ) {
-      if(isSync) {
-        if(JSBI.greaterThanOrEqual(ptTotalSupply.raw, userLiquidity.raw)) {
-          return isFloat ? [pylon.burnFloat(totalSupply, ptTotalSupply, userLiquidity, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt)),
-                new TokenAmount(tokenB!, BigInt(0))] :
-              [
-                new TokenAmount(tokenA!, BigInt(0)),
-                pylon.burnAnchor(totalSupply!, ptTotalSupply, userLiquidity, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
-              ]
-        }else{
-          return [undefined, undefined]
-        }
-      }else{
-        return isFloat ?
-            pylon.burnAsyncFloat(totalSupply, ptTotalSupply, userLiquidity, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt)) :
-            pylon.burnAsyncAnchor(totalSupply, ptTotalSupply, userLiquidity, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
-      }
-    }else{
-      return [undefined, undefined]
-    }
+    return [undefined, undefined]
+
+    // if( !!pylon &&
+    //     !!userLiquidity &&
+    //     !!pylonPoolBalance &&
+    //     !!totalSupply &&
+    //     !!ptTotalSupply &&
+    //     !! tokenB &&
+    //     !! tokenA
+    // ) {
+    //   if(isSync) {
+    //     if(JSBI.greaterThanOrEqual(ptTotalSupply.raw, userLiquidity.raw)) {
+    //       return isFloat ? [pylon.burnFloat(totalSupply, ptTotalSupply, userLiquidity, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt)),
+    //             new TokenAmount(tokenB!, BigInt(0))] :
+    //           [
+    //             new TokenAmount(tokenA!, BigInt(0)),
+    //             pylon.burnAnchor(totalSupply!, ptTotalSupply, userLiquidity, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
+    //           ]
+    //     }else{
+    //       return [undefined, undefined]
+    //     }
+    //   }else{
+    //     return isFloat ?
+    //         pylon.burnAsyncFloat(totalSupply, ptTotalSupply, userLiquidity, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt)) :
+    //         pylon.burnAsyncAnchor(totalSupply, ptTotalSupply, userLiquidity, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
+    //   }
+    // }else{
+    //   return [undefined, undefined]
+    // }
   }
 
 
@@ -354,44 +356,46 @@ const userLiquidity = total > 0 && new TokenAmount(
 )
 
   //TODO: update with new SDK Functions
-const pylonPoolBalance = useTokenBalance(pylon?.address, pylon?.pair.liquidityToken)
-const ptTotalSupply = useTotalSupply(isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken)
-const totalSupply = useTotalSupply(pylon?.pair.liquidityToken)
-const vab = useVirtualAnchorBalance(pylon?.address)
-const vfb = useVirtualAnchorBalance(pylon?.address) //useVirtualFloatBalance(pylon?.address)
-const lastK = useGamma(pylon?.address) //useLastK(pylon?.address)
-const gamma = useGamma(pylon?.address)
-const lpt = useTotalSupply(pylon?.pair.liquidityToken) //useLastPoolTokens(pylon?.address)
+// const pylonPoolBalance = useTokenBalance(pylon?.address, pylon?.pair.liquidityToken)
+// const ptTotalSupply = useTotalSupply(isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken)
+// const totalSupply = useTotalSupply(pylon?.pair.liquidityToken)
+// const vab = useVirtualAnchorBalance(pylon?.address)
+// const vfb = useVirtualAnchorBalance(pylon?.address) //useVirtualFloatBalance(pylon?.address)
+// const lastK = useGamma(pylon?.address) //useLastK(pylon?.address)
+// const gamma = useGamma(pylon?.address)
+// const lpt = useTotalSupply(pylon?.pair.liquidityToken) //useLastPoolTokens(pylon?.address)
 
 
 function getLiquidityValues():  [TokenAmount | undefined, TokenAmount | undefined] {
-  if( !!pylon &&
-      !!userLiquidity &&
-      !!pylonPoolBalance &&
-      !!totalSupply &&
-      !!ptTotalSupply &&
-      !! tokenB &&
-      !! tokenA
-  ) {
-    if(isSync) {
-      if(JSBI.greaterThanOrEqual(ptTotalSupply.raw, userLiquidity?.raw)) {
-        return isFloat ? [pylon.burnFloat(totalSupply, ptTotalSupply, userLiquidity, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt)),
-              new TokenAmount(tokenB!, BigInt(0))] :
-            [
-              new TokenAmount(tokenA!, BigInt(0)),
-              pylon.burnAnchor(totalSupply!, ptTotalSupply, userLiquidity, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
-            ]
-      }else{
-        return [undefined, undefined]
-      }
-    }else{
-      return isFloat ?
-          pylon.burnAsyncFloat(totalSupply, ptTotalSupply, userLiquidity, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt)) :
-          pylon.burnAsyncAnchor(totalSupply, ptTotalSupply, userLiquidity, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
-    }
-  }else{
-    return [undefined, undefined]
-  }
+  return [undefined, undefined]
+
+  // if( !!pylon &&
+  //     !!userLiquidity &&
+  //     !!pylonPoolBalance &&
+  //     !!totalSupply &&
+  //     !!ptTotalSupply &&
+  //     !! tokenB &&
+  //     !! tokenA
+  // ) {
+  //   if(isSync) {
+  //     if(JSBI.greaterThanOrEqual(ptTotalSupply.raw, userLiquidity?.raw)) {
+  //       return isFloat ? [pylon.burnFloat(totalSupply, ptTotalSupply, userLiquidity, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt)),
+  //             new TokenAmount(tokenB!, BigInt(0))] :
+  //           [
+  //             new TokenAmount(tokenA!, BigInt(0)),
+  //             pylon.burnAnchor(totalSupply!, ptTotalSupply, userLiquidity, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
+  //           ]
+  //     }else{
+  //       return [undefined, undefined]
+  //     }
+  //   }else{
+  //     return isFloat ?
+  //         pylon.burnAsyncFloat(totalSupply, ptTotalSupply, userLiquidity, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt)) :
+  //         pylon.burnAsyncAnchor(totalSupply, ptTotalSupply, userLiquidity, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
+  //   }
+  // }else{
+  //   return [undefined, undefined]
+  // }
 }
 
 

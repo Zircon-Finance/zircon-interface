@@ -170,16 +170,16 @@ interface ModalProps {
 }
 
 export const ModalTopDeposit: React.FunctionComponent<ModalProps> = ({
-  max, 
-  lpLabel, 
-  apr, 
-  onDismiss, 
-  displayApr, 
-  stakedBalance, 
-  onConfirm, 
-  tokenName, 
-  addLiquidityUrl, 
-  cakePrice, 
+  max,
+  lpLabel,
+  apr,
+  onDismiss,
+  displayApr,
+  stakedBalance,
+  onConfirm,
+  tokenName,
+  addLiquidityUrl,
+  cakePrice,
   token}) => {
   return (
     <Portal>
@@ -266,16 +266,16 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           }
         },
         receipt.transactionHash
-      )      
+      )
       dispatch(fetchPoolsUserDataAsync(account))
     }
-  }, [dispatch, 
-      account, 
-      addPopup, 
-      fetchWithCatchTxError, 
-      addTransaction, 
-      callWithGasPrice, 
-      farm.token1.symbol, 
+  }, [dispatch,
+      account,
+      addPopup,
+      fetchWithCatchTxError,
+      addTransaction,
+      callWithGasPrice,
+      farm.token1.symbol,
       farm.token2.symbol,
       lpContract,
       sousChefContract.address,
@@ -300,7 +300,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           }
         },
         receipt.transactionHash
-      )  
+      )
       dispatch(fetchPoolsUserDataAsync(account))
     }
   }
@@ -317,8 +317,8 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   return (
     <>
     {showModal && (
-      <ModalTopDeposit 
-        max={tokenBalance} 
+      <ModalTopDeposit
+        max={tokenBalance}
         lpLabel = {lpLabel}
         apr = {1}
         onDismiss = {() => setShowModal(false) }
@@ -342,14 +342,14 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                   {!isClassic ? (
                   !isAnchor ? (
                     <>
-                    <Flex flexWrap='wrap'>  
-                      <BadgeSmall 
+                    <Flex flexWrap='wrap'>
+                      <BadgeSmall
                       style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', display: 'flex', alignItems: 'center', marginRight: '5px'}}>
                       <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{token1.symbol} </span>{'FLOAT'}
                       </BadgeSmall>
                       <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{` - ${token2.symbol}`}</Text>
                     </Flex>
-                      
+
                     </>
                   ) : (
                     <>
@@ -374,13 +374,13 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                   {!isClassic ? (
                   !isAnchor ? (
                     <>
-                    <Flex flexWrap='wrap'>  
+                    <Flex flexWrap='wrap'>
                       <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', display: 'flex', alignItems: 'center'}}>
                       <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{token1.symbol} </span>{'FLOAT'}
                       </BadgeSmall>
                       <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{` - ${token2.symbol}`}</Text>
                     </Flex>
-                      
+
                     </>
                   ) : (
                     <>
@@ -396,7 +396,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                   )}
                   </div>
                 </Flex>
-                <QuarterContainer onClick={() => clickAction(false)} 
+                <QuarterContainer onClick={() => clickAction(false)}
                   style={{justifyContent: 'center', alignItems: 'center', cursor: 'pointer'}}>
                   <ArrowIcon toggled={expanded}  />
                 </QuarterContainer>
@@ -477,14 +477,14 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
         {isApproved ? (
         <StakeAdd pink={true} clickAction={() => {setShowModal(true)}} row={true} margin={false} width={width > 992 ? '30%' : '60%'} />)
         : (
-          <ButtonOutlined style={{background: theme.hoveredButton, border: 'none', color: '#FFF'}} 
+          <ButtonOutlined style={{background: theme.hoveredButton, border: 'none', color: '#FFF'}}
           m="auto" width="50%" disabled={pendingTx} onClick={account ? handleApproval : toggleWalletModal}>
             {account ? 'Enable Contract' : 'Connect Wallet'}
           </ButtonOutlined>
         )}
       </QuarterContainer>
     )}
-     
+
 
       <QuarterContainer style={{padding: width < 992 ? '0 10px' : '0 0 0 10px'}}>
         <ValueContainer>
@@ -499,15 +499,15 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           <Link to={farm.isClassic ?
                       `/add/${farm.token1.address}/${farm.token2.address}` :
                       `/add-pro/${farm.token1.address}/${farm.token2.address}`}>
-              <ButtonOutlined style={{ 
-                margin: '10px 0', 
-                padding: '10px', 
-                fontSize: '13px', 
-                color: theme.pinkGamma, 
-                background: theme.contrastLightButton, 
+              <ButtonOutlined style={{
+                margin: '10px 0',
+                padding: '10px',
+                fontSize: '13px',
+                color: theme.pinkGamma,
+                background: theme.contrastLightButton,
                 border: 'none',
                 borderRadius: '12px',
-                fontWeight: '500' }}>
+                fontWeight: 500 }}>
               {`Get ${token1.name} - ${token2.name} ${isClassic ? 'Classic' : isAnchor ? 'Anchor' : 'Float'} LP`}</ButtonOutlined>
           </Link>
         </ValueContainer>

@@ -16,7 +16,7 @@ import { injected, walletconnect, walletlink, fortmatic, portis } from '../../co
 import CoinbaseWalletIcon from '../../assets/images/coinbaseWalletIcon.svg'
 import WalletConnectIcon from '../../assets/images/walletConnectIcon.svg'
 import FortmaticIcon from '../../assets/images/fortmaticIcon.png'
-import MetamaskIcon from '../../assets/images/metamask.png'
+import MetamaskIcon from '../../assets/images/metamask.svg'
 import PortisIcon from '../../assets/images/portisIcon.png'
 // import Identicon from '../Identicon'
 import { ButtonPositionsMobile, ButtonPrimary } from '../Button'

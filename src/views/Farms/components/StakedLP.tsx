@@ -54,7 +54,7 @@ const StakedLP: React.FunctionComponent<StackedLPProps> = ({
     return stakedBalanceBigNumber.toFixed(3, BigNumber.ROUND_DOWN)
   }, [stakedBalance])
 
-  
+
   const [currencyA, currencyB] = [useToken(token1.address) ?? undefined, useToken(token2.address) ?? undefined]
 
   //calculate classic pair staked liquidity
@@ -66,9 +66,9 @@ const StakedLP: React.FunctionComponent<StackedLPProps> = ({
 
   //calculate pylon pair staked liquidity
   const { parsedAmounts } = useDerivedPylonBurnInfoFixedPercentage(
-    currencyA ?? undefined, 
-    currencyB ?? undefined, 
-    !isAnchor, 
+    currencyA ?? undefined,
+    currencyB ?? undefined,
+    !isAnchor,
     true,
     percentage,
     field,
@@ -92,7 +92,7 @@ const StakedLP: React.FunctionComponent<StackedLPProps> = ({
 
   return (
     <Flex flexDirection="column" alignItems="flex-start">
-      <Heading style={{color: theme.text1, fontWeight: '400', fontSize: '24px'}}>{displayBalance()}</Heading>
+      <Heading style={{color: theme.text1, fontWeight: 400, fontSize: '24px'}}>{displayBalance()}</Heading>
       {stakedBalance.gt(0) && (
         <>
           {/* <Balance

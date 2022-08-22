@@ -55,7 +55,7 @@ const PopoverContainer = styled.div<{ show: boolean }>`
   transition: visibility 150ms linear, opacity 150ms linear;
   background: ${({ theme }) => theme.searchInput};
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
-    0px 24px 32px rgba(0, 0, 0, 0.01);
+  0px 24px 32px rgba(0, 0, 0, 0.01);
   color: ${({ theme }) => theme.text2};
   border-radius: 0.5rem;
   padding: 1rem;
@@ -172,89 +172,89 @@ const ListRow = memo(function ListRow({ listUrl, onBack }: { listUrl: string; on
   if (!list) return null
 
   return (
-    <Row key={listUrl} align="center" padding="10px" id={listUrlRowHTMLId(listUrl)}>
-      {list.logoURI ? (
-        <ListLogo style={{ margin: '0 10px' }} logoURI={list.logoURI} alt={`${list.name} list logo`} />
-      ) : (
-        <div style={{ width: '24px', height: '24px', marginRight: '1rem' }} />
-      )}
-      <Column style={{ flex: '1' }}>
-        <Row>
-          <Text
-            fontWeight={400}
-            fontSize={16}
-            style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
-          >
-            {list.name}
-          </Text>
-        </Row>
-        <Row
-          style={{
-            marginTop: '4px'
-          }}
-        >
-          <StyledListUrlText title={listUrl}>
-            <ListOrigin listUrl={listUrl} />
-          </StyledListUrlText>
-        </Row>
-      </Column>
-      <StyledMenu ref={node as any}>
-        <ButtonLight
-          style={{
-            width: '30px',
-            height: '42px',
-            padding: '.8rem .35rem',
-            borderRadius: '12px',
-            fontSize: '14px',
-            marginRight: '5px'
-          }}
-          onClick={toggle}
-          ref={setReferenceElement}
-        >
-          <MoreHorizontal />
-        </ButtonLight>
-
-        {open && (
-          <PopoverContainer show={true} ref={setPopperElement as any} style={styles.popper} {...attributes.popper}>
-            <div>{list && listVersionLabel(list.version)}</div>
-            <ExternalLink href={`https://tokenlists.org/token-list?url=${listUrl}`}>View list</ExternalLink>
-            <UnpaddedLinkStyledButton onClick={handleRemoveList} disabled={Object.keys(listsByUrl).length === 1}>
-              Remove list
-            </UnpaddedLinkStyledButton>
-            {pending && (
-              <UnpaddedLinkStyledButton onClick={handleAcceptListUpdate}>Update list</UnpaddedLinkStyledButton>
-            )}
-          </PopoverContainer>
+      <Row key={listUrl} align="center" padding="10px" id={listUrlRowHTMLId(listUrl)}>
+        {list.logoURI ? (
+            <ListLogo style={{ margin: '0 10px' }} logoURI={list.logoURI} alt={`${list.name} list logo`} />
+        ) : (
+            <div style={{ width: '24px', height: '24px', marginRight: '1rem' }} />
         )}
-      </StyledMenu>
-      {isSelected ? (
-        <ButtonPrimary
-          disabled={true}
-          className="select-button"
-          style={{ width: '5rem', minWidth: '5rem', padding: '0.5rem .35rem', borderRadius: '12px', fontSize: '16px', 
-          height: '42px', fontWeight: 400 }}
-        >
-          {t('selected')}
-        </ButtonPrimary>
-      ) : (
-        <>
-          <ButtonPrimary
-            className="select-button"
-            style={{
-              width: '5rem',
-              minWidth: '4.5rem',
-              padding: '0.5rem .35rem',
-              borderRadius: '12px',
-              fontSize: '16px',
-              fontWeight: 400
-            }}
-            onClick={selectThisList}
+        <Column style={{ flex: '1' }}>
+          <Row>
+            <Text
+                fontWeight={400}
+                fontSize={16}
+                style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
+            >
+              {list.name}
+            </Text>
+          </Row>
+          <Row
+              style={{
+                marginTop: '4px'
+              }}
           >
-            {t('select')}
-          </ButtonPrimary>
-        </>
-      )}
-    </Row>
+            <StyledListUrlText title={listUrl}>
+              <ListOrigin listUrl={listUrl} />
+            </StyledListUrlText>
+          </Row>
+        </Column>
+        <StyledMenu ref={node as any}>
+          <ButtonLight
+              style={{
+                width: '30px',
+                height: '42px',
+                padding: '.8rem .35rem',
+                borderRadius: '12px',
+                fontSize: '14px',
+                marginRight: '5px'
+              }}
+              onClick={toggle}
+              ref={setReferenceElement}
+          >
+            <MoreHorizontal />
+          </ButtonLight>
+
+          {open && (
+              <PopoverContainer show={true} ref={setPopperElement as any} style={styles.popper} {...attributes.popper}>
+                <div>{list && listVersionLabel(list.version)}</div>
+                <ExternalLink href={`https://tokenlists.org/token-list?url=${listUrl}`}>View list</ExternalLink>
+                <UnpaddedLinkStyledButton onClick={handleRemoveList} disabled={Object.keys(listsByUrl).length === 1}>
+                  Remove list
+                </UnpaddedLinkStyledButton>
+                {pending && (
+                    <UnpaddedLinkStyledButton onClick={handleAcceptListUpdate}>Update list</UnpaddedLinkStyledButton>
+                )}
+              </PopoverContainer>
+          )}
+        </StyledMenu>
+        {isSelected ? (
+            <ButtonPrimary
+                disabled={true}
+                className="select-button"
+                style={{ width: '5rem', minWidth: '5rem', padding: '0.5rem .35rem', borderRadius: '12px', fontSize: '16px',
+                  height: '42px', fontWeight: 400 }}
+            >
+              {t('selected')}
+            </ButtonPrimary>
+        ) : (
+            <>
+              <ButtonPrimary
+                  className="select-button"
+                  style={{
+                    width: '5rem',
+                    minWidth: '4.5rem',
+                    padding: '0.5rem .35rem',
+                    borderRadius: '12px',
+                    fontSize: '16px',
+                    fontWeight: 400
+                  }}
+                  onClick={selectThisList}
+              >
+                {t('select')}
+              </ButtonPrimary>
+            </>
+        )}
+      </Row>
   )
 })
 
@@ -291,23 +291,23 @@ export function ListSelect({ onDismiss, onBack }: { onDismiss: () => void; onBac
     if (adding) return
     setAddError(null)
     fetchList(listUrlInput)
-      .then(() => {
-        setListUrlInput('')
-        ReactGA.event({
-          category: 'Lists',
-          action: 'Add List',
-          label: listUrlInput
+        .then(() => {
+          setListUrlInput('')
+          ReactGA.event({
+            category: 'Lists',
+            action: 'Add List',
+            label: listUrlInput
+          })
         })
-      })
-      .catch(error => {
-        ReactGA.event({
-          category: 'Lists',
-          action: 'Add List Failed',
-          label: listUrlInput
+        .catch(error => {
+          ReactGA.event({
+            category: 'Lists',
+            action: 'Add List Failed',
+            label: listUrlInput
+          })
+          setAddError(error.message)
+          dispatch(removeList(listUrlInput))
         })
-        setAddError(error.message)
-        dispatch(removeList(listUrlInput))
-      })
   }, [adding, dispatch, fetchList, listUrlInput])
 
   const validUrl: boolean = useMemo(() => {
@@ -315,99 +315,99 @@ export function ListSelect({ onDismiss, onBack }: { onDismiss: () => void; onBac
   }, [listUrlInput])
 
   const handleEnterKey = useCallback(
-    e => {
-      if (validUrl && e.key === 'Enter') {
-        handleAddList()
-      }
-    },
-    [handleAddList, validUrl]
+      e => {
+        if (validUrl && e.key === 'Enter') {
+          handleAddList()
+        }
+      },
+      [handleAddList, validUrl]
   )
 
   const sortedLists = useMemo(() => {
     const listUrls = Object.keys(lists)
     return listUrls
-      .filter(listUrl => {
-        return Boolean(lists[listUrl].current)
-      })
-      .sort((u1, u2) => {
-        const { current: l1 } = lists[u1]
-        const { current: l2 } = lists[u2]
-        if (l1 && l2) {
-          return l1.name.toLowerCase() < l2.name.toLowerCase()
-            ? -1
-            : l1.name.toLowerCase() === l2.name.toLowerCase()
-            ? 0
-            : 1
-        }
-        if (l1) return -1
-        if (l2) return 1
-        return 0
-      })
+        .filter(listUrl => {
+          return Boolean(lists[listUrl].current)
+        })
+        .sort((u1, u2) => {
+          const { current: l1 } = lists[u1]
+          const { current: l2 } = lists[u2]
+          if (l1 && l2) {
+            return l1.name.toLowerCase() < l2.name.toLowerCase()
+                ? -1
+                : l1.name.toLowerCase() === l2.name.toLowerCase()
+                    ? 0
+                    : 1
+          }
+          if (l1) return -1
+          if (l2) return 1
+          return 0
+        })
   }, [lists])
   const theme = useTheme()
 
   return (
-    <Column style={{ width: '100%', flex: '1 1' }}>
-      <PaddedColumn style={{padding: '15px'}}>
-        <RowBetween>
-          <Flex style={{height: '44px', width: '44px', justifyContent: 'center', alignItems: 'center'}}>
-            <ArrowLeft style={{ cursor: 'pointer', strokeWidth: '1px' }} onClick={onBack} />
-          </Flex>
-          <Text fontWeight={400} fontSize={16}>
-          {t('manageList')}
+      <Column style={{ width: '100%', flex: '1 1' }}>
+        <PaddedColumn style={{padding: '15px'}}>
+          <RowBetween>
+            <Flex style={{height: '44px', width: '44px', justifyContent: 'center', alignItems: 'center'}}>
+              <ArrowLeft style={{ cursor: 'pointer', strokeWidth: '1px' }} onClick={onBack} />
+            </Flex>
+            <Text fontWeight={400} fontSize={16}>
+              {t('manageList')}
+            </Text>
+            <Flex style={{height: '44px', width: '44px', justifyContent: 'center', alignItems: 'center'}}>
+              <CloseIcon onClick={onDismiss} />
+            </Flex>
+          </RowBetween>
+        </PaddedColumn>
+
+        <PaddedColumn gap="10px">
+          <Text fontWeight={400}>
+            Add a list{' '}
+            <QuestionHelper text="Token lists are an open specification for lists of ERC20 tokens. You can use any token list by entering its URL below. Beware that third party token lists can contain fake or malicious ERC20 tokens." />
           </Text>
-          <Flex style={{height: '44px', width: '44px', justifyContent: 'center', alignItems: 'center'}}>
-            <CloseIcon onClick={onDismiss} />
-          </Flex>
-        </RowBetween>
-      </PaddedColumn>
+          <Row>
+            <SearchInput
+                expanded={true}
+                type="text"
+                id="list-add-input"
+                placeholder="https:// or ipfs://"
+                value={listUrlInput}
+                onChange={handleInput}
+                onKeyDown={handleEnterKey}
+                style={{ height: '2.75rem', borderRadius: 12, padding: '12px', paddingRight: '40px' }}
+            />
+            <AddListButton onClick={handleAddList} disabled={!validUrl}>
+              {t('add')}
+            </AddListButton>
+          </Row>
+          {addError ? (
+              <TYPE.error title={addError} style={{ textOverflow: 'ellipsis', overflow: 'hidden' }} error>
+                {addError}
+              </TYPE.error>
+          ) : null}
+        </PaddedColumn>
 
-      <PaddedColumn gap="10px">
-        <Text fontWeight={400}>
-          Add a list{' '}
-          <QuestionHelper text="Token lists are an open specification for lists of ERC20 tokens. You can use any token list by entering its URL below. Beware that third party token lists can contain fake or malicious ERC20 tokens." />
-        </Text>
-        <Row>
-          <SearchInput
-            expanded={true}
-            type="text"
-            id="list-add-input"
-            placeholder="https:// or ipfs://"
-            value={listUrlInput}
-            onChange={handleInput}
-            onKeyDown={handleEnterKey}
-            style={{ height: '2.75rem', borderRadius: 12, padding: '12px', paddingRight: '40px' }}
-          />
-          <AddListButton onClick={handleAddList} disabled={!validUrl}>
-            {t('add')}
-          </AddListButton>
-        </Row>
-        {addError ? (
-          <TYPE.error title={addError} style={{ textOverflow: 'ellipsis', overflow: 'hidden' }} error>
-            {addError}
-          </TYPE.error>
-        ) : null}
-      </PaddedColumn>
-
-      <ListContainer>
-        {sortedLists.map(listUrl => (
-          <ListRow key={listUrl} listUrl={listUrl} onBack={onBack} />
-        ))}
-      </ListContainer>
-      <div style={{ padding: '10px', textAlign: 'center' }}>
-      <ButtonPink
-            style={{
-              padding: "10px",
-              fontSize: "13px",
-              border: "none",
-              fontWeight: '500',
-            }}
+        <ListContainer>
+          {sortedLists.map(listUrl => (
+              <ListRow key={listUrl} listUrl={listUrl} onBack={onBack} />
+          ))}
+        </ListContainer>
+        <div style={{ padding: '10px', textAlign: 'center' }}>
+          <ButtonPink
+              style={{
+                padding: "10px",
+                fontSize: "13px",
+                border: "none",
+                fontWeight: 500,
+              }}
           >
             <Link style={{textDecoration: 'none', color: theme.pinkGamma}} href="https://tokenlists.org" >
               {t('browseList')}
             </Link>
           </ButtonPink>
-      </div>
-    </Column>
+        </div>
+      </Column>
   )
 }

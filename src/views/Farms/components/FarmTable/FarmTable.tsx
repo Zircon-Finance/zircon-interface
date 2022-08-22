@@ -72,7 +72,7 @@ const FarmTable: React.FC<ITableProps> = (props) => {
             <TableBody>
               {rows.length > 0 ? rows.map((row, index) => {
                 return <Row {...row.original} userDataReady={userDataReady} key={`table-row-${row.id}`} />
-              }) : <tr><td style={{width: '100%', textAlign: 'center', fontSize: '20px', fontWeight: '500'}}>No farms found</td></tr>}
+              }) : <tr><td style={{width: '100%', textAlign: 'center', fontSize: '20px', fontWeight: 500}}>No farms found</td></tr>}
             </TableBody>
           </StyledTable>
         </TableWrapper>

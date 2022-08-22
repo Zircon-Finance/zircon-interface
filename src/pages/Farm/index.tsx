@@ -4,6 +4,8 @@ import FarmCard from '../../views/Farms/components/FarmCard/FarmCard'
 import { getDisplayApr } from '../../views/Farms/Farms'
 import { usePriceCakeBusd } from '../../state/farms/hooks'
 import { useWeb3React } from '@web3-react/core'
+import Lottie from "lottie-react-web";
+import animation from "../../assets/lotties/farming_lottie.json";
 
 const FarmsPage = () => {
   const { account } = useWeb3React()
@@ -22,7 +24,18 @@ const FarmsPage = () => {
           account={account}
           removed={false}
         />
-      )) : <p style={{width: '100%', textAlign: 'center', fontSize: '20px', fontWeight: 500}}>No farms found</p>}
+      )) :
+          <div style={{display: 'flex', alignItems: 'center', width: '100%', flexDirection: 'column'}}>
+            <Lottie
+                style={{width: 100, height: 100}}
+                options={{
+                  animationData: animation
+                }}
+            />
+            <p style={{width: '100%', textAlign: 'center', fontSize: '18px', fontWeight: 400}}>No farms found</p>
+          </div>
+
+      }
     </>
   )
 }

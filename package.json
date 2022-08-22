@@ -119,6 +119,7 @@
     "graphql": "^14.6.0",
     "graphql-request": "^4.1.0",
     "i": "^0.3.7",
+    "lottie-react-web": "^2.2.2",
     "lottie-web": "^5.9.6",
     "npm": "^8.5.5",
     "react-countup": "^6.2.0",

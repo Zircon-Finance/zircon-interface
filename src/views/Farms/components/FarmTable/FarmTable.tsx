@@ -1,6 +1,8 @@
 import React, { useRef } from 'react'
 import styled from 'styled-components'
 import { useTable, ColumnType } from '@pancakeswap/uikit'
+import Lottie from 'lottie-react-web'
+import animation from '../../../../assets/lotties/QKyXCqp6Nm.json'
 
 
 import Row, { RowProps } from './Row'
@@ -72,7 +74,19 @@ const FarmTable: React.FC<ITableProps> = (props) => {
             <TableBody>
               {rows.length > 0 ? rows.map((row, index) => {
                 return <Row {...row.original} userDataReady={userDataReady} key={`table-row-${row.id}`} />
-              }) : <tr><td style={{width: '100%', textAlign: 'center', fontSize: '20px', fontWeight: 500}}>No farms found</td></tr>}
+              }) : <tr>
+                <td style={{width: '100%', textAlign: 'center', fontSize: '20px', fontWeight: 500}}>
+                <div>
+                  <Lottie
+                      style={{width: 100, height: 100}}
+                      options={{
+                        animationData: animation
+                      }}
+                  />
+                {/*<p>{"No farms found>"}</p>*/}
+                </div>
+                </td>
+              </tr>}
             </TableBody>
           </StyledTable>
         </TableWrapper>

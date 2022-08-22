@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { ExternalLink } from '../../theme'
 
 const InfoCard = styled.button<{ active?: boolean }>`
   background-color:${({ theme }) => theme.bg14};
@@ -133,9 +132,6 @@ export default function Option({
       </IconWrapper>
     </OptionCardClickable>
   )
-  if (link) {
-    return <ExternalLink href={link}>{content}</ExternalLink>
-  }
 
   return content
 }

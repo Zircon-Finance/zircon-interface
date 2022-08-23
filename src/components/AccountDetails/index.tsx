@@ -304,9 +304,10 @@ export default function AccountDetails({
                   {connector !== injected && connector !== walletlink && (
                     <WalletAction
                       style={{
-                        fontSize: ".825rem",
+                        fontSize: "13px",
+                        padding: "9px 12px 10px",
                         fontWeight: 400,
-                        marginRight: "8px",
+                        borderRadius: "12px",height: "34px",
                       }}
                       onClick={() => {
                         (connector as any).close();

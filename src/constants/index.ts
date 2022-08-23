@@ -2,7 +2,7 @@ import { ChainId, JSBI, Percent, Token, WDEV } from 'zircon-sdk'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { routerv2, pylonRouter } from '../moonbase_address.json'
 
-import { injected, walletconnect } from '../connectors'
+import { injected, talisman, walletconnect } from '../connectors'
 // fortmatic, portis, walletconnect, walletlink, lattice
 
 export const ROUTER_ADDRESS: { [key: string]: string } = {
@@ -156,7 +156,17 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     href: null,
     color: '#4196FC',
     mobile: true,
+  },
+  TALISMAN: {
+    connector: talisman,
+    name: 'Talisman',
+    iconName: 'talisman.png',
+    description: 'Connect using Talisman ETH',
+    href: null,
+    color: '#5E6E6E',
   }
+
+
   /*
   LATTICE: {
     connector: lattice,

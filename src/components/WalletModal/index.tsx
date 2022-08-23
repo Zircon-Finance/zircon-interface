@@ -104,7 +104,7 @@ const Blurb = styled.div`
 `
 
 const OptionGrid = styled.div`
-  display: flex;
+  display: grid;
   gap: 5px;
 `
 

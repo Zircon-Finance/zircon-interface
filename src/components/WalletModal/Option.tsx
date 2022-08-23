@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 const InfoCard = styled.button<{ active?: boolean }>`
   background-color:${({ theme }) => theme.bg14};
-  padding: 1rem;
+  padding: 0 !important;
   outline: none;
   border: none;
   display: flex;
@@ -79,6 +79,7 @@ const IconWrapper = styled.div<{ size?: number | null }>`
   justify-content: center;
   & > img,
   span {
+    border-radius: 17px;
     height: ${({ size }) => (size ? size + 'px' : '65px')};
     width: ${({ size }) => (size ? size + 'px' : '65px')};
   }

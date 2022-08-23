@@ -6,6 +6,8 @@ import { PortisConnector } from '@web3-react/portis-connector'
 
 import { FortmaticConnector } from './Fortmatic'
 import { NetworkConnector } from './NetworkConnector'
+import { TalismanConnector } from './talisman/TalismanConnector'
+import { talismanChains } from './talisman/talismanChains'
 
 const NETWORK_URL = process.env.REACT_APP_NETWORK_URL
   ? process.env.REACT_APP_NETWORK_URL
@@ -32,6 +34,11 @@ export const injected = new InjectedConnector({
   supportedChainIds: [1287],
   //supportedChainIds: [1, 3, 4, 5, 42, 1287]
 })
+
+// talisman connector
+export const talisman = new TalismanConnector({
+  supportedChainIds: [...talismanChains.map((c) => c.id)],
+});
 
 // mainnet only
 export const walletconnect = new WalletConnectConnector({

@@ -104,7 +104,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
 
     farmTabsBg: chainId !== 1287 ? '#341853' : darkMode ? '#543334' : '#eae7ed',
 
-    questionMarks: chainId !== 1287 ? '#604C7A' : darkMode ? '#5b434f' : '#F2E9EB',
+    questionMarks: chainId !== 1287 ? '#604C7A' : darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
 
     slippageActive: chainId !== 1287 ? '#997aaf' : darkMode ? '#9E4D86' : '#a69997',
 
@@ -148,6 +148,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     liquidityBg: chainId !== 1287 ? '#260B42' : darkMode ? '#331924' : '#F5F3F6',
 
     walletModal: chainId !== 1287 ? '#3c2955' : darkMode ? '#52273a' : '#fff',
+    opacitySmall: darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
 
     searchInput: chainId !== 1287 ? '#604C7A' : darkMode ? '#613244' : '#f5f3f3',
 

@@ -301,7 +301,7 @@ export default function AccountDetails({
               <AccountGroupingRow>
                 {formatConnectorName()}
                 <div>
-                  {connector !== injected && connector !== walletlink && (
+                  {/* {connector !== injected && connector !== walletlink &&  (
                     <WalletAction
                       style={{
                         fontSize: "13px",
@@ -315,7 +315,7 @@ export default function AccountDetails({
                     >
                       Disconnect
                     </WalletAction>
-                  )}
+                  )} */}
                   <WalletAction
                     style={{
                       fontSize: "13px",

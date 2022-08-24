@@ -189,9 +189,9 @@ export default function SettingsTab() {
       </StyledMenuButton>
       {open && (
         <MenuFlyout>
-          <AutoColumn gap="md" style={{ padding: '1rem' }}>
+          <AutoColumn gap="5px" style={{ padding: '20px' }}>
             <Text fontWeight={400} fontSize={16}>
-              {t('transactionSettings')}
+              {t('transactionSettings').toUpperCase()}
             </Text>
             <TransactionSettings
               rawSlippage={userSlippageTolerance}
@@ -199,8 +199,8 @@ export default function SettingsTab() {
               deadline={deadline}
               setDeadline={setDeadline}
             />
-            <Text fontWeight={400} fontSize={13}>
-            {t('interfaceSettings')}
+            <Text fontWeight={400} fontSize={13} mt={'10px'}>
+            {t('interfaceSettings').toUpperCase()}
             </Text>
             <RowBetween>
               <RowFixed>

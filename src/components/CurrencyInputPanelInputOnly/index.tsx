@@ -32,7 +32,7 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
 
   :focus,
   :hover {
-    background-color: ${({ theme, selected }) => !selected ? theme.meatPinkBrown : theme.darkMode ? '#513642' : '#E5D9DB'};
+    background-color: ${({ theme, selected }) => !selected ? '#E0C2C3' : theme.darkMode ? '#513642' : '#E5D9DB'};
     color: ${({ theme, selected }) => !selected ? '#fff' : theme.darkMode ? '#fff' : theme.blackBrown};
   }
 `
@@ -65,7 +65,7 @@ const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
   }
 
   path {
-    stroke: ${({ selected, theme }) => (selected ? theme.whiteHalf : theme.whiteHalf)};
+    stroke: ${({ selected, theme }) => (selected ? theme.whiteHalf : theme.blackBrown)};
     stroke-width: 1.5px;
   }
 `
@@ -205,7 +205,7 @@ export default function CurrencyInputPanel({
                           <span
                             style={{
                               width: '100%',
-                              color: theme.whiteHalf,
+                              color: !currency ? theme.blackBrown : theme.whiteHalf,
                               marginBottom: width > 700 ? "0" : "10px",
                               marginLeft: width < 700 ? '0' : "5px",
                               fontSize: width > 700 ? "16px" : "13px",
@@ -219,7 +219,7 @@ export default function CurrencyInputPanel({
                   )}
                 </div>
                 {!disableCurrencySelect && (
-                  <StyledDropDown selected={!!currency} />
+                  <StyledDropDown selected={!!currency} style={{}} />
                 )}
               </Aligner>
             </CurrencySelect>

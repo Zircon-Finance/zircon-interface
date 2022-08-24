@@ -143,9 +143,9 @@ export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, se
   }
 
   return (
-    <AutoColumn gap="md">
-      <AutoColumn gap="sm">
-        <RowFixed>
+    <AutoColumn gap="5px">
+      <AutoColumn gap="5px">
+        <RowFixed mt={'10px'}>
           <TYPE.black fontWeight={400} fontSize={13} color={theme.white}>
             {t('slippageTolerance')}
           </TYPE.black>
@@ -221,9 +221,9 @@ export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, se
         )}
       </AutoColumn>
 
-      <AutoColumn gap="sm">
-        <RowFixed>
-          <TYPE.black fontSize={13} fontWeight={400} color={theme.white}>
+      <AutoColumn gap="5px">
+        <RowFixed alignItems={'center'} mt={'10px'}>
+          <TYPE.black fontSize={13} fontWeight={400} color={theme.white} >
           {t('transactionDeadline')}
           </TYPE.black>
           <QuestionHelper text="Your transaction will revert if it is pending for more than this long." />
@@ -240,7 +240,7 @@ export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, se
               onChange={e => parseCustomDeadline(e.target.value)}
             />
           </OptionCustom>
-          <TYPE.body style={{ paddingLeft: '8px' }} fontSize={14}>
+          <TYPE.body style={{ paddingLeft: '8px' }} fontSize={14} color={theme.colors.textSubtle}>
           {t('minutes')}
           </TYPE.body>
         </RowFixed>

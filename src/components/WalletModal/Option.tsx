@@ -62,14 +62,14 @@ const HeaderText = styled.div`
   justify-content: center;
   ${({ theme }) => theme.flexRowNoWrap};
   color: ${props => (props.color === 'blue' ? ({ theme }) => theme.primary1 : ({ theme }) => theme.text1)};
-  font-size: 1rem;
-  font-weight: 400;
+  font-size: 18px;
+  font-weight: 500;
 `
 
 const SubHeader = styled.div`
-  color: ${({ theme }) => theme.text1};
+  color: ${({ theme }) => theme.whiteHalf};
   margin-top: 10px;
-  font-size: 12px;
+  font-size: 16px;
 `
 
 const IconWrapper = styled.div<{ size?: number | null }>`

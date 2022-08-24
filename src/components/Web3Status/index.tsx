@@ -107,7 +107,7 @@ const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean }>`
 `
 
 const Text = styled.p`
-  color: ${({ theme }) => theme.text1};
+  color: #ffff};
   flex: 1 1 auto;
   white-space: nowrap;
   margin: 0 0.5rem 0 0rem;

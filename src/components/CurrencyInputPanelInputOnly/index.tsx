@@ -32,8 +32,8 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
 
   :focus,
   :hover {
-    background-color: ${({ theme, selected }) => !selected ? '#E0C2C3' : theme.darkMode ? '#513642' : '#E5D9DB'};
-    color: ${({ theme, selected }) => !selected ? '#fff' : theme.darkMode ? '#fff' : theme.blackBrown};
+    background-color: ${({ theme, selected }) => !selected ? theme.poolPinkButton : theme.darkMode ? '#513642' : '#E5D9DB'};
+    color: '${({ theme, selected }) => !selected ? '#fff' : theme.darkMode ? '#fff' : theme.blackBrown}';
   }
 `
 
@@ -143,6 +143,7 @@ export default function CurrencyInputPanel({
   const theme = useTheme()
   const { width } = useWindowDimensions()
   const darkMode = useIsDarkMode()
+  const [hovered, setHovered] = useState(false)
 
   return (
     <InputPanel id={id}>
@@ -153,6 +154,8 @@ export default function CurrencyInputPanel({
             {/* <span style={{alignSelf: 'start',padding: '5px 5px 5px 10px', fontSize: '10px', letterSpacing: '0.05em'}}>{anchor ? 'ANCHOR' : 'FLOAT'}</span> */}
             {/* <div style={{display: 'flex', width: '100%'}}> */}
             <CurrencySelect
+              onMouseEnter={() => setHovered(true)}
+              onMouseLeave={() => setHovered(false)}
               style={{border: !darkMode ? !currency ? `1px solid ${theme.bg8}` : `1px solid rgba(0,0,0,0.2)` : 'none'}}
               selected={!!currency}
               className="open-currency-select-button"
@@ -205,7 +208,7 @@ export default function CurrencyInputPanel({
                           <span
                             style={{
                               width: '100%',
-                              color: !currency ? theme.blackBrown : theme.whiteHalf,
+                              color: hovered ? theme.cardLightBorder : !currency ? theme.blackBrown : theme.whiteHalf,
                               marginBottom: width > 700 ? "0" : "10px",
                               marginLeft: width < 700 ? '0' : "5px",
                               fontSize: width > 700 ? "16px" : "13px",

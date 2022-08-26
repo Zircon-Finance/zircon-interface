@@ -125,7 +125,7 @@ export default function PendingView({
             //   icon={require('../../assets/images/' + option.iconName)}
             // />
             <Flex justifyContent={'center'} flexDirection={'column'}>
-              <img style={{height: '70px', width: '70px', margin: 'auto', marginBottom: '15px'}} src={require('../../assets/images/' + option.iconName)} />
+              <img alt="wallet" style={{height: '70px', width: '70px', margin: 'auto', marginBottom: '15px'}} src={require('../../assets/images/' + option.iconName)} />
               <Text textAlign={'center'} fontWeight={500} fontSize={'18px'} color={theme.text1}>{option.name}</Text>
               <Text textAlign={'center'} color={theme.whiteHalf} mb={'20px'}>{option.description}</Text>
             </Flex>

@@ -208,7 +208,7 @@ export default function CurrencyInputPanel({
                           <span
                             style={{
                               width: '100%',
-                              color: hovered ? theme.cardLightBorder : !currency ? theme.blackBrown : theme.whiteHalf,
+                              color: hovered ? theme.darkMode ? theme.cardLightBorder : currency ? theme.blackBrown : theme.cardLightBorder : !currency ? theme.blackBrown : theme.whiteHalf,
                               marginBottom: width > 700 ? "0" : "10px",
                               marginLeft: width < 700 ? '0' : "5px",
                               fontSize: width > 700 ? "16px" : "13px",

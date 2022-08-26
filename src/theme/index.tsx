@@ -77,7 +77,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     bg14: chainId !== 1287 ? '#4E386B' : darkMode ? '#592e40' : '#f5f3f3',
     //specialty colors
     modalBG: chainId !== 1287 ? '#3c2955A1' : darkMode ? '#3a1c29a0' : '#FCFCFDA1',
-    advancedBG: 'rgba(0,0,0,0.1)',
+    advancedBG: 'rgba(0,0,0,0.05)',
 
     //primary colors
     primary1: '#A69BB5',
@@ -106,7 +106,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
 
     questionMarks: chainId !== 1287 ? '#604C7A' : darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
 
-    slippageActive: chainId !== 1287 ? '#997aaf' : darkMode ? '#9E4D86' : '#a69997',
+    slippageActive: chainId !== 1287 ? '#997aaf' : '#9E4D86',
 
     walletActive: chainId !== 1287 ? '#2A1145' : darkMode ? '#4E302D' : '#edebea',
 
@@ -225,7 +225,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
       handleBackground: chainId !== 1287 ? '#644a7c' : darkMode ? '#D5AEAF' : '#FFF',
     },
     modal: {
-      background: chainId !== 1287 ? '#2B1840' : darkMode ? '#361E2A' : '#f1eff1' ,
+      background: chainId !== 1287 ? '#2B1840' : darkMode ? '#52273a' : '#f1eff1' ,
     },
     zIndices: {
       modal: 1000,

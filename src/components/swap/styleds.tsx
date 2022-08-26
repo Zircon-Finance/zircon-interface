@@ -57,13 +57,13 @@ export const ErrorText = styled(Text)<{ severity?: 0 | 1 | 2 | 3 | 4 }>`
       ? theme.yellow2
       : severity === 1
       ? theme.text1
-      : theme.green1};
+      : theme.pinkGamma};
 `
 
 export const StyledBalanceMaxMini = styled.button`
   height: 22px;
   width: 22px;
-  background-color: ${({ theme }) => theme.bg14};
+  background-color: ${({ theme }) => theme.maxButton};
   border: none;
   border-radius: 50%;
   padding: 0.2rem;
@@ -77,12 +77,17 @@ export const StyledBalanceMaxMini = styled.button`
   align-items: center;
   float: right;
 
-  :hover {
-    background-color: ${({ theme }) => theme.bg3};
+  &:hover {
+    background: ${({ theme }) => theme.maxButtonHover};
+    svg {
+      transform: rotate(90deg);
+    }
   }
-  :focus {
-    background-color: ${({ theme }) => theme.bg3};
-    outline: none;
+  svg {
+    path {
+      stroke: ${({ theme }) => theme.pinkGamma} !important;
+    }
+    transform: rotate(90deg);
   }
 `
 

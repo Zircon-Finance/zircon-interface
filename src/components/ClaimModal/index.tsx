@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Flex, Modal } from '@pancakeswap/uikit'
+import React, { CSSProperties, useEffect, useState } from 'react'
+import { Modal } from '@pancakeswap/uikit'
 import { useTranslation } from 'react-i18next'
 
 import { ButtonOutlined, } from '../../components/Button'
@@ -12,6 +12,7 @@ import airdrop_abi from "../../constants/abi/airdrop_abi.json";
 import { proofData } from '../../constants/proofDats'
 import { useActiveWeb3React } from '../../hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
+import { AutoColumn } from '../Column'
 
 
 
@@ -59,9 +60,14 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
     account && setDataUser(leaves.find(user => user?.address === account))
   }, [dataUser, account, leaves])
 
-  console.log('dataUser', dataUser)
+  const modalStyle = {
+    position: 'absolute',
+    width: 'auto',
+    minWidth: '400px',
+  } as CSSProperties
+
   return (
-    <Modal style={{position: 'absolute', width: 'auto', maxWidth: '360px'}} title={t('Claim tokens')} onDismiss={onDismiss}>
+    <Modal style={modalStyle} title={t('Claim tokens')} onDismiss={onDismiss}>
       <Balance
               fontSize="45px"
               color={theme.text1}
@@ -72,11 +78,13 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
               textAlign={'center'}
       />
       <Text fontSize={'16px'} color={theme.text1} textAlign={'center'}
-      style={{paddingBottom: '20px', borderBottom:`1px solid ${theme.whiteHalf}`}}>
+      style={{paddingBottom: '20px', borderBottom:`1px solid ${theme.opacitySmall}`}}>
         {t('TotalClaimable ZPT')}</Text>
-        <Text my={'20px'} fontSize={'13px'} color={theme.text1} textAlign={'center'}>{'ZPT token is launched by Zircon Finance.'}</Text>
-        <Text mb={'20px'} fontSize={'13px'} color={theme.text1} textAlign={'center'}>{'Read more about token distribution here.'}</Text>
-      <ButtonOutlined style={{ alignSelf: 'center', background: theme.poolPinkButton, width: '100%', marginTop: '20px' }}
+        <AutoColumn gap='5px' style={{padding: '20px'}}>
+          <Text fontSize={'13px'} color={theme.text1} textAlign={'center'}>{'ZPT token is launched by Zircon Finance.'}</Text>
+          <Text fontSize={'13px'} color={theme.text1} textAlign={'center'}>{'Read more about token distribution here.'}</Text>
+        </AutoColumn>
+      <ButtonOutlined style={{ alignSelf: 'center', background: theme.poolPinkButton, width: '100%'}}
       disabled={(account && !dataUser?.amount) || claimStatus}
       onClick={
         () => 
@@ -97,8 +105,6 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
         <Text style={{textDecoration: 'none', color: '#fff'}} >
           {account ? claimStatus ? 'Already claimed' : 'Claim tokens' : 'Connect wallet'}</Text>
       </ButtonOutlined>
-      <Flex mb="15px" alignItems="center" justifyContent="space-around">
-      </Flex>
     </Modal>
   )
 }

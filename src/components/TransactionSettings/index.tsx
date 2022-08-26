@@ -37,8 +37,8 @@ const Option = styled(FancyButton)<{ active: boolean }>`
   :hover {
     cursor: pointer;
   }
-  background-color: ${({ active, theme }) => active ? theme.slippageActive : theme.questionMarks};
-  color: ${({ active, theme }) => (active ? theme.white : theme.text1)};
+  background-color: ${({ active, theme }) => active ? theme.slippageActive : theme.darkMode ? theme.questionMarks : '#f0e9eb'};
+  color: ${({ active, theme }) => (active ? theme.darkMode ? theme.white : '#fff' : theme.text1)};
 `
 
 const Input = styled.input`
@@ -229,7 +229,7 @@ export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, se
           <QuestionHelper text="Your transaction will revert if it is pending for more than this long." />
         </RowFixed>
         <RowFixed>
-          <OptionCustom style={{ width: '80px', padding: '5px 10px', fontSize: '13px', border: `1px solid ${theme.questionMarks}`, borderRadius: '11px' }} tabIndex={-1}>
+          <OptionCustom style={{ width: '80px', padding: '5px',height: '27px', fontSize: '13px', border: `1px solid ${theme.questionMarks}`, borderRadius: '11px' }} tabIndex={-1}>
             <Input
               color={!!deadlineError ? 'red' : undefined}
               onBlur={() => {
@@ -240,7 +240,7 @@ export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, se
               onChange={e => parseCustomDeadline(e.target.value)}
             />
           </OptionCustom>
-          <TYPE.body style={{ paddingLeft: '8px' }} fontSize={14} color={theme.colors.textSubtle}>
+          <TYPE.body style={{ paddingLeft: '8px' }} fontSize={14} color={theme.whiteHalf}>
           {t('minutes')}
           </TYPE.body>
         </RowFixed>

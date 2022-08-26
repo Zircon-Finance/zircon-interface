@@ -19,6 +19,7 @@ import { OVERLAY_READY } from '../../connectors/Fortmatic'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { ButtonPrimary, ButtonSecondary } from '../Button'
 import { Link, Text } from 'rebass'
+import { useActiveWeb3React } from '../../hooks'
 
 const CloseIcon = styled.div`
   position: absolute;
@@ -191,6 +192,7 @@ export default function WalletModal({
   ENSName?: string
 }) {
   const { active, account, connector, activate, error } = useWeb3React()
+  const {chainId} = useActiveWeb3React()
 
   const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT)
 
@@ -356,7 +358,7 @@ export default function WalletModal({
   }
 
   function getModalContent() {
-    if (error) {
+    if (error || chainId !== 1287) {
       return (
         <UpperSection>
 
@@ -373,7 +375,7 @@ export default function WalletModal({
               <ButtonPrimary mt={'30px'} onClick={() => connectNet('moonbase')} >{'Click to connect'}</ButtonPrimary>
               </>
             ) : (
-              'Error connecting. Try refreshing the page.'
+              'Error connecting. Please make sure you are connected to the appropriate Moonbase Alpha network.'
             )}
           </ContentWrapper>
         </UpperSection>

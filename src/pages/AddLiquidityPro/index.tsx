@@ -1396,6 +1396,9 @@ export default function AddLiquidityPro({
                                       (approvalA !== ApprovalState.APPROVED ||
                                       (sync === "half" &&
                                           approvalB !== ApprovalState.APPROVED)) :
+                                      pylonState === PylonState.ONLY_PAIR ?
+                                        (approvalB !== ApprovalState.APPROVED ||
+                                          approvalA !== ApprovalState.APPROVED) :
                                       (approvalAPair !== ApprovalState.APPROVED ||
                                       approvalBPair !== ApprovalState.APPROVED)
                                   }

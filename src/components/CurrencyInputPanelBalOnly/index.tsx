@@ -135,7 +135,7 @@ export default function CurrencyInputPanel({
                 <InputRow style={hideInput ? { alignItems: 'center', padding: '0', borderRadius: '8px' } : {alignItems: 'center'}} selected={disableCurrencySelect}>
                 {!hideInput && (
                   <>
-                      <span style={{padding: '10px 5px 0px 10px'}}>
+                      <span style={{padding: '5px 5px 0px 10px'}}>
                         <CurrencyLogo currency={currency} size={'30px'} />
                         </span>
                       <span style={{fontSize: '16px', alignSelf: 'center', paddingRight: '12px'}}>

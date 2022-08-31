@@ -357,8 +357,6 @@ export default function WalletModal({
     })
   }
 
-  const isMetamask = window.ethereum && window.ethereum.isMetaMask
-
   function getModalContent() {
     if (error || chainId !== 1287) {
       return (
@@ -374,7 +372,7 @@ export default function WalletModal({
             {error instanceof UnsupportedChainIdError ? (
               <>
               <h5 style={{textAlign: 'center'}}>{'Please connect to the appropriate Moonbase Alpha network.'}</h5>
-              {isMetamask && <ButtonPrimary mt={'30px'} onClick={() => connectNet('moonbase')} >{'Click to connect'}</ButtonPrimary>}
+              {connector === injected && <ButtonPrimary mt={'30px'} onClick={() => connectNet('moonbase')} >{'Click to connect'}</ButtonPrimary>}
               </>
             ) : (
               'Error connecting. Please make sure you are connected to the appropriate Moonbase Alpha network.'

@@ -101,21 +101,19 @@ export const ButtonLight = styled(Base)`
   font-size: 16px;
   font-weight: 200;
   &:focus {
-    box-shadow: 0 0 0 1pt ${({ theme, disabled }) => !disabled && darken(0.03, theme.primary5)};
-    background-color: ${({ theme, disabled }) => !disabled && darken(0.03, theme.primary5)};
+    background-color: ${({ theme, disabled }) => !disabled && theme.colors.input};
   }
   &:hover {
     background-color: ${({ theme, disabled }) => !disabled && theme.colors.input};
   }
   &:active {
-    box-shadow: 0 0 0 1pt ${({ theme, disabled }) => !disabled && darken(0.05, theme.primary5)};
-    background-color: ${({ theme, disabled }) => !disabled && darken(0.05, theme.primary5)};
+    background-color: ${({ theme, disabled }) => !disabled && theme.colors.input};
   }
   :disabled {
     opacity: 0.4;
     :hover {
       cursor: auto;
-      background-color: ${({ theme }) => theme.primary5};
+      background-color: ${({ theme }) => theme.colors.input};
       box-shadow: none;
       border: 1px solid transparent;
       outline: none;
@@ -149,14 +147,13 @@ export const ButtonSecondary = styled(Base)`
   padding: ${({ padding }) => (padding ? padding : '10px')};
 
   &:focus {
-    background-color: ${({ theme }) => theme.bg11};
+    background-color: ${({ theme }) => theme.darkMode ? theme.bg12 : theme.navigationBorder};
   }
   &:hover {
-    background-color: ${({ theme }) => theme.bg12};
+    background-color: ${({ theme }) => theme.darkMode ? theme.bg12 : theme.navigationBorder};
   }
   &:active {
-    box-shadow: 0 0 0 1pt ${({ theme }) => theme.bg11};
-    background-color: ${({ theme }) => theme.bg11};
+    background-color: ${({ theme }) => theme.darkMode ? theme.bg12 : theme.navigationBorder};
   }
   &:disabled {
     background-color: ${({ theme }) => theme.primary5};

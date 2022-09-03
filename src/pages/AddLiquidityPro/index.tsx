@@ -70,6 +70,7 @@ import useApprovePool from "../../views/Farms/hooks/useApproveFarm";
 import { fetchPoolsUserDataAsync } from "../../state/pools";
 import { useDispatch } from "react-redux";
 import {AddressZero}  from "@ethersproject/constants";
+import InfoCircle from "../../components/InfoCircle";
 
 const expandAnimation = keyframes`
   from {
@@ -891,21 +892,19 @@ export default function AddLiquidityPro({
               {/* Pylon condition, previously noPylon && */}
 
               {!pylonPair && (
-                  <ColumnCenter>
-                    <BlueCard>
+                  <ColumnCenter style={{padding: '10px'}}>
+                    <BlueCard style={{background: 'transparent', border: `1px solid ${theme.anchorFloatBadge}`}}>
+                    <InfoCircle />
                       <AutoColumn
                           gap="10px"
                           style={{ fontSize: width > 700 ? "16px" : "15px" }}
                       >
-                        <TYPE.link fontWeight={400} color={theme.text1}>
+                        <TYPE.link fontWeight={500} fontSize={'18px'} textAlign={'center'} color={theme.text1} my={'10px'}>
                           You are the first liquidity provider.
                         </TYPE.link>
-                        <TYPE.link fontWeight={400} color={theme.text1}>
-                          This will create the pair and the Pylon for this pair
-                        </TYPE.link>
-                        <TYPE.link fontWeight={400} color={theme.text1}>
-                          Once you are happy with the pair click 'Create pair' to
-                          review.
+                        <TYPE.link fontWeight={400} color={theme.whiteHalf} textAlign={'center'}>
+                          This will create the pair and the Pylon for this pair<br />
+                          Once you are happy with the pair <br /> click 'Create pair' to review.
                         </TYPE.link>
                       </AutoColumn>
                     </BlueCard>
@@ -1397,6 +1396,9 @@ export default function AddLiquidityPro({
                                       (approvalA !== ApprovalState.APPROVED ||
                                       (sync === "half" &&
                                           approvalB !== ApprovalState.APPROVED)) :
+                                      pylonState === PylonState.ONLY_PAIR ?
+                                        (approvalB !== ApprovalState.APPROVED ||
+                                          approvalA !== ApprovalState.APPROVED) :
                                       (approvalAPair !== ApprovalState.APPROVED ||
                                       approvalBPair !== ApprovalState.APPROVED)
                                   }

@@ -25,7 +25,7 @@ import { ExternalLink, TYPE } from '../../theme'
 
 const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
-  padding: 1rem 1rem;
+  padding: 15px;
   font-weight: 400;
   color: ${props => (props.color === 'blue' ? ({ theme }) => theme.primary1 : 'inherit')};
   ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -77,7 +77,7 @@ const AccountGroupingRow = styled.div`
 `
 
 const AccountSection = styled.div`
-  padding: 0rem 1rem;
+  padding: 0 10px;
   ${({ theme }) => theme.mediaWidth.upToMedium`padding: 0rem 1rem 1.5rem 1rem;`};
 `
 
@@ -301,7 +301,7 @@ export default function AccountDetails({
               <AccountGroupingRow>
                 {formatConnectorName()}
                 <div>
-                  {connector !== injected && connector !== walletlink && (
+                  {/* {connector !== injected && connector !== walletlink &&  (
                     <WalletAction
                       style={{
                         fontSize: "13px",
@@ -315,7 +315,7 @@ export default function AccountDetails({
                     >
                       Disconnect
                     </WalletAction>
-                  )}
+                  )} */}
                   <WalletAction
                     style={{
                       fontSize: "13px",

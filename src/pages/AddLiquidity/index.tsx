@@ -38,6 +38,7 @@ import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 import { currencyId } from '../../utils/currencyId'
 import { PoolPriceBar } from './PoolPriceBar'
 import LearnIcon from '../../components/LearnIcon'
+import InfoCircle from '../../components/InfoCircle'
 
 export default function AddLiquidity({
   match: {
@@ -336,16 +337,15 @@ export default function AddLiquidity({
           />
           <AutoColumn gap="20px" style={{backgroundColor: theme.bg7, padding: '10px', borderRadius: '20px'}}>
             {noLiquidity && (
-              <ColumnCenter>
-                <BlueCard>
+              <ColumnCenter style={{padding: '10px'}}>
+                <BlueCard style={{background: 'transparent', border: `1px solid ${theme.anchorFloatBadge}`}}>
+                  <InfoCircle />
                   <AutoColumn gap="10px" style={{fontSize: width > 700 ? '16px' : '15px'}}>
-                    <TYPE.link fontWeight={400} color={theme.text1}>
+                    <TYPE.link fontWeight={500} fontSize={'18px'} textAlign={'center'} color={theme.text1} my={'10px'}>
                       You are the first liquidity provider.
                     </TYPE.link>
-                    <TYPE.link fontWeight={400} color={theme.text1}>
-                      The ratio of tokens you add will set the price of this pool.
-                    </TYPE.link>
-                    <TYPE.link fontWeight={400} color={theme.text1}>
+                    <TYPE.link fontWeight={400} color={theme.whiteHalf} textAlign={'center'}>
+                      The ratio of tokens you add will set the price of this pool.<br />
                       Once you are happy with the rate click supply to review.
                     </TYPE.link>
                   </AutoColumn>

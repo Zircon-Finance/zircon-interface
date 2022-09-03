@@ -54,7 +54,6 @@ const MenuFlyout = styled.span`
   min-width: 11rem;
   background-color: ${({ theme }) => theme.bg14};
   border-radius: 20px;
-  box-shadow: 0px 0px 30px rgba(34, 18, 55, 0.5);
   display: flex;
   flex-direction: column;
   font-size: 1rem;
@@ -113,8 +112,8 @@ export default function TriMenu() {
       {open && (
         <MenuFlyout>
           <AutoColumn gap="sm" style={{padding: '5px'}} >
-            <ButtonEmpty style={{fontWeight: 400, color: theme.text1}} as={Link} to={'/add/ETH'} onClick={() => toggle()}>Classic Liquidity</ButtonEmpty>
-            <ButtonEmpty style={{fontWeight: 400, color: theme.text1}} as={Link} to={'/pool'}onClick={() => {
+            <ButtonEmpty style={{fontWeight: 400, color: theme.pinkBrown}} as={Link} to={'/add/ETH'} onClick={() => toggle()}>Classic Liquidity</ButtonEmpty>
+            <ButtonEmpty style={{fontWeight: 400, color: theme.pinkBrown}} as={Link} to={'/pool'}onClick={() => {
               toggle()
               window.open('https://docs.zircon.finance', '_blank');
             }}>Learn</ButtonEmpty>

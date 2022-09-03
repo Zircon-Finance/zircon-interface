@@ -165,7 +165,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
           </StyledLinkExternal>
         </Flex>
         <Flex flexDirection={"column"}>
-          <Text color={theme.text1}>{`Earn ${earningToken.map((token) => `${token.symbol}`)}`}</Text>
+          <Text color={theme.text1} style={{textAlign: 'right'}}>{`Earn ${earningToken.map((token) => `${token.symbol}`)}`}</Text>
             <div style={{display: 'flex', marginLeft: '10px', alignItems: 'center'}}>
             {risk ?
               <RiskHealthIcon /> : <TrendingHealthIcon /> }

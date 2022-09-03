@@ -114,6 +114,8 @@ export interface Colors {
 
   changeButtonHover: Color
 
+  opacitySmall: Color
+
   // pinks
   secondary1: Color
   secondary2: Color

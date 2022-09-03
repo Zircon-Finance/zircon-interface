@@ -277,7 +277,6 @@ export default function Swap() {
       width: '100%',
       background: theme.bg1,
       borderRadius: '27px',
-      boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04), 0px 24px 32px rgba(0, 0, 0, 0.01)'
       }}>
       <AutoColumn gap={'md'} style={{backgroundColor: theme.bg1, borderRadius: '27px', padding: '0px', height: '100%', width: '100%'}}>
         <div style={{alignSelf: 'center'}}>

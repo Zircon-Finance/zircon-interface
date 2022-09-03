@@ -14,7 +14,6 @@ const selectUserDataLoaded = (state: State) => state.pools.userDataLoaded
 
 export const makePoolWithUserDataLoadingSelector = (sousId) =>
   createSelector([selectPoolData(sousId), selectUserDataLoaded], (pool, userDataLoaded) => {
-      console.log(pool, userDataLoaded)
     return { pool: transformPool(pool), userDataLoaded }
   })
 

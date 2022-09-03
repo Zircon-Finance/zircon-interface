@@ -28,6 +28,8 @@ import {RedirectOldRemoveLiquidityProPathStructure} from "./RemoveProLiquidity/r
 import RemoveProLiquidity from "./RemoveProLiquidity";
 import { useWindowDimensions } from '../hooks'
 import Farms from '../views/Farms/Farms'
+import Lottie from "lottie-react-web";
+import animation from '../assets/lotties/0uCdcx9Hn5.json'
 
 const AppWrapper = styled.div`
   display: flex;
@@ -77,6 +79,11 @@ const Marginer = styled.div`
 
 export default function App() {
   const { width } = useWindowDimensions();
+  const [opacityDiv, setOpacityDiv] = React.useState(1)
+  const countDown = (opacity) => {
+    opacityDiv !== 0 && setTimeout(() => setOpacityDiv(parseFloat((opacity - 0.1).toFixed(1))), 50)
+  }
+  opacityDiv !== 0 && countDown(opacityDiv)
   return (
     <Suspense fallback={null}>
       <HashRouter>
@@ -89,6 +96,12 @@ export default function App() {
         <Route component={GoogleAnalyticsReporter} />
         <Route component={DarkModeQueryParamReader} />
         <AppWrapper>
+          {opacityDiv !== 0 && <Lottie
+                style={{width: "100%", position: 'absolute', zIndex: 100, backgroundColor: 'rgba(0,0,0,0.5)', opacity: opacityDiv}}
+                options={{
+                    animationData: animation
+                }}
+          />}
           <HeaderWrapper>
             <Header />
           </HeaderWrapper>

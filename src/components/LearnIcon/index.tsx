@@ -13,7 +13,7 @@ const LearnBadge = styled.span`
   color: ${({ theme }) => theme.white};
   font-size: 10px;
   cursor: pointer;
-  z-index: 100;
+  z-index: 1;
   &:hover {
       background-color:  rgba(213, 174, 175, 0.2);
   }

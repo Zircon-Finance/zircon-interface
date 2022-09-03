@@ -2,14 +2,14 @@ import React from 'react'
 import styled from 'styled-components'
 
 const InfoCard = styled.button<{ active?: boolean }>`
-  background-color:${({ theme }) => theme.bg14};
-  padding: 0 !important;
+  background-color:${({ theme, active }) => active ? 'transparent' : theme.bg14};
+  border: ${({ theme, active }) => active ? '1px solid ' + theme.opacitySmall : 'none'};
+  padding: 20px !important;
   outline: none;
-  border: none;
   display: flex;
-  flex-flow: column-reverse !important;
+  flex-flow: row !important;
   border-radius: 12px;
-  width: 60% !important;
+  width: 100% !important;
   margin: auto;
 `
 
@@ -46,13 +46,13 @@ const GreenCircle = styled.div`
     height: 8px;
     width: 8px;
     margin-right: 8px;
-    background-color: ${({ theme }) => theme.green1};
+    background-color: ${({ theme }) => theme.pinkGamma};
     border-radius: 50%;
   }
 `
 
 const CircleWrapper = styled.div`
-  color: ${({ theme }) => theme.green1};
+  color: ${({ theme }) => theme.pinkGamma};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -61,27 +61,26 @@ const CircleWrapper = styled.div`
 const HeaderText = styled.div`
   justify-content: center;
   ${({ theme }) => theme.flexRowNoWrap};
-  color: ${props => (props.color === 'blue' ? ({ theme }) => theme.primary1 : ({ theme }) => theme.text1)};
-  font-size: 1rem;
-  font-weight: 400;
+  color: ${({ theme }) => theme.darkMode ? theme.text1 : theme.pinkBrown};
+  font-size: 18px;
+  font-weight: 500;
 `
 
 const SubHeader = styled.div`
-  color: ${({ theme }) => theme.text1};
+  color: ${({ theme }) => theme.whiteHalf};
   margin-top: 10px;
-  font-size: 12px;
+  font-size: 16px;
 `
 
 const IconWrapper = styled.div<{ size?: number | null }>`
   ${({ theme }) => theme.flexColumnNoWrap};
   align-items: center;
-  margin: 20px 0 20px 0;
   justify-content: center;
   & > img,
   span {
     border-radius: 17px;
-    height: ${({ size }) => (size ? size + 'px' : '65px')};
-    width: ${({ size }) => (size ? size + 'px' : '65px')};
+    height: ${({ size }) => (size ? size + 'px' : '40px')};
+    width: ${({ size }) => (size ? size + 'px' : '40px')};
   }
   ${({ theme }) => theme.mediaWidth.upToMedium`
     align-items: flex-end;

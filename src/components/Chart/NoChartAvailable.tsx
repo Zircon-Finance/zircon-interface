@@ -3,7 +3,7 @@ import { Text } from 'rebass'
 import React  from 'react'
 import { useTheme } from 'styled-components'
 import Lottie from "lottie-react-web";
-import animation from "../../assets/lotties/QKyXCqp6Nm.json";
+import animation from "../../assets/lotties/7uOcp6IXze.json";
 
 interface NoChartAvailableProps {
   hasLiquidity?: boolean
@@ -12,12 +12,16 @@ interface NoChartAvailableProps {
 
 const NoChartAvailable: React.FC<NoChartAvailableProps> = ({ hasLiquidity, hasOutputToken }) => {
   const theme = useTheme()
-  return (
-        <div style={{margin: 'auto', textAlign: 'center', alignItems: 'center', display: 'flex', height: '100%', flexDirection: 'column'}}>
+    // const [isShown, setIsShown] = useState(false);
+
+    return (
+        <div
+            style={{margin: 'auto', justifyContent: 'flex-start', alignItems: 'flex-start', display: 'flex', height: '100%', flexDirection: 'column'}}>
             <Lottie
-                style={{width: "100%"}}
+                direction={-1}
+                style={{width: "100%", borderWidth: 2}}
                 options={{
-                    animationData: animation
+                    animationData: animation,
                 }}
             />
           <Text color={theme.whiteHalf} style={{margin: 'auto'}}>

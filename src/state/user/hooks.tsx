@@ -278,7 +278,7 @@ export function toLiquidityFloatToken([tokenA, tokenB]: [Token, Token]): Token {
  * @param tokenB the other token
  */
 export function toLiquidityAnchorToken([tokenA, tokenB]: [Token, Token]): Token {
-  return new Token(tokenA.chainId, Pylon.getLiquidityAddresses(tokenA, tokenB)[1], 18, 'ZIRCON', 'ANCHOR')
+  return new Token(tokenA.chainId, Pylon.getLiquidityAddresses(tokenA, tokenB)[1], 18, 'ZIRCON', 'STABLE')
 }
 /**
  * Given two tokens return the liquidity token that represents its float liquidity shares
@@ -294,7 +294,7 @@ export function toLiquidityFloat2Token([tokenA, tokenB]: [Token, Token]): Token 
  * @param tokenB the other token
  */
 export function toLiquidityAnchor2Token([tokenA, tokenB]: [Token, Token]): Token {
-  return new Token(tokenA.chainId, Pylon.getLiquidityAddresses(tokenB, tokenA)[1], 18, 'ZIRCON', 'ANCHOR')
+  return new Token(tokenA.chainId, Pylon.getLiquidityAddresses(tokenB, tokenA)[1], 18, 'ZIRCON', 'STABLE')
 }
 
 /**

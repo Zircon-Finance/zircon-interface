@@ -145,7 +145,7 @@ export default function CurrencyInputPanel({
                           currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
                           : currency?.symbol) || t('selectToken')}
                       </span>
-                      <span style={{fontSize: width < 700 ? '13px' : '16px', color: theme.whiteHalf}}>{isFloat ? 'FLOAT' : 'ANCHOR'}</span>
+                      <span style={{fontSize: width < 700 ? '13px' : '16px', color: theme.whiteHalf}}>{isFloat ? 'FLOAT' : 'STABLE'}</span>
 
                     <NumericalInput
                       onFocus={()=>setIsFocus(true)}
@@ -184,7 +184,7 @@ export default function CurrencyInputPanel({
                     ? 'Balance: ' + selectedCurrencyBalance?.toSignificant(6)
                     : ' -'}
                   </Text>
-                  
+
                   </div>
                   {currency &&
                   <Text style={{paddingRight: '0.75rem', alignSelf: 'center'}} color={theme.whiteHalf}>

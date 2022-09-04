@@ -104,7 +104,7 @@ export function PylonClassicTab({ active }: { active: "PYLON" | "CLASSIC" }) {
 export function AnchorFloatTab({
   active,
 }: {
-  active: "ALL" | "ANCHOR" | "FLOAT";
+  active: "ALL" | "STABLE" | "FLOAT";
 }) {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
@@ -135,7 +135,7 @@ export function AnchorFloatTab({
         }}
         isActive={() => filter === FarmFilterAnchorFloat.ANCHOR}
       >
-        {t("ANCHOR")}
+        {t("STABLE")}
       </StyledNavLink>
       <StyledNavLink
         id={`float-select-tab`}

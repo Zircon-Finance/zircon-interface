@@ -356,7 +356,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                     <Flex flexWrap='wrap'>
                       <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{token1.symbol} -</Text>
                       <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '5px', display: 'flex', alignItems: 'center'}}>
-                        <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{`${token2.symbol}`}</span>{'ANCHOR'}
+                        <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{`${token2.symbol}`}</span>{'STABLE'}
                       </BadgeSmall>
                     </Flex>
                     </>
@@ -387,7 +387,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                     <Flex flexWrap='wrap'>
                       <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{token1.symbol} -</Text>
                       <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '5px', display: 'flex', alignItems: 'center'}}>
-                        <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{`${token2.symbol}`}</span>{'ANCHOR'}
+                        <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{`${token2.symbol}`}</span>{'STABLE'}
                       </BadgeSmall>
                     </Flex>
                     </>
@@ -508,7 +508,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                 border: 'none',
                 borderRadius: '12px',
                 fontWeight: 500 }}>
-              {`Get ${token1.name} - ${token2.name} ${isClassic ? 'Classic' : isAnchor ? 'Anchor' : 'Float'} LP`}</ButtonOutlined>
+              {`Get ${token1.name} - ${token2.name} ${isClassic ? 'Classic' : isAnchor ? 'Stable' : 'Float'} LP`}</ButtonOutlined>
           </Link>
         </ValueContainer>
       </QuarterContainer>

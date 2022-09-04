@@ -31,7 +31,7 @@ export enum FarmFilter {
 
 export enum FarmFilterAnchorFloat {
   ALL = 'ALL',
-  ANCHOR = 'ANCHOR',
+  ANCHOR = 'STABLE',
   FLOAT = 'FLOAT',
 }
 

@@ -214,7 +214,7 @@ export default function CurrencyInputPanel({
                               fontSize: width > 700 ? "16px" : "13px",
                             }}
                           >
-                            {anchor ? "ANCHOR" : "FLOAT"}
+                            {anchor ? "STABLE" : "FLOAT"}
                           </span>
                         </>
                       )) || t("selectToken")}

@@ -117,7 +117,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
                         marginRight: "3px",
                       }}
                     >{`${quoteToken.symbol}`}</span>
-                    {"ANCHOR"}
+                    {"STABLE"}
                   </BadgeSmall>
                 </Flex>
               </>

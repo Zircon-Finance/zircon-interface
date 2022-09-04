@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import ReactGA from "react-ga4";
 import { RouteComponentProps } from "react-router-dom";
 import { Flex, Text } from "rebass";
-import styled, { css, keyframes, useTheme } from "styled-components";
+import styled, { useTheme } from "styled-components";
 import farmsConfig from "../../constants/pools";
 import {
   ButtonAnchor,
@@ -60,7 +60,6 @@ import { currencyId } from "../../utils/currencyId";
 import { MobileWrapper } from "../App";
 import LearnIcon from "../../components/LearnIcon";
 import { Toggle } from "@pancakeswap/uikit";
-import CheckIcon from "../../components/CheckIcon";
 import { getPoolAprAddress } from "../../utils/apr";
 import { SpaceBetween } from "../../views/Farms/components/FarmTable/Actions/ActionPanel";
 import RepeatIcon from "../../components/RepeatIcon";
@@ -71,48 +70,6 @@ import { fetchPoolsUserDataAsync } from "../../state/pools";
 import { useDispatch } from "react-redux";
 import {AddressZero}  from "@ethersproject/constants";
 import InfoCircle from "../../components/InfoCircle";
-
-const expandAnimation = keyframes`
-  from {
-    height: 0%;
-    opacity: 0;
-  }
-  to {
-    height: 100%;
-    opacity: 1;
-  }
-`
-
-const collapseAnimation = keyframes`
-  from {
-    height: 100%;
-    opacity: 1;
-  }
-  to {
-    height: 0%;
-    opacity: 0;
-  }
-`
-
-const AdvancedContainer = styled.div<{ expanded }>`
-  animation: ${({ expanded }) =>
-      expanded
-          ? css`
-            ${expandAnimation} 300ms linear forwards
-          `
-          : css`
-            ${collapseAnimation} 300ms linear forwards
-          `};
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 95%;
-  margin: auto;
-  padding: 0 10px;
-  background-color: ${({ theme }) => theme.liquidityBg};
-  border-radius: 17px;`
-
 const IconContainer = styled.div`
   display: flex;
   align-items: center;
@@ -263,20 +220,20 @@ export default function AddLiquidityPro({
   );
   // check whether the user has approved the router on the tokens (Pair)
   const [approvalAPair, approveACallbackPair] = useApproveCallback(
-    parsedAmounts[float.field_a],
-    ROUTER_ADDRESS[chainId ? chainId : ""]
+      parsedAmounts[float.field_a],
+      ROUTER_ADDRESS[chainId ? chainId : ""]
   );
   const [approvalBPair, approveBCallbackPair] = useApproveCallback(
-    parsedAmounts[float.field_b],
-    ROUTER_ADDRESS[chainId ? chainId : ""]
+      parsedAmounts[float.field_b],
+      ROUTER_ADDRESS[chainId ? chainId : ""]
   );
 
   //pool values
   const contractAddress = farm ? farm.contractAddress : AddressZero;
   const apr = getPoolAprAddress(contractAddress) ?? '0'
 
-  const [showAdvancedMode, setShowAdvancedMode] = useState(false);
-  const [fakeAdvancedMode, setFakeAdvancedMode] = useState(false);
+  // const [showAdvancedMode, setShowAdvancedMode] = useState(false);
+  // const [fakeAdvancedMode, setFakeAdvancedMode] = useState(false);
   async function addPylon() {
     if (!chainId || !library || !account) return;
     const pylonRouter = getPylonRouterContract(chainId, library, account);
@@ -601,9 +558,9 @@ export default function AddLiquidityPro({
     const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline
 
     let estimate,
-      method: (...args: any) => Promise<TransactionResponse>,
-      args: Array<string | string[] | number>,
-      value: BigNumber | null
+        method: (...args: any) => Promise<TransactionResponse>,
+        args: Array<string | string[] | number>,
+        value: BigNumber | null
     if (currencyA === DEV || currencyB === DEV) {
       const tokenBIsETH = currencyB === DEV
       estimate = router.estimateGas.addLiquidityETH
@@ -635,41 +592,41 @@ export default function AddLiquidityPro({
 
     setAttemptingTxn(true)
     await estimate(...args, value ? { value } : {})
-      .then(estimatedGasLimit =>
-        method(...args, {
-          ...(value ? { value } : {}),
-          gasLimit: calculateGasMargin(estimatedGasLimit)
-        }).then(response => {
+        .then(estimatedGasLimit =>
+            method(...args, {
+              ...(value ? { value } : {}),
+              gasLimit: calculateGasMargin(estimatedGasLimit)
+            }).then(response => {
+              setAttemptingTxn(false)
+
+              addTransaction(response, {
+                summary:
+                    'Add ' +
+                    parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
+                    ' ' +
+                    currencies[Field.CURRENCY_A]?.symbol +
+                    ' and ' +
+                    parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
+                    ' ' +
+                    currencies[Field.CURRENCY_B]?.symbol
+              })
+
+              setTxHash(response.hash)
+
+              ReactGA.event({
+                category: 'Liquidity',
+                action: 'Add',
+                label: [currencies[Field.CURRENCY_A]?.symbol, currencies[Field.CURRENCY_B]?.symbol].join('/')
+              })
+            })
+        )
+        .catch(error => {
           setAttemptingTxn(false)
-
-          addTransaction(response, {
-            summary:
-              'Add ' +
-              parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
-              ' ' +
-              currencies[Field.CURRENCY_A]?.symbol +
-              ' and ' +
-              parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
-              ' ' +
-              currencies[Field.CURRENCY_B]?.symbol
-          })
-
-          setTxHash(response.hash)
-
-          ReactGA.event({
-            category: 'Liquidity',
-            action: 'Add',
-            label: [currencies[Field.CURRENCY_A]?.symbol, currencies[Field.CURRENCY_B]?.symbol].join('/')
-          })
+          // we only care if the error is something _other_ than the user rejected the tx
+          if (error?.code !== 4001) {
+            console.error(error)
+          }
         })
-      )
-      .catch(error => {
-        setAttemptingTxn(false)
-        // we only care if the error is something _other_ than the user rejected the tx
-        if (error?.code !== 4001) {
-          console.error(error)
-        }
-      })
   }
 
   const formattedLiquidity = (liquidityMinted?.toSignificant(
@@ -765,7 +722,7 @@ export default function AddLiquidityPro({
             parsedAmounts={parsedAmounts}
             pylonState={pylonState}
             onAdd={() => pylonState === PylonState.EXISTS ? onAdd() :
-                         (pylonState === PylonState.ONLY_PAIR ? addPylon() : onAddPairOnly())}
+                (pylonState === PylonState.ONLY_PAIR ? addPylon() : onAddPairOnly())}
             //poolTokenPercentage={poolTokenPercentage}
             isFloat={isFloat}
             sync={sync}
@@ -894,7 +851,7 @@ export default function AddLiquidityPro({
               {!pylonPair && (
                   <ColumnCenter style={{padding: '10px'}}>
                     <BlueCard style={{background: 'transparent', border: `1px solid ${theme.anchorFloatBadge}`}}>
-                    <InfoCircle />
+                      <InfoCircle />
                       <AutoColumn
                           gap="10px"
                           style={{ fontSize: width > 700 ? "16px" : "15px" }}
@@ -1048,6 +1005,7 @@ export default function AddLiquidityPro({
                       )}
                     </Flex>
 
+
                     {width <= 700 && pylonState === PylonState.EXISTS && (
                         <>
                           <Flex
@@ -1055,66 +1013,22 @@ export default function AddLiquidityPro({
                               justifyContent={"space-between"}
                           >
                       <span style={{ alignSelf: "center" }}>
-                        {"ADVANCED MODE"}
+                        {"SWAP AND ADD"}
                       </span>
                             <Toggle
                                 id="advancedModeToggle"
-                                checked={showAdvancedMode}
+                                checked={sync === "half"}
                                 checkedColor={'dropdownDeep'}
                                 defaultColor={'invertedContrast'}
                                 onChange={() => {
-                                  showAdvancedMode && setSync("off");
-                                  setShowAdvancedMode(!showAdvancedMode);
-                                  fakeAdvancedMode
-                                      ? setTimeout(() => {
-                                        setFakeAdvancedMode(!fakeAdvancedMode);
-                                      }, 300)
-                                      : setFakeAdvancedMode(!fakeAdvancedMode);
+                                  setSync(sync !== "off" ? "off" : "half");
+
                                 }}
                                 scale="sm"
                             />
                           </Flex>
-                          {fakeAdvancedMode && (
-                              <AdvancedContainer expanded={showAdvancedMode}>
-                                <Flex
-                                    style={{
-                                      background: "transparent",
-                                      height: "50px",
-                                      width: "100%",
-                                    }}
-                                    onClick={() => setSync("full")}
-                                    justifyContent={"space-between"}
-                                >
-                                  <span style={{ padding: "15px" }}>{"FAST MODE"}</span>
-                                  {sync === "full" && (
-                                      <div style={{ margin: "12px 0" }}>
-                                        <CheckIcon />
-                                      </div>
-                                  )}
-                                </Flex>
-                                <Flex
-                                    style={{
-                                      background: "transparent",
-                                      height: "50px",
-                                      width: "100%",
-                                    }}
-                                    onClick={() => setSync("half")}
-                                    justifyContent={"space-between"}
-                                >
-                          <span style={{ padding: "15px" }}>
-                            {"SWAP AND ADD"}
-                          </span>
-                                  {sync === "half" && (
-                                      <div style={{ margin: "12px 0" }}>
-                                        <CheckIcon />
-                                      </div>
-                                  )}
-                                </Flex>
-                              </AdvancedContainer>
-                          )}
                         </>
                     )}
-
                     {currencies[Field.CURRENCY_B] !== undefined &&
                     pylonState === PylonState.EXISTS && width >= 700 && (
                         <div style={{ padding: "0 10px 0 10px" }}>
@@ -1135,7 +1049,7 @@ export default function AddLiquidityPro({
                                   letterSpacing: "0.05em",
                                 }}
                             >
-                              {"ADVANCED MODE"}
+                              {"SWAP AND ADD"}
                             </span>
                               <div
                                   style={{
@@ -1167,26 +1081,7 @@ export default function AddLiquidityPro({
                                 >
                                   OFF
                                 </ButtonAnchor>
-                                <ButtonAnchor
-                                    borderRadius={"12px"}
-                                    padding={"10px"}
-                                    style={{
-                                      backgroundColor:
-                                          sync === "full"
-                                              ? theme.badgeSmall
-                                              : "transparent",
-                                      color:
-                                          sync === "full"
-                                              ? theme.text1
-                                              : theme.tabsText,
-                                      width: width >= 700 ? "auto" : "inherit",
-                                    }}
-                                    onClick={() => {
-                                      setSync("full");
-                                    }}
-                                >
-                                  FAST MODE
-                                </ButtonAnchor>
+
                                 <ButtonAnchor
                                     borderRadius={"12px"}
                                     padding={"10px"}
@@ -1211,7 +1106,7 @@ export default function AddLiquidityPro({
                                       });
                                     }}
                                 >
-                                  SWAP AND ADD
+                                  ON
                                 </ButtonAnchor>
                               </div>
                             </>
@@ -1287,7 +1182,9 @@ export default function AddLiquidityPro({
                     </div>
                   </>
               ) : null}
+
             </AutoColumn>
+
             {currencies[Field.CURRENCY_A] &&
             currencies[Field.CURRENCY_B] &&
             pylonState !== PylonState.INVALID && (
@@ -1330,12 +1227,12 @@ export default function AddLiquidityPro({
                                 <RowBetween>
                                   {/* Currency A isn't approved or pylon doesn't exist and A isn't approved */}
                                   {(pylonState === PylonState.NOT_EXISTS ? (approvalAPair !== ApprovalState.APPROVED ? true : false) : (approvalA !== ApprovalState.APPROVED ? true : false))
-                                   && (
+                                  && (
                                       <ButtonPrimary
                                           onClick={pylonState === (PylonState.ONLY_PAIR || PylonState.EXISTS) ?
-                                            approveACallback : approveACallbackPair}
+                                              approveACallback : approveACallbackPair}
                                           disabled={approvalA === ApprovalState.PENDING
-                                            || approvalAPair === ApprovalState.PENDING}
+                                          || approvalAPair === ApprovalState.PENDING}
                                           width={
                                             (approvalB !== ApprovalState.APPROVED || approvalBPair !== ApprovalState.APPROVED) && pylonState === PylonState.EXISTS ? "100%" : "auto"
                                                 ? sync === "half"
@@ -1345,7 +1242,7 @@ export default function AddLiquidityPro({
                                           }
                                       >
                                         {(approvalA === ApprovalState.PENDING
-                                        || approvalAPair === ApprovalState.PENDING) ? (
+                                            || approvalAPair === ApprovalState.PENDING) ? (
                                             <Dots>
                                               Approving{" "}
                                               {currencies[float.field_a]?.symbol}
@@ -1357,27 +1254,27 @@ export default function AddLiquidityPro({
                                       </ButtonPrimary>
                                   )}
                                   {(pylonState === PylonState.EXISTS ? (sync === "half" && (approvalB !== ApprovalState.APPROVED ? true : false)) : (pylonState === PylonState.ONLY_PAIR ? (approvalB !== ApprovalState.APPROVED ? true : false) : (approvalBPair !== ApprovalState.APPROVED ? true : false)) &&
-                                      (<ButtonPrimary
-                                          onClick={pylonState === (PylonState.NOT_EXISTS) ?
-                                            approveBCallbackPair : approveBCallback}
-                                          disabled={(approvalB === ApprovalState.PENDING ||
-                                                    approvalBPair === ApprovalState.PENDING ? true : false)}
-                                          width={
-                                            approvalA !== ApprovalState.APPROVED
-                                                ? "48%"
-                                                : "100%"
-                                          }
-                                      >
-                                        {(approvalBPair === ApprovalState.PENDING || approvalB === ApprovalState.PENDING) ? (
-                                            <Dots>
-                                              Approving{" "}
-                                              {currencies[float.field_b]?.symbol}
-                                            </Dots>
-                                        ) : (
-                                            "Approve " +
-                                            currencies[float.field_b]?.symbol
-                                        )}
-                                      </ButtonPrimary>)
+                                          (<ButtonPrimary
+                                              onClick={pylonState === (PylonState.NOT_EXISTS) ?
+                                                  approveBCallbackPair : approveBCallback}
+                                              disabled={(approvalB === ApprovalState.PENDING ||
+                                              approvalBPair === ApprovalState.PENDING ? true : false)}
+                                              width={
+                                                approvalA !== ApprovalState.APPROVED
+                                                    ? "48%"
+                                                    : "100%"
+                                              }
+                                          >
+                                            {(approvalBPair === ApprovalState.PENDING || approvalB === ApprovalState.PENDING) ? (
+                                                <Dots>
+                                                  Approving{" "}
+                                                  {currencies[float.field_b]?.symbol}
+                                                </Dots>
+                                            ) : (
+                                                "Approve " +
+                                                currencies[float.field_b]?.symbol
+                                            )}
+                                          </ButtonPrimary>)
                                   )}
                                 </RowBetween>
                             )}
@@ -1393,14 +1290,14 @@ export default function AddLiquidityPro({
                                   disabled={
                                     !isValid ||
                                     pylonState === PylonState.EXISTS ?
-                                      (approvalA !== ApprovalState.APPROVED ||
-                                      (sync === "half" &&
-                                          approvalB !== ApprovalState.APPROVED)) :
-                                      pylonState === PylonState.ONLY_PAIR ?
-                                        (approvalB !== ApprovalState.APPROVED ||
-                                          approvalA !== ApprovalState.APPROVED) :
-                                      (approvalAPair !== ApprovalState.APPROVED ||
-                                      approvalBPair !== ApprovalState.APPROVED)
+                                        (approvalA !== ApprovalState.APPROVED ||
+                                            (sync === "half" &&
+                                                approvalB !== ApprovalState.APPROVED)) :
+                                        pylonState === PylonState.ONLY_PAIR ?
+                                            (approvalB !== ApprovalState.APPROVED ||
+                                                approvalA !== ApprovalState.APPROVED) :
+                                            (approvalAPair !== ApprovalState.APPROVED ||
+                                                approvalBPair !== ApprovalState.APPROVED)
                                   }
                                   error={
                                     sync === "half" &&

@@ -1,5 +1,5 @@
-import {Currency, CurrencyAmount, DEV, JSBI, Percent, Price, Pylon, TokenAmount} from 'zircon-sdk'
-import { useCallback, useMemo } from 'react'
+import {Currency, CurrencyAmount, DEV, Pair, JSBI, Percent, Price, Pylon, TokenAmount} from 'zircon-sdk'
+import {useCallback, useMemo} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTotalSupply } from '../../data/TotalSupply'
 import { useTranslation } from 'react-i18next'
@@ -11,10 +11,8 @@ import { tryParseAmount } from '../swap/hooks'
 import {useCurrencyBalances, useTokenBalance} from '../wallet/hooks'
 import { Field, typeInput } from './actions'
 import { usePylon, PylonState } from '../../data/PylonReserves'
-import {
-  useGamma,
-  useVirtualAnchorBalance,
-} from "../../data/PylonData";
+import {useLastK, usePylonConstants, usePylonInfo,} from "../../data/PylonData";
+import {useBlockNumber} from "../application/hooks";
 
 const ZERO = JSBI.BigInt(0)
 
@@ -22,11 +20,12 @@ export function useMintState(): AppState['mint'] {
   return useSelector<AppState, AppState['mint']>(state => state.mint)
 }
 
+
 export function useDerivedPylonMintInfo(
-  currencyA: Currency | undefined,
-  currencyB: Currency | undefined,
-  isFloat: boolean,
-  sync: string
+    currencyA: Currency | undefined,
+    currencyB: Currency | undefined,
+    isFloat: boolean,
+    sync: string
 ): {
   dependentField: Field
   currencies: { [field in Field]?: Currency }
@@ -50,30 +49,28 @@ export function useDerivedPylonMintInfo(
 
   // tokens
   const currencies: { [field in Field]?: Currency } = useMemo(
-    () => ({
-      [Field.CURRENCY_A]: currencyA ?? undefined,
-      [Field.CURRENCY_B]: currencyB ?? undefined
-    }),
-    [currencyA, currencyB]
+      () => ({
+        [Field.CURRENCY_A]: currencyA ?? undefined,
+        [Field.CURRENCY_B]: currencyB ?? undefined
+      }),
+      [currencyA, currencyB]
   )
 
   // Pylon
   const [pylonState, pylonPair] = usePylon(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B])
-  // TODO: Better to use a multicall for this instead of a single call per each value
+  const pylonInfo = usePylonInfo(pylonPair?.address)
+  const pylonConstants = usePylonConstants()
+  console.log(pylonConstants)
+  const blockNumber = useBlockNumber()
   const userLiquidity = useTokenBalance(account ?? undefined, isFloat ? pylonPair?.floatLiquidityToken : pylonPair?.anchorLiquidityToken)
   const pylonPoolBalance = useTokenBalance(pylonPair?.address, pylonPair?.pair.liquidityToken)
   const ptTotalSupply = useTotalSupply(isFloat ? pylonPair?.floatLiquidityToken : pylonPair?.anchorLiquidityToken)
   const totalSupply = useTotalSupply(pylonPair?.pair.liquidityToken)
-  // TODO: update with new SDK Functions
-  const vab = useVirtualAnchorBalance(pylonPair?.address)
-  const vfb = useVirtualAnchorBalance(pylonPair?.address); //useVirtualFloatBalance(pylonPair?.address)
-  const lastK = useGamma(pylonPair?.address); //useLastK(pylonPair?.address)
-  const gamma = useGamma(pylonPair?.address)
-  const lpt = useTotalSupply(pylonPair?.pair.liquidityToken); //useLastPoolTokens(pylonPair?.address)
+  const lastK = useLastK(pylonPair ? Pair.getAddress(pylonPair.token0, pylonPair.token1) : "");
   const pylonSupply = useTotalSupply(pylonPair?.pair.liquidityToken)
 
   const noPylon: boolean =
-  pylonState === PylonState.NOT_EXISTS || Boolean(pylonSupply && JSBI.equal(pylonSupply.raw, ZERO))
+      pylonState === PylonState.NOT_EXISTS || Boolean(pylonSupply && JSBI.equal(pylonSupply.raw, ZERO))
 
   // balances
   const balances = useCurrencyBalances(account ?? undefined, [
@@ -100,9 +97,9 @@ export function useDerivedPylonMintInfo(
       if (tokenA && tokenB && wrappedIndependentAmount && pylonPair) {
         const dependentCurrency = dependentField === Field.CURRENCY_B ? currencyB : currencyA
         const dependentTokenAmount =
-          dependentField === Field.CURRENCY_B
-            ? pylonPair.pair.priceOf(tokenA).quote(wrappedIndependentAmount)
-            : pylonPair.pair.priceOf(tokenB).quote(wrappedIndependentAmount)
+            dependentField === Field.CURRENCY_B
+                ? pylonPair.pair.priceOf(tokenA).quote(wrappedIndependentAmount)
+                : pylonPair.pair.priceOf(tokenB).quote(wrappedIndependentAmount)
         return dependentCurrency === DEV ? CurrencyAmount.ether(dependentTokenAmount.raw) : dependentTokenAmount
       }
       return undefined
@@ -130,37 +127,38 @@ export function useDerivedPylonMintInfo(
 
   // liquidity minted
   const liquidityMinted = useMemo(() => {
-    // const { [Field.CURRENCY_A]: currencyAAmount, [Field.CURRENCY_B]: currencyBAmount } = parsedAmounts
-    // const [tokenAmountA, tokenAmountB] = [
-    //   wrappedCurrencyAmount(currencyAAmount, chainId),
-    //   wrappedCurrencyAmount(currencyBAmount, chainId)
-    // ]
-    return undefined
+    const { [Field.CURRENCY_A]: currencyAAmount, [Field.CURRENCY_B]: currencyBAmount } = parsedAmounts
+    const [tokenAmountA, tokenAmountB] = [
+      wrappedCurrencyAmount(currencyAAmount, chainId),
+      wrappedCurrencyAmount(currencyBAmount, chainId)
+    ]
 
-    // if (pylonPair && pylonSupply && tokenAmountA && tokenAmountB && totalSupply && ptTotalSupply && userLiquidity && pylonPoolBalance) {
-    //   if (sync === "off") {
-    //     if (isFloat) {
-    //       return pylonPair.getFloatSyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
-    //     }else{
-    //       return pylonPair.getAnchorSyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountB, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
-    //     }
-    //   }else if (sync === "full") {
-    //     if (isFloat) {
-    //       return pylonPair.getFloatAsync100LiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
-    //     }else{
-    //       return pylonPair.getAnchorAsync100LiquidityMinted(totalSupply, ptTotalSupply, tokenAmountB, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
-    //     }
-    //   }else {
-    //     if (isFloat) {
-    //       return pylonPair.getFloatAsyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA, tokenAmountB, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
-    //     }else{
-    //       return pylonPair.getAnchorAsyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA, tokenAmountB, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
-    //     }
-    //   }
-    // } else {
-    //   return undefined
-    // }
-  }, [parsedAmounts, chainId, pylonPair, pylonSupply, totalSupply, ptTotalSupply, vab, vfb, gamma, lastK, pylonPoolBalance, lpt, isFloat, sync, userLiquidity])
+    if (pylonPair && pylonSupply && tokenAmountA && tokenAmountB && totalSupply && ptTotalSupply && userLiquidity && pylonPoolBalance && pylonInfo.length > 8 && pylonConstants) {
+      if (sync === "off") {
+        if (isFloat) {
+          return pylonPair.getFloatSyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA,
+              pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
+              pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK)).liquidity
+        }else{
+          return pylonPair.getAnchorSyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA,
+              pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
+              pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK)).liquidity
+        }
+      }else {
+        if (isFloat) {
+          return pylonPair.getFloatAsyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA, tokenAmountB,
+              pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
+              pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK)).liquidity
+        }else{
+          return pylonPair.getAnchorAsyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA, tokenAmountB,
+              pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
+              pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK)).liquidity
+        }
+      }
+    } else {
+      return undefined
+    }
+  }, [parsedAmounts, chainId, pylonPair, pylonSupply, totalSupply, ptTotalSupply,lastK, pylonPoolBalance, isFloat, sync, userLiquidity, pylonInfo, pylonConstants])
 
   // const poolTokenPercentage = useMemo(() => {
   //   if (liquidityMinted && pylonSupply) {
@@ -210,7 +208,7 @@ export function useDerivedPylonMintInfo(
 }
 
 export function useMintActionHandlers(
-  noPylon: boolean | undefined
+    noPylon: boolean | undefined
 ): {
   onFieldAInput: (typedValue: string) => void
   onFieldBInput: (typedValue: string) => void
@@ -218,16 +216,16 @@ export function useMintActionHandlers(
   const dispatch = useDispatch<AppDispatch>()
 
   const onFieldAInput = useCallback(
-    (typedValue: string) => {
-      dispatch(typeInput({ field: Field.CURRENCY_A, typedValue, noLiquidity: noPylon === true }))
-    },
-    [dispatch, noPylon]
+      (typedValue: string) => {
+        dispatch(typeInput({ field: Field.CURRENCY_A, typedValue, noLiquidity: noPylon === true }))
+      },
+      [dispatch, noPylon]
   )
   const onFieldBInput = useCallback(
-    (typedValue: string) => {
-      dispatch(typeInput({ field: Field.CURRENCY_B, typedValue, noLiquidity: noPylon === true }))
-    },
-    [dispatch, noPylon]
+      (typedValue: string) => {
+        dispatch(typeInput({ field: Field.CURRENCY_B, typedValue, noLiquidity: noPylon === true }))
+      },
+      [dispatch, noPylon]
   )
 
   return {

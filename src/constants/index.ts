@@ -1,23 +1,19 @@
-import { ChainId, JSBI, Percent, Token, WDEV } from 'zircon-sdk'
+import { ChainId, JSBI, Percent, Token, WDEV, MOONBASE_ADDRESSES } from 'zircon-sdk'
 import { AbstractConnector } from '@web3-react/abstract-connector'
-import { routerv2, pylonRouter } from '../moonbase_address.json'
-
 import { injected, talisman, walletconnect } from '../connectors'
 // fortmatic, portis, walletconnect, walletlink, lattice
-
 export const ROUTER_ADDRESS: { [key: string]: string } = {
   [ChainId.STANDALONE]: '0x1408886Cf200EB3d843796f6d4c8bD71497DAe67',
-  [ChainId.MOONROCK]: routerv2,
-  [ChainId.MOONBASE]: routerv2,
-  [ChainId.MOONSHADOW]: routerv2,
+  [ChainId.MOONROCK]: MOONBASE_ADDRESSES.router,
+  [ChainId.MOONBASE]: MOONBASE_ADDRESSES.router,
+  [ChainId.MOONSHADOW]: MOONBASE_ADDRESSES.router,
 }
 export const PYLON_ROUTER_ADDRESS: { [key: string]: string } = {
   [ChainId.STANDALONE]: '0x42e2EE7Ba8975c473157634Ac2AF4098190fc741',
-  [ChainId.MOONROCK]: pylonRouter,
-  [ChainId.MOONBASE]: pylonRouter,
-  [ChainId.MOONSHADOW]: pylonRouter,
+  [ChainId.MOONROCK]: MOONBASE_ADDRESSES.pylonRouter,
+  [ChainId.MOONBASE]: MOONBASE_ADDRESSES.pylonRouter,
+  [ChainId.MOONSHADOW]: MOONBASE_ADDRESSES.pylonRouter,
 }
-
 // a list of tokens by chain
 type ChainTokenList = {
   readonly [chainId in ChainId]: Token[]

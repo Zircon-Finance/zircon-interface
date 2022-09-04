@@ -764,7 +764,7 @@ export default function AddLiquidityPro({
             currencies={currencies}
             parsedAmounts={parsedAmounts}
             pylonState={pylonState}
-            onAdd={() => pylonState === PylonState.EXISTS ? onAdd() : 
+            onAdd={() => pylonState === PylonState.EXISTS ? onAdd() :
                          (pylonState === PylonState.ONLY_PAIR ? addPylon() : onAddPairOnly())}
             //poolTokenPercentage={poolTokenPercentage}
             isFloat={isFloat}
@@ -903,8 +903,8 @@ export default function AddLiquidityPro({
                           You are the first liquidity provider.
                         </TYPE.link>
                         <TYPE.link fontWeight={400} color={theme.whiteHalf} textAlign={'center'}>
-                          This will create the pair and the Pylon for this pair<br />
-                          Once you are happy with the pair <br /> click 'Create pair' to review.
+                          You'll have to create first the pair and then the Pylon<br />
+                          Once you created the pair <br />you'd be able to create the pylon.
                         </TYPE.link>
                       </AutoColumn>
                     </BlueCard>
@@ -1332,9 +1332,9 @@ export default function AddLiquidityPro({
                                   {(pylonState === PylonState.NOT_EXISTS ? (approvalAPair !== ApprovalState.APPROVED ? true : false) : (approvalA !== ApprovalState.APPROVED ? true : false))
                                    && (
                                       <ButtonPrimary
-                                          onClick={pylonState === (PylonState.ONLY_PAIR || PylonState.EXISTS) ? 
+                                          onClick={pylonState === (PylonState.ONLY_PAIR || PylonState.EXISTS) ?
                                             approveACallback : approveACallbackPair}
-                                          disabled={approvalA === ApprovalState.PENDING 
+                                          disabled={approvalA === ApprovalState.PENDING
                                             || approvalAPair === ApprovalState.PENDING}
                                           width={
                                             (approvalB !== ApprovalState.APPROVED || approvalBPair !== ApprovalState.APPROVED) && pylonState === PylonState.EXISTS ? "100%" : "auto"
@@ -1344,7 +1344,7 @@ export default function AddLiquidityPro({
                                                 : "100%"
                                           }
                                       >
-                                        {(approvalA === ApprovalState.PENDING 
+                                        {(approvalA === ApprovalState.PENDING
                                         || approvalAPair === ApprovalState.PENDING) ? (
                                             <Dots>
                                               Approving{" "}
@@ -1360,7 +1360,7 @@ export default function AddLiquidityPro({
                                       (<ButtonPrimary
                                           onClick={pylonState === (PylonState.NOT_EXISTS) ?
                                             approveBCallbackPair : approveBCallback}
-                                          disabled={(approvalB === ApprovalState.PENDING || 
+                                          disabled={(approvalB === ApprovalState.PENDING ||
                                                     approvalBPair === ApprovalState.PENDING ? true : false)}
                                           width={
                                             approvalA !== ApprovalState.APPROVED

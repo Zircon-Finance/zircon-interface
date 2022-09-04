@@ -1,6 +1,6 @@
 import useENS from '../../hooks/useENS'
 import { parseUnits } from '@ethersproject/units'
-import { ChainId, Currency, CurrencyAmount, DEV, JSBI, Pair, Token, TokenAmount, Trade } from 'zircon-sdk'
+import { ChainId, Currency, CurrencyAmount, DEV, JSBI, Pair, Token, TokenAmount, Trade, MOONBASE_ADDRESSES } from 'zircon-sdk'
 import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -17,7 +17,6 @@ import { SwapState } from './reducer'
 import { useUserSlippageTolerance } from '../user/hooks'
 import { computeSlippageAdjustedAmounts } from '../../utils/prices'
 import { useTranslation } from 'react-i18next'
-import { factory, routerv2 } from '../../moonbase_address.json'
 import { getTokenAddress } from '../../components/Chart/utils'
 import { normalizeChartData, normalizeDerivedChartData, normalizePairDataByActiveToken } from '../../pages/Swap/normalizers'
 import { updateDerivedPairData, updatePairData } from '../../pages/Swap/actions'
@@ -96,8 +95,8 @@ export function tryParseAmount(value?: string, currency?: Currency): CurrencyAmo
 }
 
 const BAD_RECIPIENT_ADDRESSES: string[] = [
-  factory, // v2 factory
-  routerv2 // v2 router 02
+  MOONBASE_ADDRESSES.factory, // v2 factory
+  MOONBASE_ADDRESSES.router // v2 router 02
 ]
 
 /**

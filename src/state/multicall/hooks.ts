@@ -178,7 +178,7 @@ export function useSingleContractMultipleData(
         : [],
     [callInputs, contract, fragment]
   )
-  
+
   const results = useCallsData(calls, options)
 
   const latestBlockNumber = useBlockNumber()
@@ -186,6 +186,36 @@ export function useSingleContractMultipleData(
   return useMemo(() => {
     return results.map(result => toCallState(result, contract?.interface, fragment, latestBlockNumber))
   }, [fragment, contract, results, latestBlockNumber])
+}
+
+export function useSingleContractMultipleMethods(
+  contract: Contract | null | undefined,
+  methodNames: string[],
+  callInput?: OptionalMethodInputs,
+  options?: ListenerOptions
+): CallState[] {
+  const fragments = useMemo(() => methodNames ? methodNames.map<FunctionFragment>(methodName => contract?.interface?.getFunction(methodName))  : [], [contract, methodNames])
+
+  const calls = useMemo(
+    () =>
+      contract && fragments && fragments.length > 0
+        ? methodNames.map<Call>(fragment => {
+            return {
+              address: contract.address,
+              callData: contract.interface.encodeFunctionData(fragment, callInput)
+            }
+          })
+        : [],
+    [callInput, contract, fragments]
+  )
+
+  const results = useCallsData(calls, options)
+
+  const latestBlockNumber = useBlockNumber()
+
+  return useMemo(() => {
+    return results.map((result, i)  => toCallState(result, contract?.interface, fragments[i], latestBlockNumber))
+  }, [fragments, contract, results, latestBlockNumber])
 }
 
 export function useMultipleContractSingleData(
@@ -196,7 +226,7 @@ export function useMultipleContractSingleData(
   options?: ListenerOptions
 ): CallState[] {
   const fragment = useMemo(() => contractInterface.getFunction(methodName), [contractInterface, methodName])
-  
+
   const callData: string | undefined = useMemo(
     () =>
       fragment && isValidMethodArgs(callInputs)
@@ -218,11 +248,11 @@ export function useMultipleContractSingleData(
         : [],
     [addresses, callData, fragment]
   )
-  
+
   const latestBlockNumber = useBlockNumber()
   const results = useCallsData(calls, options)
 
-  
+
 
   return useMemo(() => {
     return results.map(result => toCallState(result, contractInterface, fragment, latestBlockNumber))

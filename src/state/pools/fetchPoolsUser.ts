@@ -21,6 +21,7 @@ export const fetchPoolsAllowance = async (account) => {
 }
 
 export const fetchUserBalances = async (account) => {
+    if (!account) return {};
     const tokens = uniq(poolsConfig.map((pool) => pool.stakingToken.address))
     const calls = tokens.map((token) => ({
         address: token,

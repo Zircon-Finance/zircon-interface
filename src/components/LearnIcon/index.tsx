@@ -6,8 +6,8 @@ import CoffeeIcon from '../CoffeeIcon'
 const LearnBadge = styled.span`
   background-color: rgba(213, 174, 175, 0.1);
   display: flex;
-  position: fixed;
-  bottom: 20px;
+  position: relative;
+  top: 30px;
   padding: 16px 20px 16px 16px;
   border-radius: 30px;
   color: ${({ theme }) => theme.white};
@@ -20,6 +20,8 @@ const LearnBadge = styled.span`
   @media (min-width: 700px) {
     font-size: 16px;
     right: 20px;
+    position: fixed;
+    top: 90%;
   }
 `
 
@@ -34,7 +36,7 @@ const SmallerBadge = styled.span`
   border-radius: 30px;
   color: ${({ theme }) => theme.white};
   cursor: pointer;
-  z-index: 10;
+  z-index: 1;
   &:hover {
       background-color: ${({ theme }) => theme.bg10};
   }

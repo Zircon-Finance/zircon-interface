@@ -316,7 +316,6 @@ export default function AddLiquidity({
 
   return (
     <>
-    <LearnIcon />
       <AppBody>
         <AddRemoveTabsClassic adding={true} />
         <Wrapper>
@@ -464,6 +463,7 @@ export default function AddLiquidity({
           <MinimalPositionCard showUnwrapped={oneCurrencyIsWDEV} pair={pair} />
         </AutoColumn>
       ) : null}
+      <LearnIcon />
     </>
   )
 }

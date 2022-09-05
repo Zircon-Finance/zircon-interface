@@ -268,6 +268,7 @@ export default function Swap() {
   const singleTokenPrice = useSingleTokenSwapInfo(inputCurrencyId, inputCurrency, outputCurrencyId, outputCurrency)
 
   return (
+    <>
     <div style={{width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', gap: '20px'}}>
     { width > 1000 && (
     <div style={{
@@ -300,7 +301,7 @@ export default function Swap() {
           </AutoColumn>
         </div>
         )}
-        <LearnIcon />
+        
       <AppBody>
 
       {/* <SwapPoolTabs active={'swap'} /> */}
@@ -525,8 +526,9 @@ export default function Swap() {
         </div>
         {formattedAmounts[Field.INPUT] && formattedAmounts[Field.OUTPUT] && (<AdvancedSwapDetailsDropdown trade={trade} />)}
       </AppBody>
-
     </div>
+    <LearnIcon />
+    </>
   )
 }
 

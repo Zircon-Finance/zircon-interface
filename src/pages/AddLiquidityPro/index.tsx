@@ -812,7 +812,6 @@ export default function AddLiquidityPro({
 
   return (
       <>
-        <LearnIcon />
         {pylonState === PylonState.LOADING && account && (
             <MobileWrapper
                 style={{ backgroundColor: "rgba(12,12,12,0.5)", position: "fixed" }}
@@ -1403,6 +1402,7 @@ export default function AddLiquidityPro({
               />
             </AutoColumn>
         ) : null}
+        <LearnIcon />
       </>
   );
 }

@@ -471,7 +471,6 @@ export default function RemoveLiquidity({
   )
   return (
     <>
-    <LearnIcon />
       <AppBodySmaller>
         <AddRemoveTabs adding={false} />
         <WrapperWithPadding>
@@ -497,12 +496,12 @@ export default function RemoveLiquidity({
                   <div style={{display: 'flex', border: `1px solid ${theme.bg9}`, borderRadius: '17px', justifyContent: 'center', marginBottom: '10px'}}>
 
                       <ButtonAnchor borderRadius={'12px'} padding={'5px 15px'}
-                            style={{backgroundColor: !showDetailed ? theme.bg9 : 'transparent', fontWeight: 400, fontSize: '13px', color: showDetailed && theme.whiteHalf}}
+                            style={{backgroundColor: !showDetailed ? theme.bg9 : 'transparent', fontWeight: 400, fontSize: '13px', color: showDetailed ? theme.whiteHalf : theme.text1}}
                             onClick={()=> {setShowDetailed(!showDetailed)}}>
                         Simple
                       </ButtonAnchor>
                       <ButtonAnchor borderRadius={'12px'} padding={'5px 15px'}
-                            style={{backgroundColor: showDetailed ? theme.bg9 : 'transparent', fontWeight: 400, fontSize: '13px', color: !showDetailed && theme.whiteHalf}}
+                            style={{backgroundColor: showDetailed ? theme.bg9 : 'transparent', fontWeight: 400, fontSize: '13px', color: !showDetailed ? theme.whiteHalf : theme.text1}}
                             onClick={()=> {setShowDetailed(!showDetailed)}}>
                         Detailed
                       </ButtonAnchor>
@@ -518,16 +517,16 @@ export default function RemoveLiquidity({
                   <>
                     <Slider value={innerLiquidityPercentage} onChange={setInnerLiquidityPercentage} />
                     <div style={{justifyContent: 'space-between', width: '90%', display: 'flex', margin: 'auto'}}>
-                      <MaxButton onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '25')} width="20%">
+                      <MaxButton onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '25')} width="20%" style={{color: theme.text1}}>
                         25%
                       </MaxButton>
-                      <MaxButton onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '50')} width="20%">
+                      <MaxButton onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '50')} width="20%" style={{color: theme.text1}}>
                         50%
                       </MaxButton>
-                      <MaxButton onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '75')} width="20%">
+                      <MaxButton onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '75')} width="20%" style={{color: theme.text1}}>
                         75%
                       </MaxButton>
-                      <MaxButton onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '100')} width="20%">
+                      <MaxButton onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '100')} width="20%" style={{color: theme.text1}}>
                         MAX
                       </MaxButton>
                     </div>
@@ -702,6 +701,7 @@ export default function RemoveLiquidity({
           <MinimalPositionCard showUnwrapped={oneCurrencyIsWDEV} pair={pair} />
         </AutoColumn>
       ) : null}
+      <LearnIcon />
     </>
   )
 }

@@ -77,6 +77,17 @@ const Marginer = styled.div`
   margin-top: 5rem;
 `
 
+const LottieContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 100;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
 export default function App() {
   const { width } = useWindowDimensions();
   const [opacityDiv, setOpacityDiv] = React.useState(1)
@@ -96,12 +107,12 @@ export default function App() {
         <Route component={GoogleAnalyticsReporter} />
         <Route component={DarkModeQueryParamReader} />
         <AppWrapper>
-          {opacityDiv !== 0 && <Lottie
-                style={{width: "100%", position: 'absolute', zIndex: 100, backgroundColor: 'rgba(0,0,0,0.5)', opacity: opacityDiv}}
+          {opacityDiv !== 0 && <LottieContainer style={{opacity: opacityDiv}}><Lottie
+                style={{width: "100px"}}
                 options={{
                     animationData: animation
                 }}
-          />}
+          /></LottieContainer>}
           <HeaderWrapper>
             <Header />
           </HeaderWrapper>

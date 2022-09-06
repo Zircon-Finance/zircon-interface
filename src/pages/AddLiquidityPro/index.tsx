@@ -57,7 +57,7 @@ import AppBody from "../AppBody";
 import { Dots, Wrapper } from "../Pool/styleds";
 import { ConfirmAddModalBottom } from "./ConfirmAddModalBottom";
 import { currencyId } from "../../utils/currencyId";
-import { MobileWrapper } from "../App";
+import { LottieContainer } from "../App";
 import LearnIcon from "../../components/LearnIcon";
 import { Toggle } from "@pancakeswap/uikit";
 import { getPoolAprAddress } from "../../utils/apr";
@@ -71,6 +71,9 @@ import { useDispatch } from "react-redux";
 import {AddressZero}  from "@ethersproject/constants";
 import InfoCircle from "../../components/InfoCircle";
 import {usePylonConstants} from "../../data/PylonData";
+import Lottie from "lottie-react-web";
+import animation from '../../assets/lotties/0uCdcx9Hn5.json'
+
 const IconContainer = styled.div`
   display: flex;
   align-items: center;
@@ -725,7 +728,7 @@ export default function AddLiquidityPro({
       [currencyIdB, history, currencyIdA, currencies]
   );
   const handleSwapCurrencies = useCallback(() => {
-        history.push(`/add-pro/${currencyIdB}/${currencyIdA}`);
+      (currencyIdB !== undefined && currencyIdA !== undefined) && history.push(`/add-pro/${currencyIdB}/${currencyIdA}`);
       },
       [currencyIdB, history, currencyIdA]
   );
@@ -774,11 +777,13 @@ export default function AddLiquidityPro({
 
   return (
       <>
-        <LearnIcon />
         {pylonState === PylonState.LOADING && account && (
-            <MobileWrapper
-                style={{ backgroundColor: "rgba(12,12,12,0.5)", position: "fixed" }}
-            />
+            <LottieContainer style={{top: 0}}><Lottie
+            style={{width: "100px"}}
+            options={{
+                animationData: animation
+            }}
+          /></LottieContainer>
         )}
         <AppBody>
           <AddRemoveTabs adding={true} />
@@ -1367,6 +1372,7 @@ export default function AddLiquidityPro({
               />
             </AutoColumn>
         ) : null}
+        <LearnIcon />
       </>
   );
 }

@@ -92,8 +92,8 @@ export default function PoolFinder() {
     )
 
     return (
+        <>
         <AppBody>
-            <LearnIcon />
             <FindPoolTabs />
             <AutoColumn style={{padding: '10px',backgroundColor: theme.bg7, borderRadius: '17px', marginBottom: '10px'}} gap="md">
                 <ButtonDropdownLight
@@ -213,6 +213,9 @@ export default function PoolFinder() {
                 showCommonBases
                 selectedCurrency={(activeField === Fields.TOKEN0 ? currency1 : currency0) ?? undefined}
             />
+            
         </AppBody>
+        <LearnIcon />
+        </>
     )
 }

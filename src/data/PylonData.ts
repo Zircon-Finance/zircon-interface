@@ -57,6 +57,8 @@ export function usePylonInfo(address?: string): (any)[] | undefined {
     ])?.map<any>((res => res?.result?.[0]))
     return address && result ? result : undefined
 }
+
+
 export function usePylonConstants(): PylonFactory | undefined {
     const pylonFactoryContract = usePylonFactoryContract(MOONBASE_ADDRESSES.pylonFactory, false)
     const factoryContract = usePairFactoryContract(MOONBASE_ADDRESSES.factory, false)
@@ -79,7 +81,7 @@ export function usePylonConstants(): PylonFactory | undefined {
         "feePercentageEnergy",
         "getMinMaxFee"
     ])
-    let result = pylonResult.concat(pairResult).concat(energyResult)?.flatMap<any>((res => res?.result)).filter(t => t != undefined)
+    let result = pylonResult.concat(pairResult).concat(energyResult)?.flatMap<any>((res => res?.result)).filter(t => t !== undefined)
     return result && result.length > 10 ? new PylonFactory(result[0], result[1], result[2], result[3], result[4], result[5], result[6],
         result[7], result[8], result[9], result[10], result[11]) : undefined
 }

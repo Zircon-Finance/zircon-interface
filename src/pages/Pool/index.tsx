@@ -32,6 +32,8 @@ import { ButtonPrimary, ButtonSecondary } from '../../components/Button'
 import { Link } from 'react-router-dom'
 import HistoryTransactions from '../../components/HistoryTransactions'
 import LearnIcon, { SmallerQuestionmark } from '../../components/LearnIcon'
+import {usePylonConstants} from "../../data/PylonData";
+import {useBlockNumber} from "../../state/application/hooks";
 
 export default function Pool() {
   const theme = useTheme()
@@ -97,6 +99,9 @@ export default function Pool() {
 
   const { width } = useWindowDimensions();
 
+  const pylonConstants = usePylonConstants()
+  const blockNumber = useBlockNumber()
+
   return (
       <>
         <Text color={theme.text1} fontWeight={300} fontSize={30} style={{alignSelf: 'center', marginBottom: width >= 700 ? '40px' : '20px'}}>
@@ -151,10 +156,10 @@ export default function Pool() {
                     {allV2PairsWithLiquidity.map(v2Pair => (
                        filter === 'ALL' ? (
                           v2Pair.liquidityToken.name === "CLASSIC" ? <FullPositionCard key={v2Pair.liquidityToken.address} pair={v2Pair.pylon!.pair} /> :
-                              <PylonPositionCard key={v2Pair.liquidityToken.address}  pylon={v2Pair.pylon!} isFloat={v2Pair.liquidityToken.name === "FLOAT"}/>):
+                              <PylonPositionCard blockNumber={blockNumber} pylonConstants={pylonConstants} key={v2Pair.liquidityToken.address}  pylon={v2Pair.pylon!} isFloat={v2Pair.liquidityToken.name === "FLOAT"}/>):
                           v2Pair.liquidityToken.name === filter && (
                             v2Pair.liquidityToken.name === "CLASSIC" ? <FullPositionCard key={v2Pair.liquidityToken.address} pair={v2Pair.pylon!.pair} /> :
-                              <PylonPositionCard key={v2Pair.liquidityToken.address}  pylon={v2Pair.pylon!} isFloat={v2Pair.liquidityToken.name === "FLOAT"}/>)
+                              <PylonPositionCard blockNumber={blockNumber} pylonConstants={pylonConstants} key={v2Pair.liquidityToken.address}  pylon={v2Pair.pylon!} isFloat={v2Pair.liquidityToken.name === "FLOAT"}/>)
                           )
                     )}
                   </>

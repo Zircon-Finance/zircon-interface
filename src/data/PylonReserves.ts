@@ -28,7 +28,10 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
         wrappedCurrency(currencyB, chainId)
       ]),
     [chainId, currencies]
+
   )
+
+  console.log("tokens", tokens)
   const pylonAddresses = useMemo(
     () =>
       tokens.map(([tokenA, tokenB]) => {

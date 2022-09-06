@@ -35,7 +35,7 @@ import {
   ApprovalState,
   useApproveCallback,
 } from "../../hooks/useApproveCallback";
-import { useWalletModalToggle } from "../../state/application/hooks";
+import {useBlockNumber, useWalletModalToggle} from "../../state/application/hooks";
 import { Field } from "../../state/mint/actions";
 import {
   useDerivedPylonMintInfo,
@@ -70,6 +70,7 @@ import { fetchPoolsUserDataAsync } from "../../state/pools";
 import { useDispatch } from "react-redux";
 import {AddressZero}  from "@ethersproject/constants";
 import InfoCircle from "../../components/InfoCircle";
+import {usePylonConstants} from "../../data/PylonData";
 const IconContainer = styled.div`
   display: flex;
   align-items: center;
@@ -400,45 +401,6 @@ export default function AddLiquidityPro({
         ];
         value = null;
       }
-    } else if (sync === "full") {
-      if (float.currency_a === DEV) {
-        estimate = router.estimateGas.addAsyncLiquidity100ETH;
-        method = router.addAsyncLiquidity100ETH;
-        args = [
-          wrappedCurrency(
-              tokenBIsETH ? float.currency_a : float.currency_b,
-              chainId
-          )?.address ?? "", // token
-          DEV === currencies[Field.CURRENCY_A], // second option is anchor so it should mint anchor when float.currency a is equal to b
-          account,
-          stake ? contractAddress : AddressZero,
-          deadlineFromNow,
-        ];
-        value = !tokenBIsETH
-            ? BigNumber.from(
-                (float.currency_a === currencies[Field.CURRENCY_A]
-                        ? parsedAmountA
-                        : parsedAmountB
-                ).raw.toString()
-            )
-            : BigNumber.from("0");
-      } else {
-        estimate = router.estimateGas.addAsyncLiquidity100;
-        method = router.addAsyncLiquidity100;
-        args = [
-          wrappedCurrency(currencies[Field.CURRENCY_A], chainId)?.address ?? "",
-          wrappedCurrency(currencies[Field.CURRENCY_B], chainId)?.address ?? "",
-          (float.currency_a === currencies[Field.CURRENCY_A]
-                  ? parsedAmountA
-                  : parsedAmountB
-          ).raw.toString(),
-          float.currency_a === currencies[Field.CURRENCY_B],
-          account,
-          stake ? contractAddress : AddressZero,
-          deadlineFromNow,
-        ];
-        value = null;
-      }
     } else {
       if (float.currency_a === DEV || float.currency_b === DEV) {
         estimate = router.estimateGas.addAsyncLiquidityETH;
@@ -541,7 +503,6 @@ export default function AddLiquidityPro({
 
   // Function to create only pair before Pylon
   async function onAddPairOnly() {
-    console.log('Calling pair only creation')
     if (!chainId || !library || !account) return
     const router = getRouterContract(chainId, library, account)
 
@@ -803,7 +764,8 @@ export default function AddLiquidityPro({
   }, [onFieldAInput, txHash]);
 
   const { width } = useWindowDimensions();
-
+  const pylonConstants = usePylonConstants()
+  const blockNumber = useBlockNumber()
   console.log('Approval A state: ', approvalA);
   console.log('Approval B state: ', approvalB);
   console.log('Approval A Pair state: ', approvalAPair);
@@ -1400,6 +1362,8 @@ export default function AddLiquidityPro({
                   showUnwrapped={oneCurrencyIsWDEV}
                   pylon={pylonPair}
                   isFloat={isFloat}
+                  pylonConstants={pylonConstants}
+                  blockNumber={blockNumber}
               />
             </AutoColumn>
         ) : null}

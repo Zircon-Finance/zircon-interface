@@ -194,6 +194,7 @@ export function useSingleContractMultipleMethods(
   callInput?: OptionalMethodInputs,
   options?: ListenerOptions
 ): CallState[] {
+
   const fragments = useMemo(() => methodNames ? methodNames.map<FunctionFragment>(methodName => contract?.interface?.getFunction(methodName))  : [], [contract, methodNames])
 
   const calls = useMemo(
@@ -208,7 +209,6 @@ export function useSingleContractMultipleMethods(
         : [],
     [callInput, contract, fragments]
   )
-
   const results = useCallsData(calls, options)
 
   const latestBlockNumber = useBlockNumber()

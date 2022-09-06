@@ -1,4 +1,4 @@
-import {Currency, CurrencyAmount, JSBI, Pair, Percent, Pylon, PylonFactory, TokenAmount, Token} from 'zircon-sdk'
+import {Currency, CurrencyAmount, JSBI, Pair, Percent, Pylon, PylonFactory, TokenAmount} from 'zircon-sdk'
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { usePair } from '../../data/Reserves'
@@ -133,20 +133,21 @@ export function useDerivedBurnInfo(
 
   return { pair, parsedAmounts, error }
 }
-function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pylonPoolBalance: TokenAmount,
-                            totalSupply: TokenAmount, ptTotalSupply: TokenAmount,
-                            tokenA: Token, tokenB: Token, pylonInfo: any[], pylonConstants: PylonFactory, blockNumber: number, lastK: string, isSync: boolean, isFloat: boolean):  [TokenAmount | undefined, TokenAmount | undefined] {
+
+export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pylonPoolBalance: TokenAmount,
+                            totalSupply: TokenAmount, ptTotalSupply: TokenAmount, pylonInfo: any[], pylonConstants: PylonFactory, blockNumber: number, lastK: string, isSync: boolean, isFloat: boolean):  [TokenAmount | undefined, TokenAmount | undefined] {
   if(!ptTotalSupply || !userLiquidity) {
     return [undefined, undefined]
   }
+  console.log("checking liquidity", userLiquidity.raw.toString())
   if(isSync) {
     if(JSBI.greaterThanOrEqual(ptTotalSupply.raw, userLiquidity.raw)) {
       return isFloat ? [pylon.burnFloat(totalSupply, ptTotalSupply, userLiquidity,
               pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
               pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK)).amount,
-            new TokenAmount(tokenB, BigInt(0))] :
+            new TokenAmount(pylon.token1, BigInt(0))] :
           [
-            new TokenAmount(tokenA, BigInt(0)),
+            new TokenAmount(pylon.token0, BigInt(0)),
             pylon.burnAnchor(totalSupply, ptTotalSupply, userLiquidity,
                 pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
                 pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK)).amount
@@ -215,8 +216,7 @@ export function useDerivedPylonBurnInfo(
   // const pylonSupply = useTotalSupply(pylon?.pair.liquidityToken)
 
   const [liquidityValueA, liquidityValueB] = getLiquidityValues(pylon, userLiquidity, pylonPoolBalance,
-      totalSupply, ptTotalSupply,
-      tokenA, tokenB, pylonInfo, pylonConstants, blockNumber, lastK, isSync, isFloat)
+      totalSupply, ptTotalSupply, pylonInfo, pylonConstants, blockNumber, lastK, isSync, isFloat)
   // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
 
 
@@ -352,7 +352,7 @@ export function useDerivedPylonBurnInfoFixedPercentage(
 
   const [liquidityValueA, liquidityValueB] = getLiquidityValues(pylon, userLiquidity, pylonPoolBalance,
       totalSupply, ptTotalSupply,
-      tokenA, tokenB, pylonInfo, pylonConstants, blockNumber, lastK, isSync, isFloat)
+      pylonInfo, pylonConstants, blockNumber, lastK, isSync, isFloat)
 
   let percentToRemove: Percent = new Percent(Math.round(parseFloat(percentage)).toString(), '100')
 

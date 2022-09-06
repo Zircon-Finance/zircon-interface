@@ -155,6 +155,7 @@ export default function HistoryTransactions() {
                       border: `1px solid ${theme.whiteHalf}`,
                       color: theme.text1,
                       padding: "9px 12px 10px",
+                      height: "34px"
                     }}
                     onClick={clearAllTransactionsCallback}
                   >

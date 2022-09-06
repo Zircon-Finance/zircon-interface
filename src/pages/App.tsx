@@ -77,7 +77,7 @@ const Marginer = styled.div`
   margin-top: 5rem;
 `
 
-const LottieContainer = styled.div`
+export const LottieContainer = styled.div`
   width: 100%;
   height: 100%;
   position: absolute;

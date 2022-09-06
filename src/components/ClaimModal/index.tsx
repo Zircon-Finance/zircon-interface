@@ -13,6 +13,9 @@ import { proofData } from '../../constants/proofDats'
 import { useActiveWeb3React } from '../../hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { AutoColumn } from '../Column'
+import { LottieContainer } from '../../pages/App'
+import animation from '../../assets/lotties/claim_lottie.json'
+import Lottie from "lottie-react-web";
 
 
 
@@ -58,6 +61,15 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
 
   useEffect(() => {
     account && setDataUser(leaves.find(user => user?.address === account))
+    airdropWithSigner?.check(
+                BigNumber.from(dataUser?.index),
+                account,  
+                BigNumber.from(dataUser?.amount), 
+                dataUser?.proof).then((res: any) => {
+      setClaimStatus(false)
+    }).catch(() => {
+      setClaimStatus(true)
+  })
   }, [dataUser, account, leaves])
 
   const modalStyle = {
@@ -85,7 +97,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
           <Text fontSize={'13px'} color={theme.text1} textAlign={'center'}>{'Read more about token distribution here.'}</Text>
         </AutoColumn>
       <ButtonOutlined style={{ alignSelf: 'center', background: theme.poolPinkButton, width: '100%'}}
-      disabled={(account && !dataUser?.amount) || claimStatus}
+      disabled={(account && !dataUser?.amount) || (account && claimStatus)}
       onClick={
         () => 
         account ? 
@@ -105,6 +117,22 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
         <Text style={{textDecoration: 'none', color: '#fff'}} >
           {account ? claimStatus ? 'Already claimed' : 'Claim tokens' : 'Connect wallet'}</Text>
       </ButtonOutlined>
+      {() => airdropWithSigner?.check(
+            BigNumber.from(dataUser?.index),
+            account,  
+            BigNumber.from(dataUser?.amount), 
+            dataUser?.proof).then((res: any) => {
+              return(<LottieContainer style={{background: 'transparent', top: 0, right: 0, pointerEvents: 'none'}}>
+              <Lottie options={{
+                loop: false,
+                autoplay: true,
+                animationData: animation,
+              }}/>
+            </LottieContainer>)
+      }).catch(() => {
+        setClaimStatus(true)
+        return (<> </>)
+      })}
     </Modal>
   )
 }

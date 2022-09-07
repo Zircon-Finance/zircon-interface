@@ -21,8 +21,9 @@ const HigherLogo = styled(CurrencyLogo)`
   z-index: 2;
 `
 const CoveredLogo = styled(CurrencyLogo)<{ sizeraw: number }>`
+  bottom: 0px;
   position: absolute;
-  left: ${({ sizeraw }) => (sizeraw / 2).toString() + 'px'};
+  left: ${({ sizeraw }) => (sizeraw).toString() + 'px'};
 `
 
 export default function DoubleCurrencyLogo({
@@ -33,8 +34,8 @@ export default function DoubleCurrencyLogo({
 }: DoubleCurrencyLogoProps) {
   return (
     <Wrapper sizeraw={size} margin={margin}>
-      {currency0 && <HigherLogo currency={currency0} size={size.toString() + 'px'} style={{marginRight: '3px'}} />}
-      {currency1 && <CoveredLogo currency={currency1} size={size.toString() + 'px'} sizeraw={size} />}
+      {currency0 && <HigherLogo currency={currency0} size={size.toString() + 'px'}  style={{marginRight: size/2}}/>}
+      {currency1 && <CoveredLogo currency={currency1} size={(size).toString() + 'px'} sizeraw={size} style={{position: 'absolute', left: size/2, bottom:0}} />}
     </Wrapper>
   )
 }

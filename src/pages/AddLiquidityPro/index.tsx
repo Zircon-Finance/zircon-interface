@@ -375,6 +375,7 @@ export default function AddLiquidityPro({
               chainId
           )?.address ?? "", // token
           DEV === currencies[Field.CURRENCY_A], // second option is anchor so it should mint anchor when float.currency a is equal to b
+            '1',
           account,
           stake ? contractAddress : AddressZero,
           deadlineFromNow,
@@ -397,6 +398,7 @@ export default function AddLiquidityPro({
                   ? parsedAmountA
                   : parsedAmountB
           ).raw.toString(),
+            '1',
           float.currency_a === currencies[Field.CURRENCY_B],
           account,
           stake ? contractAddress : AddressZero,
@@ -515,7 +517,7 @@ export default function AddLiquidityPro({
     }
 
     const amountsMin = {
-      [Field.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, 0 )[0],
+      [Field.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, 0)[0],
       [Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, 0)[0]
     }
 
@@ -636,6 +638,7 @@ export default function AddLiquidityPro({
                 backgroundColor: theme.bg14,
                 borderRadius: "20px",
                 padding: "20px 10px",
+                overflow: "hidden",
               }}
           >
             <Text
@@ -644,8 +647,8 @@ export default function AddLiquidityPro({
                 lineHeight="42px"
                 width={"100%"}
             >
-              {formattedLiquidity < 0.00000001
-                  ? "0.000..." + String(formattedLiquidity).slice(-4)
+              {(formattedLiquidity.toString().length > 8 && formattedLiquidity < 0.001)
+                  ? "0.00..." + String(formattedLiquidity).slice(Math.ceil(formattedLiquidity.toString().length-5))
                   : formattedLiquidity}
             </Text>
             <Text
@@ -815,7 +818,7 @@ export default function AddLiquidityPro({
             >
               {/* Pylon condition, previously noPylon && */}
 
-              {!pylonPair && (
+              {(pylonState !== PylonState.LOADING) && (
                   <ColumnCenter style={{padding: '10px'}}>
                     <BlueCard style={{background: 'transparent', border: `1px solid ${theme.anchorFloatBadge}`}}>
                       <InfoCircle />
@@ -824,18 +827,19 @@ export default function AddLiquidityPro({
                           style={{ fontSize: width > 700 ? "16px" : "15px" }}
                       >
                         <TYPE.link fontWeight={500} fontSize={'18px'} textAlign={'center'} color={theme.text1} my={'10px'}>
-                          You are the first liquidity provider.
+                          {pylonState === PylonState.ONLY_PAIR ?  "PYLON CREATION" : (pylonState === PylonState.NOT_EXISTS ? "PAIR CREATION" : "SELECT TOKEN & PAIR")}
                         </TYPE.link>
                         <TYPE.link fontWeight={400} color={theme.whiteHalf} textAlign={'center'}>
-                          You'll have to create first the pair and then the Pylon<br />
-                          Once you created the pair <br />you'd be able to create the pylon.
+                          {pylonState === PylonState.ONLY_PAIR ?  "This Pylon has not been created yet, be the first liquidity provider to initialize it" :
+                              pylonState !== PylonState.NOT_EXISTS ? "Stable is designed for stablecoins and L1 network tokens. Float is for all others, and it's always the more volatile in the pair." :
+                              "This pair has not been created yet, be the first liquidity provider to initialize it"}<br/>
                         </TYPE.link>
                       </AutoColumn>
                     </BlueCard>
                   </ColumnCenter>
               )}
 
-              {/* Condition that triggers pylov view */}
+              {/* Condition that triggers pylon view */}
 
               <div
                   style={{
@@ -971,8 +975,6 @@ export default function AddLiquidityPro({
                           </div>
                       )}
                     </Flex>
-
-
                     {width <= 700 && pylonState === PylonState.EXISTS && (
                         <>
                           <Flex
@@ -989,7 +991,6 @@ export default function AddLiquidityPro({
                                 defaultColor={'invertedContrast'}
                                 onChange={() => {
                                   setSync(sync !== "off" ? "off" : "half");
-
                                 }}
                                 scale="sm"
                             />

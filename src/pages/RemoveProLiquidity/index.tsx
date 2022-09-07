@@ -34,11 +34,12 @@ import {ApprovalState, useApproveCallback} from '../../hooks/useApproveCallback'
 import {Dots} from '../../components/swap/styleds'
 import {useBurnActionHandlers, useBurnState, useDerivedPylonBurnInfo} from '../../state/burn/hooks'
 import {Field} from '../../state/burn/actions'
-import {useWalletModalToggle} from '../../state/application/hooks'
+import {useBlockNumber, useWalletModalToggle} from '../../state/application/hooks'
 import {useUserDeadline, useUserSlippageTolerance} from '../../state/user/hooks'
 import {BigNumber} from '@ethersproject/bignumber'
 import {RouteComponentProps} from "react-router-dom";
 import LearnIcon from '../../components/LearnIcon'
+import {usePylonConstants} from "../../data/PylonData";
 
 export default function RemoveProLiquidity({
                                              history,
@@ -101,6 +102,8 @@ export default function RemoveProLiquidity({
       parsedAmounts[Field.LIQUIDITY],
       PYLON_ROUTER_ADDRESS[chainId ? chainId : '']
   )
+  const pylonConstants = usePylonConstants()
+  const blockNumber = useBlockNumber()
   // async function onAttemptToApprove() {
   //   if (!pairContract || !pylon?.pair || !library) throw new Error('missing dependencies')
   //   const liquidityAmount = parsedAmounts[Field.LIQUIDITY]
@@ -715,7 +718,7 @@ export default function RemoveProLiquidity({
 
         {pylon?.pair ? (
             <AutoColumn style={{ minWidth: '20rem', marginTop: '1rem' }}>
-              <MinimalPositionPylonCard showUnwrapped={oneCurrencyIsWDEV} pylon={pylon} isFloat={isFloat} />
+              <MinimalPositionPylonCard showUnwrapped={oneCurrencyIsWDEV} pylon={pylon} isFloat={isFloat} pylonConstants={pylonConstants} blockNumber={blockNumber} />
             </AutoColumn>
         ) : null}
         <LearnIcon />

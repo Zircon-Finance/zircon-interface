@@ -7,6 +7,7 @@ import { getAddress } from '../../utils/addressHelpers'
 import multicall from '../../utils/multicall'
 
 export const fetchPoolsAllowance = async (account) => {
+    if (!account ) return {};
     const calls = poolsConfig.map((pool) => ({
         address: pool.stakingToken.address,
         name: 'allowance',
@@ -21,14 +22,14 @@ export const fetchPoolsAllowance = async (account) => {
 }
 
 export const fetchUserBalances = async (account) => {
-    if (!account) return {};
+    if (!account ) return {};
     const tokens = uniq(poolsConfig.map((pool) => pool.stakingToken.address))
     const calls = tokens.map((token) => ({
         address: token,
         name: 'balanceOf',
         params: [account],
     }))
-    console.log("calls", calls)
+    console.log("tokens", tokens)
 
     const tokenBalancesRaw = await multicall(erc20ABI, calls)
     const tokenBalances = tokens.reduce((acc, token, index) => ({ ...acc, [token]: tokenBalancesRaw[index] }), {})

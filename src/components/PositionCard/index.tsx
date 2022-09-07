@@ -42,8 +42,9 @@ const BadgeSmall = styled.span`
   background-color: ${({ theme }) => theme.anchorFloatBadge};
   padding: 3px 5px;
   border-radius: 5px;
-  color: ${({ theme }) => theme.whiteHalf};
-  margin-left: 5px;
+  color: ${({ theme }) => theme.text1};
+  margin-left: 0px;
+  margin-right: 10px;
   font-size: 10px;
   @media (min-width: 500px) {
     font-size: 16px;
@@ -190,16 +191,16 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
                 <div style={{ padding: showMore ? '1.25rem 1.25rem 0 1.25rem' : '0px'}}>
                     <FixedHeightRow onClick={() => setShowMore(!showMore)} style={{ cursor: 'pointer' }}>
                         <RowFixed>
-                            <DoubleCurrencyLogo currency0={currency0} currency1={currency1} margin={true} size={28} />
-                            <Text fontWeight={400} fontSize={16} style={{display: 'flex', alignItems: 'center'}}>
+                            <DoubleCurrencyLogo currency0={currency0} currency1={currency1} margin={false} size={20} />
+                            <Text color={theme.whiteHalf} fontWeight={400} fontSize={16} style={{display: 'flex', alignItems: 'center', marginLeft: 20}}>
+                                <BadgeSmall>{'Classic'}</BadgeSmall>
                                 {!currency0 || !currency1 ? <Dots>Loading</Dots> : `${currency0.symbol}/${currency1.symbol}`}
-                                <BadgeSmall>{'CLASSIC'}</BadgeSmall>
                             </Text>
                         </RowFixed>
                         <RowFixed>
                             { !showMore &&
                             <Text fontSize={width > 500 ? 16 : 10} fontWeight={400} color={theme.whiteHalf}>
-                                {userPoolBalance ?  formattedPoolBalance < 0.000000001 ? '0.000...'+String(formattedPoolBalance).slice(-4) : formattedPoolBalance : '-'}
+                                {userPoolBalance ?  formattedPoolBalance < 0.000000001 ? '0.000...' + String(formattedPoolBalance).slice(-4) : formattedPoolBalance : '-'}
                             </Text>
                             }
                             {
@@ -351,30 +352,41 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
                 <div style={{ padding: showMore ? '1.25rem 1.25rem 0 1.25rem' : '0px'}}>
                     <FixedHeightRow onClick={() => setShowMore(!showMore)} style={{ cursor: 'pointer' }}>
                         <RowFixed>
-                            <DoubleCurrencyLogo currency0={isFloat ? currency0 : null} currency1={isFloat ? null :currency1} margin={true} size={28} />
-                            <div style={{display: 'flex', flexDirection: 'column'}}>
-                                {isFloat ? (
-                                    <>
-                                        <Flex>
-                                            <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', marginRight: '5px',  display: 'flex', alignItems: 'center'}}>
-                                                <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{currency0.symbol} </span>{'FLOAT'}
-                                            </BadgeSmall>
-                                            {/*<Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{` - ${currency1.symbol}`}</Text>*/}
-                                        </Flex>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Flex>
-                                            {/*<Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{currency0.symbol} -</Text>*/}
-                                            <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', marginRight: '5px',  display: 'flex', alignItems: 'center'}}>
-                                                <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{`${currency1.symbol} `}</span>{'STABLE'}
-                                            </BadgeSmall>
-                                        </Flex>
-                                    </>
-                                )
-                                }
-                                <span style={{color: theme.text2, fontSize: '12px', marginRight: '3px', marginTop: '3px'}}>{`${currency0.symbol}/${currency1.symbol}`}</span>
-                            </div>
+                            <DoubleCurrencyLogo currency0={isFloat ? currency0 : currency1} currency1={null} margin={false} size={30} />
+                            {!currency0 || !currency1 ? <Dots>Loading</Dots> :
+                                <>
+                                    <Text color={theme.whiteHalf} fontWeight={400} fontSize={16} style={{display: 'flex', alignItems: 'center', marginLeft: 20}}>
+                                        <BadgeSmall>{isFloat ? currency0.symbol : currency1.symbol} {isFloat ? 'Float' : 'Stable'}</BadgeSmall>
+                                        {currency0.symbol}/{currency1.symbol}
+                                    </Text>
+                                </> }
+                            {/*<div style={{display: 'flex', flexDirection: 'row',marginLeft: 20}}>*/}
+                            {/*    {isFloat ? (*/}
+                            {/*        <>*/}
+                            {/*            <RowFixed>*/}
+                            {/*                <Text color={theme.whiteHalf} fontWeight={400} fontSize={16} style={{display: 'flex', alignItems: 'center', marginLeft: 30}}>*/}
+                            {/*                    <BadgeSmall>{currency0.symbol} {'Float'}</BadgeSmall>*/}
+                            {/*                    {!currency0 || !currency1 ? <Dots>Loading</Dots> : `${currency0.symbol}/${currency1.symbol}`}*/}
+                            {/*                </Text>*/}
+                            {/*                /!*<BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', marginRight: '5px',  display: 'flex', alignItems: 'center'}}>*!/*/}
+                            {/*                /!*    <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{currency0.symbol} {'Float'}</span>*!/*/}
+                            {/*                /!*</BadgeSmall>*!/*/}
+                            {/*                /!*<Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{` - ${currency1.symbol}`}</Text>*!/*/}
+                            {/*            </RowFixed>*/}
+                            {/*        </>*/}
+                            {/*    ) : (*/}
+                            {/*        <>*/}
+                            {/*            <Flex>*/}
+                            {/*                /!*<Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{currency0.symbol} -</Text>*!/*/}
+                            {/*                <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', marginRight: '5px',  display: 'flex', alignItems: 'center'}}>*/}
+                            {/*                    <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{`${currency1.symbol} Stable`}</span>*/}
+                            {/*                </BadgeSmall>*/}
+                            {/*            </Flex>*/}
+                            {/*        </>*/}
+                            {/*    )*/}
+                            {/*    }*/}
+                            {/*    <span style={{color: theme.whiteHalf, fontSize: '16px', marginRight: '3px', marginTop: '3px'}}>{`${currency0.symbol}-${currency1.symbol}`}</span>*/}
+                            {/*</div>*/}
                         </RowFixed>
                         <RowFixed>
                             { !showMore &&

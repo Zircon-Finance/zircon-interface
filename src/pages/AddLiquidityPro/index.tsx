@@ -249,10 +249,7 @@ export default function AddLiquidityPro({
     if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB) {
       return;
     }
-    // const amountsMin = {
-    //   [Field.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, noPylon ? 0 : allowedSlippage)[0],
-    //   [Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, noPylon ? 0 : allowedSlippage)[0]
-    // }
+
     const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline;
     let estimate,
         method: (...args: any) => Promise<TransactionResponse>,
@@ -343,10 +340,7 @@ export default function AddLiquidityPro({
       return;
     }
 
-    // const amountsMin = {
-    //   [Field.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, noPylon ? 0 : allowedSlippage)[0],
-    //   [Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, noPylon ? 0 : allowedSlippage)[0]
-    // }
+    const liquidityMin = calculateSlippageAmount(liquidityMinted, noPylon ? 0 : allowedSlippage)[0]
 
     const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline;
 
@@ -375,7 +369,7 @@ export default function AddLiquidityPro({
               chainId
           )?.address ?? "", // token
           DEV === currencies[Field.CURRENCY_A], // second option is anchor so it should mint anchor when float.currency a is equal to b
-            '1',
+          liquidityMin.toString(),
           account,
           stake ? contractAddress : AddressZero,
           deadlineFromNow,
@@ -398,7 +392,7 @@ export default function AddLiquidityPro({
                   ? parsedAmountA
                   : parsedAmountB
           ).raw.toString(),
-            '1',
+          liquidityMin.toString(),
           float.currency_a === currencies[Field.CURRENCY_B],
           account,
           stake ? contractAddress : AddressZero,
@@ -647,7 +641,7 @@ export default function AddLiquidityPro({
                 lineHeight="42px"
                 width={"100%"}
             >
-              {(formattedLiquidity.toString().length > 8 && formattedLiquidity < 0.001)
+              {(formattedLiquidity && formattedLiquidity.toString().length > 8 && formattedLiquidity < 0.001)
                   ? "0.00..." + String(formattedLiquidity).slice(Math.ceil(formattedLiquidity.toString().length-5))
                   : formattedLiquidity}
             </Text>
@@ -840,7 +834,6 @@ export default function AddLiquidityPro({
               )}
 
               {/* Condition that triggers pylon view */}
-
               <div
                   style={{
                     display: "flex",

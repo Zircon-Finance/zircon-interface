@@ -355,7 +355,7 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
                             <DoubleCurrencyLogo currency0={isFloat ? currency0 : currency1} currency1={null} margin={false} size={30} />
                             {!currency0 || !currency1 ? <Dots>Loading</Dots> :
                                 <>
-                                    <Text color={theme.whiteHalf} fontWeight={400} fontSize={16} style={{display: 'flex', alignItems: 'center', marginLeft: 20}}>
+                                    <Text color={theme.whiteHalf} fontWeight={400} fontSize={16} style={{display: 'flex', alignItems: 'center', marginLeft: 5}}>
                                         <BadgeSmall>{isFloat ? currency0.symbol : currency1.symbol} {isFloat ? 'Float' : 'Stable'}</BadgeSmall>
                                         {currency0.symbol}/{currency1.symbol}
                                     </Text>

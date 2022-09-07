@@ -15,7 +15,7 @@ const pools: SerializedPoolConfig[] = [
     sousId: 1,
     token1: serializedTokens.saturn,
     token2: serializedTokens.mars,
-    isClassic: false,
+    isClassic: true,
     isAnchor: false,
     earningToken: [serializedTokens.saturn, serializedTokens.mars],
     stakingToken: new Token(MOONBASE, Pylon.getLiquidityAddresses(

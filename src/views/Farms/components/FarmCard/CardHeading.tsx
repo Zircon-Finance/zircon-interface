@@ -57,8 +57,6 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
     <div style={{ padding: "10px", marginBottom: "10px", color: theme.text1 }}>
       <Wrapper justifyContent="space-between" alignItems="center" mb="12px">
         <Flex flexDirection="column" alignItems="flex-end">
-          {!isClassic ? (
-            !isAnchor ? (
               <>
                 <Flex flexWrap="wrap">
                   <BadgeSmall
@@ -81,56 +79,15 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
                     >
                       {token.symbol}{" "}
                     </span>
-                    {"FLOAT"}
+                    {isClassic ? 'CLASSIC' : isAnchor ? "STABLE" : "FLOAT"}
                   </BadgeSmall>
                   <Text
                     color={theme.text1}
                     style={{ minWidth: "max-content" }}
                     fontWeight={400}
-                  >{` - ${quoteToken.symbol}`}</Text>
+                  >{`${token.symbol}/${quoteToken.symbol}`}</Text>
                 </Flex>
               </>
-            ) : (
-              <>
-                <Flex flexWrap="wrap">
-                  <Text
-                    color={theme.text1}
-                    style={{ minWidth: "max-content" }}
-                    fontWeight={400}
-                  >
-                    {token.symbol} -
-                  </Text>
-                  <BadgeSmall
-                    style={{
-                      fontSize: "13px",
-                      height: "23px",
-                      alignSelf: "center",
-                      marginLeft: "5px",
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    <span
-                      style={{
-                        color: theme.text1,
-                        fontSize: "16px",
-                        marginRight: "3px",
-                      }}
-                    >{`${quoteToken.symbol}`}</span>
-                    {"STABLE"}
-                  </BadgeSmall>
-                </Flex>
-              </>
-            )
-          ) : (
-            <Text
-              color={theme.text1}
-              style={{ minWidth: "max-content" }}
-              fontWeight={400}
-            >
-              {token.symbol} - {quoteToken.symbol}
-            </Text>
-          )}
           {/* <Flex justifyContent="center">
           {multiplier ? (
             <MultiplierTag variant="secondary">{multiplier}</MultiplierTag>
@@ -139,11 +96,11 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
           )}
         </Flex> */}
         </Flex>
-        <DoubleCurrencyLogo
-          currency0={token}
-          currency1={quoteToken}
-          size={26}
-        />
+        {isClassic ? (
+          <DoubleCurrencyLogo currency0={token} currency1={quoteToken} margin={false} size={26} />
+          ) : (
+          <DoubleCurrencyLogo currency0={!isAnchor ? token : quoteToken} currency1={null} margin={false} size={26} />
+          )}
       </Wrapper>
       <SpaceBetween>
         <Flex flexDirection={"column"}>
@@ -165,7 +122,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
           </StyledLinkExternal>
         </Flex>
         <Flex flexDirection={"column"}>
-          <Text color={theme.text1} style={{textAlign: 'right'}}>{`Earn ${earningToken.map((token) => `${token.symbol}`)}`}</Text>
+          <Text color={'#4e7455'} style={{textAlign: 'right'}}>{`Earn ${earningToken.map((token) => `${token.symbol}`)}`}</Text>
             <div style={{display: 'flex', marginLeft: '10px', alignItems: 'center'}}>
             {risk ?
               <RiskHealthIcon /> : <TrendingHealthIcon /> }

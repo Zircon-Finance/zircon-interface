@@ -102,7 +102,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
 
     questionMarkBg: darkMode ? '#653047' : '#FCFCFD',
 
-    farmTabsBg: darkMode ? '#543334' : '#eae7ed',
+    farmTabsBg: darkMode ? '#5f3c37' : '#eae7ed',
 
     questionMarks: darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
 
@@ -175,7 +175,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
       cardBorder: '#361E2A',
       contrast: "#191326",
       dropdown: "#F6F6F6",
-      dropdownDeep: darkMode ? "#874955" : '#d5aeaf',
+      dropdownDeep: darkMode ? "#5f3c37" : '#d5aeaf',
       invertedContrast: darkMode ? '#51323D' : '#EAEAEA',
       input: '#8F5661',
       inputSecondary: darkMode ? '#492B36' : '#F6F2F4',

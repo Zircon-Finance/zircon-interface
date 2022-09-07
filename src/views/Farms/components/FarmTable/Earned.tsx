@@ -70,7 +70,7 @@ const Earned: React.FunctionComponent<EarnedPropsWithLoading> = ({ pid, earnings
   if (userDataReady) {
     return <div style={{position: 'relative', display: 'flex', alignItems: 'center'}}>
     <Amount earned={earnings}>
-      <Balance fontSize="13px" color={theme.whiteHalf} decimals={2} value={earnings} unit="" prefix="~ $" />
+      <Balance fontSize="13px" color={'##5ebe7b'} decimals={2} value={earnings} unit="" prefix="~ $" />
     </Amount>
     { 
     // earnings > 0 && 

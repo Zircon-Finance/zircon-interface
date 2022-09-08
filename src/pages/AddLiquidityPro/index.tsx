@@ -771,6 +771,7 @@ export default function AddLiquidityPro({
   console.log('Approval A Pair state: ', approvalAPair);
   console.log('Approval B Pair state: ', approvalBPair);
   console.log('Pylon State: ', pylonState);
+  console.log('Sync: ', sync);
 
   return (
       <>
@@ -1190,8 +1191,9 @@ export default function AddLiquidityPro({
                                   {(pylonState === PylonState.NOT_EXISTS ? (approvalAPair !== ApprovalState.APPROVED ? true : false) : (approvalA !== ApprovalState.APPROVED ? true : false))
                                   && (
                                       <ButtonPrimary
-                                          onClick={pylonState === (PylonState.ONLY_PAIR || PylonState.EXISTS) ?
-                                              approveACallback : approveACallbackPair}
+                                          onClick={(pylonState === PylonState.ONLY_PAIR || pylonState === PylonState.EXISTS) ?
+                                            approveACallback
+                                            : approveACallbackPair}
                                           disabled={approvalA === ApprovalState.PENDING
                                           || approvalAPair === ApprovalState.PENDING}
                                           width={
@@ -1214,7 +1216,7 @@ export default function AddLiquidityPro({
                                         )}
                                       </ButtonPrimary>
                                   )}
-                                  {(pylonState === PylonState.EXISTS ? (sync === "half" && (approvalB !== ApprovalState.APPROVED ? true : false)) : (pylonState === PylonState.ONLY_PAIR ? (approvalB !== ApprovalState.APPROVED ? true : false) : (approvalBPair !== ApprovalState.APPROVED ? true : false)) &&
+                                  {(pylonState === PylonState.EXISTS ? ((sync === 'half' && approvalB !== ApprovalState.APPROVED) ? true : false) : (pylonState === PylonState.ONLY_PAIR ? (approvalB !== ApprovalState.APPROVED ? true : false) : (approvalBPair !== ApprovalState.APPROVED ? true : false))) &&
                                           (<ButtonPrimary
                                               onClick={pylonState === (PylonState.NOT_EXISTS) ?
                                                   approveBCallbackPair : approveBCallback}
@@ -1236,7 +1238,7 @@ export default function AddLiquidityPro({
                                                 currencies[float.field_b]?.symbol
                                             )}
                                           </ButtonPrimary>)
-                                  )}
+                                  }
                                 </RowBetween>
                             )}
                             <SpaceBetween>

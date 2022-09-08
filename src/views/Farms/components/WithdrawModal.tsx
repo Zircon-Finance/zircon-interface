@@ -5,7 +5,7 @@ import { ModalActions, ModalInput } from '../../../components/ModalFarm'
 import { useTranslation } from 'react-i18next'
 
 import { getFullDisplayBalance } from '../../../utils/formatBalance'
-import { ButtonOutlined, ButtonPrimary } from '../../../components/Button'
+import { ButtonLight, ButtonPrimary } from '../../../components/Button'
 import { Token } from 'zircon-sdk'
 
 interface WithdrawModalProps {
@@ -51,9 +51,9 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ onConfirm, onDismiss, max
         inputTitle={t('Unstake')}
       />
       <ModalActions>
-        <ButtonOutlined mt={'15px'} height={'60px'} onClick={onDismiss} width="100%" disabled={pendingTx}>
+        <ButtonLight mt={'15px'} height={'60px'} onClick={onDismiss} width="100%" disabled={pendingTx}>
           {t('Cancel')}
-        </ButtonOutlined>
+        </ButtonLight>
         <ButtonPrimary mt={'15px'}
           disabled={pendingTx || !valNumber.isFinite() || valNumber.eq(0) || valNumber.gt(fullBalanceNumber)}
           onClick={async () => {

@@ -165,14 +165,14 @@ export default function AddLiquidityPro({
           f.token2.symbol === currencyB?.symbol &&
           f.isAnchor === !isFloat
   );
-  const { pool } = usePool(farm ? farm?.sousId : 3)
+  const { pool } = usePool(farm ? farm?.sousId : 1);
   const addTransaction = useTransactionAdder()
   const lpContract = useERC20(pool?.stakingToken.address)
   const farmIsApproved = useCallback(
       () => account && pool.userData.allowance && pool.userData.allowance.isGreaterThan(0)
       , [account, pool])
 
-  const {handleApprove} = useApprovePool(farm, lpContract, farm?.sousId ?? 3)
+  const {handleApprove} = useApprovePool(farm, lpContract, farm?.sousId ?? 1)
 
 
   // modal and loading

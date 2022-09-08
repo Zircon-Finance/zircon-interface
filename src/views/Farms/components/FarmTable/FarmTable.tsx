@@ -48,6 +48,9 @@ const TableBody = styled.tbody`
   }
   :first-child {
     tr {
+      :last-child {
+        border-bottom: none;
+      }
       margin-top: 5px;
   }
   :nth-child(n) {

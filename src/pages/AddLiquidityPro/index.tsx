@@ -717,9 +717,9 @@ export default function AddLiquidityPro({
           field_b: Field.CURRENCY_B,
         });
         if (newCurrencyIdA === currencyIdB) {
-          history.push(`/add-pro/${currencyIdB}/${currencyIdA}`);
+          history.push(`/add-pro/${currencyIdB || ''}/${currencyIdA || ''}`);
         } else {
-          history.push(`/add-pro/${newCurrencyIdA}/${currencyIdB}`);
+          history.push(`/add-pro/${newCurrencyIdA || ''}/${currencyIdB || ''}`);
         }
       },
       [currencyIdB, history, currencyIdA, currencies]
@@ -741,13 +741,13 @@ export default function AddLiquidityPro({
         });
         if (currencyIdA === newCurrencyIdB) {
           if (currencyIdB) {
-            history.push(`/add-pro/${currencyIdB}/${newCurrencyIdB}`);
+            history.push(`/add-pro/${currencyIdB}/${newCurrencyIdB || ''}`);
           } else {
-            history.push(`/add-pro/${newCurrencyIdB}`);
+            history.push(`/add-pro/${newCurrencyIdB || ''}`);
           }
         } else {
           history.push(
-              `/add-pro/${currencyIdA ? currencyIdA : "ETH"}/${newCurrencyIdB}`
+              `/add-pro/${currencyIdA ? currencyIdA : "ETH"}/${newCurrencyIdB || ''}`
           );
         }
       },

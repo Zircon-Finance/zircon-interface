@@ -8,9 +8,10 @@ import styled, { css } from 'styled-components'
 import CoinbaseWalletIcon from '../../assets/images/coinbaseWalletIcon.svg'
 import FortmaticIcon from '../../assets/images/fortmaticIcon.png'
 import PortisIcon from '../../assets/images/portisIcon.png'
+import Talisman from '../../assets/images/talisman.png'
 import WalletConnectIcon from '../../assets/images/walletConnectIcon.svg'
 import MetamaskIcon from '../../assets/images/metamask.svg'
-import { fortmatic, injected, portis, walletconnect, walletlink } from '../../connectors'
+import { fortmatic, injected, portis, talisman, walletconnect, walletlink } from '../../connectors'
 import { NetworkContextName } from '../../constants'
 import useENSName from '../../hooks/useENSName'
 import { useHasSocks } from '../../hooks/useSocksBalance'
@@ -164,6 +165,13 @@ function StatusIcon({ connector }: { connector: AbstractConnector }) {
     return (
       <IconWrapper size={16}>
         <img src={PortisIcon} alt={''} />
+      </IconWrapper>
+    )
+  }
+  else if (connector === talisman) {
+    return (
+      <IconWrapper size={16}>
+        <img src={Talisman} alt={''} />
       </IconWrapper>
     )
   }

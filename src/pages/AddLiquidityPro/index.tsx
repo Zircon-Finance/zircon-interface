@@ -161,8 +161,8 @@ export default function AddLiquidityPro({
   // handle pool button values
   const farm = farmsConfig.find(
       (f) =>
-          f.token1.symbol === currencyA.symbol &&
-          f.token2.symbol === currencyB.symbol &&
+          f.token1.symbol === currencyA?.symbol &&
+          f.token2.symbol === currencyB?.symbol &&
           f.isAnchor === !isFloat
   );
   const { pool } = usePool(farm ? farm?.sousId : 3)

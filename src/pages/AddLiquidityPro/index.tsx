@@ -339,7 +339,10 @@ export default function AddLiquidityPro({
     if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB) {
       return;
     }
-
+    const amountsMin = {
+      [Field.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, 0)[0],
+      [Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, 0)[0]
+    }
     const liquidityMin = calculateSlippageAmount(liquidityMinted, noPylon ? 0 : allowedSlippage)[0]
 
     const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline;
@@ -438,8 +441,8 @@ export default function AddLiquidityPro({
                   ? parsedAmountB
                   : parsedAmountA
           ).raw.toString(),
-          "1",
-          "1",
+          amountsMin[Field.CURRENCY_A].toString(),
+          amountsMin[Field.CURRENCY_B].toString(),
           float.currency_a === currencies[Field.CURRENCY_B],
           account,
           stake ? contractAddress : AddressZero,

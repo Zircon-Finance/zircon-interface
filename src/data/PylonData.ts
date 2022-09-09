@@ -85,3 +85,9 @@ export function usePylonConstants(): PylonFactory | undefined {
     return result && result.length > 10 ? new PylonFactory(result[0], result[1], result[2], result[3], result[4], result[5], result[6],
         result[7], result[8], result[9], result[10], result[11]) : undefined
 }
+
+export const useEnergyAddress = (token0: string, token1: string) => {
+    const energyFactoryContract = useEnergyFactoryContract(MOONBASE_ADDRESSES.energyFactory, false)
+    let result = useSingleCallResult(energyFactoryContract, "getEnergy", [token0, token1])
+    return result?.result?.[0]
+}

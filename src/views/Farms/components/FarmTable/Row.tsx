@@ -37,6 +37,7 @@ import { useCurrency } from '../../../../hooks/Tokens'
 import { usePylon } from '../../../../data/PylonReserves'
 import { useGamma } from '../../../../data/PylonData'
 import BigNumber from 'bignumber.js'
+import CapacityIndicatorSmall from '../../../../components/CapacityIndicatorSmall'
 // import { useFarmUser } from '../../../../state/farms/hooks'
 
 export interface RowProps {
@@ -74,6 +75,7 @@ const CellInner = styled.div`
 export const QuestionMarkContainer = styled.div`
   position: relative;
   margin-left: 10px;
+  margin-top: 5px;
   svg {
     pointer-events: none;
   }
@@ -310,9 +312,13 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                     <CellInner>
                       <CellLayout>
                       <div style={{width: '70%', display: 'flex', marginLeft: '20px', alignItems: 'center'}}>
-                            {risk ?
-                              <RiskHealthIcon /> : <TrendingHealthIcon /> }
-                            <Text width={"max-content"} ml={'10px'} color={theme.text1}>{risk ? gamma.toFixed(2) : 'High Risk'}</Text>
+                            {props.farm.isAnchor ? (
+                              <>
+                              {risk ?
+                              <RiskHealthIcon /> : <TrendingHealthIcon />}
+                              <Text width={"max-content"} ml={'10px'} color={theme.text1}>{risk ? gamma.toFixed(2) : 'High Risk'}</Text>
+                              </> )
+                            : <CapacityIndicatorSmall gamma={gamma.toFixed(2)} />}
                             <QuestionMarkContainer
                               onMouseEnter={() => setHoverRisk(true)}
                               onMouseLeave={() => setHoverRisk(false)}

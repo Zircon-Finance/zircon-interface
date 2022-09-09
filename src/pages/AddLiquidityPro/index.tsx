@@ -15,6 +15,7 @@ import {
 } from "../../components/Button";
 import { BlueCard, GreyCard, LightCard } from "../../components/Card";
 import { AutoColumn, ColumnCenter } from "../../components/Column";
+import BigNumberJs from 'bignumber.js';
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
 } from "../../components/TransactionConfirmationModal";
@@ -39,6 +40,7 @@ import {useBlockNumber, useWalletModalToggle} from "../../state/application/hook
 import { Field } from "../../state/mint/actions";
 import {
   useDerivedPylonMintInfo,
+  // useHealthFactor,
   useMintActionHandlers,
   useMintState,
 } from "../../state/mint/pylonHooks";
@@ -70,9 +72,10 @@ import { fetchPoolsUserDataAsync } from "../../state/pools";
 import { useDispatch } from "react-redux";
 import {AddressZero}  from "@ethersproject/constants";
 import InfoCircle from "../../components/InfoCircle";
-import {usePylonConstants} from "../../data/PylonData";
+import {useGamma, usePylonConstants} from "../../data/PylonData";
 import Lottie from "lottie-react-web";
 import animation from '../../assets/lotties/0uCdcx9Hn5.json'
+import CapacityIndicator from "../../components/CapacityIndicator";
 
 const IconContainer = styled.div`
   display: flex;
@@ -106,7 +109,6 @@ export default function AddLiquidityPro({
                                         }: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
   const { account, chainId, library } = useActiveWeb3React();
   const theme = useTheme();
-
   const currencyA = useCurrency(currencyIdA);
   const currencyB = useCurrency(currencyIdB);
 
@@ -769,12 +771,11 @@ export default function AddLiquidityPro({
   const { width } = useWindowDimensions();
   const pylonConstants = usePylonConstants()
   const blockNumber = useBlockNumber()
-  console.log('Approval A state: ', approvalA);
-  console.log('Approval B state: ', approvalB);
-  console.log('Approval A Pair state: ', approvalAPair);
-  console.log('Approval B Pair state: ', approvalBPair);
-  console.log('Pylon State: ', pylonState);
-  console.log('Sync: ', sync);
+  const gammaBig = useGamma(pylonPair?.address)
+  const gamma = new BigNumberJs(gammaBig).div(new BigNumberJs(10).pow(18))
+  
+  // const healthFactor = useHealthFactor(pylonPair)
+  // console.log("healthFactor", healthFactor)
 
   return (
       <>
@@ -1149,6 +1150,8 @@ export default function AddLiquidityPro({
               ) : null}
 
             </AutoColumn>
+
+            {isFloat && <CapacityIndicator gamma={gamma.toFixed(2)} />}
 
             {currencies[Field.CURRENCY_A] &&
             currencies[Field.CURRENCY_B] &&

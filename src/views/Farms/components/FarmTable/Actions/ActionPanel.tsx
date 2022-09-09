@@ -40,6 +40,7 @@ import RiskHealthIcon from '../../../../../components/RiskHealthIcon'
 import TrendingHealthIcon from '../../../../../components/TrendingHealthIcon'
 import QuestionMarkIcon from '../../../../../components/QuestionMarkIcon'
 import { QuestionMarkContainer, ToolTip } from '../Row'
+import CapacityIndicatorSmall from '../../../../../components/CapacityIndicatorSmall'
 
 export interface ActionPanelProps {
   apr: AprProps
@@ -385,9 +386,13 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           <SpaceBetween>
               <Text color={theme.text1}>{`Earn ${farm.earningToken.map((token) => `${token.symbol}`)}`}</Text>
               <div style={{width: '50%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
+              {isAnchor ? (
+              <>
               {risk ?
-                <RiskHealthIcon /> : <TrendingHealthIcon /> }
-                <Text width={"max-content"} ml={'10px'} color={theme.text1}>{risk ? gamma.toFixed(2) : 'High Risk'}</Text>
+              <RiskHealthIcon /> : <TrendingHealthIcon />}
+              <Text width={"max-content"} ml={'10px'} color={theme.text1}>{risk ? gamma.toFixed(2) : 'High Risk'}</Text>
+              </> )
+              : <CapacityIndicatorSmall gamma={gamma.toFixed(2)} />}
                 <QuestionMarkContainer
                 onMouseEnter={() => setHoverRisk(true)}
                 onMouseLeave={() => setHoverRisk(false)}
@@ -412,9 +417,13 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
               <Flex flexDirection={"column"}>
                 <Text color={theme.text1}>{`Earn ${farm.earningToken.map((token) => `${token.symbol}`)}`}</Text>
                 <div style={{display: 'flex', marginLeft: '10px', alignItems: 'center'}}>
-                {risk ?
-                  <RiskHealthIcon /> : <TrendingHealthIcon /> }
-                  <Text width={"max-content"} ml={'10px'} color={theme.text1}>{risk ? gamma.toFixed(2) : 'High Risk'}</Text>
+                {isAnchor ? (
+              <>
+              {risk ?
+              <RiskHealthIcon /> : <TrendingHealthIcon />}
+              <Text width={"max-content"} ml={'10px'} color={theme.text1}>{risk ? gamma.toFixed(2) : 'High Risk'}</Text>
+              </> )
+              : <CapacityIndicatorSmall gamma={gamma.toFixed(2)} />}
                   <QuestionMarkContainer
                 onMouseEnter={() => setHoverRisk(true)}
                 onMouseLeave={() => setHoverRisk(false)}

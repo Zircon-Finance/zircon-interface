@@ -40,7 +40,7 @@ import {useBlockNumber, useWalletModalToggle} from "../../state/application/hook
 import { Field } from "../../state/mint/actions";
 import {
   useDerivedPylonMintInfo,
-  // useHealthFactor,
+  useHealthFactor,
   useMintActionHandlers,
   useMintState,
 } from "../../state/mint/pylonHooks";
@@ -774,8 +774,8 @@ export default function AddLiquidityPro({
   const gammaBig = useGamma(pylonPair?.address)
   const gamma = new BigNumberJs(gammaBig).div(new BigNumberJs(10).pow(18))
   
-  // const healthFactor = useHealthFactor(pylonPair)
-  // console.log("healthFactor", healthFactor)
+  const healthFactor = useHealthFactor(pylonPair)
+  console.log("healthFactor", healthFactor)
 
   return (
       <>
@@ -1151,7 +1151,8 @@ export default function AddLiquidityPro({
 
             </AutoColumn>
 
-            {isFloat && <CapacityIndicator gamma={gamma.toFixed(2)} />}
+            {isFloat && currencyA && currencyB &&
+             <CapacityIndicator gamma={gamma.toFixed(2)} />}
 
             {currencies[Field.CURRENCY_A] &&
             currencies[Field.CURRENCY_B] &&

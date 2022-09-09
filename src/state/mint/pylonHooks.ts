@@ -1,5 +1,5 @@
 import {Currency, CurrencyAmount, DEV, Pair, JSBI, Percent, Price, Pylon, TokenAmount} from 'zircon-sdk'
-import {useCallback, useMemo, useState} from 'react'
+import {useCallback, useMemo} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTotalSupply } from '../../data/TotalSupply'
 import { useTranslation } from 'react-i18next'
@@ -13,8 +13,7 @@ import { Field, typeInput } from './actions'
 import { usePylon, PylonState } from '../../data/PylonReserves'
 import {useEnergyAddress, useLastK, usePylonConstants, usePylonInfo,} from "../../data/PylonData";
 import {useBlockNumber} from "../application/hooks";
-import { useSingleCallResult } from '../multicall/hooks'
-import { usePylonContract, usePylonFactoryContract } from '../../hooks/useContract'
+import { usePylonFactoryContract } from '../../hooks/useContract'
 
 const ZERO = JSBI.BigInt(0)
 
@@ -236,31 +235,28 @@ export function useMintActionHandlers(
 }
 
 export const useHealthFactor = (pylonPair : Pylon) => {
-  const [healthFactor, setHealthFactor] = useState('')
   const pylonInfo = usePylonInfo(pylonPair?.address)
   const energyAddress = useEnergyAddress(pylonPair?.token0.address, pylonPair?.token1.address)
   const ptbEnergy = useTokenBalance(energyAddress, pylonPair?.pair.liquidityToken)
   const reserveAnchor = useTokenBalance(energyAddress, pylonPair?.anchorLiquidityToken)
   const ptb = useTokenBalance(pylonPair?.address, pylonPair?.pair.liquidityToken)
   const ptt = useTotalSupply(pylonPair?.anchorLiquidityToken)
-  const pylonContract = usePylonContract(pylonPair?.address, false)
   const lastK = useLastK(pylonPair?.address)
   const pylonFactory = usePylonFactoryContract()
 
-  const healthFactorResult = useSingleCallResult(pylonContract, "gethealth", [
+  const healthFactorResult = pylonInfo && pylonPair && ptbEnergy && reserveAnchor && ptb && ptt && lastK && pylonFactory ?
+  pylonPair.getHealthFactor(
       pylonInfo[0],
       ptb,
       ptt,
-      reserveAnchor,
-      ptbEnergy,
+      JSBI.BigInt(reserveAnchor),
+      JSBI.BigInt(ptbEnergy),
       pylonInfo[9],
       pylonInfo[1],
       pylonInfo[7],
       pylonInfo[8],
-      lastK,
+      JSBI.BigInt(lastK),
       pylonFactory
-  ])?.result?.[0]
-  setHealthFactor(healthFactorResult?.toString())
-  
-  return healthFactor?.toString()
+  ) : 'Loading...'
+  return healthFactorResult
 }

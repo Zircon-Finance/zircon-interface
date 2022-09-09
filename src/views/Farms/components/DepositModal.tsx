@@ -141,7 +141,7 @@ const DepositModal: React.FC<DepositModalProps> = ({
               width: '130px',
             }}
           >
-            <Link style={{textDecoration: 'none', color: onmouseover ? theme.text1 : theme.pinkGamma, fontWeight: 500, fontSize: '13px'}}
+            <Link style={{textDecoration: 'none', color: isBalanceZero ? '#fff' : theme.pinkGamma, fontWeight: 500, fontSize: '13px'}}
         href={addLiquidityUrl}>{'Get ' + lpLabel}</Link>
         </ButtonOutlined>
       <Flex mb="15px" alignItems="center" justifyContent="space-around">

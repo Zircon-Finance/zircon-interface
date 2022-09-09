@@ -80,8 +80,8 @@ export const usePairLiquidity = (token1, token2) => {
 
   const anchorPoolBalance = anchorPoolBalancePylon?.add(anchorPoolBalancePair)
   const floatPoolBalance = floatPoolBalancePylon?.add(floatPoolBalancePair)
-  return `${anchorPoolBalance?.toFixed(3) as unknown as number} ${tokenA?.symbol} - 
-  ${floatPoolBalance?.toFixed(3) as unknown as number} ${tokenB?.symbol}`
+  return `${anchorPoolBalance?.toFixed(3) || 0 as unknown as number} ${tokenA?.symbol} - 
+  ${floatPoolBalance?.toFixed(3) || 0 as unknown as number} ${tokenB?.symbol}`
 }
 
 // export const usePoolsWithVault = () => {

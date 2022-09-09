@@ -339,61 +339,39 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
             {width >= 800 ? (
               <SpaceBetween>
                   <div style={{letterSpacing: '0.05em'}}>
-                  {!isClassic ? (
-                  !isAnchor ? (
                     <>
                     <Flex flexWrap='wrap'>
                       <BadgeSmall
                       style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', display: 'flex', alignItems: 'center', marginRight: '5px'}}>
-                      <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{token1.symbol} </span>{'FLOAT'}
+                      <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{!isClassic && token1.symbol} </span>{isClassic ? 'CLASSIC' :!isAnchor ? 'FLOAT' : 'ANCHOR'}
                       </BadgeSmall>
-                      <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{` - ${token2.symbol}`}</Text>
-                    </Flex>
-
-                    </>
-                  ) : (
-                    <>
-                    <Flex flexWrap='wrap'>
-                      <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{token1.symbol} -</Text>
-                      <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '5px', display: 'flex', alignItems: 'center'}}>
-                        <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{`${token2.symbol}`}</span>{'STABLE'}
-                      </BadgeSmall>
+                      <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{`${token1.symbol}/${token2.symbol}`}</Text>
                     </Flex>
                     </>
-                  )) : (
-                    <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{token1.symbol} - {token2.symbol}</Text>
-                  )}
                   </div>
-                  <DoubleCurrencyLogo currency0={token1} currency1={token2} size={25} />
-              </SpaceBetween>
-            ) : (
-              <SpaceBetween style={{paddingTop: '16px'}}>
-                <Flex alignItems={'center'} style={{gap: '10px'}}>
-                  <DoubleCurrencyLogo currency0={token1} currency1={token2} size={25} />
-                  <div>
-                  {!isClassic ? (
-                  !isAnchor ? (
-                    <>
-                    <Flex flexWrap='wrap'>
-                      <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', display: 'flex', alignItems: 'center'}}>
-                      <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{token1.symbol} </span>{'FLOAT'}
-                      </BadgeSmall>
-                      <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{` - ${token2.symbol}`}</Text>
-                    </Flex>
-
-                    </>
+                  {isClassic ? (
+                  <DoubleCurrencyLogo currency0={token1} currency1={token2} margin={false} size={width >= 500 ? 25 : 30} />
                   ) : (
+                  <DoubleCurrencyLogo currency0={!isAnchor ? token1 : token2} currency1={null} margin={false} size={30} />
+                  )}
+              </SpaceBetween>
+              ) : (
+              <SpaceBetween style={{paddingTop: '16px'}}>
+                <Flex alignItems={'center'}>
+                  {isClassic ? (
+                  <DoubleCurrencyLogo currency0={token1} currency1={token2} margin={false} size={width >= 500 ? 25 : 30} />
+                  ) : (
+                  <DoubleCurrencyLogo currency0={!isAnchor ? token1 : token2} currency1={null} margin={false} size={30} />
+                  )}
+                  <div>
                     <>
                     <Flex flexWrap='wrap'>
-                      <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{token1.symbol} -</Text>
-                      <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '5px', display: 'flex', alignItems: 'center'}}>
-                        <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{`${token2.symbol}`}</span>{'STABLE'}
+                      <BadgeSmall
+                      style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', display: 'flex', alignItems: 'center', marginRight: '5px'}}>
+                      <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{!isClassic && token1.symbol} </span>{isClassic ? 'CLASSIC' :!isAnchor ? 'FLOAT' : 'ANCHOR'}
                       </BadgeSmall>
-                    </Flex>
+                      <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{`${token1.symbol}/${token2.symbol}`}</Text>                    </Flex>
                     </>
-                  )) : (
-                    <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{token1.symbol} - {token2.symbol}</Text>
-                  )}
                   </div>
                 </Flex>
                 <QuarterContainer onClick={() => clickAction(false)}

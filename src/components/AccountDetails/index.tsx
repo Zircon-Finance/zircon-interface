@@ -12,12 +12,13 @@ import Transaction from './Transaction'
 import { SUPPORTED_WALLETS } from '../../constants'
 import { ReactComponent as Close } from '../../assets/images/x.svg'
 import { getEtherscanLink } from '../../utils'
-import { injected, walletconnect, walletlink, fortmatic, portis } from '../../connectors'
+import { injected, walletconnect, walletlink, fortmatic, portis, talisman } from '../../connectors'
 import CoinbaseWalletIcon from '../../assets/images/coinbaseWalletIcon.svg'
 import WalletConnectIcon from '../../assets/images/walletConnectIcon.svg'
 import FortmaticIcon from '../../assets/images/fortmaticIcon.png'
 import MetamaskIcon from '../../assets/images/metamask.svg'
 import PortisIcon from '../../assets/images/portisIcon.png'
+import Talisman from '../../assets/images/talisman.png'
 // import Identicon from '../Identicon'
 import { ButtonPositionsMobile, ButtonPrimary } from '../Button'
 import { ExternalLink as LinkIcon } from 'react-feather'
@@ -279,6 +280,13 @@ export default function AccountDetails({
             </MainWalletAction>
           </IconWrapper>
         </>
+      )
+    }
+    else if (connector === talisman) {
+      return (
+        <IconWrapper size={16}>
+          <img src={Talisman} alt={'talisman logo'} />
+        </IconWrapper>
       )
     }
     return null

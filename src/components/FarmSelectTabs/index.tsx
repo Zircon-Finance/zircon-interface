@@ -188,7 +188,7 @@ export function ViewModeTabs({ active }: { active: "TABLE" | "CARD" }) {
 export function FarmTabButtons({ active }: { active: "Active" | "Finished" }) {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
-
+  const theme = useTheme();
   const { hash } = window.location;
 
   return (
@@ -202,10 +202,11 @@ export function FarmTabButtons({ active }: { active: "Active" | "Finished" }) {
       </StyledNavLink>
       <StyledNavLink
         id={`finished-farms-select`}
-        to={"/farm/history"}
-        isActive={() => hash === "#/farm/history"}
+        to={"/farm"}
+        isActive={() => hash === "#/farm/history"
+        }
       >
-        {t("FINISHED")}
+        <span style={{color: theme.whiteHalf, cursor: 'default'}}>{t("FINISHED")}</span>
       </StyledNavLink>
     </Tabs>
   );

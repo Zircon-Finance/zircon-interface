@@ -161,18 +161,18 @@ export default function AddLiquidityPro({
   // handle pool button values
   const farm = farmsConfig.find(
       (f) =>
-          f.token1.symbol === currencyA.symbol &&
-          f.token2.symbol === currencyB.symbol &&
+          f.token1.symbol === currencyA?.symbol &&
+          f.token2.symbol === currencyB?.symbol &&
           f.isAnchor === !isFloat
   );
-  const { pool } = usePool(farm ? farm?.sousId : 3)
+  const { pool } = usePool(farm ? farm?.sousId : 1);
   const addTransaction = useTransactionAdder()
   const lpContract = useERC20(pool?.stakingToken.address)
   const farmIsApproved = useCallback(
       () => account && pool.userData.allowance && pool.userData.allowance.isGreaterThan(0)
       , [account, pool])
 
-  const {handleApprove} = useApprovePool(farm, lpContract, farm?.sousId ?? 3)
+  const {handleApprove} = useApprovePool(farm, lpContract, farm?.sousId ?? 1)
 
 
   // modal and loading
@@ -720,9 +720,9 @@ export default function AddLiquidityPro({
           field_b: Field.CURRENCY_B,
         });
         if (newCurrencyIdA === currencyIdB) {
-          history.push(`/add-pro/${currencyIdB}/${currencyIdA}`);
+          history.push(`/add-pro/${currencyIdB || ''}/${currencyIdA || ''}`);
         } else {
-          history.push(`/add-pro/${newCurrencyIdA}/${currencyIdB}`);
+          history.push(`/add-pro/${newCurrencyIdA || ''}/${currencyIdB || ''}`);
         }
       },
       [currencyIdB, history, currencyIdA, currencies]
@@ -744,13 +744,13 @@ export default function AddLiquidityPro({
         });
         if (currencyIdA === newCurrencyIdB) {
           if (currencyIdB) {
-            history.push(`/add-pro/${currencyIdB}/${newCurrencyIdB}`);
+            history.push(`/add-pro/${currencyIdB}/${newCurrencyIdB || ''}`);
           } else {
-            history.push(`/add-pro/${newCurrencyIdB}`);
+            history.push(`/add-pro/${newCurrencyIdB || ''}`);
           }
         } else {
           history.push(
-              `/add-pro/${currencyIdA ? currencyIdA : "ETH"}/${newCurrencyIdB}`
+              `/add-pro/${currencyIdA ? currencyIdA : "ETH"}/${newCurrencyIdB || ''}`
           );
         }
       },
@@ -774,6 +774,7 @@ export default function AddLiquidityPro({
   console.log('Approval A Pair state: ', approvalAPair);
   console.log('Approval B Pair state: ', approvalBPair);
   console.log('Pylon State: ', pylonState);
+  console.log('Sync: ', sync);
 
   return (
       <>
@@ -1193,8 +1194,9 @@ export default function AddLiquidityPro({
                                   {(pylonState === PylonState.NOT_EXISTS ? (approvalAPair !== ApprovalState.APPROVED ? true : false) : (approvalA !== ApprovalState.APPROVED ? true : false))
                                   && (
                                       <ButtonPrimary
-                                          onClick={pylonState === (PylonState.ONLY_PAIR || PylonState.EXISTS) ?
-                                              approveACallback : approveACallbackPair}
+                                          onClick={(pylonState === PylonState.ONLY_PAIR || pylonState === PylonState.EXISTS) ?
+                                            approveACallback
+                                            : approveACallbackPair}
                                           disabled={approvalA === ApprovalState.PENDING
                                           || approvalAPair === ApprovalState.PENDING}
                                           width={
@@ -1217,7 +1219,7 @@ export default function AddLiquidityPro({
                                         )}
                                       </ButtonPrimary>
                                   )}
-                                  {(pylonState === PylonState.EXISTS ? (sync === "half" && (approvalB !== ApprovalState.APPROVED ? true : false)) : (pylonState === PylonState.ONLY_PAIR ? (approvalB !== ApprovalState.APPROVED ? true : false) : (approvalBPair !== ApprovalState.APPROVED ? true : false)) &&
+                                  {(pylonState === PylonState.EXISTS ? ((sync === 'half' && approvalB !== ApprovalState.APPROVED) ? true : false) : (pylonState === PylonState.ONLY_PAIR ? (approvalB !== ApprovalState.APPROVED ? true : false) : (approvalBPair !== ApprovalState.APPROVED ? true : false))) &&
                                           (<ButtonPrimary
                                               onClick={pylonState === (PylonState.NOT_EXISTS) ?
                                                   approveBCallbackPair : approveBCallback}
@@ -1239,7 +1241,7 @@ export default function AddLiquidityPro({
                                                 currencies[float.field_b]?.symbol
                                             )}
                                           </ButtonPrimary>)
-                                  )}
+                                  }
                                 </RowBetween>
                             )}
                             <SpaceBetween>

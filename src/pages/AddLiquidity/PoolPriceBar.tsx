@@ -24,13 +24,13 @@ export function PoolPriceBar({
     <AutoColumn gap="md" style={{display: 'flex'}}>
       <div style={{width: '50%'}}>
       <AutoColumn justify="center" style={{display: 'flex'}}>
-          <TYPE.black color={theme.text3}>{price?.toSignificant(6) ?? '-'}</TYPE.black>
+          <TYPE.black color={theme.text3} minWidth={'max-content'}>{price?.toSignificant(6) ?? '-'}</TYPE.black>
           <Text fontWeight={300} fontSize={14} color={theme.text3} ml={2} minWidth={'max-content'}>
             {currencies[Field.CURRENCY_B]?.symbol} per {currencies[Field.CURRENCY_A]?.symbol}
           </Text>
         </AutoColumn>
         <AutoColumn justify="center" style={{display: 'flex'}}>
-          <TYPE.black color={theme.text3}>{price?.invert()?.toSignificant(6) ?? '-'}</TYPE.black>
+          <TYPE.black color={theme.text3} minWidth={'max-content'}>{price?.invert()?.toSignificant(6) ?? '-'}</TYPE.black>
           <Text fontWeight={300} fontSize={14} color={theme.text3} ml={2} minWidth={'max-content'}>
             {currencies[Field.CURRENCY_A]?.symbol} per {currencies[Field.CURRENCY_B]?.symbol}
           </Text>

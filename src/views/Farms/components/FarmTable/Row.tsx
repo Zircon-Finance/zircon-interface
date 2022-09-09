@@ -118,7 +118,7 @@ animation: ${({ expanded }) =>
   display: flex;
   flex-direction: column;
   width: 100%;
-  border-bottom: 1px solid ${({ theme }) => theme.bg7};
+  border-bottom: 1px solid ${({ theme }) => theme.opacitySmall};
   @media (min-width: 992px) {
     display: table;
     height: 80px;
@@ -304,24 +304,12 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
 
             switch (key) {
               case 'details':
-                return (
-                  <TableData key={key}>
-                    <CellInner>
-                      <CellLayout>
-                        <Details actionPanelToggled={actionPanelExpanded} />
-                      </CellLayout>
-                    </CellInner>
-                  </TableData>
-                )
-              case 'farm':
                 const risk = gamma && (gamma.isLessThanOrEqualTo(0.7) || gamma.isGreaterThanOrEqualTo(0.5))
                 return (
-                  <TableData style={{minWidth: width > 1400 ? '502px' : width > 992 ? '405px' : 'auto'}} key={key}>
-                    <CellInner style={{width: '100%',justifyContent: 'flex-start'}}>
-                      <CellLayout hovered={hovered} label={hovered && t(tableSchema[columnIndex].label)}>
-                        <Flex width={'100%'} justifyContent={'space-between'}>
-                        {createElement(cells[key], { ...props[key] })}
-                            <div style={{width: '40%', display: 'flex', marginLeft: '20px', alignItems: 'center'}}>
+                  <TableData key={key} style={{width: gamma ? '15%' : '12%'}}>
+                    <CellInner>
+                      <CellLayout>
+                      <div style={{width: '70%', display: 'flex', marginLeft: '20px', alignItems: 'center'}}>
                             {risk ?
                               <RiskHealthIcon /> : <TrendingHealthIcon /> }
                             <Text width={"max-content"} ml={'10px'} color={theme.text1}>{risk ? gamma.toFixed(2) : 'High Risk'}</Text>
@@ -333,7 +321,20 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                               )}
                             <QuestionMarkIcon />
                             </QuestionMarkContainer>
-                            </div>                            
+                            </div>      
+                        <Details actionPanelToggled={actionPanelExpanded} />
+                      </CellLayout>
+                    </CellInner>
+                  </TableData>
+                )
+              case 'farm':
+                return (
+                  <TableData style={{minWidth: '280px'}} key={key}>
+                    <CellInner style={{width: '100%',justifyContent: 'flex-start'}}>
+                      <CellLayout hovered={hovered} label={hovered && t(tableSchema[columnIndex].label)}>
+                        <Flex width={'100%'} justifyContent={'space-between'}>
+                        {createElement(cells[key], { ...props[key] })}
+                                                  
                         </Flex>
                       </CellLayout>
                     </CellInner>
@@ -361,7 +362,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                     ) : (
                       <Flex style={{alignItems: 'center'}}>
                         <>
-                        <Text color={theme.whiteHalf}>
+                        <Text color={'#4e7455'}>
                           {`Earn ${rewardTokens}`}
                         </Text>
                             <QuestionMarkContainer

@@ -58,34 +58,22 @@ const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pi
   return (
     <Container>
       <TokenWrapper>
-        <DoubleCurrencyLogo currency0={token} currency1={quoteToken} size={width <= 500 ? 25 : 30} />
-      </TokenWrapper>
+        {isClassic ? (
+        <DoubleCurrencyLogo currency0={token} currency1={quoteToken} margin={false} size={width >= 500 ? 25 : 30} />
+        ) : (
+        <DoubleCurrencyLogo currency0={!isAnchor ? token : quoteToken} currency1={null} margin={false} size={30} />
+        )}
+        </TokenWrapper>
         <>
           <div>
-          {isClassic ? (
-            <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{`${token.symbol} - ${quoteToken.symbol}`}</Text>
-          ) : (
-            !isAnchor ? (
             <>
             <Flex>
               <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', marginRight: '5px',  display: 'flex', alignItems: 'center'}}>
-              <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{token.symbol} </span>{'FLOAT'}
+              <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{!isClassic && token.symbol} </span>{isClassic ? 'CLASSIC' :!isAnchor ? 'FLOAT' : 'ANCHOR'}
               </BadgeSmall>
-              <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{` - ${quoteToken.symbol}`}</Text>
+              <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{`${token.symbol}/${quoteToken.symbol}`}</Text>
             </Flex>
-
             </>
-          ) : (
-            <>
-            <Flex>
-              <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{token.symbol} -</Text>
-              <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '5px', display: 'flex', alignItems: 'center'}}>
-                <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{`${quoteToken.symbol} `}</span>{'STABLE'}
-              </BadgeSmall>
-            </Flex>
-
-            </>
-          ))}
           </div>
         </>
     </Container>

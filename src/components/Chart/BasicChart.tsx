@@ -137,9 +137,9 @@ const BasicChart = ({
             </Flex>
         </Flex>
       </TopContainer>
-      <div style={{borderRadius: '27px', backgroundColor: theme.bg7, padding: '15px'}}>
+      <div style={{borderRadius: '27px', backgroundColor: 'transparent', padding: '15px'}}>
       <DateButtons>
-        <Text size={13} color={theme.whiteHalf} style={{alignSelf: 'center', width: '100%', paddingLeft: '15px'}}>
+        <Text color={theme.whiteHalf} style={{alignSelf: 'center', width: '100%', paddingLeft: '15px', height: 'auto', fontSize: '13px'}}>
             {hoverDate || currentDate}
           </Text>
           <ButtonsContainer >

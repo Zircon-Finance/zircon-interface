@@ -42,35 +42,6 @@ import orderBy from 'lodash/orderBy'
 import { formatUnits } from 'ethers/lib/utils'
 import { getPoolAprAddress } from '../../utils/apr'
 
-const Loading = styled.div`
-  border: 8px solid #f3f3f3;
-  border-radius: 50%;
-  border-top: 8px solid #ddd;
-  border-bottom: 8px solid #ddd;
-  width: 20px;
-  height: 20px;
-  -webkit-animation: spin 2s linear infinite;
-  animation: spin 2s linear infinite;
-  @-webkit-keyframes spin {
-    0% {
-      -webkit-transform: rotate(0deg);
-    }
-    100% {
-      -webkit-transform: rotate(360deg);
-    }
-  }
-
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-`
-
-
 const FlexLayout = styled.div`
   display: flex;
   justify-content: flex-start;
@@ -181,7 +152,7 @@ const PinkArrows = styled.div`
 
 const SelectedOptionDiv = styled.div`
   position: absolute;
-  top: 54px;
+  top: 44px;
   width: 50%;
   background: ${({ theme }) => theme.cardExpanded};
   height: 5px;
@@ -457,10 +428,9 @@ const Farms: React.FC = ({ children }) => {
                   id="staked-only-farms"
                   checked={stakedOnly}
                   checkedColor={'dropdownDeep'}
-                  defaultColor={'invertedContrast'}
+                  defaultColor={'dropdownDeep'}
                   onChange={() => setStakedOnly(!stakedOnly)}
                   scale="sm"
-                  
                 />
               </ToggleWrapper>
               <FarmTabButtons active='Active' />
@@ -473,20 +443,22 @@ const Farms: React.FC = ({ children }) => {
           </Flex>
         </ControlContainer>
         <MainContainer>
-          <table style={{width: '100%'}}>
+          <table style={{width: '100%', borderBottom: `1px solid ${theme.opacitySmall}`, paddingBottom: '5px'}}>
             <tr style={viewMode === ViewMode.CARD || (viewMode === ViewMode.TABLE && width <= 992) ? 
               ({display: 'flex', justifyContent: 'space-between', alignItems: 'center'}) 
               : null}>
-              <TableData style={{minWidth: width > 1400 ? '500px' : width > 992 ? '400px' : 'auto'}}>
+              <TableData style={{minWidth: width >= 600 ? '275px' : 'auto'}}>
                 <ViewModeTabs active={viewMode} />
               </TableData>
               {viewMode === ViewMode.TABLE && width > 992 ? options.map((option) => (
-                <TableData key={option} style={{cursor: 'pointer'}} onClick={() => setSortOption(option.toLowerCase())}>
+                <TableData key={option} style={{cursor: 'pointer'}} onClick={() => 
+                sortOption === option.toLowerCase() ? setSortOption('hot') :
+                setSortOption(option.toLowerCase())}>
                   <PinkArrows style={{display: 'flex', alignItems: 'center'}}>
-                    <p style={{fontSize: '13px', color: !darkMode ? theme.text1 : theme.meatPink, fontWeight: 500}}>{option}</p>
+                    <p style={{fontSize: '13px', color: !darkMode ? theme.text1 : theme.meatPink, fontWeight: 500, margin: 0}}>{option}</p>
                     <FarmRepeatIcon />
                   </PinkArrows>
-                  {sortOption === option.toLowerCase() && <SelectedOptionDiv />}
+                  {sortOption === option.toLowerCase() ? <SelectedOptionDiv /> : null}
                 </TableData>)) :
                 (
                   <TableData style={{display: 'flex', width: '200px', paddingRight: width <= 992 ? '0px' : '5px'}}>
@@ -522,14 +494,13 @@ const Farms: React.FC = ({ children }) => {
                     />
                   </TableData>
                 )}
-              {viewMode === ViewMode.TABLE && width > 992 && (<TableData></TableData>)}
+              {viewMode === ViewMode.TABLE && width > 992 && (<TableData style={{width: '15%'}}></TableData>)}
             </tr>
           </table>
             {renderContent()}
         </MainContainer>
         {account && !userDataLoaded && stakedOnly && (
           <Flex justifyContent="center">
-            <Loading />
           </Flex>
         )}
         <div ref={observerRef} />

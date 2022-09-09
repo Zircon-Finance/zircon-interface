@@ -62,9 +62,9 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
   useEffect(() => {
     account && setDataUser(leaves.find(user => user?.address === account))
     airdropWithSigner?.check(
-                BigNumber.from(dataUser?.index),
+                BigNumber.from(dataUser?.index || 0) ,
                 account,  
-                BigNumber.from(dataUser?.amount), 
+                BigNumber.from(dataUser?.amount || 0), 
                 dataUser?.proof).then((res: any) => {
       setClaimStatus(false)
     }).catch(() => {
@@ -115,7 +115,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
               : [onDismiss(),toggleWalletModal()]
               }>
         <Text style={{textDecoration: 'none', color: '#fff'}} >
-          {account ? claimStatus ? 'Already claimed' : 'Claim tokens' : 'Connect wallet'}</Text>
+          {account ? !dataUser?.amount ? 'Nothing to claim' : claimStatus ? 'Already claimed' : 'Claim tokens' : 'Connect wallet'}</Text>
       </ButtonOutlined>
       {() => airdropWithSigner?.check(
             BigNumber.from(dataUser?.index),

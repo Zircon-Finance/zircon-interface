@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 
 import { getFullDisplayBalance, formatNumber } from '../../../utils/formatBalance'
 import { getInterestBreakdown } from '../../../utils/compoundApyHelpers'
-import { ButtonOutlined, ButtonPrimary } from '../../../components/Button'
+import { ButtonLight, ButtonOutlined, ButtonPrimary } from '../../../components/Button'
 import { Link } from 'rebass'
 import { StyledErrorMessage } from '../../../components/ModalFarm/ModalInput'
 import { Token } from 'zircon-sdk'
@@ -128,11 +128,22 @@ const DepositModal: React.FC<DepositModalProps> = ({
           {'No tokens to stake'}
         </StyledErrorMessage>
       )}
-      <ButtonOutlined style={{ alignSelf: 'center', width: 'auto', height: '30px', margin: '15px 0',
-      background: isBalanceZero ? '#C16BAD' : 'transparent' }}>
-        <Link style={{textDecoration: 'none', color: theme.text1, fontWeight: 300, fontSize: '13px'}}
+      <ButtonOutlined
+            mt="15px"
+            style={{
+              margin: "10px auto",
+              padding: "10px",
+              fontSize: "13px",
+              color: theme.pinkGamma,
+              background: isBalanceZero ? '#C16BAD' : theme.tableButton,
+              border: "none",
+              fontWeight: 500,
+              width: '130px',
+            }}
+          >
+            <Link style={{textDecoration: 'none', color: onmouseover ? theme.text1 : theme.pinkGamma, fontWeight: 500, fontSize: '13px'}}
         href={addLiquidityUrl}>{'Get ' + lpLabel}</Link>
-      </ButtonOutlined>
+        </ButtonOutlined>
       <Flex mb="15px" alignItems="center" justifyContent="space-around">
         <Text mr="8px" color={theme.text1} fontSize='13px' fontWeight={400}>
           {t('Annual ROI at current rates')}:
@@ -148,9 +159,9 @@ const DepositModal: React.FC<DepositModalProps> = ({
         )}
       </Flex>
       <ModalActions>
-        <ButtonOutlined height={'60px'} onClick={onDismiss} width="100%" disabled={pendingTx}>
+        <ButtonLight height={'60px'} onClick={onDismiss} width="100%" disabled={pendingTx}>
           {t('Cancel')}
-        </ButtonOutlined>
+        </ButtonLight>
         <ButtonPrimary
             height={'60px'}
             disabled={

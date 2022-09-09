@@ -17,7 +17,7 @@ const pools: SerializedPoolConfig[] = [
     token2: serializedTokens.neptune,
     isClassic: false,
     isAnchor: true,
-    earningToken: [serializedTokens.saturn, serializedTokens.neptune],
+    earningToken: [serializedTokens.weth, serializedTokens.neptune],
     stakingToken: new Token(MOONBASE, Pylon.getLiquidityAddresses(
         new Token(MOONBASE, serializedTokens.saturn.address, 18, serializedTokens.mars.symbol, serializedTokens.mars.name),
         new Token(MOONBASE, serializedTokens.neptune.address, 18, serializedTokens.saturn.symbol, serializedTokens.saturn.name),
@@ -35,7 +35,7 @@ const pools: SerializedPoolConfig[] = [
     token2: serializedTokens.neptune,
     isClassic: false,
     isAnchor: false,
-    earningToken: [serializedTokens.saturn, serializedTokens.neptune],
+    earningToken: [serializedTokens.weth, serializedTokens.neptune],
     stakingToken: new Token(MOONBASE, Pylon.getLiquidityAddresses(
         new Token(MOONBASE, serializedTokens.saturn.address, 18, serializedTokens.mars.symbol, serializedTokens.mars.name),
         new Token(MOONBASE, serializedTokens.neptune.address, 18, serializedTokens.saturn.symbol, serializedTokens.saturn.name),

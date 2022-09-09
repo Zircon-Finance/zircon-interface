@@ -44,6 +44,7 @@ export const mainnetTokens = defineTokens({
   mercury: new Token(MOONBASE, '0x37822de108affdd5cdcfdaaa2e32756da284db85', 18, 'MERC', 'Mercury'),
   jupiter: new Token(MOONBASE, '0x9aac6fb41773af877a2be73c99897f3ddfacf576', 18, 'JUP', 'Jupiter'),
   uranus: new Token(MOONBASE, '0xd9224c102a73e5941abfcd645e08623dc4d182bc', 18, 'URAN', 'Uranus'),
+  weth: new Token(MOONBASE, '0xD909178CC99d318e4D46e7E66a972955859670E1', 18, 'WETH', 'Wrapped Ether'),
 } as const)
 
 const tokens = () => {

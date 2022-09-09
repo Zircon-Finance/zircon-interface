@@ -306,7 +306,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
               case 'details':
                 const risk = gamma && (gamma.isLessThanOrEqualTo(0.7) || gamma.isGreaterThanOrEqualTo(0.5))
                 return (
-                  <TableData key={key}>
+                  <TableData key={key} style={{width: gamma ? '15%' : '12%'}}>
                     <CellInner>
                       <CellLayout>
                       <div style={{width: '70%', display: 'flex', marginLeft: '20px', alignItems: 'center'}}>

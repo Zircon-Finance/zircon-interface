@@ -164,12 +164,10 @@ export default function CurrencyInputPanel({
               </div>
               {account && currency && (
                 <TYPE.body
-                  onClick={onMax}
                   color={theme.text2}
                   fontWeight={400}
                   fontSize={14}
                   style={{ display: 'flex',
-                           cursor: 'pointer',
                            justifyContent: 'space-between',
                            width: '100%',
                            padding: showMaxButton ? '0px' : '10px 0 5px 5px'
@@ -177,7 +175,7 @@ export default function CurrencyInputPanel({
                 >
                   <div style={{display: 'flex', alignItems: 'center', fontSize: '13px'}}>
                   {account && currency && showMaxButton && label !== 'To' && (
-                  <StyledBalanceMax onClick={onMax}>MAX</StyledBalanceMax>
+                  <StyledBalanceMax onClick={onMax} style={{cursor: 'pointer'}}>MAX</StyledBalanceMax>
                   )}
                   <Text color={theme.whiteHalf}>
                     {!hideBalance && !!currency && selectedCurrencyBalance

@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { useTheme } from 'styled-components'
 import AddressInputPanel from '../../components/AddressInputPanel'
 import { ButtonError, ButtonLight, ButtonPrimary, ButtonConfirmed } from '../../components/Button'
-import Card, { GreyCard } from '../../components/Card'
+import Card from '../../components/Card'
 import { AutoColumn } from '../../components/Column'
 import ConfirmSwapModal from '../../components/swap/ConfirmSwapModal'
 import CurrencyInputPanel from '../../components/CurrencyInputPanel'
@@ -39,7 +39,7 @@ import {
   useSwapState
 } from '../../state/swap/hooks'
 import { useExpertModeManager, useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
-import { LinkButtonHidden, LinkButtonLeftSide, TYPE } from '../../theme'
+import { LinkButtonHidden, LinkButtonLeftSide } from '../../theme'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import AppBody from '../AppBody'
@@ -441,9 +441,9 @@ export default function Swap() {
                   (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
               </ButtonPrimary>
             ) : noRoute && userHasSpecifiedInputOutput ? (
-              <GreyCard style={{ textAlign: 'center' }}>
-                <TYPE.main mb="4px">{t('insufficientLiquidityForThisTrade')}</TYPE.main>
-              </GreyCard>
+              <ButtonPrimary disabled>
+                {t('insufficientLiquidityForThisTrade')}
+              </ButtonPrimary>
             ) : showApproveFlow ? (
               <RowBetween>
                 <ButtonConfirmed

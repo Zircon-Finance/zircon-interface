@@ -51,7 +51,7 @@ export interface ActionPanelProps {
   userDataReady: boolean
   expanded: boolean
   clickAction: Dispatch<SetStateAction<boolean>>
-  gamma: BigNumber
+  gamma: number
 }
 
 const expandAnimation = keyframes`
@@ -305,7 +305,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
       dispatch(fetchPoolsUserDataAsync(account))
     }
   }
-  const risk = gamma && (gamma.isLessThanOrEqualTo(0.7) || gamma.isGreaterThanOrEqualTo(0.5))
+  const risk = gamma && (gamma <= (0.7) || gamma >= (0.5))
 
   const TooltipContentRisk = () => {return (
     <ToolTip style={{bottom: '-15px', left: width <= 992 ? '-240px' : '50px'}} show={hoverRisk}>

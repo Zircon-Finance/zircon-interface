@@ -40,7 +40,6 @@ import {useBlockNumber, useWalletModalToggle} from "../../state/application/hook
 import { Field } from "../../state/mint/actions";
 import {
   useDerivedPylonMintInfo,
-  useHealthFactor,
   useMintActionHandlers,
   useMintState,
 } from "../../state/mint/pylonHooks";
@@ -145,6 +144,7 @@ export default function AddLiquidityPro({
     liquidityMinted,
     //poolTokenPercentage,
     error,
+    healthFactor
   } = useDerivedPylonMintInfo(
       currencyA ?? undefined,
       currencyB ?? undefined,
@@ -773,8 +773,7 @@ export default function AddLiquidityPro({
   const blockNumber = useBlockNumber()
   const gammaBig = useGamma(pylonPair?.address)
   const gamma = new BigNumberJs(gammaBig).div(new BigNumberJs(10).pow(18))
-  
-  const healthFactor = useHealthFactor(pylonPair)
+
   console.log("healthFactor", healthFactor)
 
   return (

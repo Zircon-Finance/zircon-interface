@@ -14,7 +14,7 @@ import RiskHealthIcon from "../../../../components/RiskHealthIcon";
 import TrendingHealthIcon from "../../../../components/TrendingHealthIcon";
 import QuestionMarkIcon from "../../../../components/QuestionMarkIcon";
 import { QuestionMarkContainer, ToolTip } from "../FarmTable/Row";
-import CapacityIndicatorSmall from "../../../../components/CapacityIndicatorSmall";
+import CapacityIndicatorSmall from "../../../../components/CapacityIndicatorSmall/index";
 
 export interface ExpandableSectionProps {
   lpLabel?: string;
@@ -131,7 +131,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
               <RiskHealthIcon /> : <TrendingHealthIcon />}
               <Text width={"max-content"} ml={'10px'} color={theme.text1}>{risk ? gamma.toFixed(2) : 'High Risk'}</Text>
               </> )
-              : <CapacityIndicatorSmall gamma={gamma.toFixed(2)} />}
+              : <CapacityIndicatorSmall gamma={gamma.toFixed(2)}  />}
               <QuestionMarkContainer
                 onMouseEnter={() => setHoverRisk(true)}
                 onMouseLeave={() => setHoverRisk(false)}

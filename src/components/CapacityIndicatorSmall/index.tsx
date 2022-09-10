@@ -11,11 +11,25 @@ const Battery = styled.div`
     align-self: center;
 `
 
-const CapacityIndicatorSmall = (gamma) => {
+interface Props {
+  gamma?: any
+  health?: string
+  isFloat?: boolean
+}
+
+const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat}) => {
   return (
     <Flex>
-        <span>{`${gamma >= 0.7 ? 'Full' : gamma < 0.4 ? 'Empty' : 'Free'}`}</span>
-        <Battery style={{ border: `1px solid ${gamma >= 0.7 ? '#FFF000' : gamma < 0.4 ? '#FF0000' : '#00FF00'}` }} />
+        {isFloat ? <>
+            <span>{`${gamma >= 0.7 ? 'Full' : gamma < 0.4 ? 'Empty' : 'Free'}`}</span>
+            <Battery style={{ border: `1px solid ${gamma >= 0.7 ? '#FFF000' : gamma < 0.4 ? '#FF0000' : '#00FF00'}` }} />
+          </> 
+          : 
+          <>
+            <span>{`${health === 'low' ? 'Low' : health === 'medium' ? 'Medium' : 'High'}`}</span>
+            <Battery style={{ border: `1px solid ${health === 'low' ? '#00FF00' : health === 'medium' ? '#FF0000' : '#FFF000'}` }} />
+          </>
+        }
     </Flex>
   )
 }

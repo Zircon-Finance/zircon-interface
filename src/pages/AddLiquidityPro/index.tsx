@@ -146,7 +146,7 @@ export default function AddLiquidityPro({
     //poolTokenPercentage,
     error,
     healthFactor,
-      gamma
+    gamma
   } = useDerivedPylonMintInfo(
       currencyA ?? undefined,
       currencyB ?? undefined,
@@ -775,8 +775,9 @@ export default function AddLiquidityPro({
   const blockNumber = useBlockNumber()
   // const gammaBig = useGamma(pylonPair?.address)
   const gammaAdjusted = new BigNumberJs(gamma).div(new BigNumberJs(10).pow(18))
+  const health = healthFactor?.toLowerCase()
 
-  console.log("healthFactor", healthFactor)
+  console.log("healthFactor", health)
 
   return (
       <>
@@ -1152,7 +1153,7 @@ export default function AddLiquidityPro({
 
             </AutoColumn>
 
-            {isFloat && currencyA && currencyB && pylonState === PylonState.EXISTS && <CapacityIndicator gamma={gammaAdjusted} />}
+            {(currencyA && currencyB && pylonState === PylonState.EXISTS) && <CapacityIndicator gamma={gammaAdjusted} health={health} isFloat={isFloat} />}
 
             {currencies[Field.CURRENCY_A] &&
             currencies[Field.CURRENCY_B] &&

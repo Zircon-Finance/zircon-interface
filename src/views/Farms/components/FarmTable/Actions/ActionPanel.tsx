@@ -40,7 +40,7 @@ import RiskHealthIcon from '../../../../../components/RiskHealthIcon'
 import TrendingHealthIcon from '../../../../../components/TrendingHealthIcon'
 import QuestionMarkIcon from '../../../../../components/QuestionMarkIcon'
 import { QuestionMarkContainer, ToolTip } from '../Row'
-import CapacityIndicatorSmall from '../../../../../components/CapacityIndicatorSmall'
+import CapacityIndicatorSmall from '../../../../../components/CapacityIndicatorSmall/index'
 
 export interface ActionPanelProps {
   apr: AprProps

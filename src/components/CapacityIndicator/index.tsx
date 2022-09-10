@@ -17,11 +17,17 @@ const Container = styled.div`
     margin: 10px auto 10px auto;
 `
 
-const CapacityIndicator = (gamma) => {
+interface Props {
+  gamma?: any
+  health?: string
+  isFloat?: boolean
+}
+
+const CapacityIndicator: React.FC<Props> = ({gamma, health, isFloat}) => {
   return (
     <Container>
-        <span>{'Capacity indicator'}</span>
-        <CapacityIndicatorSmall gamma={gamma} />
+        <span>{isFloat ? 'Capacity indicator' : 'Health factor'}</span>
+        <CapacityIndicatorSmall gamma={gamma} health={health} isFloat={isFloat} />
     </Container>
   )
 }

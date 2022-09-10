@@ -37,7 +37,7 @@ import { useCurrency } from '../../../../hooks/Tokens'
 import { usePylon } from '../../../../data/PylonReserves'
 import { useGamma } from '../../../../data/PylonData'
 import BigNumber from 'bignumber.js'
-import CapacityIndicatorSmall from '../../../../components/CapacityIndicatorSmall'
+import CapacityIndicatorSmall from '../../../../components/CapacityIndicatorSmall/index'
 // import { useFarmUser } from '../../../../state/farms/hooks'
 
 export interface RowProps {

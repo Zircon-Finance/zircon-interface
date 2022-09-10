@@ -39,8 +39,7 @@ export function useDerivedPylonMintInfo(
   liquidityMinted?: TokenAmount
   poolTokenPercentage?: Percent
   error?: string,
-  healthFactor?: String,
-  gamma: number
+  healthFactor?: string,
 } {
   const { account, chainId } = useActiveWeb3React()
 
@@ -87,7 +86,7 @@ export function useDerivedPylonMintInfo(
             pylonInfo[8],
             JSBI.BigInt(lastK),
             pylonConstants
-        ) : undefined
+        ).toString() : undefined
   }, [pylonInfo, pylonPair, ptbEnergy, reserveAnchor, pylonPoolBalance, totalSupply, lastK, pylonConstants])
   const noPylon: boolean =
       pylonState === PylonState.NOT_EXISTS || Boolean(pylonSupply && JSBI.equal(pylonSupply.raw, ZERO))
@@ -224,8 +223,7 @@ export function useDerivedPylonMintInfo(
     liquidityMinted,
     //poolTokenPercentage,
     error,
-    healthFactor,
-    gamma: pylonInfo ? pylonInfo[2] : 0,
+    healthFactor
   }
 }
 

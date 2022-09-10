@@ -21,12 +21,13 @@ interface Props {
   gamma?: any
   health?: string
   isFloat?: boolean
+    noSpan?: boolean
 }
 
-const CapacityIndicator: React.FC<Props> = ({gamma, health, isFloat}) => {
+const CapacityIndicator: React.FC<Props> = ({gamma, health, isFloat, noSpan}) => {
   return (
     <Container>
-        <span>{isFloat ? 'Capacity indicator' : 'Health factor'}</span>
+        {!noSpan && <span>{isFloat ? 'Capacity indicator' : 'Health factor'}</span>}
         <CapacityIndicatorSmall gamma={gamma} health={health} isFloat={isFloat} />
     </Container>
   )

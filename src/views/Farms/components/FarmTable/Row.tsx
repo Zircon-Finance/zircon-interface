@@ -16,8 +16,6 @@ import CellLayout from './CellLayout'
 import { DesktopColumnSchema, MobileColumnSchema } from '../types'
 import Staked, { StakedProps } from './Staked'
 import { Flex, Text } from 'rebass'
-import RiskHealthIcon from '../../../../components/RiskHealthIcon'
-import TrendingHealthIcon from '../../../../components/TrendingHealthIcon'
 import QuestionMarkIcon from '../../../../components/QuestionMarkIcon'
 import StakeAdd from '../FarmCard/StakeAdd'
 import { useActiveWeb3React, useWindowDimensions } from '../../../../hooks'
@@ -34,9 +32,10 @@ import { useCallWithGasPrice } from '../../../../hooks/useCallWithGasPrice'
 import { useTokenBalance } from '../../../../state/wallet/hooks'
 import { Token } from 'zircon-sdk'
 import { useCurrency } from '../../../../hooks/Tokens'
-import CapacityIndicatorSmall from '../../../../components/CapacityIndicatorSmall'
 import {useDerivedPylonMintInfo} from "../../../../state/mint/pylonHooks";
 import BigNumberJs from "bignumber.js";
+import {useGamma} from "../../../../data/PylonData";
+import CapacityIndicatorSmall from "../../../../components/CapacityIndicatorSmall";
 // import { useFarmUser } from '../../../../state/farms/hooks'
 
 export interface RowProps {
@@ -171,20 +170,20 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   } = props
   const [currency1,currency2] = [useCurrency(details.token1.address),useCurrency(details.token2.address)]
   // const [, pylonPair] = usePylon(currency1, currency2)
-  // const gammaBig = useGamma(pylonPair?.address)
 
   // const gamma = new BigNumber(gammaBig).div(new BigNumber(10).pow(18))
   // const healthFactor = useHealthFactor(currency1, currency2)
   const {
-    healthFactor,
-    gamma
+    pylonPair,
+    healthFactor
   } = useDerivedPylonMintInfo(
       currency1 ?? undefined,
       currency2 ?? undefined,
       false,
       "off"
   );
-  console.log('healthFactor',healthFactor)
+  const gamma = useGamma(pylonPair?.address)
+
   const hasStakedAmount = !!usePool(details.sousId).pool.userData.stakedBalance.toNumber()
   const [actionPanelExpanded, setActionPanelExpanded] = useState(false)
   const [hovered, setHovered] = useState(false)
@@ -318,19 +317,13 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
 
             switch (key) {
               case 'details':
-                const risk = gammaAdjusted && (gammaAdjusted.isLessThanOrEqualTo(0.7) || gammaAdjusted.isGreaterThanOrEqualTo(0.5))
+                // const risk = gammaAdjusted && (gammaAdjusted.isLessThanOrEqualTo(0.7) || gammaAdjusted.isGreaterThanOrEqualTo(0.5))
                 return (
                   <TableData key={key} style={{width: gamma ? '15%' : '12%'}}>
                     <CellInner>
                       <CellLayout>
-                      <div style={{width: '70%', display: 'flex', marginLeft: '20px', alignItems: 'center'}}>
-                            {props.farm.isAnchor ? (
-                              <>
-                              {risk ?
-                              <RiskHealthIcon /> : <TrendingHealthIcon />}
-                              <Text width={"max-content"} ml={'10px'} color={theme.text1}>{risk ? gammaAdjusted.toFixed(2) : 'High Risk'}</Text>
-                              </> )
-                            : <CapacityIndicatorSmall gamma={gammaAdjusted.toFixed(2)} />}
+                      <div style={{width: '70%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
+                            <CapacityIndicatorSmall gamma={gammaAdjusted} health={healthFactor} isFloat={!props.farm.isAnchor} noSpan={true}/>
                             <QuestionMarkContainer
                               onMouseEnter={() => setHoverRisk(true)}
                               onMouseLeave={() => setHoverRisk(false)}
@@ -497,7 +490,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
       {shouldRenderChild && (
         <tr style={{display: 'flex', flexDirection: 'column'}}>
           <td colSpan={6}>
-            <ActionPanel {...props} expanded={actionPanelExpanded} clickAction={setActionPanelExpanded} gamma={gammaAdjusted.toNumber()} />
+            <ActionPanel {...props} expanded={actionPanelExpanded} clickAction={setActionPanelExpanded} gamma={gammaAdjusted.toNumber()}healthFactor={healthFactor} />
           </td>
         </tr>
       )}

@@ -184,7 +184,6 @@ export default function Pool() {
               {width <= 700 && (<SmallerQuestionmark />)}
               <div style={{width: '15%', height: '100%'}}>
                   <TriMenu />
-
               </div>
               <div style={{width: '85%',display: 'flex', justifyContent: 'center'}}>
                 <ButtonSecondary style={{borderRadius: '17px', marginRight: '5px', padding: '0px', fontWeight: 500, fontSize: width > 992 ? '18px' : '13px', color: theme.pinkBrown}} as={Link} to={'/find'}>{'Import'}</ButtonSecondary>

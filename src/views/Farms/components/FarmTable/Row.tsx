@@ -34,10 +34,9 @@ import { useCallWithGasPrice } from '../../../../hooks/useCallWithGasPrice'
 import { useTokenBalance } from '../../../../state/wallet/hooks'
 import { Token } from 'zircon-sdk'
 import { useCurrency } from '../../../../hooks/Tokens'
-import { usePylon } from '../../../../data/PylonReserves'
-import { useGamma } from '../../../../data/PylonData'
-import BigNumber from 'bignumber.js'
-import CapacityIndicatorSmall from '../../../../components/CapacityIndicatorSmall/index'
+import CapacityIndicatorSmall from '../../../../components/CapacityIndicatorSmall'
+import {useDerivedPylonMintInfo} from "../../../../state/mint/pylonHooks";
+import BigNumberJs from "bignumber.js";
 // import { useFarmUser } from '../../../../state/farms/hooks'
 
 export interface RowProps {
@@ -166,14 +165,26 @@ const collapseAnimation = keyframes`
 
 const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const [isVisible, setIsVisible] = useState(false)
-  const { 
+  const {
     details,
-     userDataReady, 
+     userDataReady,
   } = props
   const [currency1,currency2] = [useCurrency(details.token1.address),useCurrency(details.token2.address)]
-  const [, pylonPair] = usePylon(currency1, currency2)
-  const gammaBig = useGamma(pylonPair?.address)
-  const gamma = new BigNumber(gammaBig).div(new BigNumber(10).pow(18))
+  // const [, pylonPair] = usePylon(currency1, currency2)
+  // const gammaBig = useGamma(pylonPair?.address)
+
+  // const gamma = new BigNumber(gammaBig).div(new BigNumber(10).pow(18))
+  // const healthFactor = useHealthFactor(currency1, currency2)
+  const {
+    healthFactor,
+    gamma
+  } = useDerivedPylonMintInfo(
+      currency1 ?? undefined,
+      currency2 ?? undefined,
+      false,
+      "off"
+  );
+  console.log('healthFactor',healthFactor)
   const hasStakedAmount = !!usePool(details.sousId).pool.userData.stakedBalance.toNumber()
   const [actionPanelExpanded, setActionPanelExpanded] = useState(false)
   const [hovered, setHovered] = useState(false)
@@ -217,7 +228,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
       <Text fontSize='13px' fontWeight={500} color={theme.text1}>
         {'Tokens rewarded per block:'}
       </Text>
-      { account ? details.earningToken.map((token) => <RewardPerBlock token={token} />) : 
+      { account ? details.earningToken.map((token) => <RewardPerBlock token={token} />) :
         <Text fontSize='13px' fontWeight={500} color={theme.text1}>
           {'Please connect your wallet'}
         </Text>
@@ -265,10 +276,10 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     }
   },
   [
-    dispatch, 
-    fetchWithCatchTxError, 
-    addPopup, 
-    addTransaction, 
+    dispatch,
+    fetchWithCatchTxError,
+    addPopup,
+    addTransaction,
     account,
     details.sousId,
     details.token1.symbol,
@@ -290,13 +301,14 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   props.farm.earningToken.forEach((token) => rewardTokens += `${token.symbol} `)
   const [hoverEarned, setHoverEarned] = useState(false)
   const [hoverRisk, setHoverRisk] = useState(false)
+  const gammaAdjusted = new BigNumberJs(gamma).div(new BigNumberJs(10).pow(18))
 
   const handleRenderRow = () => {
     if (!mobileVer) {
       return (
         !actionPanelExpanded && (
-        <StyledTr expanded={isVisible} onClick={toggleActionPanel} onMouseOver={() => setHovered(true)} 
-        onMouseOut={() => setHovered(false)} 
+        <StyledTr expanded={isVisible} onClick={toggleActionPanel} onMouseOver={() => setHovered(true)}
+        onMouseOut={() => setHovered(false)}
         style={{backgroundColor: hovered ? theme.cardExpanded : null, borderBottom: !darkMode ? `1px solid ${theme.cardExpanded}` : null}} >
           {Object.keys(props).map((key) => {
             const columnIndex = columnNames.indexOf(key)
@@ -306,7 +318,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
 
             switch (key) {
               case 'details':
-                const risk = gamma && (gamma.isLessThanOrEqualTo(0.7) || gamma.isGreaterThanOrEqualTo(0.5))
+                const risk = gammaAdjusted && (gammaAdjusted.isLessThanOrEqualTo(0.7) || gammaAdjusted.isGreaterThanOrEqualTo(0.5))
                 return (
                   <TableData key={key} style={{width: gamma ? '15%' : '12%'}}>
                     <CellInner>
@@ -316,9 +328,9 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                               <>
                               {risk ?
                               <RiskHealthIcon /> : <TrendingHealthIcon />}
-                              <Text width={"max-content"} ml={'10px'} color={theme.text1}>{risk ? gamma.toFixed(2) : 'High Risk'}</Text>
+                              <Text width={"max-content"} ml={'10px'} color={theme.text1}>{risk ? gammaAdjusted.toFixed(2) : 'High Risk'}</Text>
                               </> )
-                            : <CapacityIndicatorSmall gamma={gamma.toFixed(2)} />}
+                            : <CapacityIndicatorSmall gamma={gammaAdjusted.toFixed(2)} />}
                             <QuestionMarkContainer
                               onMouseEnter={() => setHoverRisk(true)}
                               onMouseLeave={() => setHoverRisk(false)}
@@ -327,7 +339,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                               )}
                             <QuestionMarkIcon />
                             </QuestionMarkContainer>
-                            </div>      
+                            </div>
                         <Details actionPanelToggled={actionPanelExpanded} />
                       </CellLayout>
                     </CellInner>
@@ -340,7 +352,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                       <CellLayout hovered={hovered} label={hovered && t(tableSchema[columnIndex].label)}>
                         <Flex width={'100%'} justifyContent={'space-between'}>
                         {createElement(cells[key], { ...props[key] })}
-                                                  
+
                         </Flex>
                       </CellLayout>
                     </CellInner>
@@ -423,8 +435,8 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
 
     return (
       !actionPanelExpanded && (
-      <StyledTr expanded={isVisible} onClick={toggleActionPanel} 
-      onMouseOver={() => setHovered(true)} 
+      <StyledTr expanded={isVisible} onClick={toggleActionPanel}
+      onMouseOver={() => setHovered(true)}
       onMouseOut={() => setHovered(false)}>
         <td>
           <tr style={{width: '100%', display: 'flex'}}>
@@ -461,7 +473,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                     <ButtonPinkGamma style={{fontSize: '13px', padding: '10px', borderRadius: '12px'}}
                     onClick={toggleWalletModal}>{'Connect wallet'}</ButtonPinkGamma>
                   )}
-                
+
               </CellLayout>
             </EarnedMobileCell>
             <AprMobileCell>
@@ -485,7 +497,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
       {shouldRenderChild && (
         <tr style={{display: 'flex', flexDirection: 'column'}}>
           <td colSpan={6}>
-            <ActionPanel {...props} expanded={actionPanelExpanded} clickAction={setActionPanelExpanded} gamma={gamma} />
+            <ActionPanel {...props} expanded={actionPanelExpanded} clickAction={setActionPanelExpanded} gamma={gammaAdjusted.toNumber()} />
           </td>
         </tr>
       )}

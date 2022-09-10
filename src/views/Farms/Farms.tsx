@@ -1,5 +1,5 @@
-import React, { 
-  // useEffect, useCallback, 
+import React, {
+  // useEffect, useCallback,
   useState, useRef, createContext, useMemo } from 'react'
 import BigNumber from 'bignumber.js'
 import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber'
@@ -19,16 +19,16 @@ import { getBalanceNumber } from '../../utils/formatBalance'
 // import isArchivedPid from '../../utils/farmHelpers'
 // import { latinise } from '../../utils/latinise'
 import { useIsDarkMode, useShowMobileSearchBarManager, useUserFarmsFilterAnchorFloat, useUserFarmsFilterPylonClassic, useUserFarmStakedOnly, useUserFarmsViewMode } from '../../state/user/hooks'
-import { 
+import {
   FarmFilter,
   // FarmFilter,
-  FarmFilterAnchorFloat, 
+  FarmFilterAnchorFloat,
   ViewMode } from '../../state/user/actions'
 import SearchInput from '../../components/SearchInput'
 import Table from './components/FarmTable/FarmTable'
 import { RowProps } from './components/FarmTable/Row'
-import { DesktopColumnSchema, 
-  // FarmWithStakedValue 
+import { DesktopColumnSchema,
+  // FarmWithStakedValue
 } from './components/types'
 import { AnchorFloatTab, FarmTabButtons, PylonClassicTab, ViewModeTabs } from '../../components/FarmSelectTabs'
 import FarmRepeatIcon from '../../components/FarmRepeatIcon'
@@ -203,15 +203,15 @@ const Farms: React.FC = ({ children }) => {
   const { pools, userDataLoaded } = usePools()
   const cakePrice = usePriceCakeBusd()
   const [
-    query, 
+    query,
     setQuery] = useState('')
   const [viewMode] = useUserFarmsViewMode()
   const [filter] = useUserFarmsFilterPylonClassic()
   const [filterAnchorFloat] = useUserFarmsFilterAnchorFloat()
   const { account } = useWeb3React()
   const [sortOption, setSortOption] = useState('hot')
-  const { observerRef, 
-    // isIntersecting 
+  const { observerRef,
+    // isIntersecting
   } = useIntersectionObserver()
   const chosenFarmsLength = useRef(0)
   const { width } = useWindowDimensions()
@@ -249,7 +249,7 @@ const Farms: React.FC = ({ children }) => {
       switch (sortOption) {
         case 'apr':
           // Ternary is needed to prevent pools without APR (like MIX) getting top spot
-          return orderBy(poolsToSort, (pool: DeserializedPool) => 
+          return orderBy(poolsToSort, (pool: DeserializedPool) =>
           lpAprs[pool.contractAddress] || 0, 'desc')
         case 'earned':
           return orderBy(
@@ -258,7 +258,7 @@ const Farms: React.FC = ({ children }) => {
               if (!pool.userData || !pool.earningTokenPrice) {
                 return 0
               }
-    
+
               return pool.userData.pendingReward.times(pool.earningTokenPrice).toNumber()
             },
             'desc',
@@ -297,30 +297,30 @@ const Farms: React.FC = ({ children }) => {
   chosenPools = useMemo(() => {
     let sortedPools = sortPools(sortOption, chosenPools).slice(0, NUMBER_OF_POOLS_VISIBLE)
     if (stakedOnly) {
-      sortedPools = stakedOnlyFarms 
+      sortedPools = stakedOnlyFarms
     }
     // else {
     //   sortedPools = activeFarms
     // }
     if (query) {
       const lowercaseQuery = query.toLowerCase()
-      sortedPools = sortedPools.filter((pool) => 
-      pool.token1.symbol.toLowerCase().includes(lowercaseQuery) || 
+      sortedPools = sortedPools.filter((pool) =>
+      pool.token1.symbol.toLowerCase().includes(lowercaseQuery) ||
       pool.token2.symbol.toLowerCase().includes(lowercaseQuery))
     }
 
     sortedPools =
-    filterAnchorFloat === FarmFilterAnchorFloat.ANCHOR ? 
-    sortedPools.filter((pool) => pool.isAnchor === true) : 
-    filterAnchorFloat === FarmFilterAnchorFloat.FLOAT ? 
+    filterAnchorFloat === FarmFilterAnchorFloat.ANCHOR ?
+    sortedPools.filter((pool) => pool.isAnchor === true) :
+    filterAnchorFloat === FarmFilterAnchorFloat.FLOAT ?
     sortedPools.filter((pool) => !pool.isAnchor === true) :
     sortedPools
 
-    sortedPools = 
+    sortedPools =
     filter === FarmFilter.CLASSIC ?
     sortedPools.filter((pool) => pool.isClassic === true) :
     sortedPools.filter((pool) => !pool.isClassic === true)
-    
+
     return sortedPools
   }, [query, stakedOnly, stakedOnlyFarms, chosenPools, sortOption, filterAnchorFloat, filter])
 
@@ -332,7 +332,7 @@ const Farms: React.FC = ({ children }) => {
     const tokenAddress = token1.address
     const quoteTokenAddress = token2.address
     const lpLabel = `${farm.token1.symbol}-${farm.token2.symbol}`
-    
+
 
     const row: RowProps = {
       apr: {
@@ -422,7 +422,7 @@ const Farms: React.FC = ({ children }) => {
           </Flex>
           <Flex position={'relative'} width={width < 500 ? showMobileSearchBar ? '100%' : 'auto' : 'auto'} height={'70px'}>
             { (!showMobileSearchBar || width > 500) && <ViewControls>
-              <ToggleWrapper style={{marginRight: '10px', position: 'relative'}}> 
+              <ToggleWrapper style={{marginRight: '10px', position: 'relative'}}>
                 <Text fontSize='13px' color={theme.text1} mr={'10px'} width={'max-content'} letterSpacing={'0.05em'}> {width > 700 ? 'STAKED ONLY' : 'STAKED'}</Text>
                 <Toggle
                   id="staked-only-farms"
@@ -444,14 +444,14 @@ const Farms: React.FC = ({ children }) => {
         </ControlContainer>
         <MainContainer>
           <table style={{width: '100%', borderBottom: `1px solid ${theme.opacitySmall}`, paddingBottom: '5px'}}>
-            <tr style={viewMode === ViewMode.CARD || (viewMode === ViewMode.TABLE && width <= 992) ? 
-              ({display: 'flex', justifyContent: 'space-between', alignItems: 'center'}) 
+            <tr style={viewMode === ViewMode.CARD || (viewMode === ViewMode.TABLE && width <= 992) ?
+              ({display: 'flex', justifyContent: 'space-between', alignItems: 'center'})
               : null}>
               <TableData style={{minWidth: width >= 600 ? '275px' : 'auto'}}>
                 <ViewModeTabs active={viewMode} />
               </TableData>
               {viewMode === ViewMode.TABLE && width > 992 ? options.map((option) => (
-                <TableData key={option} style={{cursor: 'pointer'}} onClick={() => 
+                <TableData key={option} style={{cursor: 'pointer'}} onClick={() =>
                 sortOption === option.toLowerCase() ? setSortOption('hot') :
                 setSortOption(option.toLowerCase())}>
                   <PinkArrows style={{display: 'flex', alignItems: 'center'}}>
@@ -494,7 +494,7 @@ const Farms: React.FC = ({ children }) => {
                     />
                   </TableData>
                 )}
-              {viewMode === ViewMode.TABLE && width > 992 && (<TableData style={{width: '15%'}}></TableData>)}
+              {viewMode === ViewMode.TABLE && width > 992 && (<TableData style={{width: '15%'}}/>)}
             </tr>
           </table>
             {renderContent()}

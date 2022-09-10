@@ -73,20 +73,22 @@ export function useDerivedPylonMintInfo(
   const energyAddress = Pylon.getEnergyAddress(pylonPair?.token0, pylonPair?.token1) //useEnergyAddress(pylonPair?.token0, pylonPair?.token1)
   const ptbEnergy = useTokenBalance(energyAddress, pylonPair?.pair.liquidityToken)
   const reserveAnchor = useTokenBalance(energyAddress, pylonPair?.anchorLiquidityToken)
-  console.log("ptb", "resA", ptbEnergy, reserveAnchor)
-  let healthFactor = pylonInfo && pylonPair && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && lastK && pylonConstants ? pylonPair.getHealthFactor(
-      pylonInfo[0],
-      pylonPoolBalance,
-      totalSupply,
-      reserveAnchor?.raw,
-      ptbEnergy?.raw,
-      pylonInfo[9],
-      pylonInfo[1],
-      pylonInfo[7],
-      pylonInfo[8],
-      lastK,
-      pylonConstants
-  ) : undefined
+  const healthFactor = useMemo(() => {
+    return pylonInfo && pylonPair && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && lastK && pylonConstants ?
+        pylonPair.getHealthFactor(
+            pylonInfo[0],
+            pylonPoolBalance,
+            totalSupply,
+            reserveAnchor.raw,
+            ptbEnergy.raw,
+            pylonInfo[9],
+            pylonInfo[1],
+            pylonInfo[7],
+            pylonInfo[8],
+            JSBI.BigInt(lastK),
+            pylonConstants
+        ) : undefined
+  }, [pylonInfo, pylonPair, ptbEnergy, reserveAnchor, pylonPoolBalance, totalSupply, lastK, pylonConstants])
   const noPylon: boolean =
       pylonState === PylonState.NOT_EXISTS || Boolean(pylonSupply && JSBI.equal(pylonSupply.raw, ZERO))
 
@@ -254,9 +256,21 @@ export function useMintActionHandlers(
   }
 }
 
-export const useHealthFactor = (pylonPair : Pylon) => {
+export const useHealthFactor = (  currencyA: Currency | undefined,
+                                  currencyB: Currency | undefined,) => {
+
+  const currencies: { [field in Field]?: Currency } = useMemo(
+      () => ({
+        [Field.CURRENCY_A]: currencyA ?? undefined,
+        [Field.CURRENCY_B]: currencyB ?? undefined
+      }),
+      [currencyA, currencyB]
+  )
+
+  const [,pylonPair] = usePylon(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B])
   const pylonInfo = usePylonInfo(pylonPair?.address)
   const energyAddress = Pylon.getEnergyAddress(pylonPair?.token0, pylonPair?.token1) //useEnergyAddress(pylonPair?.token0, pylonPair?.token1)
+  console.log(pylonPair?.pair.liquidityToken)
   const ptbEnergy = useTokenBalance(energyAddress, pylonPair?.pair.liquidityToken)
   const reserveAnchor = useTokenBalance(energyAddress, pylonPair?.anchorLiquidityToken)
   const ptb = useTokenBalance(pylonPair?.address, pylonPair?.pair.liquidityToken)
@@ -269,19 +283,22 @@ export const useHealthFactor = (pylonPair : Pylon) => {
   console.log("ptt", ptt)
   console.log("lastK", lastK)
   console.log("ea", energyAddress)
-
-  const healthFactorResult = pylonInfo && pylonPair && ptbEnergy && reserveAnchor && ptb && ptt && lastK && pylonFactory && pylonPair.getHealthFactor(
-      pylonInfo[0],
-      ptb,
-      ptt,
-      reserveAnchor.raw,
-      ptbEnergy.raw,
-      pylonInfo[9],
-      pylonInfo[1],
-      pylonInfo[7],
-      pylonInfo[8],
-      JSBI.BigInt(lastK),
-      pylonFactory
-  ).toString()
+  const healthFactorResult = useMemo(() => {
+    return pylonInfo && pylonPair && ptbEnergy && reserveAnchor && ptb && ptt && lastK && pylonFactory ?
+        pylonPair.getHealthFactor(
+            pylonInfo[0],
+            ptb,
+            ptt,
+            reserveAnchor.raw,
+            ptbEnergy.raw,
+            pylonInfo[9],
+            pylonInfo[1],
+            pylonInfo[7],
+            pylonInfo[8],
+            JSBI.BigInt(lastK),
+            pylonFactory
+        ) : 'Loading...'
+  }, [pylonInfo, pylonPair, ptbEnergy, reserveAnchor, ptb, ptt, lastK, pylonFactory])
+  console.log('energyAddress', energyAddress)
   return healthFactorResult
 }

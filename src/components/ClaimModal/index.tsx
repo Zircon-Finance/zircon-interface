@@ -9,13 +9,13 @@ import { useTheme } from 'styled-components'
 import Balance from '../Balance'
 import {providers, ethers, BigNumber} from "ethers";
 import airdrop_abi from "../../constants/abi/airdrop_abi.json";
-import { proofData } from '../../constants/proofDats'
 import { useActiveWeb3React } from '../../hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { AutoColumn } from '../Column'
 import { LottieContainer } from '../../pages/App'
 import animation from '../../assets/lotties/claim_lottie.json'
 import Lottie from "lottie-react-web";
+import axios from 'axios'
 
 
 
@@ -36,7 +36,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
   const theme = useTheme()
 
   const provider = account && new providers.Web3Provider(window.ethereum)
-  const airdrop_address = '0x0dB43854E3143b383461a0Df4054d820fc4Be4D2'
+  const airdrop_address = '0xfcb63d9D26965093fd7F87EC4Ce71D7b5949A49d'
   const abi = airdrop_abi
 
   // call contract airdrop
@@ -47,30 +47,47 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
   const airdropWithSigner = airdrop_contract?.connect(signer)
 
   // proofData leaves
-  const leaves = proofData[0].leavesWithProof;
-
   const [, setHash] = useState("");
   const toggleWalletModal = useWalletModalToggle()
-  const [claimStatus, setClaimStatus] = useState(false);
   const [dataUser, setDataUser] = useState({
     address: "",
     amount: 0,
     index: '0',
     proof: [],
+    isClaimed: false,
   });
+  const [hasJustClaimed, setHasJustClaimed] = useState(false)
 
-  useEffect(() => {
-    account && setDataUser(leaves.find(user => user?.address === account))
+  const check = (data) => {
+    const dummyData = {
+      address: data?.body?.data?.address,
+      amount: data?.body?.data?.amount,
+      index: data?.body?.data?.index,
+      proof: data?.body?.data?.proof,
+      isClaimed: false,
+    }
+
     airdropWithSigner?.check(
-                BigNumber.from(dataUser?.index || 0) ,
-                account,  
-                BigNumber.from(dataUser?.amount || 0), 
-                dataUser?.proof).then((res: any) => {
-      setClaimStatus(false)
-    }).catch(() => {
-      setClaimStatus(true)
-  })
-  }, [dataUser, account, leaves])
+      BigNumber.from(dummyData?.index),
+      dataUser?.address,  
+      BigNumber.from(dummyData?.amount), 
+      dataUser?.proof).then((res: any) => {
+        setDataUser(dummyData)
+        }).catch(() => {
+          setDataUser({...dummyData, isClaimed: true})
+      })
+  }
+
+  const getUserData = async (address) => {
+    await axios.get(`https://edgeapi.zircon.finance/proofs/${address}`).then((res) => {
+      console.log('res', res)
+    res?.data?.body?.data?.index && check(res?.data)
+    });
+  }
+  
+  useEffect(() => {
+    account && getUserData(account)
+  }, [])
 
   const modalStyle = {
     position: 'absolute',
@@ -84,7 +101,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
               fontSize="45px"
               color={theme.text1}
               decimals={2}
-              value={dataUser?.amount ?? 0}
+              value={dataUser?.amount}
               unit={` `}
               prefix=" "
               textAlign={'center'}
@@ -97,7 +114,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
           <Text fontSize={'13px'} color={theme.text1} textAlign={'center'}>{'Read more about token distribution here.'}</Text>
         </AutoColumn>
       <ButtonOutlined style={{ alignSelf: 'center', background: theme.poolPinkButton, width: '100%'}}
-      disabled={(account && !dataUser?.amount) || (account && claimStatus)}
+      disabled={(account && !dataUser?.amount) || (account && dataUser.isClaimed)}
       onClick={
         () => 
         account ? 
@@ -106,33 +123,26 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
                 BigNumber.from(dataUser?.amount), 
                 dataUser?.proof).then(
                     function(transaction){
-                        setClaimStatus(true)
+                        setDataUser({...dataUser, isClaimed: true})
+                        setHasJustClaimed(true)
                         setHash(transaction.hash)
                     }
                 ).catch((error) => {
-                        setClaimStatus(true)
+                    setDataUser({...dataUser, isClaimed: true})
                 })
               : [onDismiss(),toggleWalletModal()]
               }>
         <Text style={{textDecoration: 'none', color: '#fff'}} >
-          {account ? !dataUser?.amount ? 'Nothing to claim' : claimStatus ? 'Already claimed' : 'Claim tokens' : 'Connect wallet'}</Text>
+          {account ? (!dataUser?.amount && !dataUser?.isClaimed) ? 'Nothing to claim' : dataUser?.isClaimed ? 'Already claimed' : 'Claim tokens' : 'Connect wallet'}</Text>
       </ButtonOutlined>
-      {() => airdropWithSigner?.check(
-            BigNumber.from(dataUser?.index),
-            account,  
-            BigNumber.from(dataUser?.amount), 
-            dataUser?.proof).then((res: any) => {
-              return(<LottieContainer style={{background: 'transparent', top: 0, right: 0, pointerEvents: 'none'}}>
-              <Lottie options={{
-                loop: false,
-                autoplay: true,
-                animationData: animation,
-              }}/>
-            </LottieContainer>)
-      }).catch(() => {
-        setClaimStatus(true)
-        return (<> </>)
-      })}
+      {hasJustClaimed && <LottieContainer style={{background: 'transparent', top: 0, right: 0, pointerEvents: 'none'}}>
+          <Lottie options={{
+            loop: false,
+            autoplay: true,
+            animationData: animation,
+          }}/>
+        </LottieContainer>
+      }
     </Modal>
   )
 }

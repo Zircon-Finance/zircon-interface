@@ -39,7 +39,8 @@ export function useDerivedPylonMintInfo(
   liquidityMinted?: TokenAmount
   poolTokenPercentage?: Percent
   error?: string,
-  healthFactor?: String
+  healthFactor?: String,
+  gamma: number
 } {
   const { account, chainId } = useActiveWeb3React()
 
@@ -221,7 +222,8 @@ export function useDerivedPylonMintInfo(
     liquidityMinted,
     //poolTokenPercentage,
     error,
-    healthFactor
+    healthFactor,
+    gamma: pylonInfo ? pylonInfo[2] : 0,
   }
 }
 

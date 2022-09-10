@@ -15,10 +15,11 @@ import {
 } from "../../components/Button";
 import { BlueCard, GreyCard, LightCard } from "../../components/Card";
 import { AutoColumn, ColumnCenter } from "../../components/Column";
-import BigNumberJs from 'bignumber.js';
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
 } from "../../components/TransactionConfirmationModal";
+import BigNumberJs from 'bignumber.js';
+
 import CurrencyInputPanelInputOnly from "../../components/CurrencyInputPanelInputOnly";
 import CurrencyInputPanelPicOnly from "../../components/CurrencyInputPanelPicOnly";
 import CurrencyInputPanelBalOnly from "../../components/CurrencyInputPanelBalOnly";
@@ -71,7 +72,7 @@ import { fetchPoolsUserDataAsync } from "../../state/pools";
 import { useDispatch } from "react-redux";
 import {AddressZero}  from "@ethersproject/constants";
 import InfoCircle from "../../components/InfoCircle";
-import {useGamma, usePylonConstants} from "../../data/PylonData";
+import {usePylonConstants} from "../../data/PylonData";
 import Lottie from "lottie-react-web";
 import animation from '../../assets/lotties/0uCdcx9Hn5.json'
 import CapacityIndicator from "../../components/CapacityIndicator";
@@ -144,7 +145,8 @@ export default function AddLiquidityPro({
     liquidityMinted,
     //poolTokenPercentage,
     error,
-    healthFactor
+    healthFactor,
+      gamma
   } = useDerivedPylonMintInfo(
       currencyA ?? undefined,
       currencyB ?? undefined,
@@ -771,8 +773,8 @@ export default function AddLiquidityPro({
   const { width } = useWindowDimensions();
   const pylonConstants = usePylonConstants()
   const blockNumber = useBlockNumber()
-  const gammaBig = useGamma(pylonPair?.address)
-  const gamma = new BigNumberJs(gammaBig).div(new BigNumberJs(10).pow(18))
+  // const gammaBig = useGamma(pylonPair?.address)
+  const gammaAdjusted = new BigNumberJs(gamma).div(new BigNumberJs(10).pow(18))
 
   console.log("healthFactor", healthFactor)
 
@@ -1150,8 +1152,7 @@ export default function AddLiquidityPro({
 
             </AutoColumn>
 
-            {isFloat && currencyA && currencyB &&
-             <CapacityIndicator gamma={gamma.toFixed(2)} />}
+            {isFloat && currencyA && currencyB && pylonState === PylonState.EXISTS && <CapacityIndicator gamma={gammaAdjusted} />}
 
             {currencies[Field.CURRENCY_A] &&
             currencies[Field.CURRENCY_B] &&

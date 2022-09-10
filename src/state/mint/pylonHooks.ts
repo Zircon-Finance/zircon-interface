@@ -236,7 +236,7 @@ export function useMintActionHandlers(
 
 export const useHealthFactor = (pylonPair : Pylon) => {
   const pylonInfo = usePylonInfo(pylonPair?.address)
-  const energyAddress = useEnergyAddress(pylonPair?.token0.address, pylonPair?.token1.address)
+  const energyAddress = useEnergyAddress(pylonPair?.token0, pylonPair?.token1)
   const ptbEnergy = useTokenBalance(energyAddress, pylonPair?.pair.liquidityToken)
   const reserveAnchor = useTokenBalance(energyAddress, pylonPair?.anchorLiquidityToken)
   const ptb = useTokenBalance(pylonPair?.address, pylonPair?.pair.liquidityToken)
@@ -249,8 +249,8 @@ export const useHealthFactor = (pylonPair : Pylon) => {
       pylonInfo[0],
       ptb,
       ptt,
-      JSBI.BigInt(reserveAnchor),
-      JSBI.BigInt(ptbEnergy),
+      reserveAnchor.raw,
+      ptbEnergy.raw,
       pylonInfo[9],
       pylonInfo[1],
       pylonInfo[7],
@@ -258,5 +258,6 @@ export const useHealthFactor = (pylonPair : Pylon) => {
       JSBI.BigInt(lastK),
       pylonFactory
   ) : 'Loading...'
+  console.log('energyAddress', energyAddress)
   return healthFactorResult
 }

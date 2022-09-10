@@ -7,7 +7,7 @@ import {
     usePylonFactoryContract
 } from '../hooks/useContract'
 import {useSingleCallResult, useSingleContractMultipleMethods} from '../state/multicall/hooks'
-import {MOONBASE_ADDRESSES, PylonFactory, Token} from "zircon-sdk";
+import {MOONBASE_ADDRESSES, PylonFactory} from "zircon-sdk";
 
 // returns undefined if input token is undefined, or fails to get token contract,
 // or contract total supply cannot be fetched
@@ -84,11 +84,4 @@ export function usePylonConstants(): PylonFactory | undefined {
     let result = pylonResult.concat(pairResult).concat(energyResult)?.flatMap<any>((res => res?.result)).filter(t => t !== undefined)
     return result && result.length > 10 ? new PylonFactory(result[0], result[1], result[2], result[3], result[4], result[5], result[6],
         result[7], result[8], result[9], result[10], result[11]) : undefined
-}
-
-export const useEnergyAddress = (token0: Token, token1: Token) => {
-    const energyFactoryContract = useEnergyFactoryContract(MOONBASE_ADDRESSES.energyFactory, false)
-    console.log('Calling energy contract ', energyFactoryContract.address, ' with ', token0?.address,token0?.name, token1?.address, token1?.name)
-    let result = useSingleCallResult(energyFactoryContract, "getEnergy", [token0?.address, token1?.address])
-    return result?.result?.[0]
 }

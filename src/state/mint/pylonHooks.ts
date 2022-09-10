@@ -11,7 +11,7 @@ import { tryParseAmount } from '../swap/hooks'
 import {useCurrencyBalances, useTokenBalance} from '../wallet/hooks'
 import { Field, typeInput } from './actions'
 import { usePylon, PylonState } from '../../data/PylonReserves'
-import {useEnergyAddress, useLastK, usePylonConstants, usePylonInfo,} from "../../data/PylonData";
+import {useLastK, usePylonConstants, usePylonInfo,} from "../../data/PylonData";
 import {useBlockNumber} from "../application/hooks";
 import { usePylonFactoryContract } from '../../hooks/useContract'
 
@@ -237,16 +237,24 @@ export function useMintActionHandlers(
 export const useHealthFactor = (pylonPair : Pylon) => {
   const pylonInfo = usePylonInfo(pylonPair?.address)
   const energyAddress = Pylon.getEnergyAddress(pylonPair?.token0, pylonPair?.token1) //useEnergyAddress(pylonPair?.token0, pylonPair?.token1)
-  console.log("ea", energyAddress)
   const ptbEnergy = useTokenBalance(energyAddress, pylonPair?.pair.liquidityToken)
   const reserveAnchor = useTokenBalance(energyAddress, pylonPair?.anchorLiquidityToken)
   const ptb = useTokenBalance(pylonPair?.address, pylonPair?.pair.liquidityToken)
   const ptt = useTotalSupply(pylonPair?.anchorLiquidityToken)
   const lastK = useLastK(pylonPair?.address)
   const pylonFactory = usePylonFactoryContract()
+  console.log({
+    'pylonInfo': pylonInfo,
+    'energyAddress': energyAddress,
+    'ptbEnergy': ptbEnergy,
+    'reserveAnchor': reserveAnchor,
+    'ptb': ptb,
+    'ptt': ptt,
+    'lastK': lastK,
+    'pylonFactory': pylonFactory
+  })
 
-  const healthFactorResult = pylonInfo && pylonPair && ptbEnergy && reserveAnchor && ptb && ptt && lastK && pylonFactory ?
-  pylonPair.getHealthFactor(
+  const healthFactorResult = pylonInfo && pylonPair && ptbEnergy && reserveAnchor && ptb && ptt && lastK && pylonFactory && pylonPair.getHealthFactor(
       pylonInfo[0],
       ptb,
       ptt,
@@ -258,7 +266,6 @@ export const useHealthFactor = (pylonPair : Pylon) => {
       pylonInfo[8],
       JSBI.BigInt(lastK),
       pylonFactory
-  ) : 'Loading...'
-  console.log('energyAddress', energyAddress)
+  ).toString()
   return healthFactorResult
 }

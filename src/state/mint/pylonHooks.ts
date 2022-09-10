@@ -236,7 +236,8 @@ export function useMintActionHandlers(
 
 export const useHealthFactor = (pylonPair : Pylon) => {
   const pylonInfo = usePylonInfo(pylonPair?.address)
-  const energyAddress = useEnergyAddress(pylonPair?.token0, pylonPair?.token1)
+  const energyAddress = Pylon.getEnergyAddress(pylonPair?.token0, pylonPair?.token1) //useEnergyAddress(pylonPair?.token0, pylonPair?.token1)
+  console.log("ea", energyAddress)
   const ptbEnergy = useTokenBalance(energyAddress, pylonPair?.pair.liquidityToken)
   const reserveAnchor = useTokenBalance(energyAddress, pylonPair?.anchorLiquidityToken)
   const ptb = useTokenBalance(pylonPair?.address, pylonPair?.pair.liquidityToken)

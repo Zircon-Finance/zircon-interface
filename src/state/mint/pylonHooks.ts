@@ -38,7 +38,8 @@ export function useDerivedPylonMintInfo(
   noPylon?: boolean
   liquidityMinted?: TokenAmount
   poolTokenPercentage?: Percent
-  error?: string
+  error?: string,
+  healthFactor?: String
 } {
   const { account, chainId } = useActiveWeb3React()
 
@@ -68,7 +69,23 @@ export function useDerivedPylonMintInfo(
   const totalSupply = useTotalSupply(pylonPair?.pair.liquidityToken)
   const lastK = useLastK(pylonPair ? Pair.getAddress(pylonPair.token0, pylonPair.token1) : "");
   const pylonSupply = useTotalSupply(pylonPair?.pair.liquidityToken)
-
+  const energyAddress = Pylon.getEnergyAddress(pylonPair?.token0, pylonPair?.token1) //useEnergyAddress(pylonPair?.token0, pylonPair?.token1)
+  const ptbEnergy = useTokenBalance(energyAddress, pylonPair?.pair.liquidityToken)
+  const reserveAnchor = useTokenBalance(energyAddress, pylonPair?.anchorLiquidityToken)
+  console.log("ptb", "resA", ptbEnergy, reserveAnchor)
+  let healthFactor = pylonInfo && pylonPair && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && lastK && pylonConstants ? pylonPair.getHealthFactor(
+      pylonInfo[0],
+      pylonPoolBalance,
+      totalSupply,
+      reserveAnchor?.raw,
+      ptbEnergy?.raw,
+      pylonInfo[9],
+      pylonInfo[1],
+      pylonInfo[7],
+      pylonInfo[8],
+      lastK,
+      pylonConstants
+  ) : undefined
   const noPylon: boolean =
       pylonState === PylonState.NOT_EXISTS || Boolean(pylonSupply && JSBI.equal(pylonSupply.raw, ZERO))
 
@@ -203,7 +220,8 @@ export function useDerivedPylonMintInfo(
     noPylon,
     liquidityMinted,
     //poolTokenPercentage,
-    error
+    error,
+    healthFactor
   }
 }
 
@@ -243,16 +261,12 @@ export const useHealthFactor = (pylonPair : Pylon) => {
   const ptt = useTotalSupply(pylonPair?.anchorLiquidityToken)
   const lastK = useLastK(pylonPair?.address)
   const pylonFactory = usePylonFactoryContract()
-  console.log({
-    'pylonInfo': pylonInfo,
-    'energyAddress': energyAddress,
-    'ptbEnergy': ptbEnergy,
-    'reserveAnchor': reserveAnchor,
-    'ptb': ptb,
-    'ptt': ptt,
-    'lastK': lastK,
-    'pylonFactory': pylonFactory
-  })
+  console.log("ea", energyAddress)
+  console.log("ptbEnergy", ptbEnergy)
+  console.log("ptb", ptb)
+  console.log("ptt", ptt)
+  console.log("lastK", lastK)
+  console.log("ea", energyAddress)
 
   const healthFactorResult = pylonInfo && pylonPair && ptbEnergy && reserveAnchor && ptb && ptt && lastK && pylonFactory && pylonPair.getHealthFactor(
       pylonInfo[0],

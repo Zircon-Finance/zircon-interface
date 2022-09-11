@@ -142,7 +142,7 @@ export default function AddLiquidityPro({
     parsedAmounts,
     price,
     noPylon,
-    liquidityMinted,
+    mintInfo,
     //poolTokenPercentage,
     error,
     healthFactor,
@@ -346,7 +346,7 @@ export default function AddLiquidityPro({
       [Field.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, 0)[0],
       [Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, 0)[0]
     }
-    const liquidityMin = calculateSlippageAmount(liquidityMinted, noPylon ? 0 : allowedSlippage)[0]
+    const liquidityMin = calculateSlippageAmount(mintInfo.liquidity, noPylon ? 0 : allowedSlippage)[0]
 
     const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline;
 
@@ -595,7 +595,7 @@ export default function AddLiquidityPro({
         })
   }
 
-  const formattedLiquidity = (liquidityMinted?.toSignificant(
+  const formattedLiquidity = (mintInfo?.liquidity.toSignificant(
       6
   ) as unknown) as number;
 

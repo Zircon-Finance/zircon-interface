@@ -1,4 +1,4 @@
-import {Currency, CurrencyAmount, DEV, JSBI, Pair, Percent, Price, Pylon, TokenAmount} from 'zircon-sdk'
+import {BASE, Currency, CurrencyAmount, DEV, JSBI, Pair, Percent, Price, Pylon, TokenAmount} from 'zircon-sdk'
 import {useCallback, useMemo} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {useTotalSupply} from '../../data/TotalSupply'
@@ -41,6 +41,12 @@ export function useDerivedPylonMintInfo(
     blocked: boolean;
     fee: TokenAmount;
     deltaApplied: boolean;
+    amountsToInvest?: {
+      sync: JSBI;
+      async: JSBI;
+    };
+    extraSlippagePercentage?: JSBI;
+    extraFeeTreshold?: JSBI;
   }
   poolTokenPercentage?: Percent
   error?: string,
@@ -162,16 +168,30 @@ export function useDerivedPylonMintInfo(
     if (pylonPair && pylonSupply && tokenAmountA && tokenAmountB && totalSupply && ptTotalSupply && userLiquidity && pylonPoolBalance && pylonInfo.length > 8 && pylonConstants) {
       if (sync === "off") {
         let syncMintInfo;
+        let extraFeeTreshold = ZERO;
         if (isFloat) {
           syncMintInfo = pylonPair.getFloatSyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA,
               pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
               pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK))
+          if (JSBI.greaterThan(syncMintInfo?.amountsToInvest.async, ZERO)) {
+            extraFeeTreshold = JSBI.divide(JSBI.multiply(tokenAmountA.raw, JSBI.divide(JSBI.multiply(syncMintInfo?.amountsToInvest.sync, BASE), syncMintInfo?.amountsToInvest.async)), BASE)
+          }
+
         }else{
           syncMintInfo = pylonPair.getAnchorSyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountB,
               pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
               pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK))
+          if (JSBI.greaterThan(syncMintInfo?.amountsToInvest.async, ZERO)) {
+            extraFeeTreshold = JSBI.divide(JSBI.multiply(tokenAmountB.raw, JSBI.divide(JSBI.multiply(syncMintInfo?.amountsToInvest.sync, BASE), syncMintInfo?.amountsToInvest.async)), BASE)
+
+          }
+
         }
-        return syncMintInfo
+
+
+            //{new BigNumberJs(syncMintInfo?.amountsToInvest.async.toString()).div(mintInfo?.amountsToInvest.sync.toString()).multipliedBy()}
+
+        return {...syncMintInfo, extraFeeTreshold: extraFeeTreshold}
       }else {
         let asyncMintInfo;
         if (isFloat) {

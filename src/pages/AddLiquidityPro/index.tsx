@@ -731,7 +731,7 @@ export default function AddLiquidityPro({
       [currencyIdB, history, currencyIdA, currencies]
   );
   const handleSwapCurrencies = useCallback(() => {
-      (currencyIdB !== undefined && currencyIdA !== undefined) && history.push(`/add-pro/${currencyIdB}/${currencyIdA}`);
+        (currencyIdB !== undefined && currencyIdA !== undefined) && history.push(`/add-pro/${currencyIdB}/${currencyIdA}`);
       },
       [currencyIdB, history, currencyIdA]
   );
@@ -774,18 +774,19 @@ export default function AddLiquidityPro({
   const blockNumber = useBlockNumber()
   const gammaBig = useGamma(pylonPair?.address)
   const gammaAdjusted = new BigNumberJs(gammaBig).div(new BigNumberJs(10).pow(18))
+  const feePercentage = ((new BigNumberJs(mintInfo?.fee.raw.toString()).multipliedBy(new BigNumberJs(10).pow(18))).div(mintInfo?.liquidity.raw.toString())).div(new BigNumberJs(10).pow(18))
   const health = healthFactor?.toLowerCase()
 
-
+  console.log("fee indicator", feePercentage.toString())
   return (
       <>
         {pylonState === PylonState.LOADING && account && (
             <LottieContainer style={{top: 0}}><Lottie
-            style={{width: "100px"}}
-            options={{
-                animationData: animation
-            }}
-          /></LottieContainer>
+                style={{width: "100px"}}
+                options={{
+                  animationData: animation
+                }}
+            /></LottieContainer>
         )}
         <AppBody>
           <AddRemoveTabs adding={true} />
@@ -831,7 +832,7 @@ export default function AddLiquidityPro({
                         <TYPE.link fontWeight={400} color={theme.whiteHalf} textAlign={'center'}>
                           {pylonState === PylonState.ONLY_PAIR ?  "This Pylon has not been created yet, be the first liquidity provider to initialize it" :
                               pylonState !== PylonState.NOT_EXISTS ? "Stable is designed for stablecoins and L1 network tokens. Float is for all others, and it's always the more volatile in the pair." :
-                              "This pair has not been created yet, be the first liquidity provider to initialize it"}<br/>
+                                  "This pair has not been created yet, be the first liquidity provider to initialize it"}<br/>
                         </TYPE.link>
                       </AutoColumn>
                     </BlueCard>
@@ -1151,7 +1152,17 @@ export default function AddLiquidityPro({
 
             </AutoColumn>
 
-            {(currencyA && currencyB && pylonState === PylonState.EXISTS) && <CapacityIndicator gamma={gammaAdjusted} health={health} isFloat={isFloat} blocked={mintInfo?.blocked} />}
+            {(currencyA && currencyB && pylonState === PylonState.EXISTS) &&
+            <CapacityIndicator
+                gamma={gammaAdjusted}
+                health={health}
+                isFloat={isFloat}
+                blocked={mintInfo?.blocked}
+                feePercentage={feePercentage}
+                extraFee={new BigNumberJs(mintInfo?.extraSlippagePercentage.toString()).div(new BigNumberJs(10).pow(18))}
+                extraFeeTreshold={new BigNumberJs(mintInfo?.extraFeeTreshold.toString()).div(new BigNumberJs(10).pow(18))}
+                isDeltaGamma={mintInfo?.deltaApplied}
+            />}
 
             {currencies[Field.CURRENCY_A] &&
             currencies[Field.CURRENCY_B] &&
@@ -1198,8 +1209,8 @@ export default function AddLiquidityPro({
                                   && (
                                       <ButtonPrimary
                                           onClick={(pylonState === PylonState.ONLY_PAIR || pylonState === PylonState.EXISTS) ?
-                                            approveACallback
-                                            : approveACallbackPair}
+                                              approveACallback
+                                              : approveACallbackPair}
                                           disabled={approvalA === ApprovalState.PENDING
                                           || approvalAPair === ApprovalState.PENDING}
                                           width={
@@ -1223,27 +1234,27 @@ export default function AddLiquidityPro({
                                       </ButtonPrimary>
                                   )}
                                   {(pylonState === PylonState.EXISTS ? ((sync === 'half' && approvalB !== ApprovalState.APPROVED) ? true : false) : (pylonState === PylonState.ONLY_PAIR ? (approvalB !== ApprovalState.APPROVED ? true : false) : (approvalBPair !== ApprovalState.APPROVED ? true : false))) &&
-                                          (<ButtonPrimary
-                                              onClick={pylonState === (PylonState.NOT_EXISTS) ?
-                                                  approveBCallbackPair : approveBCallback}
-                                              disabled={(approvalB === ApprovalState.PENDING ||
-                                              approvalBPair === ApprovalState.PENDING ? true : false)}
-                                              width={
-                                                approvalA !== ApprovalState.APPROVED
-                                                    ? "48%"
-                                                    : "100%"
-                                              }
-                                          >
-                                            {(approvalBPair === ApprovalState.PENDING || approvalB === ApprovalState.PENDING) ? (
-                                                <Dots>
-                                                  Approving{" "}
-                                                  {currencies[float.field_b]?.symbol}
-                                                </Dots>
-                                            ) : (
-                                                "Approve " +
-                                                currencies[float.field_b]?.symbol
-                                            )}
-                                          </ButtonPrimary>)
+                                  (<ButtonPrimary
+                                      onClick={pylonState === (PylonState.NOT_EXISTS) ?
+                                          approveBCallbackPair : approveBCallback}
+                                      disabled={(approvalB === ApprovalState.PENDING ||
+                                      approvalBPair === ApprovalState.PENDING ? true : false)}
+                                      width={
+                                        approvalA !== ApprovalState.APPROVED
+                                            ? "48%"
+                                            : "100%"
+                                      }
+                                  >
+                                    {(approvalBPair === ApprovalState.PENDING || approvalB === ApprovalState.PENDING) ? (
+                                        <Dots>
+                                          Approving{" "}
+                                          {currencies[float.field_b]?.symbol}
+                                        </Dots>
+                                    ) : (
+                                        "Approve " +
+                                        currencies[float.field_b]?.symbol
+                                    )}
+                                  </ButtonPrimary>)
                                   }
                                 </RowBetween>
                             )}

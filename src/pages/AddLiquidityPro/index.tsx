@@ -1151,7 +1151,7 @@ export default function AddLiquidityPro({
 
             </AutoColumn>
 
-            {(currencyA && currencyB && pylonState === PylonState.EXISTS) && <CapacityIndicator gamma={gammaAdjusted} health={health} isFloat={isFloat} />}
+            {(currencyA && currencyB && pylonState === PylonState.EXISTS) && <CapacityIndicator gamma={gammaAdjusted} health={health} isFloat={isFloat} blocked={mintInfo?.blocked} />}
 
             {currencies[Field.CURRENCY_A] &&
             currencies[Field.CURRENCY_B] &&

@@ -60,8 +60,7 @@ export function useDerivedPylonMintInfo(
 
   // Pylon
   const [pylonState, pylonPair] = usePylon(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B])
-  console.log(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B])
-  console.log("info", pylonState, pylonPair?.pair.liquidityToken)
+
   const pylonInfo = usePylonInfo(pylonPair?.address)
   const pylonConstants = usePylonConstants()
   const blockNumber = useBlockNumber()
@@ -214,7 +213,6 @@ export function useDerivedPylonMintInfo(
     error = 'Insufficient ' + currencies[Field.CURRENCY_B]?.symbol + ' balance'
   }
 
-  console.log("ps", pylonState)
 
   return {
     dependentField,

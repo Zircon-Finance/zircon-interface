@@ -61,7 +61,7 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
         if(resPair.result) {
           // console.log(resPair.result)
           const reserve0 = resPair.result[0]
-          const reserve1 = resPair.result[0]
+          const reserve1 = resPair.result[1]
           // const { _reserve0, reserve1 } = resPair.result;
           // console.log(reserve0, reserve1)
           const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA]
@@ -76,7 +76,7 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
       }
       const { _reserve0, _reserve1 } = reserves
       const reserve0 = resPair.result[0]
-      const reserve1 = resPair.result[0]
+      const reserve1 = resPair.result[1]
       const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA]
       return [
         PylonState.EXISTS,

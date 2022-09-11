@@ -22,8 +22,8 @@ import { fetchPoolsUserDataAsync } from '../../../../state/pools'
 import { usePairLiquidity } from '../../../../state/pools/hooks'
 import { getPoolAprAddress } from '../../../../utils/apr'
 import { useCurrency } from '../../../../hooks/Tokens'
-import { usePylon } from '../../../../data/PylonReserves'
 import { useGamma } from '../../../../data/PylonData'
+import {useDerivedPylonMintInfo} from "../../../../state/mint/pylonHooks";
 
 const StyledCard = styled(Card)`
   align-self: baseline;
@@ -79,7 +79,15 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
   const addTransaction = useTransactionAdder()
   const [currency1,currency2] = [useCurrency(farm.token1.address),useCurrency(farm.token2.address)]
-  const [, pylonPair] = usePylon(currency1, currency2)
+  const {
+    pylonPair,
+    healthFactor
+  } = useDerivedPylonMintInfo(
+      currency1 ?? undefined,
+      currency2 ?? undefined,
+      false,
+      "off"
+  );
   const gammaBig = useGamma(pylonPair?.address)
   const gamma = new BigNumber(gammaBig).div(new BigNumber(10).pow(18))
 
@@ -121,6 +129,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
           token={farm.token1}
           quoteToken={farm.token2}
           gamma={gamma}
+          healthFactor={healthFactor}
         />
         {farm.userData.stakedBalance.gt(0) || !isApproved ? (
           <CardActionsContainer

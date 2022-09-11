@@ -50,7 +50,6 @@ const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan
                 <rect x="16" width="6" height="16" rx="3" fill="#449133" fillOpacity="0.9"/>
                 <rect x="8" y="5" width="6" height="11" rx="3" fill="#449133" fillOpacity="0.9"/>
               </svg>
-
               }
               {health === "medium" && <svg width="22" height="16" viewBox="0 0 22 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect y="10" width="6" height="6" rx="3" fill="#DEC54E" fillOpacity="0.9"/>

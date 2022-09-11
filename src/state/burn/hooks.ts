@@ -139,7 +139,6 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
   if(!ptTotalSupply || !userLiquidity) {
     return [undefined, undefined]
   }
-  console.log("checking liquidity", userLiquidity.raw.toString())
   if(isSync) {
     if(JSBI.greaterThanOrEqual(ptTotalSupply.raw, userLiquidity.raw)) {
       return isFloat ? [pylon.burnFloat(totalSupply, ptTotalSupply, userLiquidity,

@@ -776,7 +776,6 @@ export default function AddLiquidityPro({
   const gammaAdjusted = new BigNumberJs(gammaBig).div(new BigNumberJs(10).pow(18))
   const health = healthFactor?.toLowerCase()
 
-  console.log("healthFactor", gammaAdjusted)
 
   return (
       <>

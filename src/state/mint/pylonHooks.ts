@@ -1,19 +1,19 @@
-import {Currency, CurrencyAmount, DEV, Pair, JSBI, Percent, Price, Pylon, TokenAmount} from 'zircon-sdk'
+import {Currency, CurrencyAmount, DEV, JSBI, Pair, Percent, Price, Pylon, TokenAmount} from 'zircon-sdk'
 import {useCallback, useMemo} from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useTotalSupply } from '../../data/TotalSupply'
-import { useTranslation } from 'react-i18next'
+import {useDispatch, useSelector} from 'react-redux'
+import {useTotalSupply} from '../../data/TotalSupply'
+import {useTranslation} from 'react-i18next'
 
-import { useActiveWeb3React } from '../../hooks'
-import { wrappedCurrency, wrappedCurrencyAmount } from '../../utils/wrappedCurrency'
-import { AppDispatch, AppState } from '../index'
-import { tryParseAmount } from '../swap/hooks'
+import {useActiveWeb3React} from '../../hooks'
+import {wrappedCurrency, wrappedCurrencyAmount} from '../../utils/wrappedCurrency'
+import {AppDispatch, AppState} from '../index'
+import {tryParseAmount} from '../swap/hooks'
 import {useCurrencyBalances, useTokenBalance} from '../wallet/hooks'
-import { Field, typeInput } from './actions'
-import { usePylon, PylonState } from '../../data/PylonReserves'
+import {Field, typeInput} from './actions'
+import {PylonState, usePylon} from '../../data/PylonReserves'
 import {useLastK, usePylonConstants, usePylonInfo,} from "../../data/PylonData";
 import {useBlockNumber} from "../application/hooks";
-import { usePylonFactoryContract } from '../../hooks/useContract'
+import {usePylonFactoryContract} from '../../hooks/useContract'
 
 const ZERO = JSBI.BigInt(0)
 
@@ -60,6 +60,8 @@ export function useDerivedPylonMintInfo(
 
   // Pylon
   const [pylonState, pylonPair] = usePylon(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B])
+  console.log(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B])
+  console.log("info", pylonState, pylonPair?.pair.liquidityToken)
   const pylonInfo = usePylonInfo(pylonPair?.address)
   const pylonConstants = usePylonConstants()
   const blockNumber = useBlockNumber()
@@ -72,8 +74,9 @@ export function useDerivedPylonMintInfo(
   const energyAddress = Pylon.getEnergyAddress(pylonPair?.token0, pylonPair?.token1) //useEnergyAddress(pylonPair?.token0, pylonPair?.token1)
   const ptbEnergy = useTokenBalance(energyAddress, pylonPair?.pair.liquidityToken)
   const reserveAnchor = useTokenBalance(energyAddress, pylonPair?.anchorLiquidityToken)
+
   const healthFactor = useMemo(() => {
-    return pylonInfo && pylonPair && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && lastK && pylonConstants ?
+    return pylonInfo && pylonPair && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && lastK && pylonConstants && pylonState === PylonState.EXISTS?
         pylonPair.getHealthFactor(
             pylonInfo[0],
             pylonPoolBalance,
@@ -87,7 +90,7 @@ export function useDerivedPylonMintInfo(
             JSBI.BigInt(lastK),
             pylonConstants
         ).toString() : undefined
-  }, [pylonInfo, pylonPair, ptbEnergy, reserveAnchor, pylonPoolBalance, totalSupply, lastK, pylonConstants])
+  }, [pylonInfo, pylonPair, ptbEnergy, reserveAnchor, pylonPoolBalance, totalSupply, lastK, pylonConstants,pylonState])
   const noPylon: boolean =
       pylonState === PylonState.NOT_EXISTS || Boolean(pylonSupply && JSBI.equal(pylonSupply.raw, ZERO))
 
@@ -211,6 +214,8 @@ export function useDerivedPylonMintInfo(
     error = 'Insufficient ' + currencies[Field.CURRENCY_B]?.symbol + ' balance'
   }
 
+  console.log("ps", pylonState)
+
   return {
     dependentField,
     currencies,
@@ -268,19 +273,18 @@ export const useHealthFactor = (  currencyA: Currency | undefined,
   const [,pylonPair] = usePylon(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B])
   const pylonInfo = usePylonInfo(pylonPair?.address)
   const energyAddress = Pylon.getEnergyAddress(pylonPair?.token0, pylonPair?.token1) //useEnergyAddress(pylonPair?.token0, pylonPair?.token1)
-  console.log(pylonPair?.pair.liquidityToken)
   const ptbEnergy = useTokenBalance(energyAddress, pylonPair?.pair.liquidityToken)
   const reserveAnchor = useTokenBalance(energyAddress, pylonPair?.anchorLiquidityToken)
   const ptb = useTokenBalance(pylonPair?.address, pylonPair?.pair.liquidityToken)
   const ptt = useTotalSupply(pylonPair?.anchorLiquidityToken)
   const lastK = useLastK(pylonPair?.address)
   const pylonFactory = usePylonFactoryContract()
-  console.log("ea", energyAddress)
-  console.log("ptbEnergy", ptbEnergy)
-  console.log("ptb", ptb)
-  console.log("ptt", ptt)
-  console.log("lastK", lastK)
-  console.log("ea", energyAddress)
+  // console.log("ea", energyAddress)
+  // console.log("ptbEnergy", ptbEnergy)
+  // console.log("ptb", ptb)
+  // console.log("ptt", ptt)
+  // console.log("lastK", lastK)
+  // console.log("ea", energyAddress)
   const healthFactorResult = useMemo(() => {
     return pylonInfo && pylonPair && ptbEnergy && reserveAnchor && ptb && ptt && lastK && pylonFactory ?
         pylonPair.getHealthFactor(
@@ -297,6 +301,5 @@ export const useHealthFactor = (  currencyA: Currency | undefined,
             pylonFactory
         ) : 'Loading...'
   }, [pylonInfo, pylonPair, ptbEnergy, reserveAnchor, ptb, ptt, lastK, pylonFactory])
-  console.log('energyAddress', energyAddress)
   return healthFactorResult
 }

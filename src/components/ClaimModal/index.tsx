@@ -49,7 +49,6 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
     // contract signer
     const signer = account && (new ethers.providers.Web3Provider(window.ethereum)).getSigner()
     const airdropWithSigner = airdrop_contract?.connect(signer)
-    console.log(account)
     // proofData leaves
     const [, setHash] = useState("");
     const toggleWalletModal = useWalletModalToggle()
@@ -73,7 +72,6 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
             isClaimed: false,
             isClaiming: false
         }
-        console.log(dummyData?.proof)
         airdropWithSigner?.check(
             dummyData?.index,
             dummyData?.address,

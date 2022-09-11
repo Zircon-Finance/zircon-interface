@@ -107,7 +107,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
             {loading ? <div style={{height: 150,  alignItems: 'center'}}>
                     <Lottie
                         options={{
-                            loop: false,
+                            loop: true,
                             autoplay: true,
                             animationData: animation2,
                         }}/>
@@ -143,7 +143,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
                                                 setHash(transaction.hash)
                                                 // setAttemptingTxn(false);
                                                 addTransaction(transaction, {
-                                                    summary: "Claiming ZRG " + dataUser?.amount,
+                                                    summary: "Claimed ZRG " + dataUser?.amount,
                                                 });
                                                 // onDismiss()
                                                 // setTxHash(response.hash);

@@ -24,14 +24,14 @@ export function PoolPriceBar({
     <AutoColumn gap="md" style={{display: 'flex'}}>
       <div style={{width: '50%'}}>
       <AutoColumn justify="center" style={{display: 'flex'}}>
-          <TYPE.black color={theme.text3} minWidth={'max-content'}>{price?.toSignificant(6) ?? '-'}</TYPE.black>
-          <Text fontWeight={300} fontSize={14} color={theme.text3} ml={2} minWidth={'max-content'}>
+          <TYPE.black color={theme.whiteHalf} minWidth={'max-content'}>{price?.toSignificant(6) ?? '-'}</TYPE.black>
+          <Text fontWeight={300} fontSize={14} color={theme.whiteHalf} ml={2} minWidth={'max-content'}>
             {currencies[Field.CURRENCY_B]?.symbol} per {currencies[Field.CURRENCY_A]?.symbol}
           </Text>
         </AutoColumn>
         <AutoColumn justify="center" style={{display: 'flex'}}>
-          <TYPE.black color={theme.text3} minWidth={'max-content'}>{price?.invert()?.toSignificant(6) ?? '-'}</TYPE.black>
-          <Text fontWeight={300} fontSize={14} color={theme.text3} ml={2} minWidth={'max-content'}>
+          <TYPE.black color={theme.whiteHalf} minWidth={'max-content'}>{price?.invert()?.toSignificant(6) ?? '-'}</TYPE.black>
+          <Text fontWeight={300} fontSize={14} color={theme.whiteHalf} ml={2} minWidth={'max-content'}>
             {currencies[Field.CURRENCY_A]?.symbol} per {currencies[Field.CURRENCY_B]?.symbol}
           </Text>
         </AutoColumn>
@@ -39,13 +39,13 @@ export function PoolPriceBar({
       <AutoRow justify="space-around" gap="4px">
 
         <AutoColumn justify="center" style={{width: '100%', justifyItems: 'end'}}>
-          <TYPE.black color={theme.text3}>
+          <TYPE.black color={theme.whiteHalf}>
             {noLiquidity && price
               ? '100'
               : (poolTokenPercentage?.lessThan(ONE_BIPS) ? '<0.01' : poolTokenPercentage?.toFixed(2)) ?? '0'}
             %
           </TYPE.black>
-          <Text fontWeight={300} fontSize={14} color={theme.text3} pt={1}>
+          <Text fontWeight={300} fontSize={14} color={theme.whiteHalf} pt={1}>
             Share of Pool
           </Text>
         </AutoColumn>

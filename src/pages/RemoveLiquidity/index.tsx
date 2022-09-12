@@ -33,7 +33,7 @@ import { currencyId } from '../../utils/currencyId'
 import useDebouncedChangeHandler from '../../utils/useDebouncedChangeHandler'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import AppBodySmaller from '../AppBodySmaller'
-import { MaxButton, WrapperWithPadding } from '../Pool/styleds'
+import { WrapperWithPadding } from '../Pool/styleds'
 import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
 import { Dots } from '../../components/swap/styleds'
 import { useBurnActionHandlers } from '../../state/burn/hooks'
@@ -43,6 +43,7 @@ import { useWalletModalToggle } from '../../state/application/hooks'
 import { useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
 // import { BigNumber } from '@ethersproject/bignumber'
 import LearnIcon from '../../components/LearnIcon'
+import { PercButton } from '../RemoveProLiquidity'
 
 export default function RemoveLiquidity({
   history,
@@ -493,19 +494,19 @@ export default function RemoveLiquidity({
             <TransparentCard style={{padding: '0px'}}>
               <AutoColumn gap="20px">
               <Flex justifyContent={'center'} marginBottom={15}>
-                  <div style={{display: 'flex', border: `1px solid ${theme.bg9}`, borderRadius: '17px', justifyContent: 'center', marginBottom: '10px'}}>
+              <div style={{display: 'flex', background: theme.darkMode ? '#482537' : theme.darkerContrastPink, borderRadius: '17px', justifyContent: 'center', height: '33px'}}>
 
-                      <ButtonAnchor borderRadius={'12px'} padding={'5px 15px'}
-                            style={{backgroundColor: !showDetailed ? theme.bg9 : 'transparent', fontWeight: 400, fontSize: '13px', color: showDetailed ? theme.whiteHalf : theme.text1}}
-                            onClick={()=> {setShowDetailed(!showDetailed)}}>
-                        Simple
-                      </ButtonAnchor>
-                      <ButtonAnchor borderRadius={'12px'} padding={'5px 15px'}
-                            style={{backgroundColor: showDetailed ? theme.bg9 : 'transparent', fontWeight: 400, fontSize: '13px', color: !showDetailed ? theme.whiteHalf : theme.text1}}
-                            onClick={()=> {setShowDetailed(!showDetailed)}}>
-                        Detailed
-                      </ButtonAnchor>
-                    </div>
+                <ButtonAnchor borderRadius={'12px'} padding={'5px 15px'}
+                              style={{backgroundColor: !showDetailed ? theme.slippageActive : 'transparent', fontWeight: 500, fontSize: '13px', color: !showDetailed ? '#fff' : theme.slippageActive}}
+                              onClick={()=> {setShowDetailed(!showDetailed)}}>
+                  SIMPLE
+                </ButtonAnchor>
+                <ButtonAnchor borderRadius={'12px'} padding={'5px 15px'}
+                              style={{backgroundColor: showDetailed ? theme.slippageActive : 'transparent', fontWeight: 500, fontSize: '13px', color: showDetailed ? '#fff' : theme.slippageActive}}
+                              onClick={()=> {setShowDetailed(!showDetailed)}}>
+                  DETAILED
+                </ButtonAnchor>
+                </div>
 
                   </Flex>
                 <Row style={{ alignItems: 'flex-end' }}>
@@ -517,18 +518,18 @@ export default function RemoveLiquidity({
                   <>
                     <Slider value={innerLiquidityPercentage} onChange={setInnerLiquidityPercentage} />
                     <div style={{justifyContent: 'space-between', width: '90%', display: 'flex', margin: 'auto'}}>
-                      <MaxButton onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '25')} width="20%" style={{color: theme.text1}}>
+                      <PercButton onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '25')} width="20%">
                         25%
-                      </MaxButton>
-                      <MaxButton onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '50')} width="20%" style={{color: theme.text1}}>
+                      </PercButton>
+                      <PercButton onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '50')} width="20%">
                         50%
-                      </MaxButton>
-                      <MaxButton onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '75')} width="20%" style={{color: theme.text1}}>
+                      </PercButton>
+                      <PercButton onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '75')} width="20%">
                         75%
-                      </MaxButton>
-                      <MaxButton onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '100')} width="20%" style={{color: theme.text1}}>
+                      </PercButton>
+                      <PercButton onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '100')} width="20%">
                         MAX
-                      </MaxButton>
+                      </PercButton>
                     </div>
                   </>
                 )}
@@ -536,11 +537,9 @@ export default function RemoveLiquidity({
             </TransparentCard>
             {!showDetailed && (
               <>
-                <ColumnCenter>
-                  <span style={{width: '100%', marginLeft: '20px', fontSize: '13px'}}>You will receive</span>
-                </ColumnCenter>
                 <LightPinkCard>
                   <AutoColumn gap="10px">
+                  <span style={{width: '100%', fontSize: '13px'}}>{'YOU WILL RECEIVE'}</span>
                     <RowBetween>
                       <RowFixed>
                         <CurrencyLogo currency={currencyA} style={{ marginRight: '12px' }} />
@@ -640,9 +639,9 @@ export default function RemoveLiquidity({
             {pair && (
               <div style={{ padding: '10px 20px' }}>
                 <RowBetween>
-                  <Text fontSize={13} fontWeight={400}>Price: </Text>
+                  <Text fontSize={13} fontWeight={400} color={theme.whiteHalf}>Price: </Text>
                   <div>
-                    <Text fontSize={13} fontWeight={400}>
+                    <Text fontSize={13} fontWeight={400} color={theme.whiteHalf}>
                       1 {currencyA?.symbol} = {tokenA ? pair.priceOf(tokenA).toSignificant(6) : '-'} {currencyB?.symbol}
                     </Text>
                   </div>
@@ -650,7 +649,7 @@ export default function RemoveLiquidity({
                 <RowBetween>
                   <div />
                   <div>
-                    <Text fontSize={13} fontWeight={400}>
+                    <Text fontSize={13} fontWeight={400} color={theme.whiteHalf}>
                        1 {currencyB?.symbol} = {tokenB ? pair.priceOf(tokenB).toSignificant(6) : '-'} {currencyA?.symbol}
                     </Text>
                   </div>

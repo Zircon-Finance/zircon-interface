@@ -1,7 +1,6 @@
-import React, { CSSProperties, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Modal } from '@pancakeswap/uikit'
 import { useTranslation } from 'react-i18next'
-
 import { ButtonOutlined, } from '../../components/Button'
 import { Text } from 'rebass'
 import { Token } from 'zircon-sdk'
@@ -18,25 +17,28 @@ import animation2 from '../../assets/lotties/z9rH3jsFYe.json'
 import Lottie from "lottie-react-web";
 import axios from 'axios'
 import {useTransactionAdder} from "../../state/transactions/hooks";
-
-
+import TransactionConfirmationModal from '../TransactionConfirmationModal'
 
 interface ClaimModalProps {
     onConfirm?: (amount: string, token: Token) => void
     onDismiss?: () => void
     addLiquidityUrl?: string
     token?: Token
+    isOpen: boolean
 }
 
 const ClaimModal: React.FC<ClaimModalProps> = ({
                                                    onConfirm,
                                                    onDismiss,
                                                    token,
+                                                   isOpen,
                                                }) => {
     const { t } = useTranslation()
     const { account } = useActiveWeb3React()
     const theme = useTheme()
     const addTransaction = useTransactionAdder()
+    const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false);
+    const [txHash, setTxHash] = useState<string>("");
 
 
     const provider = account && new providers.Web3Provider(window.ethereum)
@@ -50,7 +52,6 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
     const signer = account && (new ethers.providers.Web3Provider(window.ethereum)).getSigner()
     const airdropWithSigner = airdrop_contract?.connect(signer)
     // proofData leaves
-    const [, setHash] = useState("");
     const toggleWalletModal = useWalletModalToggle()
     const [dataUser, setDataUser] = useState({
         address: "",
@@ -60,7 +61,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
         isClaimed: false,
         isClaiming: false,
     });
-    // const [hasJustClaimed, setHasJustClaimed] = useState(false)
+    const [hasJustClaimed, setHasJustClaimed] = useState(false)
     const [loading, setLoading] = useState(false)
 
     const check = (data) => {
@@ -97,13 +98,15 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
     }, [])
 
     const modalStyle = {
-        position: 'absolute',
         width: 'auto',
-        minWidth: '400px',
-    } as CSSProperties
+        border: 'none',
+        '&#claim_modal': {
+            background: 'blue !important',
+        },
+    }
 
-    return (
-        <Modal style={modalStyle} title={t('Claim tokens')} onDismiss={onDismiss}>
+    const renderedModal = () => (
+        <Modal id="claim_modal" style={modalStyle} title={t('Claim tokens')} onDismiss={onDismiss} borderBottom='none'>
             {loading ? <div style={{height: 150,  alignItems: 'center'}}>
                     <Lottie
                         options={{
@@ -133,31 +136,33 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
                             onClick={
                                 () =>
                                     account ?
+                                        (setAttemptingTxn(true),
                                         airdropWithSigner.claim(
                                             BigNumber.from(dataUser?.index),
                                             BigNumber.from(dataUser?.amount),
                                             dataUser?.proof).then(
                                             function(transaction){
                                                 setDataUser({...dataUser, isClaimed: true, isClaiming: true})
-                                                // setHasJustClaimed(true)
-                                                setHash(transaction.hash)
-                                                // setAttemptingTxn(false);
+                                                setHasJustClaimed(true)
+                                                setTxHash(transaction.hash)
+                                                setAttemptingTxn(false);
                                                 addTransaction(transaction, {
                                                     summary: "Claimed ZRG " + dataUser?.amount,
                                                 });
                                                 // onDismiss()
-                                                // setTxHash(response.hash);
+                                                setTxHash(transaction.hash);
 
                                             }
                                         ).catch((error) => {
-                                            // setDataUser({...dataUser, isClaimed: true})
-                                        })
+                                            setDataUser({...dataUser, isClaimed: true})
+                                            onDismiss()
+                                        }))
                                         : [onDismiss(),toggleWalletModal()]
                             }>
                 <Text style={{textDecoration: 'none', color: '#fff'}} >
                     {account ? (!dataUser?.amount && !dataUser?.isClaimed) ? 'Nothing to claim' : dataUser?.isClaimed ? dataUser?.isClaiming ? 'Claiming...' : 'Already claimed' : 'Claim tokens' : 'Connect wallet'}</Text>
             </ButtonOutlined>
-            {(dataUser?.amount > 0 && !dataUser.isClaimed) && <LottieContainer style={{background: 'transparent', top: 0, right: 0, pointerEvents: 'none'}}>
+            {(dataUser?.amount > 0 && hasJustClaimed) && <LottieContainer style={{background: 'transparent', top: 0, right: 0, pointerEvents: 'none'}}>
                 <Lottie options={{
                     loop: false,
                     autoplay: true,
@@ -165,9 +170,20 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
                 }}/>
             </LottieContainer>
             }
-
-
         </Modal>
+    )
+
+    return (
+        <TransactionConfirmationModal
+                isOpen={isOpen}
+                onDismiss={onDismiss}
+                attemptingTxn={attemptingTxn}
+                hash={txHash}
+                content={() => (
+                    renderedModal()
+                )}
+                pendingText={'Claiming tokens...'}
+        />
     )
 }
 

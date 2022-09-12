@@ -69,7 +69,7 @@ const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pi
             <>
             <Flex>
               <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', marginRight: '5px',  display: 'flex', alignItems: 'center'}}>
-              <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{!isClassic && (!isAnchor ? token.symbol : quoteToken.symbol)} </span>{isClassic ? 'CLASSIC' :!isAnchor ? 'FLOAT' : 'ANCHOR'}
+              <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{!isClassic && (!isAnchor ? token.symbol : quoteToken.symbol)} </span>{isClassic ? 'CLASSIC' :!isAnchor ? 'FLOAT' : 'STABLE'}
               </BadgeSmall>
               <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{`${token.symbol}/${quoteToken.symbol}`}</Text>
             </Flex>

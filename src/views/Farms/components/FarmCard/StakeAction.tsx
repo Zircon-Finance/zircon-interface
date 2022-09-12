@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import { useWeb3React } from '@web3-react/core'
 import styled, { useTheme } from 'styled-components'
 import { Flex, IconButton } from '@pancakeswap/uikit'
@@ -116,8 +116,14 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
   const maxStake = parseFloat(getBalanceAmount(tokenBalance).toFixed(6))
   const percentage = (staked*100/(staked + maxStake)).toString()
 
-  let rewardTokens = ''
-  earningToken.forEach(token => rewardTokens += `${token.symbol} `)
+
+  const [rewardTokens, setRewardTokens] = useState("")
+
+  useEffect(() => {
+    let r = ''
+    earningToken.forEach((token) => r += ` ${token.symbol} &`)
+    setRewardTokens(r.slice(0, -1))
+  }, [])
 
   const renderStakingButtons = () => {
     return stakedBalance.eq(0) ? (

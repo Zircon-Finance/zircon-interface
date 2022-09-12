@@ -22,7 +22,6 @@ import SunLogo from '../SunLogo';
 import { useDarkModeManager } from '../../state/user/hooks';
 import { ButtonOutlined } from '../Button';
 import Portal from '@reach/portal';
-import { ModalContainer } from '../../views/Farms/Farms';
 import ClaimModal from '../ClaimModal';
 // import { connectNet } from '../WalletModal';
 // import VersionSwitch from './VersionSwitch'
@@ -203,9 +202,7 @@ export default function Header() {
       <RowBetween style={{ alignItems: 'flex-start', flexWrap: width >= 700 ? 'nowrap' : 'wrap', justifyContent: 'center'}} padding="20px 20px 0 20px">
         {showClaimTokens && (
           <Portal>
-            <ModalContainer>
-              <ClaimModal onDismiss={() => setShowClaimTokens(false)} />
-            </ModalContainer>
+              <ClaimModal isOpen = {showClaimTokens} onDismiss={() => setShowClaimTokens(false)} />
           </Portal>
         )}
         {width >= 700 ?

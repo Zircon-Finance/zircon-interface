@@ -774,7 +774,7 @@ export default function AddLiquidityPro({
   const blockNumber = useBlockNumber()
   const gammaBig = useGamma(pylonPair?.address)
   const gammaAdjusted = new BigNumberJs(gammaBig).div(new BigNumberJs(10).pow(18))
-  const feePercentage = ((new BigNumberJs(mintInfo?.fee.raw.toString()).multipliedBy(new BigNumberJs(10).pow(18))).div(mintInfo?.liquidity.raw.toString())).div(new BigNumberJs(10).pow(18))
+  const feePercentage = new BigNumberJs(mintInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18))
   const health = healthFactor?.toLowerCase()
 
   console.log("fee indicator", feePercentage.toString())

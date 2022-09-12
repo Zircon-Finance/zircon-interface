@@ -47,6 +47,7 @@ export function useDerivedPylonMintInfo(
     };
     extraSlippagePercentage?: JSBI;
     extraFeeTreshold?: JSBI;
+    feePercentage: JSBI;
   }
   poolTokenPercentage?: Percent
   error?: string,
@@ -173,23 +174,21 @@ export function useDerivedPylonMintInfo(
           syncMintInfo = pylonPair.getFloatSyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA,
               pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
               pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK))
-          if (JSBI.greaterThan(syncMintInfo?.amountsToInvest.async, ZERO)) {
-            extraFeeTreshold = JSBI.divide(JSBI.multiply(tokenAmountA.raw, JSBI.divide(JSBI.multiply(syncMintInfo?.amountsToInvest.sync, BASE), syncMintInfo?.amountsToInvest.async)), BASE)
+          if (JSBI.greaterThan(syncMintInfo?.amountsToInvest.sync, ZERO) && JSBI.greaterThan(syncMintInfo?.amountsToInvest.async, ZERO)) {
+            extraFeeTreshold = JSBI.subtract(tokenAmountA.raw, JSBI.divide(JSBI.multiply(tokenAmountA.raw, JSBI.divide(JSBI.multiply(syncMintInfo?.amountsToInvest.async, BASE), JSBI.add(syncMintInfo?.amountsToInvest.async, syncMintInfo?.amountsToInvest.sync))), BASE))
           }
 
         }else{
           syncMintInfo = pylonPair.getAnchorSyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountB,
               pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
               pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK))
-          if (JSBI.greaterThan(syncMintInfo?.amountsToInvest.async, ZERO)) {
-            extraFeeTreshold = JSBI.divide(JSBI.multiply(tokenAmountB.raw, JSBI.divide(JSBI.multiply(syncMintInfo?.amountsToInvest.sync, BASE), syncMintInfo?.amountsToInvest.async)), BASE)
-
+          if (JSBI.greaterThan(syncMintInfo?.amountsToInvest.sync, ZERO) && JSBI.greaterThan(syncMintInfo?.amountsToInvest.async, ZERO)) {
+            extraFeeTreshold = JSBI.subtract(tokenAmountB.raw,JSBI.divide(JSBI.multiply(tokenAmountB.raw, JSBI.divide(JSBI.multiply(syncMintInfo?.amountsToInvest.async, BASE), JSBI.add(syncMintInfo?.amountsToInvest.async, syncMintInfo?.amountsToInvest.sync))), BASE))
           }
-
         }
 
 
-            //{new BigNumberJs(syncMintInfo?.amountsToInvest.async.toString()).div(mintInfo?.amountsToInvest.sync.toString()).multipliedBy()}
+        //{new BigNumberJs(syncMintInfo?.amountsToInvest.async.toString()).div(mintInfo?.amountsToInvest.sync.toString()).multipliedBy()}
 
         return {...syncMintInfo, extraFeeTreshold: extraFeeTreshold}
       }else {
@@ -203,7 +202,7 @@ export function useDerivedPylonMintInfo(
               pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
               pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK))
         }
-        return asyncMintInfo
+        return {...asyncMintInfo, extraFeeTreshold: ZERO, extraSlippagePercentage: ZERO}
       }
     } else {
       return undefined

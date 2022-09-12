@@ -59,7 +59,7 @@ const CapacityIndicator: React.FC<Props> = ({gamma, health, isFloat, noSpan, blo
     )}
     return (
         <Container>
-            {feePercentage.gt(0) && <RowContainer>
+            {!blocked && feePercentage.gt(0) && <RowContainer>
                 <SmallContainer>
                     {!noSpan && <span style={{marginLeft: 8}}>{'Fee' + (isDeltaGamma ? " + Delta Fee" : "")}</span>}
                     <QuestionMarkContainer
@@ -75,7 +75,7 @@ const CapacityIndicator: React.FC<Props> = ({gamma, health, isFloat, noSpan, blo
                 <span style={{marginLeft: 8}}>{feePercentage?.toFixed(4)}%</span>
             </RowContainer>}
 
-            {extraFee.gt(0) && <RowContainer>
+            {!blocked && extraFee.gt(0) && <RowContainer>
                 <SmallContainer>
                     {!noSpan && <span style={{marginLeft: 8}}>{'Slippage For Amount > ' + extraFeeTreshold.toFixed(4)}</span>}
                     <QuestionMarkContainer

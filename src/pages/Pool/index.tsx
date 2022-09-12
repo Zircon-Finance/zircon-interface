@@ -139,7 +139,7 @@ export default function Pool() {
                 {/* <Question text="When you add liquidity, you are given pool tokens that represent your share. If you don’t see a pool you joined in this list, try importing a pool below." /> */}
               </RowBetween>
 
-              {!account || chainId !== 1287 ? (
+              {!account || chainId !== 1285 ? (
                   <LightCard padding="40px" style={{border: 'none'}}>
                     <TYPE.body color={theme.text5} textAlign="center">
                       {t('connectToViewLiquidity')}

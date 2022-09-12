@@ -81,7 +81,7 @@ export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: b
 
 export function useWDEVContract(withSignerIfPossible?: boolean): Contract | null {
   const { chainId } = useActiveWeb3React()
-  return useContract(chainId && chainId === 1287 ? WDEV[chainId].address : undefined, WDEV_ABI, withSignerIfPossible)
+  return useContract(chainId && chainId === 1285 ? WDEV[chainId].address : undefined, WDEV_ABI, withSignerIfPossible)
 }
 
 export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contract | null {
@@ -94,7 +94,7 @@ export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contrac
         break
       case ChainId.STANDALONE:
         break
-      case ChainId.MOONBASE:
+      case ChainId.MOONRIVER:
         break
     }
   }

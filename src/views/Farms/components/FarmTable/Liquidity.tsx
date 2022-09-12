@@ -56,6 +56,7 @@ const DialogContainer = styled.div<{ show }>`
 
 const AbsContainer = styled.div`
   position: sticky;
+  z-index: 100;
   left: 50px;
   svg {
     pointer-events: none;

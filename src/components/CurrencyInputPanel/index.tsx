@@ -44,6 +44,9 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
   :hover {
     background-color: ${({ theme, selected }) => !selected ? theme.meatPinkBrown : theme.darkMode ? '#513642' : '#E5D9DB'};
     color: ${({ theme, selected }) => !selected ? '#fff' : theme.darkMode ? '#fff' : theme.blackBrown};
+    path {
+      stroke: #fff;
+    }
   }
 `
 
@@ -70,7 +73,7 @@ const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
   height: 35%;
 
   path {
-    stroke: ${({ selected, theme }) => (selected ? theme.whiteHalf : theme.whiteHalf)};
+    stroke: ${({ selected, theme }) => (selected ? theme.whiteHalf : theme.blackBrown)};
     stroke-width: 1.5px;
   }
 `
@@ -134,6 +137,7 @@ interface CurrencyInputPanelProps {
   id: string
   style?: React.CSSProperties
   showCommonBases?: boolean
+  isFloat?: boolean
 }
 
 export default function CurrencyInputPanel({
@@ -150,6 +154,7 @@ export default function CurrencyInputPanel({
   hideInput = false,
   otherCurrency,
   id,
+  isFloat,
   style,
   showCommonBases
 }: CurrencyInputPanelProps) {
@@ -202,7 +207,7 @@ export default function CurrencyInputPanel({
                         ? currency.symbol.slice(0, 4) +
                           '...' +
                           currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
-                        : currency?.symbol) || t('selectToken')}
+                        : currency?.symbol) || <p style={{height: '24px', margin: 0}}>{t("selectToken")}</p>}
                     </StyledTokenName>
                   )}
                   {!disableCurrencySelect && <StyledDropDown selected={!!currency} />}
@@ -267,6 +272,7 @@ export default function CurrencyInputPanel({
           selectedCurrency={currency}
           otherSelectedCurrency={otherCurrency}
           showCommonBases={showCommonBases}
+          isFloat={isFloat}
         />
       )}
     </InputPanel>

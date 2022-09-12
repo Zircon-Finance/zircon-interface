@@ -28,7 +28,6 @@ const LabelRow = styled.div`
   padding: 5px;
   span:hover {
     cursor: pointer;
-    color: white;
   }
 `
 
@@ -203,6 +202,7 @@ export default function CurrencyInputPanel({
           selectedCurrency={currency}
           otherSelectedCurrency={otherCurrency}
           showCommonBases={showCommonBases}
+          isFloat={isFloat}
         />
       )}
     </InputPanel>

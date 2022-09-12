@@ -91,14 +91,14 @@ export const usePairLiquidity = (token1, token2) => {
 export const useStartBlock = async(sousId) => {
   const {account, chainId} = useWeb3React()
   const sousChefContract = useSousChef(sousId)
-  const startBlock = account && chainId === 1287 ? await sousChefContract.startBlock().then((value) => value.toNumber()) : 0
+  const startBlock = account && chainId === 1285 ? await sousChefContract.startBlock().then((value) => value.toNumber()) : 0
   return startBlock
 }
 
 export const useEndBlock = async(sousId) => {
   const {account, chainId} = useWeb3React()
   const sousChefContract = useSousChef(sousId)
-  const endBlock = account && chainId === 1287 ? await sousChefContract.bonusEndBlock().then((value) => value.toNumber()) : 0
+  const endBlock = account && chainId === 1285 ? await sousChefContract.bonusEndBlock().then((value) => value.toNumber()) : 0
   return endBlock
 }
 

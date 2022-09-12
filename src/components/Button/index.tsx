@@ -282,8 +282,9 @@ export const ButtonWhite = styled(Base)`
 `
 
 const ButtonConfirmedStyle = styled(Base)`
-  background-color: #261e37;
+  background-color: #4491333A;
   color: #449133;
+  font-weight: 500;
 
   &:disabled {
     opacity: 50%;

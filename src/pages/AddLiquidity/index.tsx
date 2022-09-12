@@ -334,7 +334,7 @@ export default function AddLiquidity({
             )}
             pendingText={pendingText}
           />
-          <AutoColumn gap="20px" style={{backgroundColor: theme.bg7, padding: '10px', borderRadius: '20px'}}>
+          <AutoColumn gap="20px" style={{padding: '10px', borderRadius: '20px'}}>
             {noLiquidity && (
               <ColumnCenter style={{padding: '10px'}}>
                 <BlueCard style={{background: 'transparent', border: `1px solid ${theme.anchorFloatBadge}`}}>

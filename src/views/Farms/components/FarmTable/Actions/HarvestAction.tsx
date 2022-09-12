@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import { Text } from '@pancakeswap/uikit'
 import { useWeb3React } from '@web3-react/core'
 import BigNumber from 'bignumber.js'
@@ -61,8 +61,15 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
   const theme = useTheme()
   const addPopup = useAddPopup()
   const addTransaction = useTransactionAdder()
-  let rewardTokens = ''
-  earningToken.forEach(token => rewardTokens += `${token.symbol} `)
+
+  const [rewardTokens, setRewardTokens] = useState("")
+
+  useEffect(() => {
+    let r = ''
+    earningToken.forEach((token) => r += ` ${token.symbol} &`)
+    setRewardTokens(r.slice(0, -1))
+  }, [])
+
 
     const { width } = useWindowDimensions()
 
@@ -116,7 +123,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
             const receipt = await fetchWithCatchTxError(() => {
               return onReward().then((response) => {
                 addTransaction(response, {
-                  summary: `Harvest ${rewardTokens} tokens`
+                  summary: `Harvest${rewardTokens.slice(0, -1)} tokens`
                 })
                 return response
               })
@@ -141,7 +148,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
         </div>
         {width >= 992 ? (
         <Swiper
-        slidesPerView={earningToken.length == 2 ? 1.7 : 1}
+        slidesPerView={earningToken.length === 2 ? 1.7 : 1}
         spaceBetween={2}
         freeMode={true}
         pagination={{
@@ -159,7 +166,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
               <TokenRow key={index} token={token} index={index} />
             ))}
           </div>
-        )}  
+        )}
       </ActionContent>
     </ActionContainer>
   )

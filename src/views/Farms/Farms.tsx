@@ -6,22 +6,15 @@ import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber'
 import { useWeb3React } from '@web3-react/core'
 import { RowType, Toggle, Text, Flex } from '@pancakeswap/uikit'
 import lpAprs from '../../constants/lpAprs.json'
-// import { ChainId } from 'zircon-sdk'
-// import { NextLinkFromReactRouter } from 'components/NextLink'
 import styled, { useTheme } from 'styled-components'
 import Page from '../../components/Layout/Page'
 import { usePriceCakeBusd } from '../../state/farms/hooks'
 import useIntersectionObserver from '../../hooks/useIntersectionObserver'
-// import { DeserializedFarm } from '../../state/types'
 import { useTranslation } from 'react-i18next'
 import { getBalanceNumber } from '../../utils/formatBalance'
-// import { getFarmApr } from '../../utils/apr'
-// import isArchivedPid from '../../utils/farmHelpers'
-// import { latinise } from '../../utils/latinise'
 import { useIsDarkMode, useShowMobileSearchBarManager, useUserFarmsFilterAnchorFloat, useUserFarmsFilterPylonClassic, useUserFarmStakedOnly, useUserFarmsViewMode } from '../../state/user/hooks'
 import {
   FarmFilter,
-  // FarmFilter,
   FarmFilterAnchorFloat,
   ViewMode } from '../../state/user/actions'
 import SearchInput from '../../components/SearchInput'
@@ -423,7 +416,7 @@ const Farms: React.FC = ({ children }) => {
           <Flex position={'relative'} width={width < 500 ? showMobileSearchBar ? '100%' : 'auto' : 'auto'} height={'70px'}>
             { (!showMobileSearchBar || width > 500) && <ViewControls>
               <ToggleWrapper style={{marginRight: '10px', position: 'relative'}}>
-                <Text fontSize='13px' color={theme.text1} mr={'10px'} width={'max-content'} letterSpacing={'0.05em'}> {width > 700 ? 'STAKED ONLY' : 'STAKED'}</Text>
+                <Text style={{marginLeft: -10}} fontSize='13px' color={theme.text1} mr={'10px'} width={'max-content'} letterSpacing={'0.05em'}> {width > 700 ? 'SHOW ONLY MINE' : 'MINE'}</Text>
                 <Toggle
                   id="staked-only-farms"
                   checked={stakedOnly}

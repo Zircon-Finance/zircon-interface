@@ -65,10 +65,12 @@ const StyledNavLink = styled(NavLink).attrs({
 export function PylonClassicTab({ active }: { active: "PYLON" | "CLASSIC" }) {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
+
   const [
     filter,
     setuserFarmsFilterPylonClassic,
   ] = useUserFarmsFilterPylonClassic();
+
   const [, setuserFarmsFilterAnchorFloat] = useUserFarmsFilterAnchorFloat();
 
   return (

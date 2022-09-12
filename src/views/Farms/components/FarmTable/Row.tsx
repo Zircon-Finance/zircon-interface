@@ -168,7 +168,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     details,
      userDataReady,
   } = props
-  const [currency1,currency2] = [useCurrency(details.token1.address),useCurrency(details.token2.address)]
+  const [currency1, currency2] = [useCurrency(details.token1.address),useCurrency(details.token2.address)]
   // const [, pylonPair] = usePylon(currency1, currency2)
 
   // const gamma = new BigNumber(gammaBig).div(new BigNumber(10).pow(18))
@@ -296,8 +296,12 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const stakedAmount = usePool(details.sousId).pool.userData.stakedBalance.toNumber()
   const toggleWalletModal = useWalletModalToggle()
   const darkMode = useIsDarkMode()
-  let rewardTokens = ''
-  props.farm.earningToken.forEach((token) => rewardTokens += `${token.symbol} `)
+  const [rewardTokens, setRewardTokens] = useState("")
+  useEffect(() => {
+    let r = ''
+    props.farm?.earningToken.forEach((token) => r += ` ${token.symbol} &`)
+    setRewardTokens(r.slice(0, -1))
+  }, [])
   const [hoverEarned, setHoverEarned] = useState(false)
   const [hoverRisk, setHoverRisk] = useState(false)
   const gammaAdjusted = new BigNumberJs(gamma).div(new BigNumberJs(10).pow(18))
@@ -374,7 +378,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                       <Flex style={{alignItems: 'center'}}>
                         <>
                         <Text color={'#4e7455'}>
-                          {`Earn ${rewardTokens}`}
+                          {`Earn${rewardTokens.slice(0, -1)}`}
                         </Text>
                             <QuestionMarkContainer
                             onMouseEnter={() => setHoverEarned(true)}

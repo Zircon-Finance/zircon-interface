@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useCallback, useState } from 'react'
+import React, {Dispatch, SetStateAction, useCallback, useEffect, useState} from 'react'
 import styled, { keyframes, css, useTheme } from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { Text } from '@pancakeswap/uikit'
@@ -36,8 +36,7 @@ import { usePool } from '../../../../../state/pools/hooks'
 import { fetchPoolsUserDataAsync } from '../../../../../state/pools'
 import { useCallWithGasPrice } from '../../../../../hooks/useCallWithGasPrice'
 import { BIG_ZERO } from '../../../../../utils/bigNumber'
-import RiskHealthIcon from '../../../../../components/RiskHealthIcon'
-import TrendingHealthIcon from '../../../../../components/TrendingHealthIcon'
+
 import QuestionMarkIcon from '../../../../../components/QuestionMarkIcon'
 import { QuestionMarkContainer, ToolTip } from '../Row'
 import CapacityIndicatorSmall from '../../../../../components/CapacityIndicatorSmall/index'
@@ -75,13 +74,13 @@ const collapseAnimation = keyframes`
 
 const Container = styled.div<{ expanded, staked }>`
   animation: ${({ expanded }) =>
-    expanded
-      ? css`
-          ${expandAnimation} 300ms linear forwards
-        `
-      : css`
-          ${collapseAnimation} 300ms linear forwards
-        `};
+      expanded
+          ? css`
+            ${expandAnimation} 300ms linear forwards
+          `
+          : css`
+            ${collapseAnimation} 300ms linear forwards
+          `};
   overflow: hidden;
   background: ${({ theme }) => theme.card.background};
   display: flex;
@@ -172,49 +171,49 @@ interface ModalProps {
 }
 
 export const ModalTopDeposit: React.FunctionComponent<ModalProps> = ({
-  max,
-  lpLabel,
-  apr,
-  onDismiss,
-  displayApr,
-  stakedBalance,
-  onConfirm,
-  tokenName,
-  addLiquidityUrl,
-  cakePrice,
-  token}) => {
+                                                                       max,
+                                                                       lpLabel,
+                                                                       apr,
+                                                                       onDismiss,
+                                                                       displayApr,
+                                                                       stakedBalance,
+                                                                       onConfirm,
+                                                                       tokenName,
+                                                                       addLiquidityUrl,
+                                                                       cakePrice,
+                                                                       token}) => {
   return (
-    <Portal>
-      <ModalContainer>
-        <DepositModal
-        max={max}
-        lpLabel={lpLabel}
-        apr={apr}
-        onDismiss={onDismiss}
-        displayApr={displayApr}
-        stakedBalance={stakedBalance}
-        onConfirm={onConfirm}
-        tokenName={tokenName}
-        addLiquidityUrl={addLiquidityUrl}
-        cakePrice={cakePrice}
-        token={token}
-      />
-      </ModalContainer>
-    </Portal>
+      <Portal>
+        <ModalContainer>
+          <DepositModal
+              max={max}
+              lpLabel={lpLabel}
+              apr={apr}
+              onDismiss={onDismiss}
+              displayApr={displayApr}
+              stakedBalance={stakedBalance}
+              onConfirm={onConfirm}
+              tokenName={tokenName}
+              addLiquidityUrl={addLiquidityUrl}
+              cakePrice={cakePrice}
+              token={token}
+          />
+        </ModalContainer>
+      </Portal>
   )
 }
 
 
 const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
-  details,
-  apr,
-  liquidity,
-  userDataReady,
-  clickAction,
-  expanded,
-  gamma,
+                                                                  details,
+                                                                  apr,
+                                                                  liquidity,
+                                                                  userDataReady,
+                                                                  clickAction,
+                                                                  expanded,
+                                                                  gamma,
                                                                   healthFactor
-}) => {
+                                                                }) => {
   const farm = details
   const staked = details.userData.stakedBalance.gt(0)
   const { t } = useTranslation()
@@ -234,6 +233,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const tokenBalance = pool.userData.stakingTokenBalance
   const stakedBalance = pool.userData.stakedBalance
   const [showModal, setShowModal] = useState(false)
+  const [rewardTokens, setRewardTokens] = useState("")
   const { onStake } = useStakeFarms(farm.sousId)
   const { account } = useWeb3React()
   const dispatch = useDispatch()
@@ -251,38 +251,38 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const handleApproval = useCallback(async () => {
     const receipt = await fetchWithCatchTxError(() => {
       return callWithGasPrice(lpContract, 'approve', [sousChefContract.address, MaxUint256])
-      .then(response => {
-        addTransaction(response, {
-          summary:  `Enable ${farm.token1.symbol}-${farm.token2.symbol} stake contract`
-        })
-        return response
-      })
+          .then(response => {
+            addTransaction(response, {
+              summary:  `Enable ${farm.token1.symbol}-${farm.token2.symbol} stake contract`
+            })
+            return response
+          })
     })
 
     if (receipt?.status) {
       addPopup(
-        {
-          txn: {
-            hash: receipt.transactionHash,
-            success: true,
-            summary: 'Contract enabled!',
-          }
-        },
-        receipt.transactionHash
+          {
+            txn: {
+              hash: receipt.transactionHash,
+              success: true,
+              summary: 'Contract enabled!',
+            }
+          },
+          receipt.transactionHash
       )
       dispatch(fetchPoolsUserDataAsync(account))
     }
   }, [dispatch,
-      account,
-      addPopup,
-      fetchWithCatchTxError,
-      addTransaction,
-      callWithGasPrice,
-      farm.token1.symbol,
-      farm.token2.symbol,
-      lpContract,
-      sousChefContract.address,
-    ])
+    account,
+    addPopup,
+    fetchWithCatchTxError,
+    addTransaction,
+    callWithGasPrice,
+    farm.token1.symbol,
+    farm.token2.symbol,
+    lpContract,
+    sousChefContract.address,
+  ])
 
   const handleStake = async (amount: string, token: Token) => {
     const receipt = await fetchWithCatchTxError(() => {
@@ -295,212 +295,213 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
     })
     if (receipt?.status) {
       addPopup(
-        {
-          txn: {
-            hash: receipt.transactionHash,
-            success: receipt.status === 1,
-            summary: 'Staked '+amount+' '+token1.symbol+"-"+token2.symbol+' LP to farm',
-          }
-        },
-        receipt.transactionHash
+          {
+            txn: {
+              hash: receipt.transactionHash,
+              success: receipt.status === 1,
+              summary: 'Staked '+amount+' '+token1.symbol+"-"+token2.symbol+' LP to farm',
+            }
+          },
+          receipt.transactionHash
       )
       dispatch(fetchPoolsUserDataAsync(account))
     }
   }
-  const risk = gamma && (gamma <= (0.7) || gamma >= (0.5))
 
   const TooltipContentRisk = () => {return (
-    <ToolTip style={{bottom: '-15px', left: width <= 992 ? '-240px' : '50px'}} show={hoverRisk}>
-      <Text fontSize='13px' fontWeight={500} color={theme.text1}>
-        {`The risk factor keeps track of the farms' stability. `}
-      </Text>
-    </ToolTip>
+      <ToolTip style={{bottom: '-15px', left: width <= 992 ? '-240px' : '50px'}} show={hoverRisk}>
+        <Text fontSize='13px' fontWeight={500} color={theme.text1}>
+          {`The risk factor keeps track of the farms' stability. `}
+        </Text>
+      </ToolTip>
   )}
+  useEffect(() => {
+    let r = ''
+    farm.earningToken.forEach((token) => r += ` ${token.symbol} &`)
+    setRewardTokens(r.slice(0, -1))
+  }, [])
+
 
   return (
-    <>
-    {showModal && (
-      <ModalTopDeposit
-        max={tokenBalance}
-        lpLabel = {lpLabel}
-        apr = {1}
-        onDismiss = {() => setShowModal(false) }
-        displayApr = {'111'}
-        stakedBalance = {stakedBalance}
-        onConfirm = {handleStake }
-        tokenName = {farm.stakingToken.symbol}
-        addLiquidityUrl = {farm.isClassic ?
-          `#/add/${farm.token1.address}/${farm.token2.address}` :
-          `#/add-pro/${farm.token1.address}/${farm.token2.address}`}
-        cakePrice = {1 as unknown as BigNumber}
-        token = {farm.stakingToken}
-        />
-    )}
-    <Container expanded={expanded} staked={staked}>
-      <QuarterContainer>
-        <ActionContainer style={{padding: '0 10px'}}>
-            {width >= 800 ? (
-              <SpaceBetween>
-                  <div style={{letterSpacing: '0.05em'}}>
-                    <>
-                    <Flex flexWrap='wrap'>
-                      <BadgeSmall
-                      style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', display: 'flex', alignItems: 'center', marginRight: '5px'}}>
-                      <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{!isClassic && token1.symbol} </span>{isClassic ? 'CLASSIC' :!isAnchor ? 'FLOAT' : 'ANCHOR'}
-                      </BadgeSmall>
-                      <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{`${token1.symbol}/${token2.symbol}`}</Text>
-                    </Flex>
-                    </>
-                  </div>
-                  {isClassic ? (
-                  <DoubleCurrencyLogo currency0={token1} currency1={token2} margin={false} size={width >= 500 ? 25 : 30} />
-                  ) : (
-                  <DoubleCurrencyLogo currency0={!isAnchor ? token1 : token2} currency1={null} margin={false} size={30} />
-                  )}
-              </SpaceBetween>
+      <>
+        {showModal && (
+            <ModalTopDeposit
+                max={tokenBalance}
+                lpLabel = {lpLabel}
+                apr = {1}
+                onDismiss = {() => setShowModal(false) }
+                displayApr = {'111'}
+                stakedBalance = {stakedBalance}
+                onConfirm = {handleStake }
+                tokenName = {farm.stakingToken.symbol}
+                addLiquidityUrl = {farm.isClassic ?
+                    `#/add/${farm.token1.address}/${farm.token2.address}` :
+                    `#/add-pro/${farm.token1.address}/${farm.token2.address}`}
+                cakePrice = {1 as unknown as BigNumber}
+                token = {farm.stakingToken}
+            />
+        )}
+        <Container expanded={expanded} staked={staked}>
+          <QuarterContainer>
+            <ActionContainer style={{padding: '0 10px'}}>
+              {width >= 800 ? (
+                  <SpaceBetween>
+                    <div style={{letterSpacing: '0.05em'}}>
+                      <>
+                        <Flex flexWrap='wrap'>
+                          <BadgeSmall
+                              style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', display: 'flex', alignItems: 'center', marginRight: '5px'}}>
+                            <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{!isClassic && token1.symbol} </span>{isClassic ? 'CLASSIC' :!isAnchor ? 'FLOAT' : 'ANCHOR'}
+                          </BadgeSmall>
+                          <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{`${token1.symbol}/${token2.symbol}`}</Text>
+                        </Flex>
+                      </>
+                    </div>
+                    {isClassic ? (
+                        <DoubleCurrencyLogo currency0={token1} currency1={token2} margin={false} size={width >= 500 ? 25 : 30} />
+                    ) : (
+                        <DoubleCurrencyLogo currency0={!isAnchor ? token1 : token2} currency1={null} margin={false} size={30} />
+                    )}
+                  </SpaceBetween>
               ) : (
-              <SpaceBetween style={{paddingTop: '16px'}}>
-                <Flex alignItems={'center'}>
-                  {isClassic ? (
-                  <DoubleCurrencyLogo currency0={token1} currency1={token2} margin={false} size={width >= 500 ? 25 : 30} />
-                  ) : (
-                  <DoubleCurrencyLogo currency0={!isAnchor ? token1 : token2} currency1={null} margin={false} size={30} />
-                  )}
-                  <div>
-                    <>
-                    <Flex flexWrap='wrap'>
-                      <BadgeSmall
-                      style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', display: 'flex', alignItems: 'center', marginRight: '5px'}}>
-                      <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{!isClassic && token1.symbol} </span>{isClassic ? 'CLASSIC' :!isAnchor ? 'FLOAT' : 'ANCHOR'}
-                      </BadgeSmall>
-                      <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{`${token1.symbol}/${token2.symbol}`}</Text>                    </Flex>
-                    </>
-                  </div>
-                </Flex>
-                <QuarterContainer onClick={() => clickAction(false)}
-                  style={{justifyContent: 'center', alignItems: 'center', cursor: 'pointer'}}>
-                  <ArrowIcon toggled={expanded}  />
-                </QuarterContainer>
-              </SpaceBetween>
-            )}
-          {width >= 800 ? (
-          <>
-          <SpaceBetween>
-              <Text color={theme.text1}>{`Earn ${farm.earningToken.map((token) => `${token.symbol}`)}`}</Text>
-              <div style={{width: '50%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
-                <CapacityIndicatorSmall gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true}/>
-                <QuestionMarkContainer
-                onMouseEnter={() => setHoverRisk(true)}
-                onMouseLeave={() => setHoverRisk(false)}
-              >{hoverRisk && (
-              <TooltipContentRisk />
+                  <SpaceBetween style={{paddingTop: '16px'}}>
+                    <Flex alignItems={'center'}>
+                      {isClassic ? (
+                          <DoubleCurrencyLogo currency0={token1} currency1={token2} margin={false} size={width >= 500 ? 25 : 30} />
+                      ) : (
+                          <DoubleCurrencyLogo currency0={!isAnchor ? token1 : token2} currency1={null} margin={false} size={30} />
+                      )}
+                      <div>
+                        <>
+                          <Flex flexWrap='wrap'>
+                            <BadgeSmall
+                                style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', display: 'flex', alignItems: 'center', marginRight: '5px'}}>
+                              <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{!isClassic && token1.symbol} </span>{isClassic ? 'CLASSIC' :!isAnchor ? 'FLOAT' : 'ANCHOR'}
+                            </BadgeSmall>
+                            <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{`${token1.symbol}/${token2.symbol}`}</Text>                    </Flex>
+                        </>
+                      </div>
+                    </Flex>
+                    <QuarterContainer onClick={() => clickAction(false)}
+                                      style={{justifyContent: 'center', alignItems: 'center', cursor: 'pointer'}}>
+                      <ArrowIcon toggled={expanded}  />
+                    </QuarterContainer>
+                  </SpaceBetween>
               )}
-              <QuestionMarkIcon />
-              </QuestionMarkContainer>
-              </div>
-          </SpaceBetween>
-          <SpaceBetween>
-              <StyledLinkExternal style={{marginBottom: '5px'}} color={theme.meatPink} href={bsc}>{t('View Contract ↗')}</StyledLinkExternal>
-              <StyledLinkExternal color={theme.meatPink} href={info}>{t('See Pair Info ↗')}</StyledLinkExternal>
-          </SpaceBetween>
-          </> ) : (
-            <>
-            <SpaceBetween style={{marginBottom: '16px'}}>
-              <Flex style={{flexDirection: 'column'}}>
-                <StyledLinkExternal style={{margin: '5px 0 5px 0'}} color={theme.meatPink} href={bsc}>{t('View Contract ↗')}</StyledLinkExternal>
-                <StyledLinkExternal color={theme.meatPink} href={info}>{t('See Pair Info ↗')}</StyledLinkExternal>
-              </Flex>
-              <Flex flexDirection={"column"}>
-                <Text color={theme.text1}>{`Earn ${farm.earningToken.map((token) => `${token.symbol}`)}`}</Text>
-                <div style={{display: 'flex', marginLeft: '10px', alignItems: 'center'}}>
-                {isAnchor ? (
+              {width >= 800 ? (
+                  <>
+                    <SpaceBetween>
+                      <Text color={theme.text1}>{`Earn ${rewardTokens}`}</Text>
+
+                      <div style={{width: '50%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
+                        <CapacityIndicatorSmall gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true}/>
+                        <QuestionMarkContainer
+                            onMouseEnter={() => setHoverRisk(true)}
+                            onMouseLeave={() => setHoverRisk(false)}
+                        >{hoverRisk && (
+                            <TooltipContentRisk />
+                        )}
+                          <QuestionMarkIcon />
+                        </QuestionMarkContainer>
+                      </div>
+                    </SpaceBetween>
+                    <SpaceBetween>
+                      <StyledLinkExternal style={{marginBottom: '5px'}} color={theme.meatPink} href={bsc}>{t('View Contract ↗')}</StyledLinkExternal>
+                      <StyledLinkExternal color={theme.meatPink} href={info}>{t('See Pair Info ↗')}</StyledLinkExternal>
+                    </SpaceBetween>
+                  </> ) : (
+                  <>
+                    <SpaceBetween style={{marginBottom: '16px'}}>
+                      <Flex style={{flexDirection: 'column'}}>
+                        <StyledLinkExternal style={{margin: '5px 0 5px 0'}} color={theme.meatPink} href={bsc}>{t('View Contract ↗')}</StyledLinkExternal>
+                        <StyledLinkExternal color={theme.meatPink} href={info}>{t('See Pair Info ↗')}</StyledLinkExternal>
+                      </Flex>
+                      <Flex flexDirection={"column"}>
+                        <Text color={theme.text1}>{`Earn${rewardTokens}`}</Text>
+                        <div style={{display: 'flex', marginLeft: '10px', alignItems: 'center'}}>
+                          <CapacityIndicatorSmall gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true}/>
+
+                          <QuestionMarkContainer
+                              onMouseEnter={() => setHoverRisk(true)}
+                              onMouseLeave={() => setHoverRisk(false)}
+                          >{hoverRisk && (
+                              <TooltipContentRisk />
+                          )}
+                            <QuestionMarkIcon />
+                          </QuestionMarkContainer>
+                        </div>
+                      </Flex>
+                    </SpaceBetween>
+                  </>
+              )}
+
+              {/* <TagsContainer> */}
+              {/* {farm.isCommunity ? <FarmAuctionTag /> : <CoreTag />} */}
+              {/* {dual ? <DualTag /> : null} */}
+              {/* </TagsContainer> */}
+            </ActionContainer>
+          </QuarterContainer>
+
+          {staked ? (
               <>
-              {risk ?
-              <RiskHealthIcon /> : <TrendingHealthIcon />}
-              <Text width={"max-content"} ml={'10px'} color={theme.text1}>{risk ? gamma.toFixed(2) : 'High Risk'}</Text>
-              </> )
-              : <CapacityIndicatorSmall gamma={gamma.toFixed(2)} />}
-                  <QuestionMarkContainer
-                onMouseEnter={() => setHoverRisk(true)}
-                onMouseLeave={() => setHoverRisk(false)}
-              >{hoverRisk && (
-              <TooltipContentRisk />
-              )}
-              <QuestionMarkIcon />
-              </QuestionMarkContainer>
-                </div>
-              </Flex>
-            </SpaceBetween>
-            </>
+                <QuarterContainer>
+                  <ActionContainer>
+                    <HarvestAction {...farm} userDataReady={userDataReady} />
+                  </ActionContainer>
+                </QuarterContainer>
+
+                <QuarterContainer style={{paddingLeft: width > 800 ? '5px' : '0'}}>
+                  <ActionContainer>
+                    <StakedAction {...farm} userDataReady={userDataReady} lpLabel={lpLabel} displayApr={apr.value} />
+                  </ActionContainer>
+                </QuarterContainer>
+              </>
+          ) : (
+              <QuarterContainer >
+                {isApproved ? (
+                        <StakeAdd pink={true} clickAction={() => {setShowModal(true)}} row={true} margin={false} width={width > 992 ? '30%' : '60%'} />)
+                    : (
+                        <ButtonOutlined style={{background: theme.hoveredButton, border: 'none', color: '#FFF'}}
+                                        m="auto" width="50%" disabled={pendingTx} onClick={account ? handleApproval : toggleWalletModal}>
+                          {account ? 'Enable Contract' : 'Connect Wallet'}
+                        </ButtonOutlined>
+                    )}
+              </QuarterContainer>
           )}
 
-          {/* <TagsContainer> */}
-            {/* {farm.isCommunity ? <FarmAuctionTag /> : <CoreTag />} */}
-            {/* {dual ? <DualTag /> : null} */}
-          {/* </TagsContainer> */}
-        </ActionContainer>
-      </QuarterContainer>
 
-    {staked ? (
-      <>
-       <QuarterContainer>
-        <ActionContainer>
-          <HarvestAction {...farm} userDataReady={userDataReady} />
-        </ActionContainer>
-      </QuarterContainer>
+          <QuarterContainer style={{padding: width < 992 ? '0 10px' : '0 0 0 10px'}}>
+            <ValueContainer>
+              <ValueWrapper>
+                <Text fontSize='13px' fontWeight={300} color={theme.text1}>{t('APR')}</Text>
+                <Apr left={true} {...apr} />
+              </ValueWrapper>
+              <ValueWrapper>
+                <Text color={theme.text1} fontSize='13px' fontWeight={300}>{t('Liquidity')}</Text>
+                <Liquidity {...liquidity} />
+              </ValueWrapper>
+              <Link to={farm.isClassic ?
+                  `/add/${farm.token1.address}/${farm.token2.address}` :
+                  `/add-pro/${farm.token1.address}/${farm.token2.address}`}>
+                <ButtonOutlined style={{
+                  margin: '10px 0',
+                  padding: '10px',
+                  fontSize: '13px',
+                  color: theme.pinkGamma,
+                  background: theme.contrastLightButton,
+                  border: 'none',
+                  borderRadius: '12px',
+                  fontWeight: 500 }}>
+                  {`Get ${token1.name} - ${token2.name} ${isClassic ? 'Classic' : isAnchor ? 'Stable' : 'Float'} LP`}</ButtonOutlined>
+              </Link>
+            </ValueContainer>
+          </QuarterContainer>
+          {width >= 800 && <QuarterContainer onClick={() => clickAction(false)} style={{justifyContent: 'center', alignItems: 'center', cursor: 'pointer'}}>
+            <ArrowIcon toggled={expanded}  />
+          </QuarterContainer>}
 
-      <QuarterContainer style={{paddingLeft: width > 800 ? '5px' : '0'}}>
-        <ActionContainer>
-          <StakedAction {...farm} userDataReady={userDataReady} lpLabel={lpLabel} displayApr={apr.value} />
-        </ActionContainer>
-      </QuarterContainer>
+        </Container>
       </>
-    ) : (
-      <QuarterContainer >
-        {isApproved ? (
-        <StakeAdd pink={true} clickAction={() => {setShowModal(true)}} row={true} margin={false} width={width > 992 ? '30%' : '60%'} />)
-        : (
-          <ButtonOutlined style={{background: theme.hoveredButton, border: 'none', color: '#FFF'}}
-          m="auto" width="50%" disabled={pendingTx} onClick={account ? handleApproval : toggleWalletModal}>
-            {account ? 'Enable Contract' : 'Connect Wallet'}
-          </ButtonOutlined>
-        )}
-      </QuarterContainer>
-    )}
-
-
-      <QuarterContainer style={{padding: width < 992 ? '0 10px' : '0 0 0 10px'}}>
-        <ValueContainer>
-          <ValueWrapper>
-            <Text fontSize='13px' fontWeight={300} color={theme.text1}>{t('APR')}</Text>
-            <Apr left={true} {...apr} />
-          </ValueWrapper>
-          <ValueWrapper>
-            <Text color={theme.text1} fontSize='13px' fontWeight={300}>{t('Liquidity')}</Text>
-            <Liquidity {...liquidity} />
-          </ValueWrapper>
-          <Link to={farm.isClassic ?
-                      `/add/${farm.token1.address}/${farm.token2.address}` :
-                      `/add-pro/${farm.token1.address}/${farm.token2.address}`}>
-              <ButtonOutlined style={{
-                margin: '10px 0',
-                padding: '10px',
-                fontSize: '13px',
-                color: theme.pinkGamma,
-                background: theme.contrastLightButton,
-                border: 'none',
-                borderRadius: '12px',
-                fontWeight: 500 }}>
-              {`Get ${token1.name} - ${token2.name} ${isClassic ? 'Classic' : isAnchor ? 'Stable' : 'Float'} LP`}</ButtonOutlined>
-          </Link>
-        </ValueContainer>
-      </QuarterContainer>
-      {width >= 800 && <QuarterContainer onClick={() => clickAction(false)} style={{justifyContent: 'center', alignItems: 'center', cursor: 'pointer'}}>
-        <ArrowIcon toggled={expanded}  />
-      </QuarterContainer>}
-
-    </Container>
-    </>
   )
 }
 

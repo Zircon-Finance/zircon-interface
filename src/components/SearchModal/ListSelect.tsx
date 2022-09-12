@@ -246,7 +246,8 @@ const ListRow = memo(function ListRow({ listUrl, onBack }: { listUrl: string; on
                     padding: '0.5rem .35rem',
                     borderRadius: '12px',
                     fontSize: '16px',
-                    fontWeight: 400
+                    fontWeight: 400,
+                    height: '42px'
                   }}
                   onClick={selectThisList}
               >

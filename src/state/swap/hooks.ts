@@ -417,8 +417,8 @@ export const useFetchPairPrices = ({
   useEffect(() => {
     const updatePairId = () => {
       try {
-        const token0AsTokenInstance = new Token(ChainId.MOONBASE, token0Address, 18)
-        const token1AsTokenInstance = new Token(ChainId.MOONBASE, token1Address, 18)
+        const token0AsTokenInstance = new Token(ChainId.MOONRIVER, token0Address, 18)
+        const token1AsTokenInstance = new Token(ChainId.MOONRIVER, token1Address, 18)
         const pairAddress = Pair.getAddress(token0AsTokenInstance, token1AsTokenInstance).toLowerCase()
         if (pairAddress !== pairId) {
           setPairId(pairAddress)

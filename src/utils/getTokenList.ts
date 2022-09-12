@@ -61,7 +61,8 @@ export default async function getTokenList(
           const add = `${error.dataPath} ${error.message ?? ''}`
           return memo.length > 0 ? `${memo}; ${add}` : `${add}`
         }, '') ?? 'unknown error'
-      throw new Error(`Token list failed validation: ${validationErrors}`)
+      throw new Error(`Error importing list`)
+      console.error('Token list failed validation', validationErrors)
     }
     return json
   }

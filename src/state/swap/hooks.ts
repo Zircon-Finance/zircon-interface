@@ -1,6 +1,17 @@
 import useENS from '../../hooks/useENS'
 import { parseUnits } from '@ethersproject/units'
-import { ChainId, Currency, CurrencyAmount, DEV, JSBI, Pair, Token, TokenAmount, Trade, MOONBASE_ADDRESSES } from 'zircon-sdk'
+import {
+  ChainId,
+  Currency,
+  CurrencyAmount,
+  DEV,
+  JSBI,
+  Pair,
+  Token,
+  TokenAmount,
+  Trade,
+  MOONBASE_ADDRESSES,
+} from 'zircon-sdk'
 import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'

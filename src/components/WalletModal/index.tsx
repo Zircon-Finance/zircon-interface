@@ -97,7 +97,7 @@ const Blurb = styled.div`
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 2rem;
+  margin-top: 20px;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     margin: 1rem;
     font-size: 12px;
@@ -372,7 +372,7 @@ export default function WalletModal({
             {error instanceof UnsupportedChainIdError ? (
               <>
               <h5 style={{textAlign: 'center'}}>{'Please connect to the appropriate Moonbase Alpha network.'}</h5>
-              {connector === injected && <ButtonPrimary mt={'30px'} onClick={() => connectNet('moonbase')} >{'Click to connect'}</ButtonPrimary>}
+              {connector === injected && <ButtonPrimary mt={'30px'} onClick={() => connectNet('moonriver')} >{'Click to connect'}</ButtonPrimary>}
               </>
             ) : (
               'Error connecting. Please make sure you are connected to the appropriate Moonbase Alpha network.'
@@ -425,6 +425,17 @@ export default function WalletModal({
           ) : (
             <OptionGrid>{getOptions()}</OptionGrid>
           )}
+          <span>
+            <Text style={{textAlign: 'center', fontSize: '14px', marginTop: '10px'}}>
+              {'Connecting a wallet you accept'}
+            </Text>
+            <Text style={{textAlign: 'center', fontSize: '14px'}}>
+              {` our `} 
+              {<Link style={{color: theme.pinkBrown, textDecoration: 'none'}} href="#">terms and conditions</Link>}
+              {` and `}
+              {<Link style={{color: theme.pinkBrown, textDecoration: 'none'}} href="#">privacy policy</Link>}
+            </Text>
+          </span>
           {walletView !== WALLET_VIEWS.PENDING && (
             <Blurb style={{display: 'flex', flexFlow: 'column'}}>
               <span style={{marginBottom: '10px'}}>Haven't got a crypto wallet yet? &nbsp;</span>{' '}

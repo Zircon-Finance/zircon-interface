@@ -920,6 +920,7 @@ export default function AddLiquidityPro({
                                     currency={currencies[Field.CURRENCY_A]}
                                     id="add-liquidity-input-tokena_pic"
                                     showCommonBases
+                                    isFloat={true}
                                 />
                                 <span
                                     style={{
@@ -958,6 +959,7 @@ export default function AddLiquidityPro({
                                     currency={currencies[Field.CURRENCY_B]}
                                     id="add-liquidity-input-tokenb_pic"
                                     showCommonBases
+                                    isFloat={false}
                                 />
                                 <span
                                     style={{
@@ -1324,11 +1326,11 @@ export default function AddLiquidityPro({
                                           fontSize={width > 700 ? 20 : 16}
                                           fontWeight={400}
                                       >
-                                        {error ??
+                                        {error ? 'Add & Farm' :
                                         (farmIsApproved() ?
                                             "Add & Farm" : "Enable farm contract")}
                                       </Text>
-                                      {farmIsApproved() &&
+                                      {(farmIsApproved() || error) &&
                                       <Text
                                           fontSize={width > 700 ? 14 : 13}
                                           fontWeight={400}

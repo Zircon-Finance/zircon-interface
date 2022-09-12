@@ -34,6 +34,9 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
   :hover {
     background-color: ${({ theme, selected }) => !selected ? theme.poolPinkButton : theme.darkMode ? '#513642' : '#E5D9DB'};
     color: '${({ theme, selected }) => !selected ? '#fff' : theme.darkMode ? '#fff' : theme.blackBrown}';
+    path {
+      stroke: #fff;
+    }
   }
 `
 
@@ -87,18 +90,18 @@ const Container = styled.div<{ hideInput: boolean }>`
 `
 
 const StyledTokenName = styled.span<{ active?: boolean }>`
-  ${({ active }) => (active ? '  margin: 0 0 0 0.25rem;' : '  margin: 0 0.25rem 0 0.25rem;')}
+  ${({ active }) => (active ? '  margin: 0 0 0 0.25rem;' : '  margin: 0 0.25rem 0 0.25rem;height: 24px;')}
   font-size:  13px;
   align-self: center;
   text-align: left;
   display: flex;
-  height: 100%;
+  height: 24px;
   flex-flow: column;
   align-items: center;
   @media (min-width: 700px) {
     font-size: 16px;
     flex-flow: row;
-    ${({ active }) => (active ? '  margin: 0 0.75 0.75rem;' : '  margin: 0 0.25rem 0 0.25rem;')}
+    ${({ active }) => (active ? '  margin: 0 0.75 0.75rem;' : '  margin: 0 0.25rem 0 0.25rem;height: 24px;')}
   }
 `
 
@@ -217,7 +220,7 @@ export default function CurrencyInputPanel({
                             {anchor ? "STABLE" : "FLOAT"}
                           </span>
                         </>
-                      )) || t("selectToken")}
+                      )) || <p style={{height: '24px'}}>{t("selectToken")}</p>}
                     </StyledTokenName>
                   )}
                 </div>
@@ -240,6 +243,7 @@ export default function CurrencyInputPanel({
           selectedCurrency={currency}
           otherSelectedCurrency={otherCurrency}
           showCommonBases={showCommonBases}
+          isFloat={!anchor}
         />
       )}
     </InputPanel>

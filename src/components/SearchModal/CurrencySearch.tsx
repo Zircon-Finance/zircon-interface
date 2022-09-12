@@ -3,8 +3,8 @@ import React, { KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRe
 import ReactGA from 'react-ga4'
 import { useTranslation } from 'react-i18next'
 import { FixedSizeList } from 'react-window'
-import { Text } from 'rebass'
-import { useTheme } from 'styled-components'
+import { Flex, Text } from 'rebass'
+import styled, { useTheme } from 'styled-components'
 // import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens, useToken } from '../../hooks/Tokens'
 import { useSelectedListInfo } from '../../state/lists/hooks'
@@ -23,6 +23,24 @@ import { useTokenComparator } from './sorting'
 import { PaddedColumn, SearchInput, Separator } from './styleds'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { ButtonPositionsMobile } from '../Button'
+import CurrencyLogo from '../CurrencyLogo'
+
+const SmallPlanet = styled.div`
+  height: 28px;
+  width: 68px;
+  width: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+  border-radius: 14px;
+  padding: 5px 8px 5px 5px;
+  background-color: ${({ theme }) => theme.searchInput};
+  cursor: pointer;
+  &:hover {
+    background-color: ${({ theme }) => theme.questionMarks};
+  }
+`
 
 interface CurrencySearchProps {
   isOpen: boolean
@@ -32,6 +50,7 @@ interface CurrencySearchProps {
   otherSelectedCurrency?: Currency | null
   showCommonBases?: boolean
   onChangeList: () => void
+  isFloat: boolean
 }
 
 export function CurrencySearch({
@@ -41,7 +60,8 @@ export function CurrencySearch({
   showCommonBases,
   onDismiss,
   isOpen,
-  onChangeList
+  onChangeList,
+  isFloat
 }: CurrencySearchProps) {
   const { t } = useTranslation()
   // const { chainId } = useActiveWeb3React()
@@ -95,6 +115,9 @@ export function CurrencySearch({
       ...sorted.filter(token => token.symbol?.toLowerCase() !== symbolMatch[0])
     ]
   }, [filteredTokens, searchQuery, searchToken, tokenComparator])
+
+  const selectedFloatTokens = [filteredSortedTokens[0], filteredSortedTokens[1], filteredSortedTokens[2]]
+  const selectedAnchorTokens = [filteredSortedTokens[3], filteredSortedTokens[4], filteredSortedTokens[5]]
 
   const handleCurrencySelect = useCallback(
     (currency: Currency) => {
@@ -168,7 +191,32 @@ export function CurrencySearch({
         </RowBetween>
       </PaddedColumn>
 
-      {/* <Separator /> */}
+      {(isFloat !== undefined && filteredSortedTokens.length > 0) && 
+      <Flex flexDirection="column" style={{padding: '0 20px', gap: '10px'}}>
+        <Text color={theme.whiteHalf}>{`Recommended for ${isFloat ? 'Float' : 'Anchor'}`}</Text>
+        <Flex flexDirection="row" style={{marginBottom: '10px'}}>
+        {isFloat === true &&
+          selectedAnchorTokens?.map((token, i) => (
+            <SmallPlanet onClick={()=>handleCurrencySelect(token)}>
+              <CurrencyLogo currency={token} size={'18px'} />
+              <Text fontWeight={500} fontSize={14} style={{padding: '0 5px 0 5px'}}>{token.symbol}</Text>
+            </SmallPlanet>
+          ))
+        }
+        {isFloat === false &&
+          selectedFloatTokens?.map((token, i) => (
+            <SmallPlanet onClick={()=>handleCurrencySelect(token)}>
+              <CurrencyLogo currency={token} size={'18px'} />
+              <Text fontWeight={500} fontSize={14} style={{padding: '0 5px 0 5px'}}>{token.symbol}</Text>
+            </SmallPlanet>
+          ))
+        }
+        </Flex>
+      </Flex>
+      }
+
+
+      <Separator style={{background: theme.searchInput}} />
 
       <div style={{ flex: '1' }}>
         <AutoSizer disableWidth>
@@ -186,7 +234,7 @@ export function CurrencySearch({
         </AutoSizer>
       </div>
 
-      <Separator />
+      <Separator style={{background: theme.searchInput}} />
       <Card style={{padding: '15px'}}>
         <RowBetween>
           {selectedListInfo.current ? (

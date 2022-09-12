@@ -11,7 +11,6 @@ const FarmsPage = () => {
   const { account } = useWeb3React()
   const { activeFarms } = useContext(FarmsContext)
   const cakePrice = usePriceCakeBusd()
-  console.log('activeFarms', activeFarms)
 
   return (
     <>

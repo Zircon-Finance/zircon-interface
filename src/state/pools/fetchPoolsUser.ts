@@ -14,7 +14,6 @@ export const fetchPoolsAllowance = async (account) => {
         params: [account, getAddress(pool.contractAddress)],
     }))
     const allowances = await multicall(erc20ABI, calls)
-    console.log(allowances)
     return poolsConfig.reduce(
         (acc, pool, index) => ({ ...acc, [pool.sousId]: new BigNumber(allowances[index]).toJSON() }),
         {},
@@ -29,7 +28,6 @@ export const fetchUserBalances = async (account) => {
         name: 'balanceOf',
         params: [account],
     }))
-    console.log("tokens", tokens)
 
     const tokenBalancesRaw = await multicall(erc20ABI, calls)
     const tokenBalances = tokens.reduce((acc, token, index) => ({ ...acc, [token]: tokenBalancesRaw[index] }), {})

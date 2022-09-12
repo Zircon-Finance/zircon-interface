@@ -51,7 +51,6 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
     // contract signer
     const signer = account && (new ethers.providers.Web3Provider(window.ethereum)).getSigner()
     const airdropWithSigner = airdrop_contract?.connect(signer)
-    console.log(account)
     // proofData leaves
     const toggleWalletModal = useWalletModalToggle()
     const [dataUser, setDataUser] = useState({
@@ -74,7 +73,6 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
             isClaimed: false,
             isClaiming: false
         }
-        console.log(dummyData?.proof)
         airdropWithSigner?.check(
             dummyData?.index,
             dummyData?.address,
@@ -108,7 +106,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
             {loading ? <div style={{height: 150,  alignItems: 'center'}}>
                     <Lottie
                         options={{
-                            loop: false,
+                            loop: true,
                             autoplay: true,
                             animationData: animation2,
                         }}/>
@@ -145,7 +143,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
                                                 setTxHash(transaction.hash)
                                                 setAttemptingTxn(false);
                                                 addTransaction(transaction, {
-                                                    summary: "Claiming ZRG " + dataUser?.amount,
+                                                    summary: "Claimed ZRG " + dataUser?.amount,
                                                 });
                                                 // onDismiss()
                                                 setTxHash(transaction.hash);

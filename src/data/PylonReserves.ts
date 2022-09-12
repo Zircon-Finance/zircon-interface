@@ -3,11 +3,10 @@ import { useMemo } from 'react'
 import { abi as ZirconPylonABI } from '../constants/abi/ZirconPylon.json'
 import { Interface } from '@ethersproject/abi'
 import { useActiveWeb3React } from '../hooks'
-import { abi as IUniswapV2PairABI } from '@uniswap/v2-core/build/IUniswapV2Pair.json'
+import { abi as ZirconPairABI } from '../constants/abi/ZirconPair.json'
 import { useMultipleContractSingleData } from '../state/multicall/hooks'
 import { wrappedCurrency } from '../utils/wrappedCurrency'
-const PAIR_INTERFACE = new Interface(IUniswapV2PairABI)
-
+const PAIR_INTERFACE = new Interface(ZirconPairABI)
 const PYLON_INTERFACE = new Interface(ZirconPylonABI)
 
 export enum PylonState {
@@ -31,7 +30,6 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
 
   )
 
-  console.log("tokens", tokens)
   const pylonAddresses = useMemo(
     () =>
       tokens.map(([tokenA, tokenB]) => {
@@ -52,7 +50,7 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
   return useMemo(() => {
     return results.map((result, i) => {
       const { result: reserves, loading } = result
-
+      // console.log(resultsPair[i])
       const resPair = resultsPair[i]
       const tokenA = tokens[i][0]
       const tokenB = tokens[i][1]
@@ -61,7 +59,11 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
       if (!tokenA || !tokenB || tokenA.equals(tokenB)) return [PylonState.INVALID, null]
       if (!reserves || !resPair.result){
         if(resPair.result) {
-          const { reserve0, reserve1 } = resPair.result;
+          // console.log(resPair.result)
+          const reserve0 = resPair.result[0]
+          const reserve1 = resPair.result[1]
+          // const { _reserve0, reserve1 } = resPair.result;
+          // console.log(reserve0, reserve1)
           const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA]
 
           return [
@@ -73,7 +75,8 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
         }
       }
       const { _reserve0, _reserve1 } = reserves
-      const { reserve0, reserve1 } = resPair.result;
+      const reserve0 = resPair.result[0]
+      const reserve1 = resPair.result[1]
       const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA]
       return [
         PylonState.EXISTS,

@@ -52,6 +52,7 @@ export interface ActionPanelProps {
   expanded: boolean
   clickAction: Dispatch<SetStateAction<boolean>>
   gamma: number
+  healthFactor: string
 }
 
 const expandAnimation = keyframes`
@@ -212,6 +213,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   clickAction,
   expanded,
   gamma,
+                                                                  healthFactor
 }) => {
   const farm = details
   const staked = details.userData.stakedBalance.gt(0)
@@ -386,13 +388,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           <SpaceBetween>
               <Text color={theme.text1}>{`Earn ${farm.earningToken.map((token) => `${token.symbol}`)}`}</Text>
               <div style={{width: '50%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
-              {isAnchor ? (
-              <>
-              {risk ?
-              <RiskHealthIcon /> : <TrendingHealthIcon />}
-              <Text width={"max-content"} ml={'10px'} color={theme.text1}>{risk ? gamma.toFixed(2) : 'High Risk'}</Text>
-              </> )
-              : <CapacityIndicatorSmall gamma={gamma.toFixed(2)} />}
+                <CapacityIndicatorSmall gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true}/>
                 <QuestionMarkContainer
                 onMouseEnter={() => setHoverRisk(true)}
                 onMouseLeave={() => setHoverRisk(false)}

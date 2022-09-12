@@ -103,10 +103,12 @@ const IconContainer = styled.div`
 
 export default function AddLiquidityPro({
                                           match: {
-                                            params: { currencyIdA, currencyIdB },
+                                            params: { currencyIdA, currencyIdB, side },
                                           },
                                           history,
-                                        }: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
+                                        }: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string; side?: string }>) {
+
+
   const { account, chainId, library } = useActiveWeb3React();
   const theme = useTheme();
   const currencyA = useCurrency(currencyIdA);
@@ -186,6 +188,18 @@ export default function AddLiquidityPro({
   const [deadline] = useUserDeadline(); // custom from users settings
   const [allowedSlippage] = useUserSlippageTolerance(); // custom from users
   const [txHash, setTxHash] = useState<string>("");
+
+  useEffect(() => {
+    if (side !== "float"){
+      setIsFloat(false);
+      setFloat({
+        currency_b: currencies[Field.CURRENCY_A],
+        field_b: Field.CURRENCY_A,
+        currency_a: currencies[Field.CURRENCY_B],
+        field_a: Field.CURRENCY_B,
+      });
+    }
+  }, [side])
 
   // get formatted amounts
   const formattedAmounts = {

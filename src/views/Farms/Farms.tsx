@@ -23,7 +23,7 @@ import { RowProps } from './components/FarmTable/Row'
 import { DesktopColumnSchema,
   // FarmWithStakedValue
 } from './components/types'
-import { AnchorFloatTab, FarmTabButtons, PylonClassicTab, ViewModeTabs } from '../../components/FarmSelectTabs'
+import { AnchorFloatTab, PylonClassicTab, ViewModeTabs } from '../../components/FarmSelectTabs'
 import FarmRepeatIcon from '../../components/FarmRepeatIcon'
 import FarmsPage from '../../pages/Farm/'
 import Select from '../../components/Select/Select'
@@ -416,7 +416,7 @@ const Farms: React.FC = ({ children }) => {
           <Flex position={'relative'} width={width < 500 ? showMobileSearchBar ? '100%' : 'auto' : 'auto'} height={'70px'}>
             { (!showMobileSearchBar || width > 500) && <ViewControls>
               <ToggleWrapper style={{marginRight: '10px', position: 'relative'}}>
-                <Text style={{marginLeft: -10}} fontSize='13px' color={theme.text1} mr={'10px'} width={'max-content'} letterSpacing={'0.05em'}> {width > 700 ? 'SHOW ONLY MINE' : 'MINE'}</Text>
+                <Text style={{marginLeft: -10}} fontSize='13px' color={theme.text1} mr={'10px'} width={'max-content'} letterSpacing={'0.05em'}> {width > 700 ? 'SHOW ONLY MINE' : 'SHOW ONLY MINE'}</Text>
                 <Toggle
                   id="staked-only-farms"
                   checked={stakedOnly}
@@ -426,7 +426,7 @@ const Farms: React.FC = ({ children }) => {
                   scale="sm"
                 />
               </ToggleWrapper>
-              <FarmTabButtons active='Active' />
+              {/*<FarmTabButtons active='Active' />*/}
             </ViewControls>}
             <FilterContainer>
               <LabelWrapper style={{ marginLeft: showMobileSearchBar ? 0 : 10, width: '100%' }}>

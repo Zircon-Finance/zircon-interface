@@ -32,3 +32,14 @@ export function RedirectDuplicateTokenIdsPro(props: RouteComponentProps<{ curren
   }
   return <AddLiquidityPro {...props} />
 }
+export function RedirectDuplicateTokenIdsProAnchor(props: RouteComponentProps<{ currencyIdA: string; currencyIdB: string; side: string }>) {
+  const {
+    match: {
+      params: { currencyIdA, currencyIdB }
+    }
+  } = props
+  if (currencyIdA.toLowerCase() === currencyIdB.toLowerCase()) {
+    return <Redirect to={`/add-pro/${currencyIdA}`} />
+  }
+  return <AddLiquidityPro {...props} />
+}

@@ -69,7 +69,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
   //     : ''
 
   const lpLabel = `${farm.token1.symbol}-${farm.token2.symbol}`
-  const addLiquidityUrl = '#/add-pro/' + farm.token1.address+'/' + farm.token2.address
+  const addLiquidityUrl = '#/add-pro/' + farm.token1.address+'/' + farm.token2.address + '/' + farm.isAnchor ? "stable":"float"
   const isPromotedFarm = farm.token1.symbol === 'CAKE'
   const isApproved = account && farm.userData.allowance && farm.userData.allowance.isGreaterThan(0)
   const [showModalDeposit, setShowModalDeposit] = useState(false)
@@ -155,7 +155,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
                   addLiquidityUrl={
                     farm.isClassic
                       ? `#/add/${farm.token1.address}/${farm.token2.address}`
-                      : `#/add-pro/${farm.token1.address}/${farm.token2.address}`
+                      : `#/add-pro/${farm.token1.address}/${farm.token2.address}/${farm.isAnchor ? "stable":"float"}`
                   }
                   cakePrice={(112 as unknown) as BigNumber}
                   token={farm.stakingToken}
@@ -195,7 +195,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
           to={
             farm.isClassic
               ? `/add/${farm.token1.address}/${farm.token2.address}`
-              : `/add-pro/${farm.token1.address}/${farm.token2.address}`
+              : `/add-pro/${farm.token1.address}/${farm.token2.address}/${farm.isAnchor ? "stable":"float"}`
           }
         >
           <ButtonOutlined

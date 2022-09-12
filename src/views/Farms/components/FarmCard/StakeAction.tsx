@@ -124,13 +124,13 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
       <StakeAdd row={true} />
     ) : (
       <IconButtonWrapper>
-        <IconButton 
-        style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}} 
+        <IconButton
+        style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
         variant="tertiary" onClick={()=>setShowModalWithdraw(true)} mr="6px">
           <MinusIcon />
         </IconButton>
         <IconButton
-          style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}} 
+          style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
           variant="tertiary"
           onClick={()=>setShowModalDeposit(true)}
           disabled={['history', 'archived'].some((item) => window.location.pathname.includes(item))}
@@ -143,9 +143,9 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
 
   return (
     <>
-        {(showModalDeposit || showModalWithdraw) && 
+        {(showModalDeposit || showModalWithdraw) &&
           <ModalContainer>
-        
+
         {showModalDeposit &&
           <DepositModal
           max={tokenBalance}
@@ -156,7 +156,7 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
           stakedBalance={stakedBalance}
           onConfirm={handleStake}
           tokenName={'lpSymbol'}
-          addLiquidityUrl={'#/add-pro/'+token1.address+'/'+token2.address}
+          addLiquidityUrl={'#/add-pro/'+token1.address+'/'+token2.address + '/' + isAnchor ? 'stable' : 'float' }
           token={stakingToken}
           />
         }

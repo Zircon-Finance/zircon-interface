@@ -472,7 +472,7 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
                                     {'Remove'}
                                 </Text>
                             </ButtonPositionsMobile>
-                            <ButtonPositionsMobile as={Link} to={`/add-pro/${currencyId(currency0)}/${currencyId(currency1)}`} padding={'6px'}
+                            <ButtonPositionsMobile as={Link} to={`/add-pro/${currencyId(currency0)}/${currencyId(currency1)}/${ isFloat ? "float" : "stable"}`} padding={'6px'}
                                                    style={{marginLeft: '2.5px'}} >
                                 {/* {width > 500 && <Plus strokeWidth={1} /> } */}
                                 <Text fontSize={width > 500 ? 16 : 13} fontWeight={400}>

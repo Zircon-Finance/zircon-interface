@@ -106,7 +106,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
           }
         },
         receipt.transactionHash
-      )  
+      )
       dispatch(fetchPoolsUserDataAsync(account))
     }
   }
@@ -130,7 +130,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
           }
         },
         receipt.transactionHash
-      )  
+      )
       dispatch(fetchPoolsUserDataAsync(account))
     }
   }
@@ -163,15 +163,15 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
           }
         },
         receipt.transactionHash
-      )  
+      )
       dispatch(fetchPoolsUserDataAsync(account))
     }
-  }, [ 
-      dispatch, 
-      account, 
-      addPopup, 
-      fetchWithCatchTxError, 
-      addTransaction, 
+  }, [
+      dispatch,
+      account,
+      addPopup,
+      fetchWithCatchTxError,
+      addTransaction,
       lpContract,
       sousChefContract.address,
       callWithGasPrice,
@@ -200,7 +200,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
     if (stakedBalance.gt(0)) {
       return (
         <>
-        
+
         {showModalDeposit &&
         <ModalTopDeposit
         max={tokenBalance }
@@ -211,7 +211,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
         stakedBalance = {stakedBalance}
         onConfirm = {handleStake}
         tokenName = {stakingToken.name}
-        addLiquidityUrl = {`#/add-pro/${pool.token1.address}/${pool.token2.address}`}
+        addLiquidityUrl = {`#/add-pro/${pool.token1.address}/${pool.token2.address}/${isAnchor ? 'stable' : 'float'}`}
         cakePrice = {1 as unknown as BigNumber}
         token = {stakingToken}
         />
@@ -220,15 +220,15 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
         {showModalWithdraw &&
         <Portal>
           <ModalContainer>
-            <WithdrawModal 
-            max={stakedBalance} 
-            onConfirm={handleUnstake} 
-            tokenName={pool.stakingToken.symbol} 
-            onDismiss={()=>setshowModalWithdraw(false)} 
+            <WithdrawModal
+            max={stakedBalance}
+            onConfirm={handleUnstake}
+            tokenName={pool.stakingToken.symbol}
+            onDismiss={()=>setshowModalWithdraw(false)}
             token={pool.stakingToken} />
           </ModalContainer>
         </Portal>
-          
+
         }
         <ActionContainer style={{background: theme.actionPanelBg}}>
           <ActionTitles style={{justifyContent: 'space-between'}}>
@@ -236,16 +236,16 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
               {t('STAKED')}
             </Text>
             <IconButtonWrapper>
-            <IconButton 
-              style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}} 
-              variant="tertiary" 
+            <IconButton
+              style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
+              variant="tertiary"
               onClick={()=>setshowModalWithdraw(true)} mr="6px">
               <Flex>
                 <MinusIcon />
               </Flex>
             </IconButton>
               <IconButton
-                style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%'}} 
+                style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%'}}
                 variant="tertiary"
                 onClick={()=>{setshowModalDeposit(true)}}
                 disabled={['history', 'archived'].some((item) => window.location.pathname.includes(item))}
@@ -274,7 +274,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
               tokenAmountTotal={1 as unknown as BigNumber}
               quoteTokenAmountTotal={1 as unknown as BigNumber}
             />
-            
+
           </ActionContent>
         </ActionContainer>
         </>

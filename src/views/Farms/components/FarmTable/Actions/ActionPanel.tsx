@@ -336,7 +336,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                 tokenName = {farm.stakingToken.symbol}
                 addLiquidityUrl = {farm.isClassic ?
                     `#/add/${farm.token1.address}/${farm.token2.address}` :
-                    `#/add-pro/${farm.token1.address}/${farm.token2.address}`}
+                    `#/add-pro/${farm.token1.address}/${farm.token2.address}/${farm.isAnchor ? 'stable' : 'float'}`}
                 cakePrice = {1 as unknown as BigNumber}
                 token = {farm.stakingToken}
             />
@@ -482,7 +482,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
               </ValueWrapper>
               <Link to={farm.isClassic ?
                   `/add/${farm.token1.address}/${farm.token2.address}` :
-                  `/add-pro/${farm.token1.address}/${farm.token2.address}`}>
+                  `/add-pro/${farm.token1.address}/${farm.token2.address}/${farm.isAnchor ? 'stable' : 'float'}`}>
                 <ButtonOutlined style={{
                   margin: '10px 0',
                   padding: '10px',

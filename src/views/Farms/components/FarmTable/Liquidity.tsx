@@ -64,7 +64,7 @@ const AbsContainer = styled.div`
 
 const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered, setHovered, farm }) => {
   // const displayLiquidity = liquidity && liquidity.gt(0) ? (
-  //     `$${Number(liquidity).toLocaleString(undefined, { maximumFractionDigits: 0 })}` 
+  //     `$${Number(liquidity).toLocaleString(undefined, { maximumFractionDigits: 0 })}`
   //   ) : (
   //     <Skeleton width={60} />
   //   )
@@ -96,7 +96,7 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
               to={
                 farm.isClassic
                   ? `/add/${farm.token1.address}/${farm.token2.address}`
-                  : `/add-pro/${farm.token1.address}/${farm.token2.address}`
+                  : `/add-pro/${farm.token1.address}/${farm.token2.address}/${farm.isAnchor ? 'stable' : 'float'}`
               }
             >
               <IconButton

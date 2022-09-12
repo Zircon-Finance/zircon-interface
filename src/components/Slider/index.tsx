@@ -35,10 +35,10 @@ const StyledRangeInput = styled.input<{ size: number }>`
   &::-moz-range-thumb {
     height: ${({ size }) => size}px;
     width: 35px;
-    background-color: ${({ theme }) => theme.bg9};
+    background-color: ${({ theme }) => theme.slippageActive};
     border-radius: 17px;
     border: none;
-    color: ${({ theme }) => theme.bg1};
+    color: ${({ theme }) => theme.slippageActive};
 
     &:hover,
     &:focus {
@@ -52,7 +52,7 @@ const StyledRangeInput = styled.input<{ size: number }>`
     width: ${({ size }) => size}px;
     background-color: #565a69;
     border-radius: 100%;
-    color: ${({ theme }) => theme.bg1};
+    color: ${({ theme }) => theme.slippageActive};
 
     &:hover,
     &:focus {
@@ -67,7 +67,7 @@ const StyledRangeInput = styled.input<{ size: number }>`
   }
 
   &::-moz-range-track {
-    background: linear-gradient(90deg, ${({ theme }) => theme.bg5}, ${({ theme }) => theme.bg3});
+    background: ${({ theme }) => theme.slippageActive};
     height: 2px;
   }
 

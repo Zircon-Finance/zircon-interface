@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Modal } from '@pancakeswap/uikit'
 import { useTranslation } from 'react-i18next'
 import { ButtonOutlined, } from '../../components/Button'
@@ -42,7 +42,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
 
 
     const provider = account && new providers.Web3Provider(window.ethereum)
-    const airdrop_address = '0xcb03acfDB286903f2b074B9160BA0a8bE9DA5fAd'
+    const airdrop_address = '0xfcb63d9D26965093fd7F87EC4Ce71D7b5949A49d'
     const abi = airdrop_abi
 
     // call contract airdrop
@@ -99,10 +99,14 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
 
     const modalStyle = {
         width: 'auto',
-    } as CSSProperties
+        border: 'none',
+        '&#claim_modal': {
+            background: 'blue !important',
+        },
+    }
 
     const renderedModal = () => (
-        <Modal style={modalStyle} title={t('Claim tokens')} onDismiss={onDismiss}>
+        <Modal id="claim_modal" style={modalStyle} title={t('Claim tokens')} onDismiss={onDismiss} borderBottom='none'>
             {loading ? <div style={{height: 150,  alignItems: 'center'}}>
                     <Lottie
                         options={{
@@ -179,7 +183,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
                     renderedModal()
                 )}
                 pendingText={'Claiming tokens...'}
-            />
+        />
     )
 }
 

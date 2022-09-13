@@ -5,6 +5,7 @@ import {QuestionMarkContainer, ToolTip} from "../../views/Farms/components/FarmT
 import {Text} from "rebass";
 import QuestionMarkIcon from "../QuestionMarkIcon";
 import BigNumber from "bignumber.js";
+import BigNumberJs from "bignumber.js";
 
 const Container = styled.div`
   display: flex;
@@ -44,12 +45,14 @@ interface Props {
     extraFee?: BigNumber
     extraFeeTreshold?:  BigNumber
     isDeltaGamma?: boolean
+    slashingOmega?: BigNumber
 }
 
-const CapacityIndicator: React.FC<Props> = ({gamma, health, isFloat, noSpan, blocked, feePercentage,extraFee, extraFeeTreshold, isDeltaGamma}) => {
+const CapacityIndicator: React.FC<Props> = ({gamma, health, isFloat, noSpan, blocked, feePercentage,extraFee = new BigNumberJs(0), extraFeeTreshold = new BigNumberJs(0), isDeltaGamma, slashingOmega= new BigNumberJs(0)}) => {
     const theme = useTheme();
     const [hoverRisk, setHoverRisk] = React.useState(false);
     const [hoverFee, setHoverFee] = React.useState(false);
+    console.log("feePercentage", feePercentage.toString())
     const TooltipContentRisk = () => {return (
         <ToolTip style={{left: '-200px'}} show={hoverRisk}>
             <Text fontSize='13px' fontWeight={500} color={theme.text1}>
@@ -59,7 +62,7 @@ const CapacityIndicator: React.FC<Props> = ({gamma, health, isFloat, noSpan, blo
     )}
     return (
         <Container>
-            {!blocked && feePercentage.gt(0) && <RowContainer>
+            {(!blocked && feePercentage && feePercentage.gt(0)) && <RowContainer>
                 <SmallContainer>
                     {!noSpan && <span style={{marginLeft: 8}}>{'Fee' + (isDeltaGamma ? " + Delta Fee" : "")}</span>}
                     <QuestionMarkContainer
@@ -89,6 +92,22 @@ const CapacityIndicator: React.FC<Props> = ({gamma, health, isFloat, noSpan, blo
                     </QuestionMarkContainer>
                 </SmallContainer>
                 <span style={{marginLeft: 8}}>{extraFee?.toFixed(4)}%</span>
+            </RowContainer>}
+
+            {!blocked && slashingOmega.gt(0) && <RowContainer>
+                <SmallContainer>
+                    {!noSpan && <span style={{marginLeft: 8}}>{'Omega'}</span>}
+                    <QuestionMarkContainer
+                        onMouseEnter={() => setHoverFee(true)}
+                        onMouseLeave={() => setHoverFee(false)}
+                    >
+                        {hoverFee && (
+                            <TooltipContentRisk />
+                        )}
+                        <QuestionMarkIcon />
+                    </QuestionMarkContainer>
+                </SmallContainer>
+                <span style={{marginLeft: 8}}>{slashingOmega?.toFixed(4)}%</span>
             </RowContainer>}
 
             <RowContainer>

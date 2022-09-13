@@ -116,8 +116,9 @@ export function CurrencySearch({
     ]
   }, [filteredTokens, searchQuery, searchToken, tokenComparator])
 
-  const selectedFloatTokens = [filteredSortedTokens[0], filteredSortedTokens[1], filteredSortedTokens[2]]
-  const selectedAnchorTokens = [filteredSortedTokens[3], filteredSortedTokens[4], filteredSortedTokens[5]]
+  const selectedFloatTokens = [filteredSortedTokens[23], filteredSortedTokens[6], DEV, filteredSortedTokens[15], filteredSortedTokens[16], filteredSortedTokens[12]]
+  const selectedAnchorTokens = [filteredSortedTokens[23], filteredSortedTokens[33], filteredSortedTokens[6], filteredSortedTokens[15], DEV]
+  console.log('filteredSortedTokens', filteredSortedTokens)
 
   const handleCurrencySelect = useCallback(
     (currency: Currency) => {
@@ -194,7 +195,7 @@ export function CurrencySearch({
       {(isFloat !== undefined && filteredSortedTokens.length > 0) && 
       <Flex flexDirection="column" style={{padding: '0 20px', gap: '10px'}}>
         <Text color={theme.whiteHalf}>{`Recommended for ${isFloat ? 'Float' : 'Anchor'}`}</Text>
-        <Flex flexDirection="row" style={{marginBottom: '10px'}}>
+        <Flex flexDirection="row" style={{marginBottom: '10px', rowGap: '10px', flexWrap: 'wrap'}}>
         {isFloat === true &&
           selectedAnchorTokens?.map((token, i) => (
             <SmallPlanet onClick={()=>handleCurrencySelect(token)}>

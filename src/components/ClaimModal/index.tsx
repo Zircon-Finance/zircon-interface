@@ -100,9 +100,6 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
     const modalStyle = {
         width: 'auto',
         border: 'none',
-        '&#claim_modal': {
-            background: 'blue !important',
-        },
     }
 
     const renderedModal = () => (

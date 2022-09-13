@@ -45,6 +45,7 @@ const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, ...r
       h2 {
         font-size: 18px;
         font-weight: 500;
+        color: ${({ theme }) => theme.text1};
       }
       svg {
         path {

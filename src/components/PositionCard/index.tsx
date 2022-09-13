@@ -324,7 +324,7 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
     //         totalSupply, ptTotalSupply, pylonInfo, pylonConstants, blockNumber, lastK, true, isFloat)
     // }, [pylon, userPoolBalance, pylonPoolBalance,
     //     totalSupply, ptTotalSupply, pylonInfo, pylonConstants, blockNumber, lastK, isFloat] )
-    // const [token0Deposited, token1Deposited] = !burnInfo ? [undefined, undefined] : burnInfo?.liquidity
+    const [token0Deposited, token1Deposited] = !burnInfo ? [undefined, undefined] : burnInfo?.liquidity
 
     // const [token0Deposited, token1Deposited] = [undefined, undefined]
     //   !!pylon &&
@@ -419,33 +419,40 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
                                 </RowFixed>
                             </FixedHeightRow>
                             <Separator style={{margin: '10px 0 10px 0'}} />
-                            {/*<FixedHeightRow2>*/}
-                            {/*    <CapacityIndicator*/}
-                            {/*        gamma={new BigNumberJs(gamma).div(new BigNumberJs(10).pow(18))}*/}
-                            {/*        health={healthFactor.toString()}*/}
-                            {/*        isFloat={isFloat}*/}
-                            {/*        blocked={burnInfo?.blocked}*/}
-                            {/*        feePercentage={new BigNumberJs(burnInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}*/}
-                            {/*        isDeltaGamma={burnInfo?.deltaApplied}*/}
-                            {/*    />*/}
-                            {/*</FixedHeightRow2>*/}
-                            {/*<FixedHeightRow>*/}
-                            {/*    <RowFixed>*/}
-                            {/*        <Text fontSize={13} fontWeight={400}>*/}
-                            {/*            Fees{burnInfo?.deltaApplied ? ' + Delta Fee' : ''}:*/}
-                            {/*        </Text>*/}
-                            {/*    </RowFixed>*/}
-                            {/*    {burnInfo ? (*/}
-                            {/*        <RowFixed>*/}
-                            {/*            <Text fontSize={13} fontWeight={400} marginLeft={'6px'}>*/}
-                            {/*                {(new BigNumberJs(burnInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)).toFixed(4)}%*/}
-                            {/*            </Text>*/}
-                            {/*            /!*<CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={currency0} />*!/*/}
-                            {/*        </RowFixed>*/}
-                            {/*    ) : (*/}
-                            {/*        '-'*/}
-                            {/*    )}*/}
-                            {/*</FixedHeightRow>*/}
+                            {isFloat ? <FixedHeightRow>
+                                <RowFixed>
+                                    <Text fontSize={13} fontWeight={400}>
+                                        Pooled {currency0.symbol}:
+                                    </Text>
+                                </RowFixed>
+                                {token0Deposited ? (
+                                    <RowFixed>
+                                        <Text fontSize={13} fontWeight={400} marginLeft={'6px'}>
+                                            {token0Deposited?.toSignificant(6)}
+                                        </Text>
+                                        <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={currency0} />
+                                    </RowFixed>
+                                ) : (
+                                    '-'
+                                )}
+                            </FixedHeightRow> :
+                            <FixedHeightRow>
+                                <RowFixed>
+                                    <Text fontSize={13} fontWeight={400}>
+                                        Pooled {currency1.symbol}:
+                                    </Text>
+                                </RowFixed>
+                                {token1Deposited ? (
+                                    <RowFixed>
+                                        <Text fontSize={13} fontWeight={400} marginLeft={'6px'}>
+                                            {token1Deposited?.toSignificant(6)}
+                                        </Text>
+                                        <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={currency1} />
+                                    </RowFixed>
+                                ) : (
+                                    '-'
+                                )}
+                            </FixedHeightRow> }
                             <FixedHeightRow style={{alignItems: 'center'}}>
                                 <RowFixed>
                                     <Text fontSize={13} fontWeight={400}>

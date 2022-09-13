@@ -118,7 +118,6 @@ export function CurrencySearch({
 
   const selectedFloatTokens = [filteredSortedTokens[23], filteredSortedTokens[6], DEV, filteredSortedTokens[15], filteredSortedTokens[16], filteredSortedTokens[12]]
   const selectedAnchorTokens = [filteredSortedTokens[23], filteredSortedTokens[33], filteredSortedTokens[6], filteredSortedTokens[15], DEV]
-  console.log('filteredSortedTokens', filteredSortedTokens)
 
   const handleCurrencySelect = useCallback(
     (currency: Currency) => {
@@ -192,7 +191,7 @@ export function CurrencySearch({
         </RowBetween>
       </PaddedColumn>
 
-      {(isFloat !== undefined && filteredSortedTokens.length > 0) && 
+      {(isFloat !== undefined && filteredSortedTokens.length > 0 && !searchQuery) && 
       <Flex flexDirection="column" style={{padding: '0 20px', gap: '10px'}}>
         <Text color={theme.whiteHalf}>{`Recommended for ${isFloat ? 'Float' : 'Anchor'}`}</Text>
         <Flex flexDirection="row" style={{marginBottom: '10px', rowGap: '10px', flexWrap: 'wrap'}}>
@@ -200,7 +199,7 @@ export function CurrencySearch({
           selectedAnchorTokens?.map((token, i) => (
             <SmallPlanet onClick={()=>handleCurrencySelect(token)}>
               <CurrencyLogo currency={token} size={'18px'} />
-              <Text fontWeight={500} fontSize={14} style={{padding: '0 5px 0 5px'}}>{token.symbol}</Text>
+              <Text fontWeight={500} fontSize={14} style={{padding: '0 5px 0 5px'}}>{token?.symbol}</Text>
             </SmallPlanet>
           ))
         }
@@ -208,7 +207,7 @@ export function CurrencySearch({
           selectedFloatTokens?.map((token, i) => (
             <SmallPlanet onClick={()=>handleCurrencySelect(token)}>
               <CurrencyLogo currency={token} size={'18px'} />
-              <Text fontWeight={500} fontSize={14} style={{padding: '0 5px 0 5px'}}>{token.symbol}</Text>
+              <Text fontWeight={500} fontSize={14} style={{padding: '0 5px 0 5px'}}>{token?.symbol}</Text>
             </SmallPlanet>
           ))
         }

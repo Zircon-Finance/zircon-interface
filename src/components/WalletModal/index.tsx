@@ -297,7 +297,24 @@ export default function WalletModal({
             />
           )
         }
-        return null
+        if (option.name === 'MetaMask') {
+          return (
+            <Option
+              id={`connect-${key}`}
+              key={key}
+              color={'#E8831D'}
+              header={'Metamask'}
+              subheader={null}
+              onClick={() => {
+                window.ethereum ? tryActivation(option.connector) :
+                  window.open('https://metamask.io/', '_blank');
+              }}
+              link={'https://metamask.io/'}
+              icon={MetamaskIcon}
+            />
+          )
+        }
+        else return null
       }
 
       // overwrite injected when needed

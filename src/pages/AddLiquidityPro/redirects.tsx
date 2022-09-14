@@ -18,7 +18,7 @@ export function RedirectOldAddLiquidityProPathStructure(props: RouteComponentPro
     return <Redirect to={`/add-pro/${match[1]}/${match[2]}`} />
   }
 
-  return <AddLiquidityPro {...props} />
+  return <AddLiquidityPro {...props}/>
 }
 
 export function RedirectDuplicateTokenIdsPro(props: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {

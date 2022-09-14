@@ -452,7 +452,7 @@ export default function AddLiquidityPro({
               tokenBIsETH ? getCurrency(true) : getCurrency(false),
               chainId
           )?.address ?? "", // token
-          (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(),
+          (currencies[Field.CURRENCY_A] === DEV ? parsedAmountB : parsedAmountA).raw.toString(),
           '1',
           '1',
           currencies[Field.CURRENCY_A] === DEV,

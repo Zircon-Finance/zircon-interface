@@ -123,7 +123,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
                 </Flex>
                 <Flex flexDirection={"column"} justifyContent={"space-between"} height={60}>
                     <div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}}>
-                        <CapacityIndicatorSmall gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true}/>
+                        <CapacityIndicatorSmall gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true} hoverPage={'tableCard'} />
                         <QuestionMarkContainer
                             onMouseEnter={() => setHoverRisk(true)}
                             onMouseLeave={() => setHoverRisk(false)}

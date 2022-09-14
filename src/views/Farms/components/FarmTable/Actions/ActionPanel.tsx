@@ -394,7 +394,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                       <Text color={theme.text1}>{`Earn ${rewardTokens}`}</Text>
 
                       <div style={{width: '50%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
-                        <CapacityIndicatorSmall gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true}/>
+                        <CapacityIndicatorSmall gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true} hoverPage={'farmAction'}/>
                         <QuestionMarkContainer
                             onMouseEnter={() => setHoverRisk(true)}
                             onMouseLeave={() => setHoverRisk(false)}
@@ -418,8 +418,8 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                       </Flex>
                       <Flex flexDirection={"column"}>
                         <Text color={theme.text1}>{`Earn${rewardTokens}`}</Text>
-                        <div style={{display: 'flex', marginLeft: '10px', alignItems: 'center'}}>
-                          <CapacityIndicatorSmall gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true}/>
+                        <div style={{display: 'flex', marginLeft: '10px', alignItems: 'center', justifyContent: 'flex-end'}}>
+                          <CapacityIndicatorSmall gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true} hoverPage={'farmActionMobile'}/>
 
                           <QuestionMarkContainer
                               onMouseEnter={() => setHoverRisk(true)}

@@ -1178,6 +1178,7 @@ export default function AddLiquidityPro({
                 extraFee={new BigNumberJs(mintInfo?.extraSlippagePercentage.toString()).div(new BigNumberJs(10).pow(18))}
                 extraFeeTreshold={new BigNumberJs(mintInfo?.extraFeeTreshold.toString()).div(new BigNumberJs(10).pow(18))}
                 isDeltaGamma={mintInfo?.deltaApplied}
+                hoverPage={'addLiq'}
             />}
 
             {currencies[Field.CURRENCY_A] &&
@@ -1233,7 +1234,7 @@ export default function AddLiquidityPro({
                                             (approvalB !== ApprovalState.APPROVED || approvalBPair !== ApprovalState.APPROVED) && pylonState === PylonState.EXISTS ? "100%" : "auto"
                                                 ? sync === "half"
                                                     ? "48%"
-                                                    : "48%"
+                                                    : "100%"
                                                 : "100%"
                                           }
                                       >
@@ -1255,8 +1256,9 @@ export default function AddLiquidityPro({
                                           approveBCallbackPair : approveBCallback}
                                       disabled={(approvalB === ApprovalState.PENDING ||
                                       approvalBPair === ApprovalState.PENDING ? true : false)}
-                                      width={
-                                        approvalA !== ApprovalState.APPROVED
+                                      width={(pylonState === PylonState.NOT_EXISTS || pylonState === PylonState.ONLY_PAIR) ? approvalAPair === ApprovalState.APPROVED ? "100%" : "48%" : 
+                                        sync === "half" ? approvalA === ApprovalState.APPROVED ? "100%" : "48%" :
+                                        approvalB !== ApprovalState.APPROVED
                                             ? "48%"
                                             : "100%"
                                       }

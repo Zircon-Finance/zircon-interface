@@ -1,5 +1,7 @@
 import React from 'react'
-import { Flex } from 'rebass'
+import { Flex, Text } from 'rebass'
+import { useTheme } from 'styled-components'
+import { ToolTip } from '../../views/Farms/components/FarmTable/Row'
 
 // const Battery = styled.div`
 //   height: 15px;
@@ -15,11 +17,38 @@ interface Props {
   health?: string
   isFloat?: boolean
   noSpan?: boolean
+  hoverPage?: string
 }
 
-const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan}) => {
+const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan, hoverPage}) => {
+  const [hoverIndicator, setHoverIndicator] = React.useState(false);
+  const theme = useTheme()
+  const TooltipContentRisk: React.FC<Props> = ({gamma, health, isFloat}) => {return (
+    <ToolTip style={hoverPage === 'addLiq' ? {bottom: '140px', left: '260px'} :
+      hoverPage === 'removeLiq' ? {bottom: '140px', left: '260px'} :
+      hoverPage === 'farmRow' ? {bottom: '55px', left: '-50px'} :
+      hoverPage === 'farmAction' ? {bottom: '0px', left: '0px'} :
+      hoverPage === 'farmActionMobile' ? {bottom: '50%', left: '20%'} :
+      hoverPage === 'tableCard' && {bottom: '65%', left: '20%'}
+      } show={hoverIndicator}>
+        <Text fontSize='13px' fontWeight={500} color={theme.text1}>
+            {isFloat ? gamma < 0.4 ? 'The vault has zero or negative impermanent loss to encourage new liquidity.' :
+            (gamma < 0.7 && gamma >= 0.4) ? 'The Float vault is balanced, you will have very little impermanent loss' :
+            gamma >= 0.7 && 'The vault is suffering heavy impermanent loss, you will gain less than expected.' :
+            health === "high" ? 'The vault is in normal operating conditions, all good.' :
+            health === "medium" ? 'The vault is under stress, the risks of joining it are high.' :
+            health === "low" && 'The vault is temporarily limiting withdrawal claims. Joining it is dangerous and might result in loss of funds.' 
+            }
+        </Text>
+    </ToolTip>
+)}
   return (
-      <Flex>
+      <Flex onMouseEnter={() => setHoverIndicator(true)}
+            onMouseLeave={() => setHoverIndicator(false)}
+            style={{cursor: 'pointer'}}>
+        {hoverIndicator && (
+          <TooltipContentRisk gamma={gamma} health={health} isFloat={isFloat}/>
+        )}
         {isFloat ? <div style={{display: "flex", flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
           {!noSpan && <span style={{marginRight: 8}}>{`${gamma >= 0.7 ? 'Full' : gamma < 0.4 ? 'Empty' : 'Free'}`}</span>}
 

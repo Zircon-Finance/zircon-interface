@@ -46,17 +46,24 @@ interface Props {
     extraFeeTreshold?:  BigNumber
     isDeltaGamma?: boolean
     slashingOmega?: BigNumber
+    hoverPage?: string
 }
 
-const CapacityIndicator: React.FC<Props> = ({gamma, health, isFloat, noSpan, blocked, feePercentage,extraFee = new BigNumberJs(0), extraFeeTreshold = new BigNumberJs(0), isDeltaGamma, slashingOmega= new BigNumberJs(0)}) => {
+interface ToolTipProps {
+    option: string
+  }
+
+const CapacityIndicator: React.FC<Props> = ({gamma, hoverPage, health, isFloat, noSpan, blocked, feePercentage,extraFee = new BigNumberJs(0), extraFeeTreshold = new BigNumberJs(0), isDeltaGamma, slashingOmega= new BigNumberJs(0)}) => {
     const theme = useTheme();
     const [hoverRisk, setHoverRisk] = React.useState(false);
     const [hoverFee, setHoverFee] = React.useState(false);
     console.log("feePercentage", feePercentage.toString())
-    const TooltipContentRisk = () => {return (
+    const TooltipContentRisk: React.FC<ToolTipProps> = ({option}) => {return (
         <ToolTip style={{left: '-200px'}} show={hoverRisk}>
             <Text fontSize='13px' fontWeight={500} color={theme.text1}>
-                {`The risk factor keeps track of the farms' stability. `}
+                {`${option === 'health' ? 'The health factor measures how balanced this Stable vault is. Imbalanced vaults may be partially slashed when withdrawing during critical market activity.' :
+                option === 'divergence' ? 'Divergence measures how much impermanent loss the Float vault is suffering.' :
+                'General info'}`}
             </Text>
         </ToolTip>
     )}
@@ -70,7 +77,7 @@ const CapacityIndicator: React.FC<Props> = ({gamma, health, isFloat, noSpan, blo
                         onMouseLeave={() => setHoverFee(false)}
                     >
                         {hoverFee && (
-                            <TooltipContentRisk />
+                            <TooltipContentRisk option="fee" />
                         )}
                         <QuestionMarkIcon />
                     </QuestionMarkContainer>
@@ -86,7 +93,7 @@ const CapacityIndicator: React.FC<Props> = ({gamma, health, isFloat, noSpan, blo
                         onMouseLeave={() => setHoverFee(false)}
                     >
                         {hoverFee && (
-                            <TooltipContentRisk />
+                            <TooltipContentRisk option='gamma' />
                         )}
                         <QuestionMarkIcon />
                     </QuestionMarkContainer>
@@ -102,7 +109,7 @@ const CapacityIndicator: React.FC<Props> = ({gamma, health, isFloat, noSpan, blo
                         onMouseLeave={() => setHoverFee(false)}
                     >
                         {hoverFee && (
-                            <TooltipContentRisk />
+                            <TooltipContentRisk option='omega' />
                         )}
                         <QuestionMarkIcon />
                     </QuestionMarkContainer>
@@ -119,12 +126,12 @@ const CapacityIndicator: React.FC<Props> = ({gamma, health, isFloat, noSpan, blo
                         onMouseLeave={() => setHoverRisk(false)}
                     >
                         {hoverRisk && (
-                            <TooltipContentRisk />
+                            <TooltipContentRisk option={isFloat ? 'divergence' : 'health'} />
                         )}
                         <QuestionMarkIcon />
                     </QuestionMarkContainer>
                 </SmallContainer>
-                <CapacityIndicatorSmall gamma={gamma} health={health} isFloat={isFloat} />
+                <CapacityIndicatorSmall gamma={gamma} health={health} isFloat={isFloat} hoverPage={hoverPage} />
             </RowContainer>
         </Container>
     )

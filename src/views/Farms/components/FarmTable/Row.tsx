@@ -327,7 +327,8 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                     <CellInner>
                       <CellLayout>
                       <div style={{width: '70%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
-                            <CapacityIndicatorSmall gamma={gammaAdjusted} health={healthFactor} isFloat={!props.farm.isAnchor} noSpan={false}/>
+                            <CapacityIndicatorSmall gamma={gammaAdjusted} health={healthFactor} isFloat={!props.farm.isAnchor} noSpan={false}
+                            hoverPage={'farmRow'}/>
                             <QuestionMarkContainer
                               onMouseEnter={() => setHoverRisk(true)}
                               onMouseLeave={() => setHoverRisk(false)}

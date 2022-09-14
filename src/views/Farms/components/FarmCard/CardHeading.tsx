@@ -28,6 +28,10 @@ export interface ExpandableSectionProps {
     healthFactor: string;
 }
 
+interface ToolTipProps {
+    option: string
+  }
+
 const Wrapper = styled(Flex)`
   svg {
     margin-right: 4px;
@@ -54,10 +58,12 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
         setRewardTokens(r.slice(0, -1))
     }, [])
 
-    const TooltipContentRisk = () => {return (
-        <ToolTip style={{left: '-200px'}} show={hoverRisk}>
+    const TooltipContentRisk: React.FC<ToolTipProps> = ({option}) => {return (
+        <ToolTip style={{left: '-200px', top: '50px', bottom: 'auto'}} show={hoverRisk}>
             <Text fontSize='13px' fontWeight={500} color={theme.text1}>
-                {`The risk factor keeps track of the farms' stability. `}
+            {`${option === 'health' ? 'The health factor measures how balanced this Stable vault is. Imbalanced vaults may be partially slashed when withdrawing during critical market activity.' :
+                option === 'divergence' ? 'Divergence measures how much impermanent loss the Float vault is suffering.' :
+                'General info'}`}
             </Text>
         </ToolTip>
     )}
@@ -113,7 +119,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
             </Wrapper>
             <SpaceBetween>
                 <Flex flexDirection={"column"} justifyContent={"space-between"} height={60}>
-                    <Text color={'#4e7455'} style={{textAlign: 'left', maxLines: 1,   overflow: "hidden", textOverflow: 'elipsis'}}>{`Earn ${rewardTokens}`}</Text>
+                    <Text color={'#4e7455'} style={{textAlign: 'left', maxLines: 1,   overflow: "hidden", textOverflow: 'elipsis', marginTop: '5px'}}>{`Earn ${rewardTokens}`}</Text>
                     <StyledLinkExternal
                         style={{ color: theme.pinkBrown, fontWeight: 500 }}
                         href={"Placeholder"}
@@ -129,7 +135,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
                             onMouseLeave={() => setHoverRisk(false)}
                         >
                             {hoverRisk && (
-                                <TooltipContentRisk />
+                                <TooltipContentRisk option={!isAnchor ? 'divergence' : 'health'} />
                             )}
                             <QuestionMarkIcon />
                         </QuestionMarkContainer>

@@ -54,6 +54,10 @@ export interface ActionPanelProps {
   healthFactor: string
 }
 
+interface ToolTipProps {
+  option: string
+}
+
 const expandAnimation = keyframes`
   from {
     opacity: 0;
@@ -308,12 +312,14 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
     }
   }
 
-  const TooltipContentRisk = () => {return (
-      <ToolTip style={{bottom: '-15px', left: width <= 992 ? '-240px' : '50px'}} show={hoverRisk}>
-        <Text fontSize='13px' fontWeight={500} color={theme.text1}>
-          {`The risk factor keeps track of the farms' stability. `}
-        </Text>
-      </ToolTip>
+  const TooltipContentRisk: React.FC<ToolTipProps> = ({option}) => {return (
+    <ToolTip style={{left: width >= 700 ? '50px' : '-200px', bottom: width >= 700 ? '-20px' : '-150px', width: width >= 700 ? '400px' : '230px'}} show={hoverRisk}>
+      <Text fontSize='13px' fontWeight={500} color={theme.text1}>
+      {`${option === 'health' ? 'The health factor measures how balanced this Stable vault is. Imbalanced vaults may be partially slashed when withdrawing during critical market activity.' :
+          option === 'divergence' ? 'Divergence measures how much impermanent loss the Float vault is suffering.' :
+          'General info'}`}
+      </Text>
+    </ToolTip>
   )}
   useEffect(() => {
     let r = ''
@@ -399,7 +405,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                             onMouseEnter={() => setHoverRisk(true)}
                             onMouseLeave={() => setHoverRisk(false)}
                         >{hoverRisk && (
-                            <TooltipContentRisk />
+                            <TooltipContentRisk option={!isAnchor ? 'divergence' : 'health'} />
                         )}
                           <QuestionMarkIcon />
                         </QuestionMarkContainer>
@@ -425,7 +431,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                               onMouseEnter={() => setHoverRisk(true)}
                               onMouseLeave={() => setHoverRisk(false)}
                           >{hoverRisk && (
-                              <TooltipContentRisk />
+                              <TooltipContentRisk option={!isAnchor ? 'divergence' : 'health'} />
                           )}
                             <QuestionMarkIcon />
                           </QuestionMarkContainer>

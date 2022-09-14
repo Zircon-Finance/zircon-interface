@@ -134,7 +134,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
 
     cardSmall: darkMode ? '#361E2A' : '#fcfbfc',
     cardLightBorder: '#f2f0f1',
-    cardExpanded: darkMode ? '#52273a' : '#f2f0f1',
+    cardExpanded: darkMode ? '#52273a' : '#faf5fc',
     badgeSmall: darkMode ? '#442734' : '#fcfbfc',
 
     changeButtonNormal: darkMode ? '#633d4e' : '#f1ebef',

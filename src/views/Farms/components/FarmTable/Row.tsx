@@ -61,6 +61,10 @@ const cells = {
   liquidity: Liquidity,
 }
 
+interface ToolTipProps {
+  option: string
+}
+
 const CellInner = styled.div`
   padding: 19px 0px;
   display: flex;
@@ -193,10 +197,12 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const theme = useTheme()
   const {width} = useWindowDimensions()
 
-  const TooltipContentRisk = () => {return (
+  const TooltipContentRisk: React.FC<ToolTipProps> = ({option}) => {return (
     <ToolTip show={hoverRisk}>
       <Text fontSize='13px' fontWeight={500} color={theme.text1}>
-        {`The risk factor keeps track of the farms' stability. `}
+      {`${option === 'health' ? 'The health factor measures how balanced this Stable vault is. Imbalanced vaults may be partially slashed when withdrawing during critical market activity.' :
+          option === 'divergence' ? 'Divergence measures how much impermanent loss the Float vault is suffering.' :
+          'General info'}`}
       </Text>
     </ToolTip>
   )}
@@ -336,7 +342,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                               onMouseEnter={() => setHoverRisk(true)}
                               onMouseLeave={() => setHoverRisk(false)}
                               >{hoverRisk && (
-                                <TooltipContentRisk />
+                                <TooltipContentRisk option={!props.farm.isAnchor ? 'divergence' : 'health'} />
                               )}
                             <QuestionMarkIcon />
                             </QuestionMarkContainer>

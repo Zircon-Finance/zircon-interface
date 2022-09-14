@@ -6,7 +6,6 @@ import DoubleCurrencyLogo from "../../../../components/DoubleLogo";
 import { BadgeSmall } from "../../../../components/Header";
 import {
     SpaceBetween,
-    StyledLinkExternal,
 } from "../FarmTable/Actions/ActionPanel";
 import { SerializedToken } from "../../../../constants/types";
 import { Text } from "rebass";
@@ -14,6 +13,9 @@ import { Text } from "rebass";
 import QuestionMarkIcon from "../../../../components/QuestionMarkIcon";
 import { QuestionMarkContainer, ToolTip } from "../FarmTable/Row";
 import CapacityIndicatorSmall from "../../../../components/CapacityIndicatorSmall/index";
+import { useActiveWeb3React, useWindowDimensions } from "../../../../hooks";
+import { useCurrentBlock, useEndBlock, usePool, useStartBlock } from "../../../../state/pools/hooks";
+import { useTokenBalance } from "../../../../state/wallet/hooks";
 
 export interface ExpandableSectionProps {
     lpLabel?: string;
@@ -26,6 +28,7 @@ export interface ExpandableSectionProps {
     earningToken: SerializedToken[];
     gamma: any;
     healthFactor: string;
+    sousId: number;
 }
 
 interface ToolTipProps {
@@ -45,12 +48,14 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
                                                            token,
                                                            quoteToken,
                                                            gamma,
-                                                           healthFactor
+                                                           healthFactor,
+                                                           sousId
                                                        }) => {
     const theme = useTheme();
     // const risk = gamma && (gamma.isLessThanOrEqualTo(0.7) || gamma.isGreaterThanOrEqualTo(0.5))
     const [hoverRisk, setHoverRisk] = React.useState(false);
     const [rewardTokens, setRewardTokens] = useState("")
+    const {account} = useActiveWeb3React()
 
     useEffect(() => {
         let r = ''
@@ -68,90 +73,156 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
         </ToolTip>
     )}
 
+    const {width} = useWindowDimensions()
+
+    // POOL HARVEST DATA
+    const [startBlock, setStartBlock] = useState(0)
+    const [endBlock, setEndBlock] = useState(0)
+    const [currentBlock, setCurrentBlock] = useState(0)
+    useStartBlock(sousId).then((block?) => setStartBlock(block))
+    useEndBlock(sousId).then((block?) => setEndBlock(block))
+    useCurrentBlock().then((block?) => setCurrentBlock(block))
+
+  const RewardPerBlock = ({ token }: { token: any }) => {
+    const { pool } = usePool(sousId)
+    const balance = useTokenBalance(pool.vaultAddress, token)
+    const blocksLeft = endBlock - Math.max(currentBlock, startBlock)
+    const rewardBlocksPerDay = (parseFloat((balance?.toFixed(6)))/blocksLeft)*6600
+    return(
+        <Text fontSize='13px' fontWeight={500} color={'#4e7455'}>
+          {`~ ${rewardBlocksPerDay.toFixed(4)}  ${token.symbol}`}
+        </Text>
+      )
+    }
+
     return (
-        <div style={{ padding: "10px", marginBottom: "10px", color: theme.text1 }}>
-            <Wrapper justifyContent="space-between" alignItems="center" mb="12px">
-                <Flex flexDirection="column" alignItems="flex-end">
-                    <>
-                        <Flex flexWrap="wrap">
-                            <BadgeSmall
-                                style={{
-                                    fontSize: "13px",
-                                    height: "23px",
-                                    alignSelf: "center",
-                                    marginLeft: "0px",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    marginRight: "5px",
-                                }}
-                            >
-                    <span
-                        style={{
-                            color: theme.text1,
-                            fontSize: "16px",
-                            marginRight: "3px",
-                        }}
-                    >
-                      {token.symbol}{" "}
-                    </span>
-                                {isClassic ? 'CLASSIC' : isAnchor ? "STABLE" : "FLOAT"}
-                            </BadgeSmall>
-                            <Text
-                                color={theme.text1}
-                                style={{ minWidth: "max-content" }}
-                                fontWeight={400}
-                            >{`${token.symbol}/${quoteToken.symbol}`}</Text>
-                        </Flex>
-                    </>
-                    {/* <Flex justifyContent="center">
+      <div
+        style={{ padding: "10px", color: theme.text1 }}
+      >
+        <Wrapper justifyContent="space-between" alignItems="center" mb="12px">
+          <Flex flexDirection="column" alignItems="flex-end" width={'100%'}>
+            <>
+              <Flex flexWrap="wrap" width={'100%'} justifyContent={'space-between'}>
+                <Flex>
+                {isClassic ? (
+                  <DoubleCurrencyLogo
+                    currency0={token}
+                    currency1={quoteToken}
+                    margin={false}
+                    size={26}
+                  />
+                ) : (
+                  <DoubleCurrencyLogo
+                    currency0={!isAnchor ? token : quoteToken}
+                    currency1={null}
+                    margin={false}
+                    size={26}
+                  />
+                )}
+                <BadgeSmall
+                  style={{
+                    fontSize: "13px",
+                    height: "23px",
+                    alignSelf: "center",
+                    marginLeft: "0px",
+                    display: "flex",
+                    alignItems: "center",
+                    marginRight: "5px",
+                  }}
+                >
+                  <span
+                    style={{
+                      color: theme.text1,
+                      fontSize: "16px",
+                      marginRight: "3px",
+                    }}
+                  >
+                    {token.symbol}{" "}
+                  </span>
+                  {isClassic ? "CLASSIC" : isAnchor ? "STABLE" : "FLOAT"}
+                </BadgeSmall>
+                </Flex>
+                <Text
+                  color={theme.whiteHalf}
+                  style={{ minWidth: "max-content", display: 'flex', alignItems: 'center' }}
+                  fontWeight={400}
+                  fontSize={'13px'}
+                >{`${token.symbol}/${quoteToken.symbol}`}</Text>
+              </Flex>
+            </>
+            {/* <Flex justifyContent="center">
           {multiplier ? (
             <MultiplierTag variant="secondary">{multiplier}</MultiplierTag>
           ) : (
             <Skeleton ml="4px" width={42} height={28} />
           )}
         </Flex> */}
-                </Flex>
-                {isClassic ? (
-                    <DoubleCurrencyLogo currency0={token} currency1={quoteToken} margin={false} size={26} />
-                ) : (
-                    <DoubleCurrencyLogo currency0={!isAnchor ? token : quoteToken} currency1={null} margin={false} size={26} />
+          </Flex>
+        </Wrapper>
+        { !account ? (
+        <SpaceBetween>
+          <Flex
+            flexDirection={"column"}
+            justifyContent={"space-between"}
+            height={60}
+          >
+            <Text
+              color={"#4e7455"}
+              style={{
+                textAlign: "left",
+                maxLines: 1,
+                overflow: "hidden",
+                textOverflow: "elipsis",
+                marginTop: "5px",
+              }}
+            >{`Earn ${rewardTokens}`}</Text>
+          </Flex>
+          <Flex
+            flexDirection={"column"}
+            justifyContent={"space-between"}
+            height={60}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-end",
+              }}
+            >
+              <CapacityIndicatorSmall
+                gamma={gamma}
+                health={healthFactor}
+                isFloat={!isAnchor}
+                noSpan={true}
+                hoverPage={"tableCard"}
+              />
+              <QuestionMarkContainer
+                onMouseEnter={() => setHoverRisk(true)}
+                onMouseLeave={() => setHoverRisk(false)}
+              >
+                {hoverRisk && (
+                  <TooltipContentRisk
+                    option={!isAnchor ? "divergence" : "health"}
+                  />
                 )}
-            </Wrapper>
-            <SpaceBetween>
-                <Flex flexDirection={"column"} justifyContent={"space-between"} height={60}>
-                    <Text color={'#4e7455'} style={{textAlign: 'left', maxLines: 1,   overflow: "hidden", textOverflow: 'elipsis', marginTop: '5px'}}>{`Earn ${rewardTokens}`}</Text>
-                    <StyledLinkExternal
-                        style={{ color: theme.pinkBrown, fontWeight: 500 }}
-                        href={"Placeholder"}
-                    >
-                        {"See Pair Info ↗"}
-                    </StyledLinkExternal>
+                <QuestionMarkIcon />
+              </QuestionMarkContainer>
+            </div>
+          </Flex>
+        </SpaceBetween>
+        ) : (
+                <Flex flexDirection={'row'} style={{marginBottom: width <= 500 && '20px'}}>
+                  <Text fontSize='13px' fontWeight={500} color={4e7455} style={{width: '45%'}}>
+                    {'Tokens rewarded per day:'}
+                  </Text>
+                  <Flex flexDirection={width >= 700 ? 'column' : 'row'} style={{textAlign: 'right', width: '60%', 
+                  display: width <= 700 && 'flex', 
+                  justifyContent: width <= 700 && 'flex-end'}}>
+                    {earningToken.map((token) => <RewardPerBlock token={token} />)}
+                  </Flex>
                 </Flex>
-                <Flex flexDirection={"column"} justifyContent={"space-between"} height={60}>
-                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}}>
-                        <CapacityIndicatorSmall gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true} hoverPage={'tableCard'} />
-                        <QuestionMarkContainer
-                            onMouseEnter={() => setHoverRisk(true)}
-                            onMouseLeave={() => setHoverRisk(false)}
-                        >
-                            {hoverRisk && (
-                                <TooltipContentRisk option={!isAnchor ? 'divergence' : 'health'} />
-                            )}
-                            <QuestionMarkIcon />
-                        </QuestionMarkContainer>
-                    </div>
-                    <StyledLinkExternal
-                        style={{
-                            color: theme.pinkBrown,
-                            fontWeight: 500,
-                        }}
-                        href={"Placeholder"}
-                    >
-                        {"View Contract ↗"}
-                    </StyledLinkExternal>
-                </Flex>
-            </SpaceBetween>
-        </div>
+                )}
+      </div>
     );
 };
 

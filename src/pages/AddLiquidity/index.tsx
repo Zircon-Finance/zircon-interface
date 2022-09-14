@@ -128,6 +128,7 @@ export default function AddLiquidity({
   )
 
   const addTransaction = useTransactionAdder()
+  const [errorTx, setErrorTx] = useState<string>('')
 
   async function onAdd() {
     if (!chainId || !library || !account) return
@@ -210,6 +211,7 @@ export default function AddLiquidity({
       )
       .catch(error => {
         setAttemptingTxn(false)
+        setErrorTx(error.message)
         // we only care if the error is something _other_ than the user rejected the tx
         if (error?.code !== 4001) {
           console.error(error)
@@ -269,6 +271,7 @@ export default function AddLiquidity({
         noLiquidity={noLiquidity}
         onAdd={onAdd}
         poolTokenPercentage={poolTokenPercentage}
+        errorTx={errorTx}
       />
     )
   }

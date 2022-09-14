@@ -43,6 +43,7 @@ import {usePylonConstants} from "../../data/PylonData";
 import styled from 'styled-components'
 import BigNumberJs from "bignumber.js";
 import CapacityIndicator from "../../components/CapacityIndicator";
+import { StyledWarningIcon } from '../AddLiquidity/ConfirmAddModalBottom'
 
 export const PercButton = styled.button<{ width: string }>`
   padding: 0.5rem 1rem;
@@ -212,6 +213,7 @@ export default function RemoveProLiquidity({
 
   // tx sending
   const addTransaction = useTransactionAdder()
+  const [errorTx, setErrorTx] = useState<string>('')
   async function onRemove() {
     if (!chainId || !library || !account) throw new Error('missing dependencies')
     const { [Field.CURRENCY_A]: currencyAmountA, [Field.CURRENCY_B]: currencyAmountB } = parsedAmounts
@@ -351,8 +353,9 @@ export default function RemoveProLiquidity({
               label: [currencyA?.symbol, currencyB?.symbol].join('/')
             })
           })
-          .catch((error: Error) => {
+          .catch((error) => {
             setAttemptingTxn(false)
+            setErrorTx(error.data.message);
             // we only care if the error is something _other_ than the user rejected the tx
             console.error(error)
           })
@@ -400,7 +403,7 @@ export default function RemoveProLiquidity({
         <>
           <RowBetween>
             <Text color={theme.text2} fontWeight={400} fontSize={16}>
-              {'UNI ' + currencyA?.symbol + '/' + currencyB?.symbol} Burned
+              {'ZPT ' + currencyA?.symbol + '/' + currencyB?.symbol} Burned
             </Text>
             <RowFixed>
               <DoubleCurrencyLogo currency0={currencyA} currency1={currencyB} margin={true} />
@@ -426,6 +429,12 @@ export default function RemoveProLiquidity({
                   </Text>
                 </RowBetween>
               </>
+          )}
+          {errorTx && (
+          <RowBetween mt={10}>
+            <StyledWarningIcon />
+            <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{errorTx}</span>
+          </RowBetween>
           )}
           <ButtonPrimary disabled={!(approval === ApprovalState.APPROVED || signatureData !== null)} onClick={onRemove}>
             <Text fontWeight={400} fontSize={20}>

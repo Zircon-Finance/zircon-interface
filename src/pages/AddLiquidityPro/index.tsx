@@ -113,6 +113,7 @@ export default function AddLiquidityPro({
   const theme = useTheme();
   const currencyA = useCurrency(currencyIdA);
   const currencyB = useCurrency(currencyIdB);
+  const [errorTx, setErrorTx] = useState<string>("");
 
   const oneCurrencyIsWDEV = Boolean(
       chainId &&
@@ -337,6 +338,7 @@ export default function AddLiquidityPro({
         )
         .catch((error) => {
           setAttemptingTxn(false);
+          setErrorTx(error.data.message);
           // we only care if the error is something _other_ than the user rejected the tx
           if (error?.code !== 4001) {
             console.error(error);
@@ -513,6 +515,7 @@ export default function AddLiquidityPro({
         )
         .catch((error) => {
           setAttemptingTxn(false);
+          setErrorTx(error.data.message);
           // we only care if the error is something _other_ than the user rejected the tx
           if (error?.code !== 4001) {
             console.error(error);
@@ -602,6 +605,7 @@ export default function AddLiquidityPro({
         )
         .catch(error => {
           setAttemptingTxn(false)
+          setErrorTx(error.data.message);
           // we only care if the error is something _other_ than the user rejected the tx
           if (error?.code !== 4001) {
             console.error(error)
@@ -707,6 +711,8 @@ export default function AddLiquidityPro({
             //poolTokenPercentage={poolTokenPercentage}
             isFloat={isFloat}
             sync={sync}
+            errorTx={errorTx}
+            blocked={mintInfo?.blocked}
         />
     );
   };

@@ -44,6 +44,7 @@ import { useUserDeadline, useUserSlippageTolerance } from '../../state/user/hook
 // import { BigNumber } from '@ethersproject/bignumber'
 import LearnIcon from '../../components/LearnIcon'
 import { PercButton } from '../RemoveProLiquidity'
+import { StyledWarningIcon } from '../AddLiquidity/ConfirmAddModalBottom'
 
 export default function RemoveLiquidity({
   history,
@@ -95,6 +96,7 @@ export default function RemoveLiquidity({
   }
 
   const atMaxAmount = parsedAmounts[Field.LIQUIDITY_PERCENT]?.equalTo(new Percent('1'))
+  const [errorTx, setErrorTx] = useState<string>('')
 
   // pair contract
   const pairContract: Contract | null = usePairContract(pair?.liquidityToken?.address)
@@ -162,6 +164,7 @@ export default function RemoveLiquidity({
         })
       })
       .catch(error => {
+        setErrorTx(error.data.message);
         // for all errors other than 4001 (EIP-1193 user rejected request), fall back to manual approve
         if (error?.code !== 4001) {
           approveCallback()
@@ -381,7 +384,7 @@ export default function RemoveLiquidity({
       <>
         <RowBetween>
           <Text color={theme.text2} fontWeight={400} fontSize={16}>
-            {'UNI ' + currencyA?.symbol + '/' + currencyB?.symbol} Burned
+            {'ZPT ' + currencyA?.symbol + '/' + currencyB?.symbol} Burned
           </Text>
           <RowFixed>
             <DoubleCurrencyLogo currency0={currencyA} currency1={currencyB} margin={true} />
@@ -407,6 +410,12 @@ export default function RemoveLiquidity({
               </Text>
             </RowBetween>
           </>
+        )}
+        {errorTx && (
+        <RowBetween mt={10}>
+          <StyledWarningIcon />
+          <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{errorTx}</span>
+        </RowBetween>
         )}
         <ButtonPrimary disabled={!(approval === ApprovalState.APPROVED || signatureData !== null)} onClick={ ()=> {} /*onRemove*/}>
           <Text fontWeight={400} fontSize={20}>

@@ -8,6 +8,8 @@ import {Field} from '../../state/mint/actions'
 import {TYPE} from '../../theme'
 import {Separator} from '../../components/SearchModal/styleds'
 import {PylonState} from "../../data/PylonReserves";
+import { StyledWarningIcon } from '../AddLiquidity/ConfirmAddModalBottom'
+import { useTheme } from 'styled-components'
 
 export function ConfirmAddModalBottom({
     pylonState,
@@ -15,9 +17,11 @@ export function ConfirmAddModalBottom({
   currencies,
   parsedAmounts,
   poolTokenPercentage,
-    sync,
-    isFloat,
-  onAdd
+  sync,
+  isFloat,
+  onAdd,
+  errorTx,
+  blocked
 }: {
   pylonState?: PylonState
   price?: Fraction
@@ -25,10 +29,12 @@ export function ConfirmAddModalBottom({
   parsedAmounts: { [field in Field]?: CurrencyAmount }
   poolTokenPercentage?: Percent
   onAdd: () => void
-    sync: string
-    isFloat: boolean
-
+  sync: string
+  isFloat: boolean
+  errorTx?: string
+  blocked?: boolean
 }) {
+  const theme = useTheme()
   return (
     <>
         {(sync === "half" || isFloat) && <RowBetween>
@@ -61,6 +67,18 @@ export function ConfirmAddModalBottom({
           }`}
         </TYPE.smallerBody>
       </RowBetween>
+      {errorTx && (
+        <RowBetween mt={10}>
+          <StyledWarningIcon />
+          <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{errorTx}</span>
+        </RowBetween>
+      )}
+      {blocked && (
+        <RowBetween mt={10}>
+          <StyledWarningIcon style={{stroke: '#a68305'}} />
+          <span style={{ color: '#a68305', width: '100%', fontSize: '13px' }}>{'By our pre-calculations on the current state of the Pylon System, this transaction is likely to fail. Please wait a few minutes.'}</span>
+        </RowBetween>
+      )}
       {/*<RowBetween>*/}
       {/*  <TYPE.smallerBody>Share of Pool:</TYPE.smallerBody>*/}
       {/*  <TYPE.smallerBody>{noLiquidity ? '100' : poolTokenPercentage?.toSignificant(4)}%</TYPE.smallerBody>*/}

@@ -344,7 +344,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                 )
               case 'farm':
                 return (
-                  <TableData style={{minWidth: '280px'}} key={key}>
+                  <TableData style={{minWidth: '280px', maxWidth: '281px'}} key={key}>
                     <CellInner style={{width: '100%',justifyContent: 'flex-start'}}>
                       <CellLayout hovered={hovered} label={hovered && t(tableSchema[columnIndex].label)}>
                         <Flex width={'100%'} justifyContent={'space-between'}>
@@ -377,7 +377,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                     ) : (
                       <Flex style={{alignItems: 'center'}}>
                         <>
-                        <Text color={'#4e7455'}>
+                        <Text style={{width: '50%'}} color={'#4e7455'}>
                           {`Earn${rewardTokens.slice(0, -1)}`}
                         </Text>
                             <QuestionMarkContainer

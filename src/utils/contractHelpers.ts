@@ -34,10 +34,10 @@ export const getCakeContract = (signer?: Signer | Provider) => {
   return getContract(cakeAbi, tokens.cake.address, signer)
 }
 export const getMasterchefContract = (signer?: Signer | Provider) => {
-  return getContract(masterChef, getMasterChefAddress(), signer)
+  return getContract(masterChef, getAddress(getMasterChefAddress()), signer)
 }
 export const getMulticallContract = () => {
-  return getContract(MultiCallAbi, getMulticallAddress(), simpleRpcProvider)
+  return getContract(MultiCallAbi, getAddress(getMulticallAddress()), simpleRpcProvider)
 }
 export const getFarmAuctionContract = (signer?: Signer | Provider) => {
   return getContract(farmAuctionAbi, getFarmAuctionAddress(), signer)

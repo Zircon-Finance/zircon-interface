@@ -448,9 +448,9 @@ export default function WalletModal({
             </Text>
             <Text style={{textAlign: 'center', fontSize: '14px'}}>
               {` our `} 
-              {<Link style={{color: theme.pinkBrown, textDecoration: 'none'}} href="#">terms and conditions</Link>}
+              {<Link style={{color: theme.pinkBrown, textDecoration: 'none'}} href="https://d3v8yom54t2cda.cloudfront.net/Terms+of+Service+-+Zircon+Finance.pdf">terms and conditions</Link>}
               {` and `}
-              {<Link style={{color: theme.pinkBrown, textDecoration: 'none'}} href="#">privacy policy</Link>}
+              {<Link style={{color: theme.pinkBrown, textDecoration: 'none'}} href="https://d3v8yom54t2cda.cloudfront.net/Privacy+Policy+-+Zircon+Finance.pdf">privacy policy</Link>}
             </Text>
           </span>
           {walletView !== WALLET_VIEWS.PENDING && (

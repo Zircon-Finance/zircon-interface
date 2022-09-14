@@ -213,10 +213,13 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     const { pool } = usePool(details.sousId)
     const balance = useTokenBalance(pool.vaultAddress, token)
     const blocksLeft = endBlock - Math.max(currentBlock, startBlock)
-    const rewardBlocksPerDay = parseFloat((balance?.toFixed(6)))/(blocksLeft)*5500
+    // console.log("current", currentBlock)
+    // console.log("start", startBlock)
+    // console.log("end", endBlock)
+    const rewardBlocksPerDay = (parseFloat((balance?.toFixed(6)))/blocksLeft)*6600
     return(
         <Text fontSize='13px' fontWeight={500}>
-          {`~ ${rewardBlocksPerDay}  ${token.symbol}`}
+          {`~ ${rewardBlocksPerDay.toFixed(4)}  ${token.symbol}`}
         </Text>
       )
     }
@@ -225,7 +228,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const TooltipContentEarned = () => {return (
     <ToolTip show={hoverEarned}>
       <Text fontSize='13px' fontWeight={500} color={theme.text1}>
-        {'Tokens rewarded per block:'}
+        {'Tokens rewarded per day:'}
       </Text>
       { account ? details.earningToken.map((token) => <RewardPerBlock token={token} />) :
         <Text fontSize='13px' fontWeight={500} color={theme.text1}>

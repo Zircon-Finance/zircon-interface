@@ -8,12 +8,16 @@ import multicall from '../../utils/multicall'
 
 export const fetchPoolsAllowance = async (account) => {
     if (!account ) return {};
+
     const calls = poolsConfig.map((pool) => ({
         address: pool.stakingToken.address,
         name: 'allowance',
         params: [account, getAddress(pool.contractAddress)],
     }))
+    console.log("allowances", calls)
+
     const allowances = await multicall(erc20ABI, calls)
+
     return poolsConfig.reduce(
         (acc, pool, index) => ({ ...acc, [pool.sousId]: new BigNumber(allowances[index]).toJSON() }),
         {},

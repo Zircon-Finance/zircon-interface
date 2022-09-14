@@ -25,7 +25,7 @@ const StyledMenuButton = styled.button`
   padding: 0;
   border: none;
   margin-right: 5px;
-  padding: 15px 0 15px 0;
+  padding: 20px 0 15px 0;
   border-radius: 17px;
 
   :hover,

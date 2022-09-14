@@ -314,7 +314,6 @@ export default function AddLiquidityPro({
       ];
       value = null;
     }
-
     setAttemptingTxn(true);
     await estimate(...args, value ? { value } : {})
         .then((estimatedGasLimit) =>
@@ -350,13 +349,16 @@ export default function AddLiquidityPro({
         )
         .catch((error) => {
           setAttemptingTxn(false);
-          setErrorTx(error.data.message);
+          setErrorTx(error?.data?.message);
           // we only care if the error is something _other_ than the user rejected the tx
           if (error?.code !== 4001) {
             console.error(error);
           }
         });
   }
+
+  console.log('parsed amounts a', parsedAmounts[Field.CURRENCY_A]?.raw?.toString(), 'parsed amounts b', parsedAmounts[Field.CURRENCY_B]?.raw?.toString())
+  console.log('error is', error)
 
   // Function to create Pylon / Add liquidity to Pylon
   async function onAdd(stake?: boolean) {
@@ -386,7 +388,7 @@ export default function AddLiquidityPro({
 
     console.log('args', [
       wrappedCurrency(
-          tokenBIsETH ? getCurrency(false) : getCurrency(true),
+          tokenBIsETH ? getCurrency(true) : getCurrency(false),
           chainId
       )?.address ?? "", // token
       DEV === currencies[Field.CURRENCY_A], // second option is anchor so it should mint anchor when float.currency a is equal to b
@@ -400,7 +402,7 @@ export default function AddLiquidityPro({
         method = router.addSyncLiquidityETH;
         args = [
           wrappedCurrency(
-              tokenBIsETH ? getCurrency(false) : getCurrency(true),
+              tokenBIsETH ? getCurrency(true) : getCurrency(false),
               chainId
           )?.address ?? "", // token
           DEV === currencies[Field.CURRENCY_A], // second option is anchor so it should mint anchor when float.currency a is equal to b
@@ -439,17 +441,20 @@ export default function AddLiquidityPro({
       if (getCurrency(true) === DEV || getCurrency(false) === DEV) {
         estimate = router.estimateGas.addAsyncLiquidityETH;
         method = router.addAsyncLiquidityETH;
-        console.log(
-            tokenBIsETH ? getCurrency(true)?.name : getCurrency(false)?.name
-        );
+        console.error([
+            tokenBIsETH ? getCurrency(true)?.name : getCurrency(false)?.name,
+            `tokens are (true) and (false) ${getCurrency(true)?.name} and ${getCurrency(false)?.name}`,
+            `first token: ${tokenBIsETH ? getCurrency(true).name : getCurrency(false).name}`,
+            `first token amount: ${(tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString()}`
+        ]);
         args = [
           wrappedCurrency(
               tokenBIsETH ? getCurrency(true) : getCurrency(false),
               chainId
           )?.address ?? "", // token
           (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(),
-          "1",
-          "1",
+          '1',
+          '1',
           currencies[Field.CURRENCY_A] === DEV,
           !isFloat, // second option is anchor so it should mint anchor when float.currency a is equal to b
           account,
@@ -466,12 +471,12 @@ export default function AddLiquidityPro({
           wrappedCurrency(currencies[Field.CURRENCY_A], chainId)?.address ?? "",
           wrappedCurrency(currencies[Field.CURRENCY_B], chainId)?.address ?? "",
           (isFloat
-                  ? parsedAmountA
-                  : parsedAmountB
-          ).raw.toString(),
-          (isFloat
                   ? parsedAmountB
                   : parsedAmountA
+          ).raw.toString(),
+          (isFloat
+                  ? parsedAmountA
+                  : parsedAmountB
           ).raw.toString(),
           amountsMin[Field.CURRENCY_A].toString(),
           amountsMin[Field.CURRENCY_B].toString(),
@@ -483,7 +488,7 @@ export default function AddLiquidityPro({
         value = null;
       }
     }
-
+    
     setAttemptingTxn(true);
     await estimate(...args, value ? { value } : {})
         .then((estimatedGasLimit) =>
@@ -528,7 +533,7 @@ export default function AddLiquidityPro({
         )
         .catch((error) => {
           setAttemptingTxn(false);
-          setErrorTx(error.data.message);
+          setErrorTx(error?.data?.message);
           // we only care if the error is something _other_ than the user rejected the tx
           if (error?.code !== 4001) {
             console.error(error);
@@ -585,7 +590,7 @@ export default function AddLiquidityPro({
       ]
       value = null
     }
-
+    
     setAttemptingTxn(true)
     await estimate(...args, value ? { value } : {})
         .then(estimatedGasLimit =>
@@ -618,7 +623,7 @@ export default function AddLiquidityPro({
         )
         .catch(error => {
           setAttemptingTxn(false)
-          setErrorTx(error.data.message);
+          setErrorTx(error?.data?.message);
           // we only care if the error is something _other_ than the user rejected the tx
           if (error?.code !== 4001) {
             console.error(error)
@@ -795,6 +800,7 @@ export default function AddLiquidityPro({
 
   const handleDismissConfirmation = useCallback(() => {
     setShowConfirm(false);
+    setErrorTx('')
     // if there was a tx hash, we want to clear the input
     if (txHash) {
       onFieldAInput("");
@@ -1310,7 +1316,14 @@ export default function AddLiquidityPro({
                                   onClick={() => {
                                     expertMode ? onAdd() : setShowConfirm(true);
                                   }}
+                                  error={
+                                    sync === "half" &&
+                                    !isValid &&
+                                    !!parsedAmounts[Field.CURRENCY_A] &&
+                                    !!parsedAmounts[Field.CURRENCY_B]
+                                  }
                                   disabled={
+                                    error !== undefined ? true :
                                     !isValid ||
                                     pylonState === PylonState.EXISTS ?
                                         (approvalA !== ApprovalState.APPROVED ||
@@ -1322,15 +1335,9 @@ export default function AddLiquidityPro({
                                             (approvalAPair !== ApprovalState.APPROVED ||
                                                 approvalBPair !== ApprovalState.APPROVED)
                                   }
-                                  error={
-                                    sync === "half" &&
-                                    !isValid &&
-                                    !!parsedAmounts[Field.CURRENCY_A] &&
-                                    !!parsedAmounts[Field.CURRENCY_B]
-                                  }
                               >
                                 <Text
-                                    fontSize={width > 700 ? 20 : 16}
+                                    fontSize={width > 700 ? 18 : 16}
                                     fontWeight={400}
                                 >
                                   {error ??
@@ -1364,7 +1371,7 @@ export default function AddLiquidityPro({
                                   >
                                     <Flex flexDirection={"column"}>
                                       <Text
-                                          fontSize={width > 700 ? 20 : 16}
+                                          fontSize={width > 700 ? 18 : 16}
                                           fontWeight={400}
                                       >
                                         {error ? 'Add & Farm' :

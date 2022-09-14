@@ -164,7 +164,7 @@ export default function RemoveLiquidity({
         })
       })
       .catch(error => {
-        setErrorTx(error.data.message);
+        setErrorTx(error?.data?.message);
         // for all errors other than 4001 (EIP-1193 user rejected request), fall back to manual approve
         if (error?.code !== 4001) {
           approveCallback()
@@ -418,7 +418,7 @@ export default function RemoveLiquidity({
         </RowBetween>
         )}
         <ButtonPrimary disabled={!(approval === ApprovalState.APPROVED || signatureData !== null)} onClick={ ()=> {} /*onRemove*/}>
-          <Text fontWeight={400} fontSize={20}>
+          <Text fontWeight={400} fontSize={18}>
             Confirm
           </Text>
         </ButtonPrimary>
@@ -467,6 +467,7 @@ export default function RemoveLiquidity({
 
   const handleDismissConfirmation = useCallback(() => {
     setShowConfirm(false)
+    setErrorTx('')
     setSignatureData(null) // important that we clear signature data to avoid bad sigs
     // if there was a tx hash, we want to clear the input
     if (txHash) {

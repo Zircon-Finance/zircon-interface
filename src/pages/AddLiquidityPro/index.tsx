@@ -462,7 +462,7 @@ export default function AddLiquidityPro({
           deadlineFromNow,
         ];
         value = BigNumber.from(
-            (tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString()
+            (currencies[Field.CURRENCY_A] === DEV ? parsedAmountA : parsedAmountB).raw.toString()
         );
       } else {
         estimate = router.estimateGas.addAsyncLiquidity;

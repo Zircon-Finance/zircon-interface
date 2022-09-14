@@ -196,7 +196,7 @@ export function CurrencySearch({
         <Text color={theme.whiteHalf}>{`Recommended for ${isFloat ? 'Float' : 'Anchor'}`}</Text>
         <Flex flexDirection="row" style={{marginBottom: '10px', rowGap: '10px', flexWrap: 'wrap'}}>
         {isFloat === true &&
-          selectedAnchorTokens?.map((token, i) => (
+          selectedFloatTokens?.map((token, i) => (
             <SmallPlanet onClick={()=>handleCurrencySelect(token)}>
               <CurrencyLogo currency={token} size={'18px'} />
               <Text fontWeight={500} fontSize={14} style={{padding: '0 5px 0 5px'}}>{token?.symbol}</Text>
@@ -204,7 +204,7 @@ export function CurrencySearch({
           ))
         }
         {isFloat === false &&
-          selectedFloatTokens?.map((token, i) => (
+          selectedAnchorTokens?.map((token, i) => (
             <SmallPlanet onClick={()=>handleCurrencySelect(token)}>
               <CurrencyLogo currency={token} size={'18px'} />
               <Text fontWeight={500} fontSize={14} style={{padding: '0 5px 0 5px'}}>{token?.symbol}</Text>

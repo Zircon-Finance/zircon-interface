@@ -456,7 +456,7 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
                             <FixedHeightRow style={{alignItems: 'center'}}>
                                 <RowFixed>
                                     <Text fontSize={13} fontWeight={400}>
-                                        {isFloat ? 'Capacity' : 'Health Factor'}:
+                                        {isFloat ? 'Divergence' : 'Health Factor'}:
                                     </Text>
                                 </RowFixed>
                                 {burnInfo ? (

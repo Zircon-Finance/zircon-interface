@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction } from 'react'
 import styled, { css, keyframes, useTheme } from 'styled-components'
-import { 
-  // HelpIcon, 
+import {
+  // HelpIcon,
   Text, Skeleton, IconButton } from '@pancakeswap/uikit'
 import BigNumber from 'bignumber.js'
 import PlusIcon from '../PlusIcon'
@@ -95,22 +95,22 @@ const Staked: React.FunctionComponent<StakedProps> = ({ staked, hovered, setHove
   )
   const displayBalance =
   staked && staked.gt(0) ? (
-      `$${getBalanceAmount(staked).toFixed(3, BigNumber.ROUND_DOWN)}`
+      `${getBalanceAmount(staked).toFixed(1, BigNumber.ROUND_DOWN)}`
     ) : (
       <Skeleton width={60} />
     )
   return (
     <Container>
       <LiquidityWrapper>
-        <Text style={{position: 'relative'}} textAlign={'left'} color={theme.text1}>{displayBalance}</Text>
+        <Text style={{position: 'relative'}} textAlign={'left'} color={theme.text1}>{displayBalance + " ZPT"} </Text>
         {staked > new BigNumber(0) && hovered && width >= 1100 &&
-        <div style={{display: 'flex', position: 'sticky', marginLeft: '5px', alignItems: 'center'}} 
+        <div style={{display: 'flex', position: 'sticky', marginLeft: '5px', alignItems: 'center'}}
         onMouseEnter={()=>setHovered(true)}>
-          <IconButton 
-            style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}} 
-            variant="tertiary" 
+          <IconButton
+            style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
+            variant="tertiary"
             >
-            <Flex 
+            <Flex
             onMouseEnter={()=>[setHoverMinus(true), setHoverPlus(false)]}
             onMouseLeave={()=>setHoverMinus(false)}>
             <MinusIcon />
@@ -118,7 +118,7 @@ const Staked: React.FunctionComponent<StakedProps> = ({ staked, hovered, setHove
           </IconButton>
           {hoverMinus && minusContent}
           <IconButton
-            style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%'}} 
+            style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%'}}
             variant="tertiary"
           >
             <Flex

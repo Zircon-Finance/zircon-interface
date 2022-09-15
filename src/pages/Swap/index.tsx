@@ -344,6 +344,7 @@ export default function Swap() {
               onCurrencySelect={handleInputSelect}
               otherCurrency={currencies[Field.OUTPUT]}
               id="swap-currency-input"
+              tokens={[currencies[Field.OUTPUT], currencies[Field.INPUT]]}
             />
             <AutoColumn>
               <AutoRow justify={isExpertMode ? recipient === null ? 'space-between' : 'center' : 'center'} style={{ padding: '0 1rem'}}>
@@ -380,6 +381,7 @@ export default function Swap() {
               onCurrencySelect={handleOutputSelect}
               otherCurrency={currencies[Field.INPUT]}
               id="swap-currency-output"
+              tokens={[currencies[Field.OUTPUT], currencies[Field.INPUT]]}
             />
 
             {recipient !== null && !showWrap && isExpertMode && (

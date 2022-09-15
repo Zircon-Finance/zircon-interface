@@ -42,13 +42,13 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
 
 
     const provider = account && new providers.Web3Provider(window.ethereum)
-    const airdrop_address = '0xfcb63d9D26965093fd7F87EC4Ce71D7b5949A49d'
+    const airdrop_address = '0xf7EEE02817C1302EEcC93BCA77e1239A513EC300'
     const abi = airdrop_abi
 
     // call contract airdrop
     const airdrop_contract = new ethers.Contract(airdrop_address, abi, provider)
 
-    // contract signer
+    // contract ppsigner
     const signer = account && (new ethers.providers.Web3Provider(window.ethereum)).getSigner()
     const airdropWithSigner = airdrop_contract?.connect(signer)
     // proofData leaves

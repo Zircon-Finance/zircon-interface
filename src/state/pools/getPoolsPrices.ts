@@ -86,8 +86,7 @@ import BigNumber from "bignumber.js";
 // }
 
 const getPoolsPrices = async (pools: SerializedPool[]) => {
-    //TODO: Change to token2
-    let calls = pools.map((pool) => axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${pool.token1.symbol}BUSD`))
+    let calls = pools.map((pool) => axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${pool.token2.symbol}BUSD`))
     try{
         let responses = (await axios.all(calls)).map((response) => response.data)
         return pools.map((pool, index) => {

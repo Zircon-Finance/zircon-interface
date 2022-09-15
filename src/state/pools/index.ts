@@ -170,8 +170,19 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
       const stakingTokenPrice = (new BigNumber(Pylon.calculateLiquidity(pool.gamma, JSBI.BigInt(new BigNumber(pool.quoteTokenBalanceLP).toNumber()), pool.ptb, pool.lpTotalSupply).toString())
           .multipliedBy(new BigNumber(pool.quotePrice))).dividedBy(new BigNumber(10).pow(18)).toNumber()
 
+      /// TODO: do the calculations here instead of in the component
+      // let earningTokenPerBlock = pool.earningToken.map((token,index) => {
+      //   if (token.symbol === "1SWAP") {
+      //     return new BigNumber(rewardsData[i][index].balance.toString()).dividedBy(new BigNumber(10).pow(18)).dividedBy(blockLimit.endBlock-blockLimit.startBlock).toNumber()
+      //   } else if (token.symbol === "MOVR") {
+      //     return new BigNumber(rewardsData[i][index].balance.toString()).dividedBy(new BigNumber(10).pow(18)).dividedBy(blockLimit.endBlock-blockLimit.startBlock).toNumber()
+      //   }else {
+      //     return 0
+      //   }
+      // })
 
       let earningTokenPrice = pool.earningToken.map((token,index) => {
+        //TODO: Change for ZRG
         if (token.symbol === "1SWAP") {
           return new BigNumber(priceZRG[0].tokenPrice).times(rewardsData[i][index].balance.toString()).dividedBy(new BigNumber(10).pow(18)).dividedBy(blockLimit.endBlock-blockLimit.startBlock).toNumber()
         } else if (token.symbol === "MOVR") {
@@ -180,6 +191,10 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
           return 0
         }
       })
+
+      console.log(earningTokenPrice);
+      console.log(stakingTokenPrice);
+      let liquidity  = String(BigNumber(pool.quotePrice.toString()).multipliedBy(pool.quoteTokenBalanceLP).multipliedBy(2).dividedBy(new BigNumber(10).pow(18)).toString())
       const apr = !isPoolFinished
         ? getPoolApr(
             stakingTokenPrice,
@@ -189,9 +204,10 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
       return {
         ...blockLimit,
         ...totalStaking,
+        // earningTokenPerBlock,
         // stakingTokenPrice,
         // earningTokenPrice,
-        liquidity: String(BigNumber(pool.quotePrice.toString()).multipliedBy(pool.quoteTokenBalanceLP).multipliedBy(2).dividedBy(new BigNumber(10).pow(18)).toString()),
+        liquidity ,
         apr,
         isFinished: isPoolFinished,
       }

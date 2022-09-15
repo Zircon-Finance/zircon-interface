@@ -57,12 +57,18 @@ const CapacityIndicator: React.FC<Props> = ({gamma, hoverPage, health, isFloat, 
     const theme = useTheme();
     const [hoverRisk, setHoverRisk] = React.useState(false);
     const [hoverFee, setHoverFee] = React.useState(false);
+    const [hoverSlashing, setHoverSlashing] = React.useState(false);
+    const [hoverSlippage, setHoverSlippage] = React.useState(false);
     console.log("feePercentage", feePercentage.toString())
     const TooltipContentRisk: React.FC<ToolTipProps> = ({option}) => {return (
-        <ToolTip style={{left: '-200px'}} show={hoverRisk}>
+        <ToolTip style={{left: '-100px'}} show={hoverRisk || hoverFee || hoverSlashing || hoverSlippage}>
             <Text fontSize='13px' fontWeight={500} color={theme.text1}>
                 {`${option === 'health' ? 'The health factor measures how balanced this Stable vault is. Imbalanced vaults may be partially slashed when withdrawing during critical market activity.' :
                 option === 'divergence' ? 'Divergence measures how much impermanent loss the Float vault is suffering.' :
+                option === 'deltaFee' ? 'The pool is applying a “Delta Tax” because prices or liquidity have changed too fast recently. Just wait a few minutes for this to pass.':
+                option === 'fee' ? 'You pay a dynamic fee between 0.01% and 0.5% to join the Pylon vaults. The fee is lowest when the Pylon vaults are balanced.' :
+                option === 'omega' ? 'The pool is currently imbalanced, Stable withdrawals are reduced by the distress fee to avoid liquidation. Don’t panic, this is temporary, unless you think this pool will “die”.' :
+                option === 'slippage' ? 'You may suffer some slippage losses when joining the pool. Reduce the amount or use the Swap & Add method to avoid it.' :
                 'General info'}`}
             </Text>
         </ToolTip>
@@ -77,7 +83,7 @@ const CapacityIndicator: React.FC<Props> = ({gamma, hoverPage, health, isFloat, 
                         onMouseLeave={() => setHoverFee(false)}
                     >
                         {hoverFee && (
-                            <TooltipContentRisk option="fee" />
+                            <TooltipContentRisk option={isDeltaGamma ? "deltaFee" : "fee"} />
                         )}
                         <QuestionMarkIcon />
                     </QuestionMarkContainer>
@@ -89,11 +95,11 @@ const CapacityIndicator: React.FC<Props> = ({gamma, hoverPage, health, isFloat, 
                 <SmallContainer>
                     {!noSpan && <span style={{marginLeft: 8}}>{'Slippage For Amount > ' + extraFeeTreshold.toFixed(4)}</span>}
                     <QuestionMarkContainer
-                        onMouseEnter={() => setHoverFee(true)}
-                        onMouseLeave={() => setHoverFee(false)}
+                        onMouseEnter={() => setHoverSlippage(true)}
+                        onMouseLeave={() => setHoverSlippage(false)}
                     >
-                        {hoverFee && (
-                            <TooltipContentRisk option='gamma' />
+                        {hoverSlippage && (
+                            <TooltipContentRisk option='slippage' />
                         )}
                         <QuestionMarkIcon />
                     </QuestionMarkContainer>
@@ -105,10 +111,10 @@ const CapacityIndicator: React.FC<Props> = ({gamma, hoverPage, health, isFloat, 
                 <SmallContainer>
                     {!noSpan && <span style={{marginLeft: 8}}>{'Omega'}</span>}
                     <QuestionMarkContainer
-                        onMouseEnter={() => setHoverFee(true)}
-                        onMouseLeave={() => setHoverFee(false)}
+                        onMouseEnter={() => setHoverSlashing(true)}
+                        onMouseLeave={() => setHoverSlashing(false)}
                     >
-                        {hoverFee && (
+                        {hoverSlashing && (
                             <TooltipContentRisk option='omega' />
                         )}
                         <QuestionMarkIcon />

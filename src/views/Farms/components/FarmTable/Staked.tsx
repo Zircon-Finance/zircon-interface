@@ -66,7 +66,7 @@ const DialogContainer = styled.div<{ show }>`
         ${collapseAnimation} 300ms linear forwards
       `};
   position: absolute;
-  top: 30px;
+  top: 40px;
   background: ${({ theme }) => theme.hoveredButton};
   border-radius: 17px;
   padding: 10px;

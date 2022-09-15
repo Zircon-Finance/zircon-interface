@@ -178,7 +178,6 @@ export default function AddLiquidity({
       ]
       value = null
     }
-
     setAttemptingTxn(true)
     await estimate(...args, value ? { value } : {})
       .then(estimatedGasLimit =>
@@ -309,6 +308,7 @@ export default function AddLiquidity({
 
   const handleDismissConfirmation = useCallback(() => {
     setShowConfirm(false)
+    setErrorTx('')
     // if there was a tx hash, we want to clear the input
     if (txHash) {
       onFieldAInput('')
@@ -446,7 +446,7 @@ export default function AddLiquidity({
                         disabled={!isValid || approvalA !== ApprovalState.APPROVED || approvalB !== ApprovalState.APPROVED}
                         error={!isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]}
                       >
-                        <Text fontSize={20} fontWeight={400}>
+                        <Text fontSize={18} fontWeight={400}>
                           {error ?? 'Supply'}
                         </Text>
                       </ButtonError>

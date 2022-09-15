@@ -66,7 +66,7 @@ interface ToolTipProps {
 }
 
 const CellInner = styled.div`
-  padding: 19px 0px;
+  padding: 14px 0px;
   display: flex;
   width: 100%;
   align-items: center;
@@ -224,25 +224,12 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     // console.log("end", endBlock)
     const rewardBlocksPerDay = (parseFloat((balance?.toFixed(6)))/blocksLeft)*6600
     return(
-        <Text fontSize='13px' fontWeight={500}>
+        <Text fontSize='13px' fontWeight={500} color={'#4e7455'}>
           {`~ ${rewardBlocksPerDay.toFixed(4)}  ${token.symbol}`}
         </Text>
       )
     }
   //--------------------------------------------------------------------------------------------------//
-
-  const TooltipContentEarned = () => {return (
-    <ToolTip show={hoverEarned}>
-      <Text fontSize='13px' fontWeight={500} color={theme.text1}>
-        {'Tokens rewarded per day:'}
-      </Text>
-      { account ? details.earningToken.map((token) => <RewardPerBlock token={token} />) :
-        <Text fontSize='13px' fontWeight={500} color={theme.text1}>
-          {'Please connect your wallet'}
-        </Text>
-      }
-    </ToolTip>
-  )}
 
   const toggleActionPanel = () => {
     setActionPanelExpanded(!actionPanelExpanded)
@@ -311,7 +298,6 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     props.farm?.earningToken.forEach((token) => r += ` ${token.symbol} &`)
     setRewardTokens(r.slice(0, -1))
   }, [])
-  const [hoverEarned, setHoverEarned] = useState(false)
   const [hoverRisk, setHoverRisk] = useState(false)
   const gammaAdjusted = new BigNumberJs(gamma).div(new BigNumberJs(10).pow(18))
 
@@ -335,7 +321,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                   <TableData key={key} style={{width: gamma ? '15%' : '12%'}}>
                     <CellInner>
                       <CellLayout>
-                      <div style={{width: '70%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
+                      <div style={{width: '200%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
                             <CapacityIndicatorSmall gamma={gammaAdjusted} health={healthFactor} isFloat={!props.farm.isAnchor} noSpan={false}
                             hoverPage={'farmRow'}/>
                             <QuestionMarkContainer
@@ -386,17 +372,21 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                     ) : (
                       <Flex style={{alignItems: 'center'}}>
                         <>
+                        {!account ? (
                         <Text style={{width: '50%'}} color={'#4e7455'}>
                           {`Earn${rewardTokens.slice(0, -1)}`}
                         </Text>
-                            <QuestionMarkContainer
-                            onMouseEnter={() => setHoverEarned(true)}
-                            onMouseLeave={() => setHoverEarned(false)}
-                            >{hoverEarned && (
-                              <TooltipContentEarned />
-                            )}
-                            <QuestionMarkIcon />
-                            </QuestionMarkContainer>
+                        ) : (
+                        <Flex flexDirection={'column'}>
+                          <Text fontSize='13px' fontWeight={500} color={4e7455}>
+                            {'Tokens rewarded per day:'}
+                          </Text>
+                          <>
+                            {details.earningToken.map((token) => <RewardPerBlock token={token} />)}
+                          </>
+                        </Flex>
+                        )}
+
                         </>
                       </Flex>
                   )}

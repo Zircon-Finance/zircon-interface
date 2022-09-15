@@ -355,7 +355,7 @@ export default function RemoveProLiquidity({
           })
           .catch((error) => {
             setAttemptingTxn(false)
-            setErrorTx(error.data.message);
+            setErrorTx(error?.data?.message);
             // we only care if the error is something _other_ than the user rejected the tx
             console.error(error)
           })
@@ -437,7 +437,7 @@ export default function RemoveProLiquidity({
           </RowBetween>
           )}
           <ButtonPrimary disabled={!(approval === ApprovalState.APPROVED || signatureData !== null)} onClick={onRemove}>
-            <Text fontWeight={400} fontSize={20}>
+            <Text fontWeight={400} fontSize={18}>
               Confirm
             </Text>
           </ButtonPrimary>
@@ -492,6 +492,7 @@ export default function RemoveProLiquidity({
 
   const handleDismissConfirmation = useCallback(() => {
     setShowConfirm(false)
+    setErrorTx('')
     setSignatureData(null) // important that we clear signature data to avoid bad sigs
     // if there was a tx hash, we want to clear the input
     if (txHash) {

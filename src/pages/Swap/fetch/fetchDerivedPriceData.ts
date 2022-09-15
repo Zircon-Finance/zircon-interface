@@ -5,6 +5,7 @@ import { gql } from 'graphql-request'
 import { multiQuery } from './infoQueryHelpers'
 import { getDerivedPrices, getDerivedPricesQueryConstructor } from '../queries/getDerivedPrices'
 import { PairDataTimeWindowEnum } from '../types'
+import { BLOCKS_CLIENT, INFO_CLIENT } from '../../../constants/lists'
 
 const blocksQueryConstructor = (subqueries: string[]) => {
   return gql`query blocks {
@@ -33,7 +34,7 @@ export const getBlocksFromTimestamps = async (
   const fetchedData: any = await multiQuery(
     blocksQueryConstructor,
     getBlockSubqueries(timestamps),
-    'https://api.thegraph.com/subgraphs/name/edoapp/moonbase-alpha-blocks',
+    BLOCKS_CLIENT,
     skipCount,
   )
 
@@ -58,7 +59,7 @@ const getTokenDerivedBnbPrices = async (tokenAddress: string, blocks: any) => {
   const prices: any | undefined = await multiQuery(
     getDerivedPricesQueryConstructor,
     getDerivedPrices(tokenAddress, blocks),
-    'https://api.thegraph.com/subgraphs/name/reshyresh/zircon-finance',
+    INFO_CLIENT,
     200,
   )
 

@@ -97,7 +97,7 @@ const Blurb = styled.div`
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 20px;
+  margin-top: 15px;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     margin: 1rem;
     font-size: 12px;
@@ -446,7 +446,7 @@ export default function WalletModal({
             <Text style={{textAlign: 'center', fontSize: '14px', marginTop: '10px'}}>
               {'Connecting a wallet you accept'}
             </Text>
-            <Text style={{textAlign: 'center', fontSize: '14px'}}>
+            <Text style={{textAlign: 'center', fontSize: '13px'}}>
               {` our `} 
               {<Link style={{color: theme.pinkBrown, textDecoration: 'none'}} href="https://d3v8yom54t2cda.cloudfront.net/Terms+of+Service+-+Zircon+Finance.pdf">terms and conditions</Link>}
               {` and `}

@@ -42,6 +42,7 @@ export const ButtonPrimary = styled(Base)`
   background-color: ${({ theme }) => theme.bg8};
   font-weight: 500;
   height: 60px;
+  font-size: 18px;
   color: white;
   &:hover {
     background-color: ${({ theme }) => theme.colors.input};
@@ -211,7 +212,7 @@ export const ButtonLighter = styled(Base)`
   color: ${({ theme }) => theme.text1};
 
   &:hover {
-    background-color: ${({ theme }) => theme.bg11};
+    background-color: ${({ theme }) => theme.opacitySmall};
   }
   &:disabled {
     opacity: 50%;

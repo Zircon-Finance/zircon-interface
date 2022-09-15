@@ -2,8 +2,8 @@
 export const DEFAULT_TOKEN_LIST_URL =
   'https://gist.githubusercontent.com/ReshyResh/ea7489537b8f6bf1601289b191570825/raw/2604437c3a323fc59d5880b388216f967b0ce067/tokenlist.json'
   
-export const INFO_CLIENT = 'https://api.thegraph.com/subgraphs/name/reshyresh/zircon-finance'
-export const BLOCKS_CLIENT = 'https://api.thegraph.com/subgraphs/name/edoapp/moonbase-alpha-blocks'
+export const INFO_CLIENT = 'https://api.thegraph.com/subgraphs/name/reshyresh/zircon-gamma'
+export const BLOCKS_CLIENT = 'https://api.thegraph.com/subgraphs/name/rebase-agency/moonriver-blocks'
 
 export const DEFAULT_LIST_OF_LISTS: string[] = [
   DEFAULT_TOKEN_LIST_URL

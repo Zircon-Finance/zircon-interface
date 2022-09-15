@@ -133,7 +133,7 @@ function CurrencyRow({
             </TYPE.main>
           ) : null}
           {!isOnSelectedList && !customAdded ? (
-            <TYPE.main fontWeight={400}>
+            <TYPE.main fontWeight={400} fontSize={'14px'}>
               Found by address
               <LinkStyledButton
                 onClick={event => {
@@ -204,7 +204,7 @@ export default function CurrencyList({
       width="100%"
       itemData={itemData}
       itemCount={itemData.length}
-      itemSize={56}
+      itemSize={60}
       itemKey={itemKey}
     >
       {Row}

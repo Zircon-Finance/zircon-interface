@@ -461,7 +461,8 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
                                 </RowFixed>
                                 {burnInfo ? (
                                     <RowFixed>
-                                        <CapacityIndicatorSmall gamma={new BigNumberJs(gamma).div(new BigNumberJs(10).pow(18))} health={healthFactor} isFloat={isFloat} />
+                                        <CapacityIndicatorSmall gamma={new BigNumberJs(gamma).div(new BigNumberJs(10).pow(18))} health={healthFactor} isFloat={isFloat}
+                                        hoverPage="positionCard" />
                                     </RowFixed>
                                 ) : (
                                     '-'

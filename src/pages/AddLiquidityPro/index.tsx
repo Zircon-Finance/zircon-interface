@@ -488,7 +488,7 @@ export default function AddLiquidityPro({
         value = null;
       }
     }
-    
+
     setAttemptingTxn(true);
     await estimate(...args, value ? { value } : {})
         .then((estimatedGasLimit) =>
@@ -590,7 +590,7 @@ export default function AddLiquidityPro({
       ]
       value = null
     }
-    
+
     setAttemptingTxn(true)
     await estimate(...args, value ? { value } : {})
         .then(estimatedGasLimit =>
@@ -1187,7 +1187,7 @@ export default function AddLiquidityPro({
                                 currency={currencies[getField(false) as Field]}
                                 id="add-liquidity-input-tokenb_bal"
                                 showCommonBases
-                                isFloat={isFloat}
+                                isFloat={!isFloat}
                                 sync={sync}
                                 exists={pylonState === PylonState.EXISTS}
                             />

@@ -185,7 +185,7 @@ export default function CurrencyInputPanel({
                   </div>
                   {currency &&
                   <Text style={{paddingRight: '0.75rem', alignSelf: 'center'}} color={theme.whiteHalf}>
-                    {'0$' /* This was added, it's supposed to convert to $ */}
+                    {'' /* This was added, it's supposed to convert to $ */}
                   </Text>
                   }
                 </TYPE.body>

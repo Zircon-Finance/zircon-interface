@@ -28,7 +28,7 @@ import {
 import priceHelperLpsConfig from '../../constants/poolsHelperLps'
 
 import { resetUserState } from '../global/actions'
-import {BIG_ZERO} from '../../utils/bigNumber'
+import {BIG_TEN, BIG_ZERO} from '../../utils/bigNumber'
 import multicall from '../../utils/multicall'
 // import { getBalanceNumber } from '../../utils/formatBalance'
 // import { getPoolApr } from '../../utils/apr'
@@ -146,10 +146,7 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
     //   ? getFarmsPrices([bnbBusdFarm])
     //   : []
     // console.log("prices",farmsData, farmsWithPricesOfDifferentTokenPools);
-
     // usd * reward / (1 - gamma) * resTR*2*usd
-
-  poolsPrices.map((poolPrice) => {  })
     // const prices = getTokenPricesFromFarm([...farmsData, ...farmsWithPricesOfDifferentTokenPools])
     const liveData = poolsPrices.map((pool, i) => {
       const blockLimit = blockLimits.find((entry) => entry.sousId === pool.sousId)
@@ -165,10 +162,10 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
       //
       // const earningTokenAddress = pool.earningToken.map((token) => token.address ? token.address.toLowerCase() : null)
       // const earningTokenPrice = earningTokenAddress ? earningTokenAddress.map((token) => prices[token]) : [0,0]
-      console.log("values", pool.gamma, pool.quoteTokenBalanceLP, pool.ptb, pool.lpTotalSupply)
+      console.log("values", pool.quoteTokenDecimals)
 
-      const stakingTokenPrice = (new BigNumber(Pylon.calculateLiquidity(pool.gamma, JSBI.BigInt(new BigNumber(pool.quoteTokenBalanceLP).toNumber()), pool.ptb, pool.lpTotalSupply).toString())
-          .multipliedBy(new BigNumber(pool.quotePrice))).dividedBy(new BigNumber(10).pow(18)).toNumber()
+      const stakingTokenPrice = (new BigNumber(Pylon.calculateLiquidity(pool.gamma, JSBI.BigInt(new BigNumber(pool.lpTotalInQuoteToken).toNumber()), pool.ptb, pool.lpTotalSupply).toString())
+          .multipliedBy(new BigNumber(pool.quotePrice)).dividedBy(BIG_TEN.pow(pool.quoteTokenDecimals))).toNumber()
 
       /// TODO: do the calculations here instead of in the component
       // let earningTokenPerBlock = pool.earningToken.map((token,index) => {

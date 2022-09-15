@@ -146,7 +146,7 @@ const SelectedOptionDiv = styled.div`
   top: 44px;
   left: -10px;
   width: 50%;
-  background: ${({ theme }) => theme.cardExpanded};
+  background: ${({ theme }) => theme.meatPink};
   height: 5px;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;

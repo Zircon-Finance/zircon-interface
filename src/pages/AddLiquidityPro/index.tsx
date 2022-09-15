@@ -1261,13 +1261,7 @@ export default function AddLiquidityPro({
                                               : approveACallbackPair}
                                           disabled={approvalA === ApprovalState.PENDING
                                           || approvalAPair === ApprovalState.PENDING}
-                                          width={
-                                            (approvalB !== ApprovalState.APPROVED || approvalBPair !== ApprovalState.APPROVED) && pylonState === PylonState.EXISTS ? "100%" : "auto"
-                                                ? sync === "half"
-                                                    ? "48%"
-                                                    : "100%"
-                                                : "100%"
-                                          }
+                                          style={{margin: 'auto', maxWidth: '48%'}}
                                       >
                                         {(approvalA === ApprovalState.PENDING
                                             || approvalAPair === ApprovalState.PENDING) ? (
@@ -1287,12 +1281,7 @@ export default function AddLiquidityPro({
                                           approveBCallbackPair : approveBCallback}
                                       disabled={(approvalB === ApprovalState.PENDING ||
                                       approvalBPair === ApprovalState.PENDING ? true : false)}
-                                      width={(pylonState === PylonState.NOT_EXISTS || pylonState === PylonState.ONLY_PAIR) ? approvalAPair === ApprovalState.APPROVED ? "100%" : "48%" : 
-                                        sync === "half" ? approvalA === ApprovalState.APPROVED ? "100%" : "48%" :
-                                        approvalB !== ApprovalState.APPROVED
-                                            ? "48%"
-                                            : "100%"
-                                      }
+                                      style={{margin: 'auto', maxWidth: '48%'}}
                                   >
                                     {(approvalBPair === ApprovalState.PENDING || approvalB === ApprovalState.PENDING) ? (
                                         <Dots>

@@ -32,7 +32,8 @@ const SmallPlanet = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 8px;
+  margin-right: 5px;
+  margin-bottom: 5px;
   border-radius: 14px;
   padding: 5px 8px 5px 5px;
   background-color: ${({ theme }) => theme.searchInput};
@@ -165,7 +166,7 @@ export function CurrencySearch({
 
   return (
     <Column style={{ width: '100%', flex: '1 1' }}>
-      <PaddedColumn gap="14px">
+      <PaddedColumn gap="14px" style={{paddingBottom: '15px'}}>
         <RowBetween>
           <Text fontWeight={400} fontSize={16} style={{padding: '15px 0 15px 0'}}>
             Select a token
@@ -192,9 +193,9 @@ export function CurrencySearch({
       </PaddedColumn>
 
       {(isFloat !== undefined && filteredSortedTokens.length > 0 && !searchQuery) && 
-      <Flex flexDirection="column" style={{padding: '0 20px', gap: '10px'}}>
+      <Flex flexDirection="column" style={{padding: '0 20px', gap: '5px'}}>
         <Text color={theme.whiteHalf}>{`Recommended for ${isFloat ? 'Float' : 'Anchor'}`}</Text>
-        <Flex flexDirection="row" style={{marginBottom: '10px', rowGap: '10px', flexWrap: 'wrap'}}>
+        <Flex flexDirection="row" style={{display: 'flex', marginBottom: '15px', flexWrap: 'wrap'}}>
         {isFloat === true &&
           selectedFloatTokens?.map((token, i) => (
             <SmallPlanet onClick={()=>handleCurrencySelect(token)}>

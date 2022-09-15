@@ -146,6 +146,7 @@ const PinkArrows = styled.div`
 const SelectedOptionDiv = styled.div`
   position: absolute;
   top: 44px;
+  left: -10px;
   width: 50%;
   background: ${({ theme }) => theme.cardExpanded};
   height: 5px;

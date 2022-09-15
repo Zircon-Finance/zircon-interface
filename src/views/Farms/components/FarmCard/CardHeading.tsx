@@ -83,11 +83,15 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
     useEndBlock(sousId).then((block?) => setEndBlock(block))
     useCurrentBlock().then((block?) => setCurrentBlock(block))
 
+    //TODO: this has to be only one component PD and shared between Row and this
   const RewardPerBlock = ({ token }: { token: any }) => {
-    const { pool } = usePool(sousId)
-    const balance = useTokenBalance(pool.vaultAddress, token)
-    const blocksLeft = endBlock - Math.max(currentBlock, startBlock)
-    const rewardBlocksPerDay = (parseFloat((balance?.toFixed(6)))/blocksLeft)*6600
+      const { pool } = usePool(sousId)
+      const balance = useTokenBalance(pool.vaultAddress, token)
+      const blocksLeft = endBlock - Math.max(currentBlock, startBlock)
+      // console.log("current", currentBlock)
+      // console.log("start", startBlock)
+      // console.log("end", endBlock)
+      const rewardBlocksPerDay = (parseFloat((balance?.toFixed(6)))/blocksLeft)*6400*30
     return(
         <Text fontSize='13px' fontWeight={500} color={'#4e7455'}>
           {`~ ${rewardBlocksPerDay.toFixed(4)}  ${token.symbol}`}
@@ -213,10 +217,10 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
         ) : (
                 <Flex flexDirection={'row'} style={{marginBottom: width <= 500 && '20px'}}>
                   <Text fontSize='13px' fontWeight={500} color={4e7455} style={{width: '45%'}}>
-                    {'Tokens rewarded per day:'}
+                    {'Monthly Rewards:'}
                   </Text>
-                  <Flex flexDirection={width >= 700 ? 'column' : 'row'} style={{textAlign: 'right', width: '60%', 
-                  display: width <= 700 && 'flex', 
+                  <Flex flexDirection={width >= 700 ? 'column' : 'row'} style={{textAlign: 'right', width: '60%',
+                  display: width <= 700 && 'flex',
                   justifyContent: width <= 700 && 'flex-end'}}>
                     {earningToken.map((token) => <RewardPerBlock token={token} />)}
                   </Flex>

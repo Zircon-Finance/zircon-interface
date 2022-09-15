@@ -14,7 +14,6 @@ export const fetchPoolsAllowance = async (account) => {
         name: 'allowance',
         params: [account, getAddress(pool.contractAddress)],
     }))
-    console.log("allowances", calls)
 
     const allowances = await multicall(erc20ABI, calls)
 
@@ -23,6 +22,8 @@ export const fetchPoolsAllowance = async (account) => {
         {},
     )
 }
+
+
 
 export const fetchUserBalances = async (account) => {
     if (!account ) return {};

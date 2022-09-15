@@ -11,8 +11,6 @@ import {
 import cakeAbi from '../../constants/abis/erc20.json'
 // import { getCakeVaultAddress } from 'utils/addressHelpers'
 import tokens from '../../constants/tokens'
-import fetchFarms from '../farms/fetchFarms'
-import getFarmsPrices from '../farms/getFarmsPrices'
 import {
   fetchPoolsBlockLimits,
   // fetchPoolsProfileRequirement,
@@ -27,14 +25,18 @@ import {
 } from './fetchPoolsUser'
 // import { fetchPublicVaultData, fetchVaultFees } from './fetchVaultPublic'
 // import fetchVaultUser from './fetchVaultUser'
-import { getTokenPricesFromFarm } from './helpers'
+import priceHelperLpsConfig from '../../constants/poolsHelperLps'
+
 import { resetUserState } from '../global/actions'
-import { BIG_ZERO } from '../../utils/bigNumber'
+import {BIG_ZERO} from '../../utils/bigNumber'
 import multicall from '../../utils/multicall'
-import { simpleRpcProvider } from '../../utils/providers'
-import priceHelperLpsConfig from '../../constants/priceHelperLps'
-import { getBalanceNumber } from '../../utils/formatBalance'
-import { getPoolApr } from '../../utils/apr'
+// import { getBalanceNumber } from '../../utils/formatBalance'
+// import { getPoolApr } from '../../utils/apr'
+import fetchPools from "./fetchPoolsInfo";
+import getPoolsPrices from "./getPoolsPrices";
+import {fetchRewardsData} from "./fetchRewardsData";
+import {JSBI, Pylon} from "zircon-sdk";
+import {getPoolApr} from "../../utils/apr";
 
 export const initialPoolVaultState = Object.freeze({
   totalShares: null,
@@ -74,7 +76,7 @@ export const fetchCakePoolUserDataAsync = (account: string) => async (dispatch) 
   const allowanceCall = {
     address: tokens.cake.address,
     name: 'allowance',
-    params: [account, 
+    params: [account,
       // cakeVaultAddress
     ],
   }
@@ -99,71 +101,113 @@ export const fetchCakePoolUserDataAsync = (account: string) => async (dispatch) 
 
 export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (dispatch, getState) => {
   try {
-    const [blockLimits, totalStakings, profileRequirements, 
-      // currentBlock
-    ] = await Promise.all([
+    const [blockLimits, totalStakings, rewardsData] = await Promise.all([
       fetchPoolsBlockLimits(),
       fetchPoolsTotalStaking(),
-      // fetchPoolsProfileRequirement(),
-      currentBlockNumber ? Promise.resolve(currentBlockNumber) : simpleRpcProvider.getBlockNumber(),
+      fetchRewardsData(poolsConfig),
+      // currentBlockNumber ? Promise.resolve(currentBlockNumber) : simpleRpcProvider.getBlockNumber(),
     ])
 
-    const activePriceHelperLpsConfig = priceHelperLpsConfig.filter((priceHelperLpConfig) => {
-      return (
-        poolsConfig
-          .filter((pool) => pool.earningToken.map((token) => token.address.toLowerCase() === priceHelperLpConfig.token.address.toLowerCase()))
-          .filter((pool) => {
-            // const poolBlockLimit = blockLimits.find((blockLimit) => blockLimit.sousId === pool.sousId)
-            // if (poolBlockLimit) {
-            //   return poolBlockLimit.endBlock > currentBlock
-            // }
-            return false
-          }).length > 0
-      )
-    })
-    const poolsWithDifferentFarmToken =
-      activePriceHelperLpsConfig.length > 0 ? await fetchFarms(priceHelperLpsConfig) : []
-    const farmsData = getState().farms.data
-    const bnbBusdFarm =
-      activePriceHelperLpsConfig.length > 0
-        ? farmsData.find((farm) => farm.token.symbol === 'BUSD' && farm.quoteToken.symbol === 'WBNB')
-        : null
-    const farmsWithPricesOfDifferentTokenPools = bnbBusdFarm
-      ? getFarmsPrices([bnbBusdFarm, ...poolsWithDifferentFarmToken])
-      : []
+    // const activePriceHelperLpsConfig = priceHelperLpsConfig.filter((priceHelperLpConfig) => {
+    //   return (
+    //     poolsConfig
+    //       .filter((pool) => pool.earningToken.map((token) => token.address.toLowerCase() === priceHelperLpConfig.token.address.toLowerCase())).length > 0
+    //       // .filter((pool) => {
+    //       //   // const poolBlockLimit = blockLimits.find((blockLimit) => blockLimit.sousId === pool.sousId)
+    //       //   // if (poolBlockLimit) {
+    //       //   //   return poolBlockLimit.endBlock > currentBlock
+    //       //   // }
+    //       //   return false
+    //       // })
+    //   )
+    // })
 
-    const prices = getTokenPricesFromFarm([...farmsData, ...farmsWithPricesOfDifferentTokenPools])
+    const poolsInformation = await fetchPools(poolsConfig)
+    const priceHelperInformation = await fetchPools(priceHelperLpsConfig)
 
-    const liveData = poolsConfig.map((pool) => {
+    console.log("poolsInformation", poolsInformation)
+    // const farmsData = getState().farms.data
+
+    // farmsData.forEach((farm) => {
+    //   console.log("tk", farm.quoteToken, farm.token)
+    // })
+
+    // const bnbBusdFarm = null
+      // activePriceHelperLpsConfig.length > 0
+      //   ? farmsData.find((farm) => farm.token.symbol === 'BUSD' && farm.quoteToken.symbol === 'WBNB')
+      //   : null
+    let poolsPrices = await getPoolsPrices(poolsInformation)
+    let priceZRG = await getPoolsPrices(priceHelperInformation)
+    console.log("poolsPrices", poolsPrices)
+    console.log("poolsPricesZRG", priceZRG)
+    console.log("rewardsData", rewardsData)
+
+    // const farmsWithPricesOfDifferentTokenPools = bnbBusdFarm
+    //   ? getFarmsPrices([bnbBusdFarm])
+    //   : []
+    // console.log("prices",farmsData, farmsWithPricesOfDifferentTokenPools);
+
+    // usd * reward / (1 - gamma) * resTR*2*usd
+
+  poolsPrices.map((poolPrice) => {  })
+    // const prices = getTokenPricesFromFarm([...farmsData, ...farmsWithPricesOfDifferentTokenPools])
+    const liveData = poolsPrices.map((pool, i) => {
       const blockLimit = blockLimits.find((entry) => entry.sousId === pool.sousId)
       const totalStaking = totalStakings.find((entry) => entry.sousId === pool.sousId)
-      // const isPoolEndBlockExceeded = currentBlock > 0 && blockLimit ? currentBlock > Number(blockLimit.endBlock) : false
-      const isPoolFinished = pool.isFinished 
-      // || isPoolEndBlockExceeded
+      // // const isPoolEndBlockExceeded = currentBlock > 0 && blockLimit ? currentBlock > Number(blockLimit.endBlock) : false
+      const isPoolFinished = pool.isFinished
+      // // || isPoolEndBlockExceeded
+      //
 
-      const stakingTokenAddress = pool.stakingToken.address ? pool.stakingToken.address.toLowerCase() : null
-      const stakingTokenPrice = stakingTokenAddress ? prices[stakingTokenAddress] : 0
 
-      const earningTokenAddress = pool.earningToken.map((token) => token.address ? token.address.toLowerCase() : null)
-      const earningTokenPrice = earningTokenAddress ? earningTokenAddress.map((token) => prices[token]) : [0,0]
+      // const stakingTokenAddress = pool.stakingToken.address ? pool.stakingToken.address.toLowerCase() : null
+      // const stakingTokenPrice = pool.price
+      //
+      // const earningTokenAddress = pool.earningToken.map((token) => token.address ? token.address.toLowerCase() : null)
+      // const earningTokenPrice = earningTokenAddress ? earningTokenAddress.map((token) => prices[token]) : [0,0]
+      console.log("values", pool.gamma, pool.quoteTokenBalanceLP, pool.ptb, pool.lpTotalSupply)
+
+      const stakingTokenPrice = (new BigNumber(Pylon.calculateLiquidity(pool.gamma, JSBI.BigInt(new BigNumber(pool.quoteTokenBalanceLP).toNumber()), pool.ptb, pool.lpTotalSupply).toString())
+          .multipliedBy(new BigNumber(pool.quotePrice))).dividedBy(new BigNumber(10).pow(18)).toNumber()
+
+      /// TODO: do the calculations here instead of in the component
+      // let earningTokenPerBlock = pool.earningToken.map((token,index) => {
+      //   if (token.symbol === "1SWAP") {
+      //     return new BigNumber(rewardsData[i][index].balance.toString()).dividedBy(new BigNumber(10).pow(18)).dividedBy(blockLimit.endBlock-blockLimit.startBlock).toNumber()
+      //   } else if (token.symbol === "MOVR") {
+      //     return new BigNumber(rewardsData[i][index].balance.toString()).dividedBy(new BigNumber(10).pow(18)).dividedBy(blockLimit.endBlock-blockLimit.startBlock).toNumber()
+      //   }else {
+      //     return 0
+      //   }
+      // })
+
+      let earningTokenPrice = pool.earningToken.map((token,index) => {
+        //TODO: Change for ZRG
+        if (token.symbol === "1SWAP") {
+          return new BigNumber(priceZRG[0].tokenPrice).times(rewardsData[i][index].balance.toString()).dividedBy(new BigNumber(10).pow(18)).dividedBy(blockLimit.endBlock-blockLimit.startBlock).toNumber()
+        } else if (token.symbol === "MOVR") {
+          return new BigNumber(priceZRG[0].quotePrice).times(rewardsData[i][index].balance.toString()).dividedBy(new BigNumber(10).pow(18)).dividedBy(blockLimit.endBlock-blockLimit.startBlock).toNumber()
+        }else {
+          return 0
+        }
+      })
+
+      console.log(earningTokenPrice);
+      console.log(stakingTokenPrice);
+      let liquidity  = String(BigNumber(pool.quotePrice.toString()).multipliedBy(pool.quoteTokenBalanceLP).multipliedBy(2).dividedBy(new BigNumber(10).pow(18)).toString())
       const apr = !isPoolFinished
         ? getPoolApr(
             stakingTokenPrice,
             earningTokenPrice,
-            getBalanceNumber(new BigNumber(totalStaking.totalStaked), pool.stakingToken.decimals),
-            // parseFloat(pool.tokenPerBlock),
-            1,
           )
         : 0
-
-      const profileRequirement = profileRequirements[pool.sousId] ? profileRequirements[pool.sousId] : undefined
-
       return {
         ...blockLimit,
         ...totalStaking,
-        profileRequirement,
-        stakingTokenPrice,
-        earningTokenPrice,
+        // earningTokenPerBlock,
+        // stakingTokenPrice,
+        // earningTokenPrice,
+        liquidity ,
         apr,
         isFinished: isPoolFinished,
       }

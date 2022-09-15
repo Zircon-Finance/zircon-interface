@@ -66,10 +66,12 @@ interface CorePoolProps {
   startBlock?: number
   endBlock?: number
   apr?: number
+  liquidity?: number
   rawApr?: number
   stakingTokenPrice?: number
   earningTokenPrice?: number
   vaultKey?: VaultKey
+  earningTokenPerBlock?: number[]
 }
 
 export interface DeserializedPool extends DeserializedPoolConfig, CorePoolProps {
@@ -86,6 +88,7 @@ export interface DeserializedPool extends DeserializedPoolConfig, CorePoolProps 
     stakedBalance: BigNumber
     pendingReward: BigNumber
   }
+  tokenPriceVsQuote?: SerializedBigNumber
 }
 
 export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
@@ -102,6 +105,13 @@ export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
     stakedBalance: SerializedBigNumber
     pendingReward: SerializedBigNumber
   }
+  tokenPriceVsQuote?: SerializedBigNumber
+  gamma?: SerializedBigNumber
+  ptb?: SerializedBigNumber
+  quoteTokenBalanceLP?: SerializedBigNumber
+  lpTotalSupply?: SerializedBigNumber
+  quotePrice?: SerializedBigNumber
+  tokenPrice?: SerializedBigNumber
 }
 
 // Slices states

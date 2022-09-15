@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom'
 import { Flex } from 'rebass'
 import { useWindowDimensions } from '../../../../hooks'
 import { usePairLiquidity } from '../../../../state/pools/hooks'
+import BigNumberJs from "bignumber.js";
 
 
 export interface LiquidityProps {
@@ -72,7 +73,7 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
   const theme = useTheme()
   const { width } = useWindowDimensions()
   const [hoverPlus, setHoverPlus] = React.useState(false)
-  const pylonLiquidity = usePairLiquidity(farm.token1, farm.token2)
+  const pylonLiquidity = new BigNumberJs(farm.liquidity).toFixed(2)
   const pairLiquidity = usePairLiquidity(farm.token1, farm.token2)
   const plusContent = (
       <DialogContainer show={hoverPlus}>
@@ -88,7 +89,7 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
         <Text fontSize="13px" color={theme.text1}>
           {farm.isClassic
             ? pairLiquidity
-            : pylonLiquidity}
+            : pylonLiquidity} USD
         </Text>
         {// liquidity.gt(0) &&
         hovered && width >= 1100 && (

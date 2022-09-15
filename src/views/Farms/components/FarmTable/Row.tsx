@@ -214,7 +214,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   useStartBlock(details.sousId).then((block?) => setStartBlock(block))
   useEndBlock(details.sousId).then((block?) => setEndBlock(block))
   useCurrentBlock().then((block?) => setCurrentBlock(block))
-
+  //TODO: this has to be only one component PD and shared between Row and this
   const RewardPerBlock = ({ token }: { token: Token }) => {
     const { pool } = usePool(details.sousId)
     const balance = useTokenBalance(pool.vaultAddress, token)
@@ -222,7 +222,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     // console.log("current", currentBlock)
     // console.log("start", startBlock)
     // console.log("end", endBlock)
-    const rewardBlocksPerDay = (parseFloat((balance?.toFixed(6)))/blocksLeft)*6600
+    const rewardBlocksPerDay = (parseFloat((balance?.toFixed(6)))/blocksLeft)*6400*30
     return(
         <Text fontSize='13px' fontWeight={500} color={'#4e7455'}>
           {`~ ${rewardBlocksPerDay.toFixed(4)}  ${token.symbol}`}
@@ -345,7 +345,6 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                       <CellLayout hovered={hovered} label={hovered && t(tableSchema[columnIndex].label)}>
                         <Flex width={'100%'} justifyContent={'space-between'}>
                         {createElement(cells[key], { ...props[key] })}
-
                         </Flex>
                       </CellLayout>
                     </CellInner>
@@ -379,15 +378,14 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                         </Text>
                         ) : (
                         <Flex flexDirection={'column'}>
-                          <Text fontSize='13px' fontWeight={500} color={4e7455}>
-                            {'Tokens rewarded per day:'}
+                          <Text fontSize='13px' fontWeight={500} color={4e7455} marginBottom={2}>
+                            {'Monthly Rewards:'}
                           </Text>
                           <>
                             {details.earningToken.map((token) => <RewardPerBlock token={token} />)}
                           </>
                         </Flex>
                         )}
-
                         </>
                       </Flex>
                   )}

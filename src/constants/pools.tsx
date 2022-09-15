@@ -28,6 +28,23 @@ const pools: SerializedPoolConfig[] = [
     sortOrder: 1,
     isFinished: false,
   },
+  {
+    sousId: 2,
+    token1: new Token(MOONRIVER, '0x98878B06940aE243284CA214f92Bb71a2b032B8A', 18, 'MOVR', 'MoonRiver'),
+    token2: new Token(MOONRIVER, '0xE3F5a90F9cb311505cd691a46596599aA1A0AD7D', 18, 'USDC', 'USD Coin'),
+    isClassic: false,
+    isAnchor: false,
+    earningToken: [new Token(MOONRIVER, '0x3516a7588C2E6FFA66C9507eF51853eb85d76e5B', 18, '1SWAP', '1Swap Token')],
+    stakingToken: new Token(MOONRIVER, '0xa22451B59d48eB0Ab6A7350A68c2Ceb542FceEd8', 18, 'ZPT', 'Zircon Pool Token'),
+    contractAddress: '0x7e6F037885104b79E7AD6D48ec69E9d29C64C1Df',
+    vaultAddress: '0x99d2129d801055BCAfC4D76Fb8Eeb4738325c013',
+    lpAddress: "0x1C26C0765a6F36Dfd5C02378790c7d46FDccE695",
+    pylonAddress: "0xbF9a6b4FBb4cbeBe70b29A05aab85da197509B14",
+    poolCategory: PoolCategory.CORE,
+    harvest: true,
+    sortOrder: 1,
+    isFinished: false,
+  },
 ]
 
 // known finished pools

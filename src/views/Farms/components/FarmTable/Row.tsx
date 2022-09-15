@@ -36,6 +36,7 @@ import {useDerivedPylonMintInfo} from "../../../../state/mint/pylonHooks";
 import BigNumberJs from "bignumber.js";
 import {useGamma} from "../../../../data/PylonData";
 import CapacityIndicatorSmall from "../../../../components/CapacityIndicatorSmall";
+import { fetchPoolsUserDataAsync } from '../../../../state/pools'
 // import { useFarmUser } from '../../../../state/farms/hooks'
 
 export interface RowProps {
@@ -267,6 +268,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
         },
         receipt.transactionHash
       )
+      dispatch(fetchPoolsUserDataAsync(account))
       dispatch(fetchFarmUserDataAsync({ account, pids: [details.sousId] }))
     }
   },

@@ -215,7 +215,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
           </Flex>
         </SpaceBetween>
         ) : (
-                <Flex flexDirection={'row'} style={{marginBottom: width <= 500 && '20px'}}>
+                <Flex flexDirection={'row'} style={{marginBottom: width <= 500 ? '20px' : earningToken.length === 1 && '17px'}}>
                   <Text fontSize='13px' fontWeight={500} color={4e7455} style={{width: '45%'}}>
                     {'Monthly Rewards:'}
                   </Text>

@@ -15,7 +15,7 @@ import { ButtonPinkGamma } from '../../../../components/Button'
 import { useAddPopup, useWalletModalToggle } from '../../../../state/application/hooks'
 import { useTransactionAdder } from '../../../../state/transactions/hooks'
 import { DeserializedPool } from '../../../../state/types'
-import { updateUserAllowance } from '../../../../state/pools'
+import { fetchPoolsUserDataAsync, updateUserAllowance } from '../../../../state/pools'
 import { useCallWithGasPrice } from '../../../../hooks/useCallWithGasPrice'
 import { usePools } from '../../../../state/pools/hooks'
 
@@ -94,6 +94,7 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
         },
         receipt.transactionHash
       )
+      dispatch(fetchPoolsUserDataAsync(account))
       dispatch(fetchFarmUserDataAsync({ account, pids: [sousId] }))
       dispatch(updateUserAllowance({ sousId, account }))
     }

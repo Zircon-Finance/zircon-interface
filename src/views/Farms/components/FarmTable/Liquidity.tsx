@@ -107,6 +107,7 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
                   width: "29px",
                   height: "28px",
                   borderRadius: "100%",
+                  marginLeft: '10px',
                 }}
               >
                 <Flex

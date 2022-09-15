@@ -89,12 +89,13 @@ export function PylonClassicTab({ active }: { active: "PYLON" | "CLASSIC" }) {
         {t("PYLON")}
       </StyledNavLink>
       <StyledNavLink
+        style={{cursor: 'not-allowed'}}
         id={`classic-select-tab`}
         to={"#"}
-        onClick={() => {
-          setuserFarmsFilterPylonClassic(FarmFilter.CLASSIC);
-          setuserFarmsFilterAnchorFloat(FarmFilterAnchorFloat.ALL);
-        }}
+        // onClick={() => {
+        //   setuserFarmsFilterPylonClassic(FarmFilter.CLASSIC);
+        //   setuserFarmsFilterAnchorFloat(FarmFilterAnchorFloat.ALL);
+        // }}
         isActive={() => filter === FarmFilter.CLASSIC}
       >
         {t("CLASSIC")}

@@ -42,7 +42,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
 
 
     const provider = account && new providers.Web3Provider(window.ethereum)
-    const airdrop_address = '0xf7EEE02817C1302EEcC93BCA77e1239A513EC300'
+    const airdrop_address = '0x274b8752ca123712D9B966e53673092bb4d10311'
     const abi = airdrop_abi
 
     // call contract airdrop

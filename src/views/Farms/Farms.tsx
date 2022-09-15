@@ -32,6 +32,7 @@ import { fetchPoolsUserDataAsync } from '../../state/pools'
 import { DeserializedPool, DeserializedPoolVault } from '../../state/types'
 import orderBy from 'lodash/orderBy'
 import { formatUnits } from 'ethers/lib/utils'
+import {getPoolAprAddress } from '../../utils/apr'
 
 const FlexLayout = styled.div`
   display: flex;
@@ -241,7 +242,7 @@ const Farms: React.FC = ({ children }) => {
       switch (sortOption) {
         case 'apr':
           // Ternary is needed to prevent pools without APR (like MIX) getting top spot
-          return orderBy(poolsToSort, (pool: DeserializedPool) => pool.apr ?? 0)
+          return orderBy(poolsToSort, (pool: DeserializedPool) => getPoolAprAddress(pool.contractAddress) ?? 0)
         case 'earned':
           return orderBy(
             poolsToSort,
@@ -447,12 +448,13 @@ const Farms: React.FC = ({ children }) => {
                 <ViewModeTabs active={viewMode} />
               </TableData>
               {viewMode === ViewMode.TABLE && width > 992 ? options.map((option) => (
-                <TableData key={option} style={{cursor: 'pointer'}} onClick={() =>
+                <TableData key={option} style={{cursor: (option === 'Earned' || option === 'Staked') && 'pointer'}} onClick={() => {
+                (option === 'Earned' || option === 'Staked') && (
                 sortOption === option.toLowerCase() ? setSortOption('hot') :
-                setSortOption(option.toLowerCase())}>
+                setSortOption(option.toLowerCase()))}}>
                   <PinkArrows style={{display: 'flex', alignItems: 'center'}}>
                     <p style={{fontSize: '13px', color: !darkMode ? theme.text1 : theme.meatPink, fontWeight: 500, margin: 0}}>{option}</p>
-                    <FarmRepeatIcon />
+                    {(option === 'Earned' || option === 'Staked') && <FarmRepeatIcon />}
                   </PinkArrows>
                   {sortOption === option.toLowerCase() ? <SelectedOptionDiv /> : null}
                 </TableData>)) :
@@ -470,20 +472,8 @@ const Farms: React.FC = ({ children }) => {
                           value: 'apr',
                         },
                         {
-                          label: t('Multiplier'),
-                          value: 'multiplier',
-                        },
-                        {
                           label: t('Earned'),
                           value: 'earned',
-                        },
-                        {
-                          label: t('Liquidity'),
-                          value: 'liquidity',
-                        },
-                        {
-                          label: t('Latest'),
-                          value: 'latest',
                         },
                       ]}
                       onOptionChange={(option) => setSortOption(option.value)}

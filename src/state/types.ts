@@ -69,9 +69,11 @@ interface CorePoolProps {
   liquidity?: number
   rawApr?: number
   stakingTokenPrice?: number
-  earningTokenPrice?: number
+  earningTokenPrice?: number[]
   vaultKey?: VaultKey
   earningTokenPerBlock?: number[]
+  rewardsData?: string[],
+  vTotalSupply?: number,
 }
 
 export interface DeserializedPool extends DeserializedPoolConfig, CorePoolProps {
@@ -114,6 +116,7 @@ export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
   tokenPrice?: SerializedBigNumber
   lpTotalInQuoteToken?: SerializedBigNumber
   quoteTokenDecimals?: SerializedBigNumber
+  vaultTotalSupply?: SerializedBigNumber
 }
 
 // Slices states

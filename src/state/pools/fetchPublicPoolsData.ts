@@ -48,6 +48,10 @@ const fetchPoolCalls = (pool: SerializedPool) => {
         {
             address: stakingToken.address,
             name: 'totalSupply'
+        },
+        {
+            address: pool.vaultAddress,
+            name: "totalSupply"
         }
     ]
 

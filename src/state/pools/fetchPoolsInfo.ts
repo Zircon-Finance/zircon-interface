@@ -9,7 +9,7 @@ const fetchPools = async (poolsToFetch: SerializedPoolConfig[]): Promise<Seriali
     const poolResult = await fetchPublicPoolData(poolsToFetch)
     const gammas = await fetchGammas(poolsToFetch)
     return poolsToFetch.map((pool, index) => {
-        const [tokenBalanceLP, quoteTokenBalanceLP, stakedTokenBalanceMC, lpTotalSupply, tokenDecimals, quoteTokenDecimals, ptb, stakedTotalSupply] =
+        const [tokenBalanceLP, quoteTokenBalanceLP, stakedTokenBalanceMC, lpTotalSupply, tokenDecimals, quoteTokenDecimals, ptb, stakedTotalSupply, vaultTotalSupply] =
             poolResult[index]
         const [gamma] = gammas[index]
         // const [info, totalAllocPoint] = masterChefResult[index]
@@ -54,6 +54,7 @@ const fetchPools = async (poolsToFetch: SerializedPoolConfig[]): Promise<Seriali
             gamma: BigNumber(gamma).toJSON(),
             ptb: BigNumber(ptb).toJSON(),
             quoteTokenBalanceLP: BigNumber(quoteTokenBalanceLP).toJSON(),
+            vaultTotalSupply: BigNumber(vaultTotalSupply).toJSON(),
             // poolWeight: poolWeight.toJSON(),
             // multiplier: `${allocPoint.div(100).toString()}X`,
         }

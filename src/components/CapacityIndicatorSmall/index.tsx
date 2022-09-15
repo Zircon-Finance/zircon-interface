@@ -32,7 +32,7 @@ const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan
       hoverPage === 'farmAction' ? {bottom: '0px', left: '0px'} :
       hoverPage === 'farmActionMobile' ? {bottom: '50%', left: '20%'} :
       hoverPage === 'tableCard' ? {bottom: '20%', left: '20%'} :
-      hoverPage === 'positionCard' && {bottom: '50px', left: width >= 450 ? '70%' : '120px'}
+      hoverPage === 'positionCard' && {display: 'none', bottom: '50px', left: width >= 450 ? '70%' : '120px'}
       } show={hoverIndicator}>
         <Text fontSize='13px' fontWeight={500} color={theme.text1}>
             {isFloat ? gamma < 0.4 ? 'The vault has zero or negative impermanent loss to encourage new liquidity.' :

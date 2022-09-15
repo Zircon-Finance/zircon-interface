@@ -824,7 +824,7 @@ export default function AddLiquidityPro({
   // console.log("fee indicator", currencies[Field.CURRENCY_B])
   return (
       <>
-        {(pylonState === PylonState.LOADING || !account || currencyA === null || currencyB === null) &&  (
+        {(pylonState === PylonState.LOADING || account === '0' || currencyA === null || currencyB === null) &&  (
             <LottieContainer style={{top: 0}}><Lottie
                 style={{width: "100px"}}
                 options={{

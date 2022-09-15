@@ -91,6 +91,8 @@ interface PoolConfigBaseProps {
   sousId: number
   contractAddress: string
   vaultAddress: string
+  lpAddress: string
+  pylonAddress: string
   poolCategory: PoolCategory
   sortOrder?: number
   harvest?: boolean
@@ -99,6 +101,7 @@ interface PoolConfigBaseProps {
   deployedBlockNumber?: number
   version?: number
   isAnchor? : boolean
+
 }
 
 export interface SerializedPoolConfig extends PoolConfigBaseProps {

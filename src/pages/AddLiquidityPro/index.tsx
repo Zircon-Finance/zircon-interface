@@ -1349,8 +1349,8 @@ export default function AddLiquidityPro({
                                           fontWeight={400}
                                       >
                                         {error ? 'Add & Farm' :
-                                        (farmIsApproved() ?
-                                            "Add & Farm" : "Enable farm contract")}
+                                            (farmIsApproved() ?
+                                                "Add & Farm" : "Enable farm contract")}
                                       </Text>
                                       {(farmIsApproved() || error) &&
                                       <Text

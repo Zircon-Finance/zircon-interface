@@ -2,8 +2,9 @@ import erc20 from '../../constants/abis/erc20.json'
 import chunk from 'lodash/chunk'
 import { getMasterChefAddress } from '../../utils/addressHelpers'
 import multicall from '../../utils/multicall'
-import { SerializedFarm } from '../types'
-import { SerializedFarmConfig } from '../../constants/types'
+import {SerializedFarm} from '../types'
+import {SerializedFarmConfig} from '../../constants/types'
+
 
 const fetchFarmCalls = (farm: SerializedFarm) => {
   const { lpAddress, token, quoteToken } = farm

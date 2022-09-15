@@ -359,7 +359,6 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                       <CellLayout hovered={hovered} label={hovered && t(tableSchema[columnIndex].label)}>
                         <Flex width={'100%'} justifyContent={'space-between'}>
                         {createElement(cells[key], { ...props[key] })}
-
                         </Flex>
                       </CellLayout>
                     </CellInner>

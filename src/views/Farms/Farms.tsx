@@ -5,7 +5,6 @@ import BigNumber from 'bignumber.js'
 import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber'
 import { useWeb3React } from '@web3-react/core'
 import { RowType, Toggle, Text, Flex } from '@pancakeswap/uikit'
-import lpAprs from '../../constants/lpAprs.json'
 import styled, { useTheme } from 'styled-components'
 import Page from '../../components/Layout/Page'
 import { usePriceCakeBusd } from '../../state/farms/hooks'
@@ -33,7 +32,6 @@ import { fetchPoolsUserDataAsync } from '../../state/pools'
 import { DeserializedPool, DeserializedPoolVault } from '../../state/types'
 import orderBy from 'lodash/orderBy'
 import { formatUnits } from 'ethers/lib/utils'
-import { getPoolAprAddress } from '../../utils/apr'
 
 const FlexLayout = styled.div`
   display: flex;
@@ -242,8 +240,7 @@ const Farms: React.FC = ({ children }) => {
       switch (sortOption) {
         case 'apr':
           // Ternary is needed to prevent pools without APR (like MIX) getting top spot
-          return orderBy(poolsToSort, (pool: DeserializedPool) =>
-          lpAprs[pool.contractAddress] || 0, 'desc')
+          return orderBy(poolsToSort, (pool: DeserializedPool) => pool.apr ?? 0)
         case 'earned':
           return orderBy(
             poolsToSort,
@@ -329,7 +326,7 @@ const Farms: React.FC = ({ children }) => {
 
     const row: RowProps = {
       apr: {
-        value: getPoolAprAddress(farm.contractAddress),
+        value: Math.floor(farm.apr).toString(),
         // getDisplayApr(farm.apr, farm.lpRewardsApr),
         pid: farm.sousId,
         lpLabel,
@@ -356,7 +353,7 @@ const Farms: React.FC = ({ children }) => {
         setHovered: () => {},
       },
       liquidity: {
-        liquidity: farm.totalStaked,
+        liquidity: BigNumber(farm.liquidity),
         hovered: false,
         setHovered: () => {},
         farm: farm,
@@ -390,6 +387,11 @@ const Farms: React.FC = ({ children }) => {
               return 0
             case 'earned':
               return a.original.earned.earnings - b.original.earned.earnings
+            // case 'liquidity':
+            //   if (a.original.liquidity.value && b.original.liquidity.) {
+            //     return Number(a.original.liquidity.value) - Number(b.original.liquidity.value)
+            //   }
+            //   return 0
             default:
               return 1
           }

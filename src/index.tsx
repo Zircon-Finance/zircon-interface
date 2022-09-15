@@ -24,7 +24,7 @@ if ('ethereum' in window) {
   ;(window.ethereum as any).autoRefreshOnNetworkChange = false
 }
 
-const GOOGLE_ANALYTICS_ID: string | undefined = "G-S0LGQYSFSH"
+const GOOGLE_ANALYTICS_ID: string | undefined = "G-TB28CNN5DD"
 if (typeof GOOGLE_ANALYTICS_ID === 'string') {
   ReactGA.initialize(GOOGLE_ANALYTICS_ID)
   ReactGA.set({

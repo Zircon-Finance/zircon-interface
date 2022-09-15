@@ -170,8 +170,7 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
 
       console.log("rewardsData", rewardsData)
       let earningTokenPrice = pool.earningToken.map((token,index) => {
-        //TODO: Change for ZRG
-        if (token.symbol === "1SWAP") {
+        if (token.symbol === "ZRG") {
           console.log("tokenprice", priceZRG[0].tokenPrice)
           return new BigNumber(priceZRG[0].tokenPrice).times(rewardsData[i + index][0]?.balance?.toString()).dividedBy(new BigNumber(10).pow(18)).dividedBy(blockLimit.endBlock-blockLimit.startBlock).toNumber()
         } else if (token.symbol === "MOVR") {
@@ -181,9 +180,6 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
           return 0
         }
       })
-
-      console.log("earningTokenPrice", earningTokenPrice);
-      console.log(stakingTokenPrice);
       let liquidity  = String(BigNumber(pool.quotePrice.toString()).multipliedBy(pool.quoteTokenBalanceLP).multipliedBy(2).dividedBy(new BigNumber(10).pow(18)).toString())
       const apr = !isPoolFinished
           ? getPoolApr(

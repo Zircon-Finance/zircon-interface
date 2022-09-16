@@ -1,9 +1,10 @@
 // the DCTDEX Default token list lives here
 export const DEFAULT_TOKEN_LIST_URL =
-  'https://gist.githubusercontent.com/VittoriDavide/cb4077e692c4e6236c81b5f100f396bd/raw/07b53f401123be284afab20a98a07ceacfcde799/tokenlist.json'
+  'https://gist.githubusercontent.com/ReshyResh/d81058e798bd2134275ff55daf614a7c/raw/45b4fb75a8d85a66dce776744a34a48ffa2c6722/tokenlist.json'
 
 export const INFO_CLIENT = 'https://api.thegraph.com/subgraphs/name/reshyresh/zircon-gamma'
 export const BLOCKS_CLIENT = 'https://api.thegraph.com/subgraphs/name/rebase-agency/moonriver-blocks'
+export const PRICE_API = 'https://api.binance.com/api/v3/ticker/price?symbol='
 
 export const DEFAULT_LIST_OF_LISTS: string[] = [
   DEFAULT_TOKEN_LIST_URL

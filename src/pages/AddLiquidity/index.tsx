@@ -365,6 +365,7 @@ export default function AddLiquidity({
               currency={currencies[Field.CURRENCY_A]}
               id="add-liquidity-input-tokena"
               showCommonBases
+              tokens={[currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B]]}
             />
             <ColumnCenter>
               <Plus size="30" color='gray' />
@@ -380,6 +381,7 @@ export default function AddLiquidity({
               currency={currencies[Field.CURRENCY_B]}
               id="add-liquidity-input-tokenb"
               showCommonBases
+              tokens={[currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B]]}
             />
 
           </AutoColumn>

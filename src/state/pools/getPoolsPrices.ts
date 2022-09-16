@@ -93,7 +93,7 @@ const getPoolsPrices = async (pools: SerializedPool[]) => {
             return {
                 ...pool,
                 quotePrice: String(responses[index].price.toString()),
-                tokenPrice: String(BigNumber(responses[index].price).dividedBy(pool.tokenPriceVsQuote).toString()),
+                tokenPrice: String(BigNumber(responses[index].price).multipliedBy(pool.tokenPriceVsQuote).toString()),
             }
         })
     }catch (e) {

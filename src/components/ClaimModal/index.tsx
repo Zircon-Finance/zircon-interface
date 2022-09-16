@@ -126,7 +126,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
                 {dataUser.isClaimed ? t('Total Claimed ZRG') : t('Total Claimable ZRG')}</Text>
             <AutoColumn gap='5px' style={{padding: '20px'}}>
                 <Text fontSize={'13px'} color={theme.text1} textAlign={'center'}>{'ZRG token'}</Text>
-                <Text fontSize={'13px'} color={theme.text1} textAlign={'center'}>{'This is a test token that operates in Moonbase Alpha.'}</Text>
+                <Text fontSize={'13px'} color={theme.text1} textAlign={'center'}>{'This is the official airdrop for ZRG Token operating in Moonriver Network.'}</Text>
             </AutoColumn>
             <ButtonOutlined style={{ alignSelf: 'center', background: theme.poolPinkButton, width: '100%'}}
                             disabled={(account && !dataUser?.amount) || (account && dataUser.isClaimed)}

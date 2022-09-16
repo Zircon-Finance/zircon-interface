@@ -2,8 +2,8 @@ import { useCallback } from 'react'
 import { DEFAULT_GAS_LIMIT,
   //  stakeFarm
    } from '../../../utils/calls'
-import { 
-  // useMasterchef, 
+import {
+  // useMasterchef,
   useSousChef } from '../../../hooks/useContract'
 import BigNumber from 'bignumber.js'
 import getGasPrice from '../../../utils/getGasPrice'
@@ -17,7 +17,8 @@ const options = {
 
 const sousStake = async (sousChefContract, amount, decimals = 18) => {
   const gasPrice = getGasPrice()
-  return sousChefContract.deposit(new BigNumber(amount).times(BIG_TEN.pow(decimals)).toString(), {
+  console.log(new BigNumber(amount).times(BIG_TEN.pow(decimals)).toString(10))
+  return sousChefContract.deposit(new BigNumber(amount).times(BIG_TEN.pow(decimals)).toString(10), {
     ...options,
     gasPrice,
   })

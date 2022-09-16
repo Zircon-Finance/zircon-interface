@@ -106,7 +106,7 @@ function TransactionSubmittedContent({
             {chainId && hash && (
                 <ExternalLink href={getEtherscanLink(chainId, hash, 'transaction')}>
                   <Text fontWeight={400} fontSize={14} color={'#9082A2'}>
-                    View on Moonbeam explorer ↗
+                    View on Moonriver explorer ↗
                   </Text>
                 </ExternalLink>
             )}

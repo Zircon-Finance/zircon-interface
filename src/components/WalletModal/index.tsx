@@ -392,7 +392,7 @@ export default function WalletModal({
               {connector === injected && <ButtonPrimary mt={'30px'} onClick={() => connectNet('moonriver')} >{'Click to connect'}</ButtonPrimary>}
               </>
             ) : (
-              'Error connecting. Please make sure you are connected to the appropriate Moonbase Alpha network.'
+              'Error connecting. Please make sure you are connected to the appropriate Moonriver Alpha network.'
             )}
           </ContentWrapper>
         </UpperSection>

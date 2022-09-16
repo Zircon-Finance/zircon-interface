@@ -289,6 +289,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   ])
 
   const handleStake = async (amount: string, token: Token) => {
+      console.log("amount", amount)
     const receipt = await fetchWithCatchTxError(() => {
       return onStake(amount, token.decimals).then((response) => {
         addTransaction(response, {
@@ -357,7 +358,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                         <Flex flexWrap='wrap'>
                           <BadgeSmall
                               style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', display: 'flex', alignItems: 'center', marginRight: '5px'}}>
-                            <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{!isClassic && token1.symbol} </span>{isClassic ? 'CLASSIC' :!isAnchor ? 'FLOAT' : 'ANCHOR'}
+                            <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{!isClassic && isAnchor ? token2.symbol : token1.symbol} </span>{isClassic ? 'CLASSIC' :!isAnchor ? 'FLOAT' : 'STABLE'}
                           </BadgeSmall>
                           <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{`${token1.symbol}/${token2.symbol}`}</Text>
                         </Flex>
@@ -382,7 +383,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                           <Flex flexWrap='wrap'>
                             <BadgeSmall
                                 style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', display: 'flex', alignItems: 'center', marginRight: '5px'}}>
-                              <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{!isClassic && token1.symbol} </span>{isClassic ? 'CLASSIC' :!isAnchor ? 'FLOAT' : 'ANCHOR'}
+                              <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{!isClassic && isAnchor ? token2.symbol : token1.symbol} </span>{isClassic ? 'CLASSIC' :!isAnchor ? 'FLOAT' : 'STABLE'}
                             </BadgeSmall>
                             <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{`${token1.symbol}/${token2.symbol}`}</Text>                    </Flex>
                         </>

@@ -117,6 +117,7 @@ export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
   lpTotalInQuoteToken?: SerializedBigNumber
   quoteTokenDecimals?: SerializedBigNumber
   vaultTotalSupply?: SerializedBigNumber
+  staked?: SerializedBigNumber
 }
 
 // Slices states

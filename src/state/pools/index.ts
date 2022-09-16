@@ -34,8 +34,10 @@ import multicall from '../../utils/multicall'
 // import { getPoolApr } from '../../utils/apr'
 import fetchPools from "./fetchPoolsInfo";
 import getPoolsPrices from "./getPoolsPrices";
+// import {fetchRewardsData} from "./fetchRewardsData";
+import {getPoolApr} from "../../utils/apr";
 import {fetchRewardsData} from "./fetchRewardsData";
-import {JSBI, Pylon} from "zircon-sdk";
+// import {JSBI, Pylon} from "zircon-sdk";
 // import {getPoolApr} from "../../utils/apr";
 
 export const initialPoolVaultState = Object.freeze({
@@ -120,16 +122,15 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
     //       // })
     //   )
     // })
-    let rewardsData = await fetchRewardsData(poolsConfig)
-
+    const rewardsData = []
+    for (let i = 0; i < poolsConfig.length; i++) {
+      rewardsData[i] = await fetchRewardsData(poolsConfig[i])
+    }
     const poolsInformation = await fetchPools(poolsConfig)
     let poolsPrices = await getPoolsPrices(poolsInformation)
 
     const priceHelperInformation = await fetchPools(priceHelperLpsConfig)
     let priceZRG = await getPoolsPrices(priceHelperInformation)
-    console.log("poolsPrices", poolsPrices)
-    console.log("poolsPricesZRG", priceZRG)
-    console.log("rewardsData", rewardsData)
 
     // const farmsWithPricesOfDifferentTokenPools = bnbBusdFarm
     //   ? getFarmsPrices([bnbBusdFarm])
@@ -151,11 +152,14 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
       //
       // const earningTokenAddress = pool.earningToken.map((token) => token.address ? token.address.toLowerCase() : null)
       // const earningTokenPrice = earningTokenAddress ? earningTokenAddress.map((token) => prices[token]) : [0,0]
-      console.log("values::", pool.lpTotalInQuoteToken, pool.gamma, pool.ptb, pool.lpTotalSupply)
-      let liquidityBySDK = Pylon.calculateLiquidity(pool.gamma, JSBI.BigInt(new BigNumber(pool.lpTotalInQuoteToken).toNumber()), pool.ptb, pool.lpTotalSupply)
-      console.log("liquidityBySDK", liquidityBySDK.toString())
-      const stakingTokenPrice = (new BigNumber(liquidityBySDK.toString()).multipliedBy(new BigNumber(pool.quotePrice)).dividedBy(BIG_TEN.pow(pool.quoteTokenDecimals))).toNumber()
-      console.log("stakingTokenPrice", stakingTokenPrice.toString())
+      // return JSBI.divide(JSBI.multiply(JSBI.subtract(BASE, parseBigintIsh(gamme)), JSBI.divide(JSBI.multiply(JSBI.multiply(parseBigintIsh(reserve), TWO), parseBigintIsh(ptb)), parseBigintIsh(ptt))), BASE);
+
+      // console.log("values::", pool.lpTotalInQuoteToken, pool.gamma, new BigNumber(pool.ptb.toString()), pool.lpTotalSupply)
+      // let liquidityBySDK = Pylon.calculateLiquidity(pool.gamma, JSBI.BigInt(new BigNumber(pool.lpTotalInQuoteToken.toString()).toString()),
+      //     JSBI.BigInt(new BigNumber(pool.ptb.toString()).toString()), JSBI.BigInt(new BigNumber(pool.lpTotalSupply.toString()).toString()))
+
+      // console.log("liquidityBySDK", liquidityBySDK.toString())
+      const stakingTokenPrice = new BigNumber(pool.staked.toString()).multipliedBy(new BigNumber(pool.quotePrice)).toNumber()
 
       /// TODO: do the calculations here instead of in the component
       // let earningTokenPerBlock = pool.earningToken.map((token,index) => {
@@ -168,40 +172,35 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
       //   }
       // })
 
-      console.log("rewardsData", rewardsData)
+      // console.log("rewardsData", rewardsData)
       let earningTokenPrice = pool.earningToken.map((token,index) => {
         if (token.symbol === "ZRG") {
-          console.log("rewardsData", rewardsData)
-          return new BigNumber(priceZRG[0]?.tokenPrice).times(rewardsData[i][index]?.balance?.toString()).dividedBy(new BigNumber(10).pow(18)).dividedBy(blockLimit?.endBlock-blockLimit?.startBlock).toNumber()
+          return new BigNumber(priceZRG[0]?.tokenPrice).times(rewardsData[i][0][index]?.balance?.toString()).dividedBy(new BigNumber(10).pow(18)).dividedBy(blockLimit?.endBlock-blockLimit?.startBlock).toNumber()
         } else if (token.symbol === "MOVR") {
-          console.log("quotePrice", priceZRG[0].quotePrice)
-          return new BigNumber(priceZRG[0]?.quotePrice).times(rewardsData[i][index]?.balance?.toString()).dividedBy(new BigNumber(10).pow(18)).dividedBy(blockLimit?.endBlock-blockLimit?.startBlock).toNumber()
+          return new BigNumber(priceZRG[0]?.quotePrice).times(rewardsData[i][0][index]?.balance?.toString()).dividedBy(new BigNumber(10).pow(18)).dividedBy(blockLimit?.endBlock-blockLimit?.startBlock).toNumber()
         }else {
           return 0
         }
       })
-      let liquidity  = String(BigNumber(pool.quotePrice.toString()).multipliedBy(pool.quoteTokenBalanceLP).multipliedBy(2).dividedBy(new BigNumber(10).pow(18)).toString())
-      console.log("liquidity", liquidity)
-      const apr = 0
-      // !isPoolFinished
-      //     ? getPoolApr(
-      //         stakingTokenPrice,
-      //         earningTokenPrice,
-      //     )
-      //     : 0
-      console.log("apr", apr)
+      let liquidity  = String(BigNumber(pool.quotePrice.toString()).multipliedBy(pool.quoteTokenBalanceLP).multipliedBy(2).dividedBy(BIG_TEN.pow(pool.quoteTokenDecimals)).toString())
+
+      const apr = !isPoolFinished
+          ? getPoolApr(
+              stakingTokenPrice,
+              earningTokenPrice,
+          )
+          : 0
       return {
         ...blockLimit,
         ...totalStaking,
-        earningTokenPrice: earningTokenPrice.slice(i, i + pool.earningToken.length),
-        rewardsData: rewardsData.slice(i, i + pool.earningToken.length).map((reward) => reward[0].toString()),
+        earningTokenPrice: earningTokenPrice,
+        rewardsData: rewardsData[i][0].map((reward) => reward[0].toString()),
         vTotalSupply: pool.vaultTotalSupply,
         liquidity: liquidity ,
         apr,
         isFinished: isPoolFinished,
       }
     })
-    console.log("liveData", liveData)
     dispatch(setPoolsPublicData(liveData))
   } catch (error) {
     console.error('[Pools Action] error when getting public data', error)

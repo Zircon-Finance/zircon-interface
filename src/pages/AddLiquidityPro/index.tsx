@@ -44,7 +44,7 @@ import {currencyId} from "../../utils/currencyId";
 import {LottieContainer} from "../App";
 import LearnIcon from "../../components/LearnIcon";
 import {Toggle} from "@pancakeswap/uikit";
-import {getPoolAprAddress} from "../../utils/apr";
+// import {getPoolAprAddress} from "../../utils/apr";
 import {SpaceBetween} from "../../views/Farms/components/FarmTable/Actions/ActionPanel";
 import RepeatIcon from "../../components/RepeatIcon";
 import {usePool} from "../../state/pools/hooks";
@@ -264,7 +264,7 @@ export default function AddLiquidityPro({
 
   //pool values
   const contractAddress = farm ? farm.contractAddress : AddressZero;
-  const apr = getPoolAprAddress(contractAddress) ?? '0'
+  // const apr = getPoolAprAddress(contractAddress) ?? '0'
 
   // const [showAdvancedMode, setShowAdvancedMode] = useState(false);
   // const [fakeAdvancedMode, setFakeAdvancedMode] = useState(false);
@@ -1367,14 +1367,14 @@ export default function AddLiquidityPro({
                                             (farmIsApproved() ?
                                                 "Add & Farm" : "Enable farm contract")}
                                       </Text>
-                                      {(farmIsApproved() || error) &&
-                                      <Text
-                                          fontSize={width > 700 ? 14 : 13}
-                                          fontWeight={400}
-                                      >
-                                        {`${apr}% APR`}
-                                      </Text>
-                                      }
+                                      {/*{(farmIsApproved() || error) &&*/}
+                                      {/*<Text*/}
+                                      {/*    fontSize={width > 700 ? 14 : 13}*/}
+                                      {/*    fontWeight={400}*/}
+                                      {/*>*/}
+                                      {/*  {`${apr}% APR`}*/}
+                                      {/*</Text>*/}
+                                      {/*}*/}
                                     </Flex>
                                   </ButtonError>
                               )}

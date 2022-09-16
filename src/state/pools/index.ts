@@ -36,7 +36,7 @@ import fetchPools from "./fetchPoolsInfo";
 import getPoolsPrices from "./getPoolsPrices";
 import {fetchRewardsData} from "./fetchRewardsData";
 import {JSBI, Pylon} from "zircon-sdk";
-import {getPoolApr} from "../../utils/apr";
+// import {getPoolApr} from "../../utils/apr";
 
 export const initialPoolVaultState = Object.freeze({
   totalShares: null,
@@ -171,29 +171,32 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
       console.log("rewardsData", rewardsData)
       let earningTokenPrice = pool.earningToken.map((token,index) => {
         if (token.symbol === "ZRG") {
-          console.log("tokenprice", priceZRG[0].tokenPrice)
-          return new BigNumber(priceZRG[0].tokenPrice).times(rewardsData[i + index][0]?.balance?.toString()).dividedBy(new BigNumber(10).pow(18)).dividedBy(blockLimit.endBlock-blockLimit.startBlock).toNumber()
+          console.log("rewardsData", rewardsData)
+          return new BigNumber(priceZRG[0]?.tokenPrice).times(rewardsData[i][index]?.balance?.toString()).dividedBy(new BigNumber(10).pow(18)).dividedBy(blockLimit?.endBlock-blockLimit?.startBlock).toNumber()
         } else if (token.symbol === "MOVR") {
           console.log("quotePrice", priceZRG[0].quotePrice)
-          return new BigNumber(priceZRG[0].quotePrice).times(rewardsData[i + index][0]?.balance?.toString()).dividedBy(new BigNumber(10).pow(18)).dividedBy(blockLimit.endBlock-blockLimit.startBlock).toNumber()
+          return new BigNumber(priceZRG[0]?.quotePrice).times(rewardsData[i][index]?.balance?.toString()).dividedBy(new BigNumber(10).pow(18)).dividedBy(blockLimit?.endBlock-blockLimit?.startBlock).toNumber()
         }else {
           return 0
         }
       })
       let liquidity  = String(BigNumber(pool.quotePrice.toString()).multipliedBy(pool.quoteTokenBalanceLP).multipliedBy(2).dividedBy(new BigNumber(10).pow(18)).toString())
-      const apr = !isPoolFinished
-          ? getPoolApr(
-              stakingTokenPrice,
-              earningTokenPrice,
-          )
-          : 0
+      console.log("liquidity", liquidity)
+      const apr = 0
+      // !isPoolFinished
+      //     ? getPoolApr(
+      //         stakingTokenPrice,
+      //         earningTokenPrice,
+      //     )
+      //     : 0
+      console.log("apr", apr)
       return {
         ...blockLimit,
         ...totalStaking,
         earningTokenPrice: earningTokenPrice.slice(i, i + pool.earningToken.length),
         rewardsData: rewardsData.slice(i, i + pool.earningToken.length).map((reward) => reward[0].toString()),
         vTotalSupply: pool.vaultTotalSupply,
-        liquidity ,
+        liquidity: liquidity ,
         apr,
         isFinished: isPoolFinished,
       }

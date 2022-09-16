@@ -27,7 +27,7 @@ const fetchPools = async (poolsToFetch: SerializedPoolConfig[]): Promise<Seriali
         // const lpTotalInQuoteToken = quoteTokenAmountMc.times(new BigNumber(2))
         console.log("tokenRatio", lpTokenRatio.toString(), quoteTokenAmountMc.toString())
 
-        console.log(tokenBalanceLP, quoteTokenBalanceLP)
+        console.log('AAAAAAAAAAAAAAAAAA',tokenBalanceLP.toString(), quoteTokenBalanceLP.toString())
 
         // const { pool } = usePool(details.sousId)
         // const balance = useTokenBalance(pool.vaultAddress, token)

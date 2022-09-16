@@ -177,7 +177,6 @@ export default function CurrencyInputPanel({
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
   }, [setModalOpen])
-  console.log('tokens: ', tokens)
 
   // const priceToken = async(token0: Currency, token1: Currency) => {
   //   // const [tokenSelected, setTokenSelected] = useState(null)

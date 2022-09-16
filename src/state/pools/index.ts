@@ -152,7 +152,10 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
       // const earningTokenAddress = pool.earningToken.map((token) => token.address ? token.address.toLowerCase() : null)
       // const earningTokenPrice = earningTokenAddress ? earningTokenAddress.map((token) => prices[token]) : [0,0]
       console.log("values::", pool.lpTotalInQuoteToken, pool.gamma, pool.ptb, pool.lpTotalSupply)
-      let liquidityBySDK = Pylon.calculateLiquidity(pool.gamma, JSBI.BigInt(new BigNumber(pool.lpTotalInQuoteToken).toNumber()), pool.ptb, pool.lpTotalSupply)
+      let liquidityBySDK = Pylon.calculateLiquidity(pool.gamma, 
+        JSBI.BigInt(new BigNumber(pool.lpTotalInQuoteToken).toNumber()), 
+        JSBI.BigInt(new BigNumber(pool.ptb).toNumber()), 
+        JSBI.BigInt(new BigNumber(pool.lpTotalSupply).toNumber()))
       console.log("liquidityBySDK", liquidityBySDK.toString())
       const stakingTokenPrice = (new BigNumber(liquidityBySDK.toString()).multipliedBy(new BigNumber(pool.quotePrice)).dividedBy(BIG_TEN.pow(pool.quoteTokenDecimals))).toNumber()
       console.log("stakingTokenPrice", stakingTokenPrice.toString())

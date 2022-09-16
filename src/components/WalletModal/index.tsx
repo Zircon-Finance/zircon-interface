@@ -388,7 +388,7 @@ export default function WalletModal({
           <ContentWrapper>
             {error instanceof UnsupportedChainIdError ? (
               <>
-              <h5 style={{textAlign: 'center'}}>{'Please connect to the appropriate Moonbase Alpha network.'}</h5>
+              <h5 style={{textAlign: 'center'}}>{'Please connect to the appropriate Moonriver network.'}</h5>
               {connector === injected && <ButtonPrimary mt={'30px'} onClick={() => connectNet('moonriver')} >{'Click to connect'}</ButtonPrimary>}
               </>
             ) : (
@@ -447,7 +447,7 @@ export default function WalletModal({
               {'Connecting a wallet you accept'}
             </Text>
             <Text style={{textAlign: 'center', fontSize: '13px'}}>
-              {` our `} 
+              {` our `}
               {<Link style={{color: theme.pinkBrown, textDecoration: 'none'}} href="https://d3v8yom54t2cda.cloudfront.net/Terms+of+Service+-+Zircon+Finance.pdf">terms and conditions</Link>}
               {` and `}
               {<Link style={{color: theme.pinkBrown, textDecoration: 'none'}} href="https://d3v8yom54t2cda.cloudfront.net/Privacy+Policy+-+Zircon+Finance.pdf">privacy policy</Link>}

@@ -1,7 +1,7 @@
 // the DCTDEX Default token list lives here
 export const DEFAULT_TOKEN_LIST_URL =
-  'https://gist.githubusercontent.com/ReshyResh/ea7489537b8f6bf1601289b191570825/raw/2604437c3a323fc59d5880b388216f967b0ce067/tokenlist.json'
-  
+  'https://gist.githubusercontent.com/VittoriDavide/cb4077e692c4e6236c81b5f100f396bd/raw/07b53f401123be284afab20a98a07ceacfcde799/tokenlist.json'
+
 export const INFO_CLIENT = 'https://api.thegraph.com/subgraphs/name/reshyresh/zircon-gamma'
 export const BLOCKS_CLIENT = 'https://api.thegraph.com/subgraphs/name/rebase-agency/moonriver-blocks'
 

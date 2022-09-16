@@ -18,20 +18,20 @@ export const getBalanceAmount = (amount: BigNumber, decimals = 18) => {
  * This function is not really necessary but is used throughout the site.
  */
 export const getBalanceNumber = (balance: BigNumber, decimals = 18) => {
-  console.log("balance", balance.toString())
+  // console.log("balance", balance.toString())
   return getBalanceAmount(balance, decimals).toNumber()
 }
 
 export const getBalanceUSD = (balance: BigNumber, rewardsPrices: number[], rewardsBalances: string[], totalSupply: BigNumber, decimals = 18) => {
   let totalPrice = new BigNumber(0)
-  console.log("rewardsPrices", rewardsPrices)
-  console.log("rewardsBalances", rewardsBalances)
+  // console.log("rewardsPrices", rewardsPrices)
+  // console.log("rewardsBalances", rewardsBalances)
   if (rewardsPrices && rewardsPrices.length > 0) {
     for(let i = 0; i < rewardsBalances.length; i++){
       totalPrice = totalPrice.plus(new BigNumber(rewardsPrices[i]).multipliedBy(new BigNumber(rewardsBalances[i].toString())).div(totalSupply))
     }
   }
-  console.log("totalPrice", totalPrice.toString())
+  // console.log("totalPrice", totalPrice.toString())
   return getBalanceAmount(totalPrice, decimals).toNumber()
 }
 

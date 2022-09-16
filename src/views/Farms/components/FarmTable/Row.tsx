@@ -222,8 +222,8 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     const blocksLeft = endBlock - Math.max(currentBlock, startBlock)
     // console.log("current", currentBlock)
     // console.log("start", startBlock)
-    console.log("balance", balance)
-    console.log("blocksLeft", blocksLeft)
+    // console.log("balance", balance)
+    // console.log("blocksLeft", blocksLeft)
     const rewardBlocksPerDay = (parseFloat((balance?.toFixed(6)))/blocksLeft)*6400*30
     return(
         <Text fontSize='13px' fontWeight={500} color={'#4e7455'}>

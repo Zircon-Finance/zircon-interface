@@ -289,7 +289,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   ])
 
   const handleStake = async (amount: string, token: Token) => {
-      console.log("amount", amount)
+      // console.log("amount", amount)
     const receipt = await fetchWithCatchTxError(() => {
       return onStake(amount, token.decimals).then((response) => {
         addTransaction(response, {

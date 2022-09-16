@@ -86,7 +86,8 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, u
 
     const SwipeTokenCard = ({ token, index }: { token: Token; index: number }) => {
         const rewardTokenBalance = useTokenBalance(vaultAddress, token)
-        const totalSupply = useTotalSupply(token)
+        // TODO: Change use the values that we have from pool data
+        const totalSupply = useTotalSupply(new Token(token.chainId, vaultAddress, token.decimals, token.symbol, token.name))
         const rewards = getBalanceAmount(earningsBigNumber).times(rewardTokenBalance?.toFixed(6)).div(totalSupply?.toFixed(6))
         return (
             <>

@@ -1,5 +1,4 @@
 import {SerializedPool} from "../types";
-import {getMasterChefAddress} from "../../utils/addressHelpers";
 import {SerializedPoolConfig} from "../../constants/types";
 import multicall from "../../utils/multicall";
 import erc20 from "../../constants/abis/erc20.json";
@@ -24,7 +23,7 @@ const fetchPoolCalls = (pool: SerializedPool) => {
         {
             address: stakingToken.address,
             name: 'balanceOf',
-            params: [getMasterChefAddress()],
+            params: [pool.contractAddress],
         },
         // Total supply of LP tokens
         {
@@ -46,6 +45,14 @@ const fetchPoolCalls = (pool: SerializedPool) => {
             name: 'balanceOf',
             params: [pylonAddress],
         },
+        {
+            address: stakingToken.address,
+            name: 'totalSupply'
+        },
+        {
+            address: pool.vaultAddress,
+            name: "totalSupply"
+        }
     ]
 
 }

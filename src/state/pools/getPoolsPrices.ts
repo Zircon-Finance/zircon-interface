@@ -93,28 +93,13 @@ const getPoolsPrices = async (pools: SerializedPool[]) => {
             return {
                 ...pool,
                 quotePrice: String(responses[index].price.toString()),
-                tokenPrice: String(BigNumber(pool.tokenPriceVsQuote).multipliedBy(responses[index].price).toString()),
+                tokenPrice: String(BigNumber(responses[index].price).dividedBy(pool.tokenPriceVsQuote).toString()),
             }
         })
     }catch (e) {
         console.log("error in call")
         return pools
     }
-    // const bnbBusdFarm = pools.find((farm) => farm.token.symbol === 'BUSD' && farm.quoteToken.symbol === 'WBNB')
-    // const bnbPriceBusd = bnbBusdFarm.tokenPriceVsQuote ? BIG_ONE.div(bnbBusdFarm.tokenPriceVsQuote) : BIG_ZERO
-    // const farmsWithPrices = farms.map((farm) => {
-    //     const quoteTokenFarm = getFarmFromTokenSymbol(farms, farm.quoteToken.symbol)
-    //     const tokenPriceBusd = getFarmBaseTokenPrice(farm, quoteTokenFarm, bnbPriceBusd)
-    //     const quoteTokenPriceBusd = getFarmQuoteTokenPrice(farm, quoteTokenFarm, bnbPriceBusd)
-    //
-    //     return {
-    //         ...farm,
-    //         tokenPriceBusd: tokenPriceBusd.toJSON(),
-    //         quoteTokenPriceBusd: quoteTokenPriceBusd.toJSON(),
-    //     }
-    // })
-
-    // return farmsWithPrices
 }
 
 export default getPoolsPrices

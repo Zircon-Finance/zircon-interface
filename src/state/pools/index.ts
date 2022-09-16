@@ -28,7 +28,7 @@ import {
 import priceHelperLpsConfig from '../../constants/poolsHelperLps'
 
 import { resetUserState } from '../global/actions'
-import {BIG_ZERO} from '../../utils/bigNumber'
+import {BIG_TEN, BIG_ZERO} from '../../utils/bigNumber'
 import multicall from '../../utils/multicall'
 // import { getBalanceNumber } from '../../utils/formatBalance'
 // import { getPoolApr } from '../../utils/apr'
@@ -36,7 +36,7 @@ import fetchPools from "./fetchPoolsInfo";
 import getPoolsPrices from "./getPoolsPrices";
 import {fetchRewardsData} from "./fetchRewardsData";
 import {JSBI, Pylon} from "zircon-sdk";
-import {getPoolApr} from "../../utils/apr";
+// import {getPoolApr} from "../../utils/apr";
 
 export const initialPoolVaultState = Object.freeze({
   totalShares: null,
@@ -89,22 +89,21 @@ export const fetchCakePoolUserDataAsync = (account: string) => async (dispatch) 
   const [[allowance], [stakingTokenBalance]] = await multicall(cakeAbi, cakeContractCalls)
 
   dispatch(
-    setPoolUserData({
-      sousId: 0,
-      data: {
-        allowance: new BigNumber(allowance.toString()).toJSON(),
-        stakingTokenBalance: new BigNumber(stakingTokenBalance.toString()).toJSON(),
-      },
-    }),
+      setPoolUserData({
+        sousId: 0,
+        data: {
+          allowance: new BigNumber(allowance.toString()).toJSON(),
+          stakingTokenBalance: new BigNumber(stakingTokenBalance.toString()).toJSON(),
+        },
+      }),
   )
 }
 
 export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (dispatch, getState) => {
   try {
-    const [blockLimits, totalStakings, rewardsData] = await Promise.all([
+    const [blockLimits, totalStakings] = await Promise.all([
       fetchPoolsBlockLimits(),
       fetchPoolsTotalStaking(),
-      fetchRewardsData(poolsConfig),
       // currentBlockNumber ? Promise.resolve(currentBlockNumber) : simpleRpcProvider.getBlockNumber(),
     ])
 
@@ -121,22 +120,12 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
     //       // })
     //   )
     // })
+    let rewardsData = await fetchRewardsData(poolsConfig)
 
     const poolsInformation = await fetchPools(poolsConfig)
-    const priceHelperInformation = await fetchPools(priceHelperLpsConfig)
-
-    console.log("poolsInformation", poolsInformation)
-    // const farmsData = getState().farms.data
-
-    // farmsData.forEach((farm) => {
-    //   console.log("tk", farm.quoteToken, farm.token)
-    // })
-
-    // const bnbBusdFarm = null
-      // activePriceHelperLpsConfig.length > 0
-      //   ? farmsData.find((farm) => farm.token.symbol === 'BUSD' && farm.quoteToken.symbol === 'WBNB')
-      //   : null
     let poolsPrices = await getPoolsPrices(poolsInformation)
+
+    const priceHelperInformation = await fetchPools(priceHelperLpsConfig)
     let priceZRG = await getPoolsPrices(priceHelperInformation)
     console.log("poolsPrices", poolsPrices)
     console.log("poolsPricesZRG", priceZRG)
@@ -146,10 +135,7 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
     //   ? getFarmsPrices([bnbBusdFarm])
     //   : []
     // console.log("prices",farmsData, farmsWithPricesOfDifferentTokenPools);
-
     // usd * reward / (1 - gamma) * resTR*2*usd
-
-  poolsPrices.map((poolPrice) => {  })
     // const prices = getTokenPricesFromFarm([...farmsData, ...farmsWithPricesOfDifferentTokenPools])
     const liveData = poolsPrices.map((pool, i) => {
       const blockLimit = blockLimits.find((entry) => entry.sousId === pool.sousId)
@@ -165,10 +151,11 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
       //
       // const earningTokenAddress = pool.earningToken.map((token) => token.address ? token.address.toLowerCase() : null)
       // const earningTokenPrice = earningTokenAddress ? earningTokenAddress.map((token) => prices[token]) : [0,0]
-      console.log("values", pool.gamma, pool.quoteTokenBalanceLP, pool.ptb, pool.lpTotalSupply)
-
-      const stakingTokenPrice = (new BigNumber(Pylon.calculateLiquidity(pool.gamma, JSBI.BigInt(new BigNumber(pool.quoteTokenBalanceLP).toNumber()), pool.ptb, pool.lpTotalSupply).toString())
-          .multipliedBy(new BigNumber(pool.quotePrice))).dividedBy(new BigNumber(10).pow(18)).toNumber()
+      console.log("values::", pool.lpTotalInQuoteToken, pool.gamma, pool.ptb, pool.lpTotalSupply)
+      let liquidityBySDK = Pylon.calculateLiquidity(pool.gamma, JSBI.BigInt(new BigNumber(pool.lpTotalInQuoteToken).toNumber()), pool.ptb, pool.lpTotalSupply)
+      console.log("liquidityBySDK", liquidityBySDK.toString())
+      const stakingTokenPrice = (new BigNumber(liquidityBySDK.toString()).multipliedBy(new BigNumber(pool.quotePrice)).dividedBy(BIG_TEN.pow(pool.quoteTokenDecimals))).toNumber()
+      console.log("stakingTokenPrice", stakingTokenPrice.toString())
 
       /// TODO: do the calculations here instead of in the component
       // let earningTokenPerBlock = pool.earningToken.map((token,index) => {
@@ -181,38 +168,40 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
       //   }
       // })
 
+      console.log("rewardsData", rewardsData)
       let earningTokenPrice = pool.earningToken.map((token,index) => {
-        //TODO: Change for ZRG
-        if (token.symbol === "1SWAP") {
-          return new BigNumber(priceZRG[0].tokenPrice).times(rewardsData[i][index]?.balance?.toString()).dividedBy(new BigNumber(10).pow(18)).dividedBy(blockLimit.endBlock-blockLimit.startBlock).toNumber()
+        if (token.symbol === "ZRG") {
+          console.log("rewardsData", rewardsData)
+          return new BigNumber(priceZRG[0]?.tokenPrice).times(rewardsData[i][index]?.balance?.toString()).dividedBy(new BigNumber(10).pow(18)).dividedBy(blockLimit?.endBlock-blockLimit?.startBlock).toNumber()
         } else if (token.symbol === "MOVR") {
-          return new BigNumber(priceZRG[0].quotePrice).times(rewardsData[i][index]?.balance?.toString()).dividedBy(new BigNumber(10).pow(18)).dividedBy(blockLimit.endBlock-blockLimit.startBlock).toNumber()
+          console.log("quotePrice", priceZRG[0].quotePrice)
+          return new BigNumber(priceZRG[0]?.quotePrice).times(rewardsData[i][index]?.balance?.toString()).dividedBy(new BigNumber(10).pow(18)).dividedBy(blockLimit?.endBlock-blockLimit?.startBlock).toNumber()
         }else {
           return 0
         }
       })
-
-      console.log(earningTokenPrice);
-      console.log(stakingTokenPrice);
       let liquidity  = String(BigNumber(pool.quotePrice.toString()).multipliedBy(pool.quoteTokenBalanceLP).multipliedBy(2).dividedBy(new BigNumber(10).pow(18)).toString())
-      const apr = !isPoolFinished
-        ? getPoolApr(
-            stakingTokenPrice,
-            earningTokenPrice,
-          )
-        : 0
+      console.log("liquidity", liquidity)
+      const apr = 0
+      // !isPoolFinished
+      //     ? getPoolApr(
+      //         stakingTokenPrice,
+      //         earningTokenPrice,
+      //     )
+      //     : 0
+      console.log("apr", apr)
       return {
         ...blockLimit,
         ...totalStaking,
-        // earningTokenPerBlock,
-        // stakingTokenPrice,
-        // earningTokenPrice,
-        liquidity ,
+        earningTokenPrice: earningTokenPrice.slice(i, i + pool.earningToken.length),
+        rewardsData: rewardsData.slice(i, i + pool.earningToken.length).map((reward) => reward[0].toString()),
+        vTotalSupply: pool.vaultTotalSupply,
+        liquidity: liquidity ,
         apr,
         isFinished: isPoolFinished,
       }
     })
-
+    console.log("liveData", liveData)
     dispatch(setPoolsPublicData(liveData))
   } catch (error) {
     console.error('[Pools Action] error when getting public data', error)
@@ -221,8 +210,8 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
 
 export const fetchPoolsStakingLimitsAsync = () => async (dispatch, getState) => {
   const poolsWithStakingLimit = getState().pools.data
-    // .filter(({ stakingLimit }) => stakingLimit !== null && stakingLimit !== undefined)
-    // .map((pool) => pool.sousId)
+  // .filter(({ stakingLimit }) => stakingLimit !== null && stakingLimit !== undefined)
+  // .map((pool) => pool.sousId)
 
   try {
     const stakingLimits = await fetchPoolsStakingLimits(poolsWithStakingLimit)
@@ -249,9 +238,9 @@ export const fetchPoolsStakingLimitsAsync = () => async (dispatch, getState) => 
 }
 
 export const fetchPoolsUserDataAsync = createAsyncThunk<
-  { sousId: number; allowance: any; stakingTokenBalance: any; stakedBalance: any; pendingReward: any }[],
-  string
->('pool/fetchPoolsUserData', async (account, { rejectWithValue }) => {
+    { sousId: number; allowance: any; stakingTokenBalance: any; stakedBalance: any; pendingReward: any }[],
+    string
+    >('pool/fetchPoolsUserData', async (account, { rejectWithValue }) => {
   try {
     const [allowances, stakingTokenBalances, stakedBalances, pendingRewards] = await Promise.all([
       fetchPoolsAllowance(account),
@@ -274,33 +263,33 @@ export const fetchPoolsUserDataAsync = createAsyncThunk<
 })
 
 export const updateUserAllowance = createAsyncThunk<
-  { sousId: number; field: string; value: any },
-  { sousId: number; account: string }
->('pool/updateUserAllowance', async ({ sousId, account }) => {
+    { sousId: number; field: string; value: any },
+    { sousId: number; account: string }
+    >('pool/updateUserAllowance', async ({ sousId, account }) => {
   const allowances = await fetchPoolsAllowance(account)
   return { sousId, field: 'allowance', value: allowances[sousId] }
 })
 
 export const updateUserBalance = createAsyncThunk<
-  { sousId: number; field: string; value: any },
-  { sousId: number; account: string }
->('pool/updateUserBalance', async ({ sousId, account }) => {
+    { sousId: number; field: string; value: any },
+    { sousId: number; account: string }
+    >('pool/updateUserBalance', async ({ sousId, account }) => {
   const tokenBalances = await fetchUserBalances(account)
   return { sousId, field: 'stakingTokenBalance', value: tokenBalances[sousId] }
 })
 
 export const updateUserStakedBalance = createAsyncThunk<
-  { sousId: number; field: string; value: any },
-  { sousId: number; account: string }
->('pool/updateUserStakedBalance', async ({ sousId, account }) => {
+    { sousId: number; field: string; value: any },
+    { sousId: number; account: string }
+    >('pool/updateUserStakedBalance', async ({ sousId, account }) => {
   const stakedBalances = await fetchUserStakeBalances(account)
   return { sousId, field: 'stakedBalance', value: stakedBalances[sousId] }
 })
 
 export const updateUserPendingReward = createAsyncThunk<
-  { sousId: number; field: string; value: any },
-  { sousId: number; account: string }
->('pool/updateUserPendingReward', async ({ sousId, account }) => {
+    { sousId: number; field: string; value: any },
+    { sousId: number; account: string }
+    >('pool/updateUserPendingReward', async ({ sousId, account }) => {
   const pendingRewards = await fetchUserPendingRewards(account)
   return { sousId, field: 'pendingReward', value: pendingRewards[sousId] }
 })
@@ -362,20 +351,20 @@ export const PoolsSlice = createSlice({
       // state.cakeVault = { ...state.cakeVault, userData: initialPoolVaultState.userData }
     })
     builder.addCase(
-      fetchPoolsUserDataAsync.fulfilled,
-      (
-        state,
-        action: PayloadAction<
-          { sousId: number; allowance: any; stakingTokenBalance: any; stakedBalance: any; pendingReward: any }[]
-        >,
-      ) => {
-        const userData = action.payload
-        state.data = state.data.map((pool) => {
-          const userPoolData = userData.find((entry) => entry.sousId === pool.sousId)
-          return { ...pool, userDataLoaded: true, userData: userPoolData }
-        })
-        state.userDataLoaded = true
-      },
+        fetchPoolsUserDataAsync.fulfilled,
+        (
+            state,
+            action: PayloadAction<
+                { sousId: number; allowance: any; stakingTokenBalance: any; stakedBalance: any; pendingReward: any }[]
+                >,
+        ) => {
+          const userData = action.payload
+          state.data = state.data.map((pool) => {
+            const userPoolData = userData.find((entry) => entry.sousId === pool.sousId)
+            return { ...pool, userDataLoaded: true, userData: userPoolData }
+          })
+          state.userDataLoaded = true
+        },
     )
     builder.addCase(fetchPoolsUserDataAsync.rejected, (state, action) => {
       console.error('[Pools Action] Error fetching pool user data', action.payload)
@@ -396,20 +385,20 @@ export const PoolsSlice = createSlice({
     //   state.cakeVault = { ...state.cakeVault, userData }
     // })
     builder.addMatcher(
-      isAnyOf(
-        updateUserAllowance.fulfilled,
-        updateUserBalance.fulfilled,
-        updateUserStakedBalance.fulfilled,
-        updateUserPendingReward.fulfilled,
-      ),
-      (state, action: PayloadAction<{ sousId: number; field: string; value: any }>) => {
-        const { field, value, sousId } = action.payload
-        const index = state.data.findIndex((p) => p.sousId === sousId)
+        isAnyOf(
+            updateUserAllowance.fulfilled,
+            updateUserBalance.fulfilled,
+            updateUserStakedBalance.fulfilled,
+            updateUserPendingReward.fulfilled,
+        ),
+        (state, action: PayloadAction<{ sousId: number; field: string; value: any }>) => {
+          const { field, value, sousId } = action.payload
+          const index = state.data.findIndex((p) => p.sousId === sousId)
 
-        if (index >= 0) {
-          state.data[index] = { ...state.data[index], userData: { ...state.data[index].userData, [field]: value } }
-        }
-      },
+          if (index >= 0) {
+            state.data[index] = { ...state.data[index], userData: { ...state.data[index].userData, [field]: value } }
+          }
+        },
     )
   },
 })

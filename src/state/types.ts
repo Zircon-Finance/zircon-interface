@@ -70,6 +70,7 @@ interface CorePoolProps {
   rawApr?: number
   stakingTokenPrice?: number
   earningTokenPrice?: number[]
+  earningTokenCurrentPrice?: number[]
   vaultKey?: VaultKey
   earningTokenPerBlock?: number[]
   rewardsData?: string[],

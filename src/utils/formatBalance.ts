@@ -24,15 +24,15 @@ export const getBalanceNumber = (balance: BigNumber, decimals = 18) => {
 
 export const getBalanceUSD = (balance: BigNumber, rewardsPrices: number[], rewardsBalances: string[], totalSupply: BigNumber, decimals = 18) => {
   let totalPrice = new BigNumber(0)
-  // console.log("rewardsPrices", rewardsPrices)
-  // console.log("rewardsBalances", rewardsBalances)
+  console.log("rewardsPrices", rewardsPrices)
+  console.log("rewardsBalances", rewardsBalances)
   if (rewardsPrices && rewardsPrices.length > 0) {
-    for(let i = 0; i < rewardsBalances.length; i++){
-      totalPrice = totalPrice.plus(new BigNumber(rewardsPrices[i]).multipliedBy(new BigNumber(rewardsBalances[i].toString())).div(totalSupply))
+    for(let i = 0; i < rewardsPrices.length; i++){
+      totalPrice = totalPrice.plus((new BigNumber(rewardsPrices[i]).multipliedBy(balance).div(totalSupply)))
     }
   }
-  // console.log("totalPrice", totalPrice.toString())
-  return getBalanceAmount(totalPrice, decimals).toNumber()
+  console.log("totalPrice", totalPrice.toString())
+  return totalPrice.toNumber()
 }
 
 export const getFullDisplayBalance = (balance: BigNumber, decimals = 18, displayDecimals?: number) => {

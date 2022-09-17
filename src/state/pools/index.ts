@@ -37,6 +37,7 @@ import getPoolsPrices from "./getPoolsPrices";
 // import {fetchRewardsData} from "./fetchRewardsData";
 import {getPoolApr} from "../../utils/apr";
 import {fetchRewardsData} from "./fetchRewardsData";
+import {simpleRpcProvider} from "../../utils/providers";
 // import {JSBI, Pylon} from "zircon-sdk";
 // import {getPoolApr} from "../../utils/apr";
 
@@ -103,12 +104,12 @@ export const fetchCakePoolUserDataAsync = (account: string) => async (dispatch) 
 
 export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (dispatch, getState) => {
   try {
-    const [blockLimits, totalStakings] = await Promise.all([
+    const [blockLimits, totalStakings, currentBlock] = await Promise.all([
       fetchPoolsBlockLimits(),
       fetchPoolsTotalStaking(),
-      // currentBlockNumber ? Promise.resolve(currentBlockNumber) : simpleRpcProvider.getBlockNumber(),
+      currentBlockNumber ? Promise.resolve(currentBlockNumber) : simpleRpcProvider.getBlockNumber(),
     ])
-
+    // console.log("currentBlock", currentBlock)
     // const activePriceHelperLpsConfig = priceHelperLpsConfig.filter((priceHelperLpConfig) => {
     //   return (
     //     poolsConfig
@@ -182,6 +183,16 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
           return 0
         }
       })
+      let earningTokenCurrentPrice = currentBlock > blockLimit.startBlock ? pool.earningToken.map((token,index) => {
+        if (token.symbol === "ZRG") {
+          return new BigNumber(priceZRG[0]?.tokenPrice).times(rewardsData[i][0][index]?.balance?.toString()).dividedBy(new BigNumber(10).pow(18)).toNumber()
+        } else if (token.symbol === "MOVR") {
+          return new BigNumber(priceZRG[0]?.quotePrice).times(rewardsData[i][0][index]?.balance?.toString()).dividedBy(new BigNumber(10).pow(18)).toNumber()
+        }else {
+          return 0
+        }
+      }) : []
+      console.log("earningTokenCurrentPrice", earningTokenCurrentPrice)
       let liquidity  = String(BigNumber(pool.quotePrice.toString()).multipliedBy(pool.quoteTokenBalanceLP).multipliedBy(2).dividedBy(BIG_TEN.pow(pool.quoteTokenDecimals)).toString())
 
       const apr = !isPoolFinished
@@ -195,6 +206,7 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
         ...totalStaking,
         earningTokenPrice: earningTokenPrice,
         rewardsData: rewardsData[i][0].map((reward) => reward[0].toString()),
+        earningTokenCurrentPrice: earningTokenCurrentPrice,
         vTotalSupply: pool.vaultTotalSupply,
         liquidity: liquidity ,
         apr,

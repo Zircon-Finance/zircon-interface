@@ -185,9 +185,18 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
       })
       let earningTokenCurrentPrice = currentBlock > blockLimit.startBlock ? pool.earningToken.map((token,index) => {
         if (token.symbol === "ZRG") {
-          return new BigNumber(priceZRG[0]?.tokenPrice).times(rewardsData[i][0][index]?.balance?.toString()).dividedBy(new BigNumber(10).pow(18)).toNumber()
+          return new BigNumber(priceZRG[0]?.tokenPrice).times(rewardsData[i][0][index]?.balance?.toString()).dividedBy(pool.vaultTotalSupply)//.dividedBy(new BigNumber(10).pow(18)).toNumber()
         } else if (token.symbol === "MOVR") {
-          return new BigNumber(priceZRG[0]?.quotePrice).times(rewardsData[i][0][index]?.balance?.toString()).dividedBy(new BigNumber(10).pow(18)).toNumber()
+          return new BigNumber(priceZRG[0]?.quotePrice).times(rewardsData[i][0][index]?.balance?.toString()).dividedBy(pool.vaultTotalSupply)//.dividedBy(new BigNumber(10).pow(18)).toNumber()
+        }else {
+          return 0
+        }
+      }) : []
+      let earningTokenCurrentBalance = currentBlock > blockLimit.startBlock ? pool.earningToken.map((token,index) => {
+        if (token.symbol === "ZRG") {
+          return new BigNumber(rewardsData[i][0][index]?.balance?.toString()).dividedBy(pool.vaultTotalSupply)//.dividedBy(new BigNumber(10).pow(18)).toNumber()
+        } else if (token.symbol === "MOVR") {
+          return new BigNumber(rewardsData[i][0][index]?.balance?.toString()).dividedBy(pool.vaultTotalSupply)//.dividedBy(new BigNumber(10).pow(18)).toNumber()
         }else {
           return 0
         }
@@ -207,8 +216,11 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
         earningTokenPrice: earningTokenPrice,
         rewardsData: rewardsData[i][0].map((reward) => reward[0].toString()),
         earningTokenCurrentPrice: earningTokenCurrentPrice,
+        earningTokenCurrentBalance: earningTokenCurrentBalance,
         vTotalSupply: pool.vaultTotalSupply,
-        liquidity: liquidity ,
+        liquidity: liquidity,
+        zrgPrice: priceZRG[0]?.tokenPrice,
+        movrPrice: priceZRG[0]?.quotePrice,
         apr,
         isFinished: isPoolFinished,
       }

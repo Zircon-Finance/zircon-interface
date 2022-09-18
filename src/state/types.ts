@@ -67,10 +67,13 @@ interface CorePoolProps {
   endBlock?: number
   apr?: number
   liquidity?: number
+  zrgPrice?: number
+  movrPrice?: number
   rawApr?: number
   stakingTokenPrice?: number
   earningTokenPrice?: number[]
   earningTokenCurrentPrice?: number[]
+  earningTokenCurrentBalance?: number[]
   vaultKey?: VaultKey
   earningTokenPerBlock?: number[]
   rewardsData?: string[],

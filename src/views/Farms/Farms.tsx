@@ -350,7 +350,7 @@ const Farms: React.FC = ({ children }) => {
       },
       earned: {
         earnings: getBalanceNumber(new BigNumber(farm.userData.pendingReward)),
-        earningsUSD: getBalanceUSD(new BigNumber(farm.userData.pendingReward), farm.earningTokenCurrentPrice, farm.rewardsData, new BigNumber(farm.vTotalSupply)),
+        earningsUSD: getBalanceUSD(new BigNumber(farm.userData.pendingReward), farm.earningTokenCurrentPrice),
         pid: farm.sousId,
         hovered: false,
         setHovered: () => {},

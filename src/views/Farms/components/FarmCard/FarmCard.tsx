@@ -19,8 +19,7 @@ import { Link } from 'react-router-dom'
 import { useTransactionAdder } from '../../../../state/transactions/hooks'
 import { DeserializedPool } from '../../../../state/types'
 import { fetchPoolsUserDataAsync } from '../../../../state/pools'
-import { usePairLiquidity } from '../../../../state/pools/hooks'
-import { getPoolAprAddress } from '../../../../utils/apr'
+// import { usePairLiquidity } from '../../../../state/pools/hooks'
 import { useCurrency } from '../../../../hooks/Tokens'
 import { useGamma } from '../../../../data/PylonData'
 import {useDerivedPylonMintInfo} from "../../../../state/mint/pylonHooks";
@@ -118,8 +117,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
       dispatch(fetchPoolsUserDataAsync(account))
     }
   }
-  const pairLiquidity = usePairLiquidity(farm.token1, farm.token2)
-  const pylonLiquidity = usePairLiquidity(farm.token1, farm.token2)
+  const pairLiquidity = 0 //usePairLiquidity(farm.token1, farm.token2)
 
   return (
     <StyledCard isActive={isPromotedFarm}>
@@ -150,7 +148,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
                 <DepositModal
                   max={farm.userData.stakingTokenBalance}
                   lpLabel={lpLabel}
-                  apr={farm.apr}
+                  apr={farm?.apr}
                   onDismiss={() => setShowModalDeposit(false)}
                   displayApr={"111"}
                   stakedBalance={farm.userData.stakedBalance}
@@ -188,7 +186,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
               style={{ display: "flex", alignItems: "center" }}
             >
               {" "}
-              {getPoolAprAddress(farm.contractAddress)}%
+              {farm?.apr?.toFixed(2)}%
             </Text>
           </Flex>
         )}
@@ -197,7 +195,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
             {t("Liquidity")}:
           </Text>
           <Text color={theme.text1} fontSize="14px">
-            {farm.isClassic ? pairLiquidity : pylonLiquidity}
+            {farm.isClassic ? pairLiquidity : new BigNumber(farm?.liquidity).toFixed(2)} USD
           </Text>
         </Flex>
         {account && (

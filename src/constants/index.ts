@@ -4,13 +4,13 @@ import { injected, talisman, walletconnect } from '../connectors'
 // fortmatic, portis, walletconnect, walletlink, lattice
 export const ROUTER_ADDRESS: { [key: string]: string } = {
   [ChainId.STANDALONE]: '0x1408886Cf200EB3d843796f6d4c8bD71497DAe67',
-  [ChainId.MOONROCK]: MOONBASE_ADDRESSES.router,
+  [ChainId.MOONRIVER]: MOONBASE_ADDRESSES.router,
   [ChainId.MOONBASE]: MOONBASE_ADDRESSES.router,
   [ChainId.MOONSHADOW]: MOONBASE_ADDRESSES.router,
 }
 export const PYLON_ROUTER_ADDRESS: { [key: string]: string } = {
   [ChainId.STANDALONE]: '0x42e2EE7Ba8975c473157634Ac2AF4098190fc741',
-  [ChainId.MOONROCK]: MOONBASE_ADDRESSES.pylonRouter,
+  [ChainId.MOONRIVER]: MOONBASE_ADDRESSES.pylonRouter,
   [ChainId.MOONBASE]: MOONBASE_ADDRESSES.pylonRouter,
   [ChainId.MOONSHADOW]: MOONBASE_ADDRESSES.pylonRouter,
 }
@@ -45,7 +45,7 @@ export const ALPHA = new Token(ChainId.MAINNET, '0xa1faa113cbE53436Df28FF0aEe542
 const WDEV_ONLY: ChainTokenList = {
   [ChainId.MAINNET]: [WDEV[ChainId.MAINNET]],
   [ChainId.STANDALONE]: [WDEV[ChainId.STANDALONE]],
-  [ChainId.MOONROCK]: [WDEV[ChainId.MOONROCK]],
+  [ChainId.MOONRIVER]: [WDEV[ChainId.MOONRIVER]],
   [ChainId.MOONBASE]: [WDEV[ChainId.MOONBASE]],
   [ChainId.MOONSHADOW]: [WDEV[ChainId.MOONSHADOW]],
 }

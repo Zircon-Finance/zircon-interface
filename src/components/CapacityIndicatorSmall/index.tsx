@@ -19,9 +19,10 @@ interface Props {
   isFloat?: boolean
   noSpan?: boolean
   hoverPage?: string
+  font? : string
 }
 
-const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan, hoverPage}) => {
+const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan, hoverPage, font}) => {
   const [hoverIndicator, setHoverIndicator] = React.useState(false);
   const theme = useTheme()
   const {width} = useWindowDimensions()
@@ -53,7 +54,7 @@ const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan
           <TooltipContentRisk gamma={gamma} health={health} isFloat={isFloat}/>
         )}
         {isFloat ? <div style={{display: "flex", flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-          {!noSpan && <span style={{marginRight: 8}}>{`${gamma >= 0.7 ? 'Full' : gamma < 0.4 ? 'Empty' : 'Free'}`}</span>}
+          {!noSpan && <span style={{marginRight: 8, color: theme.text1, fontSize: font && font}}>{`${gamma >= 0.7 ? 'Full' : gamma < 0.4 ? 'Empty' : 'Free'}`}</span>}
 
               {gamma < 0.4 && <svg width="22" height="16" viewBox="0 0 22 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="0.5" y="0.5" width="21" height="15" rx="4.5" stroke="#DEC54E" strokeOpacity="0.9"/>
@@ -76,7 +77,7 @@ const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan
             </div>
             :
             <div style={{display: "flex", flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-              {!noSpan && <span style={{marginRight: 8}}>{`${health === 'low' ? 'Low' : health === 'medium' ? 'Medium' : 'High'}`}</span>}
+              {!noSpan && <span style={{marginRight: 8, color: theme.text1, fontSize: font && font}}>{`${health === 'low' ? 'Low' : health === 'medium' ? 'Medium' : 'High'}`}</span>}
               {health === "high" && <svg width="22" height="16" viewBox="0 0 22 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect y="10" width="6" height="6" rx="3" fill="#449133" fillOpacity="0.9"/>
                 <rect x="16" width="6" height="16" rx="3" fill="#449133" fillOpacity="0.9"/>

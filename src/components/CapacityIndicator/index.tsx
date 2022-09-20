@@ -59,7 +59,6 @@ const CapacityIndicator: React.FC<Props> = ({gamma, hoverPage, health, isFloat, 
     const [hoverFee, setHoverFee] = React.useState(false);
     const [hoverSlashing, setHoverSlashing] = React.useState(false);
     const [hoverSlippage, setHoverSlippage] = React.useState(false);
-    console.log("feePercentage", feePercentage.toString())
     const TooltipContentRisk: React.FC<ToolTipProps> = ({option}) => {return (
         <ToolTip style={{left: '-100px'}} show={hoverRisk || hoverFee || hoverSlashing || hoverSlippage}>
             <Text fontSize='13px' fontWeight={500} color={theme.text1}>

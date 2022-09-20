@@ -659,7 +659,6 @@ export default function RemoveProLiquidity({
                         currency={pylon?.pair?.liquidityToken}
                         pair={pylon?.pair}
                         id="liquidity-amount"
-                        tokens={[currencyA, currencyB]}
                     />
                     <ColumnCenter>
                       <ArrowDown size="16" color={theme.text2} />
@@ -675,7 +674,6 @@ export default function RemoveProLiquidity({
                         label={'Output'}
                         onCurrencySelect={handleSelectCurrencyA}
                         id="remove-liquidity-tokena"
-                        tokens={[currencyA, currencyB]}
                     />
                     <ColumnCenter>
                       <Plus size="16" color={theme.text2} />
@@ -691,7 +689,6 @@ export default function RemoveProLiquidity({
                         label={'Output'}
                         onCurrencySelect={handleSelectCurrencyB}
                         id="remove-liquidity-tokenb"
-                        tokens={[currencyA, currencyB]}
                     />
                   </>
               )}

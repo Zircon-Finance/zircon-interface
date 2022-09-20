@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom'
 import { Flex } from 'rebass'
 import { useWindowDimensions } from '../../../../hooks'
 import { usePairLiquidity } from '../../../../state/pools/hooks'
+import BigNumberJs from "bignumber.js";
 
 
 export interface LiquidityProps {
@@ -56,6 +57,7 @@ const DialogContainer = styled.div<{ show }>`
 
 const AbsContainer = styled.div`
   position: sticky;
+  z-index: 100;
   left: 50px;
   svg {
     pointer-events: none;
@@ -64,14 +66,15 @@ const AbsContainer = styled.div`
 
 const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered, setHovered, farm }) => {
   // const displayLiquidity = liquidity && liquidity.gt(0) ? (
-  //     `$${Number(liquidity).toLocaleString(undefined, { maximumFractionDigits: 0 })}` 
+  //     `$${Number(liquidity).toLocaleString(undefined, { maximumFractionDigits: 0 })}`
   //   ) : (
   //     <Skeleton width={60} />
   //   )
   const theme = useTheme()
   const { width } = useWindowDimensions()
   const [hoverPlus, setHoverPlus] = React.useState(false)
-  const pylonLiquidity = usePairLiquidity(farm.token1, farm.token2)
+  const pylonLiquidity = new BigNumberJs(farm.liquidity).toFixed(2)
+    // console.log("chapo", farm.liquidity)
   const pairLiquidity = usePairLiquidity(farm.token1, farm.token2)
   const plusContent = (
       <DialogContainer show={hoverPlus}>
@@ -87,7 +90,7 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
         <Text fontSize="13px" color={theme.text1}>
           {farm.isClassic
             ? pairLiquidity
-            : pylonLiquidity}
+            : pylonLiquidity} USD
         </Text>
         {// liquidity.gt(0) &&
         hovered && width >= 1100 && (
@@ -96,7 +99,7 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
               to={
                 farm.isClassic
                   ? `/add/${farm.token1.address}/${farm.token2.address}`
-                  : `/add-pro/${farm.token1.address}/${farm.token2.address}`
+                  : `/add-pro/${farm.token1.address}/${farm.token2.address}/${farm.isAnchor ? 'stable' : 'float'}`
               }
             >
               <IconButton
@@ -105,6 +108,7 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
                   width: "29px",
                   height: "28px",
                   borderRadius: "100%",
+                  marginLeft: '10px',
                 }}
               >
                 <Flex

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import { useWeb3React } from '@web3-react/core'
 import styled, { useTheme } from 'styled-components'
 import { Flex, IconButton } from '@pancakeswap/uikit'
@@ -116,21 +116,27 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
   const maxStake = parseFloat(getBalanceAmount(tokenBalance).toFixed(6))
   const percentage = (staked*100/(staked + maxStake)).toString()
 
-  let rewardTokens = ''
-  earningToken.forEach(token => rewardTokens += `${token.symbol} `)
+
+  const [rewardTokens, setRewardTokens] = useState("")
+
+  useEffect(() => {
+    let r = ''
+    earningToken.forEach((token) => r += ` ${token.symbol} &`)
+    setRewardTokens(r.slice(0, -1))
+  }, [])
 
   const renderStakingButtons = () => {
     return stakedBalance.eq(0) ? (
       <StakeAdd row={true} />
     ) : (
       <IconButtonWrapper>
-        <IconButton 
-        style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}} 
+        <IconButton
+        style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
         variant="tertiary" onClick={()=>setShowModalWithdraw(true)} mr="6px">
           <MinusIcon />
         </IconButton>
         <IconButton
-          style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}} 
+          style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
           variant="tertiary"
           onClick={()=>setShowModalDeposit(true)}
           disabled={['history', 'archived'].some((item) => window.location.pathname.includes(item))}
@@ -143,9 +149,9 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
 
   return (
     <>
-        {(showModalDeposit || showModalWithdraw) && 
+        {(showModalDeposit || showModalWithdraw) &&
           <ModalContainer>
-        
+
         {showModalDeposit &&
           <DepositModal
           max={tokenBalance}
@@ -156,7 +162,7 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
           stakedBalance={stakedBalance}
           onConfirm={handleStake}
           tokenName={'lpSymbol'}
-          addLiquidityUrl={'#/add-pro/'+token1.address+'/'+token2.address}
+          addLiquidityUrl={'#/add-pro/'+token1.address+'/'+token2.address + '/' + isAnchor ? 'stable' : 'float' }
           token={stakingToken}
           />
         }

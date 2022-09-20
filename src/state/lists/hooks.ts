@@ -34,6 +34,7 @@ const EMPTY_LIST: TokenAddressMap = {
   [ChainId.MAINNET]: {},
   [ChainId.STANDALONE]: {},
   [ChainId.MOONRIVER]: {},
+  [ChainId.MOONROCK]: {},
   [ChainId.MOONBASE]: {},
   [ChainId.MOONSHADOW]: {}
 }
@@ -44,9 +45,11 @@ const listCache: WeakMap<TokenList, TokenAddressMap> | null =
 export function listToTokenMap(list: TokenList): TokenAddressMap {
   const result = listCache?.get(list)
   if (result) return result
-
+  console.log('list', list.tokens)
   const map = list.tokens.reduce<TokenAddressMap>(
     (tokenMap, tokenInfo) => {
+      console.log("tokens 123", tokenMap)
+
       const tags: TagInfo[] =
         tokenInfo.tags
           ?.map(tagId => {

@@ -128,6 +128,7 @@ export default function AddLiquidity({
   )
 
   const addTransaction = useTransactionAdder()
+  const [errorTx, setErrorTx] = useState<string>('')
 
   async function onAdd() {
     if (!chainId || !library || !account) return
@@ -177,7 +178,6 @@ export default function AddLiquidity({
       ]
       value = null
     }
-
     setAttemptingTxn(true)
     await estimate(...args, value ? { value } : {})
       .then(estimatedGasLimit =>
@@ -210,6 +210,7 @@ export default function AddLiquidity({
       )
       .catch(error => {
         setAttemptingTxn(false)
+        setErrorTx(error.message)
         // we only care if the error is something _other_ than the user rejected the tx
         if (error?.code !== 4001) {
           console.error(error)
@@ -269,6 +270,7 @@ export default function AddLiquidity({
         noLiquidity={noLiquidity}
         onAdd={onAdd}
         poolTokenPercentage={poolTokenPercentage}
+        errorTx={errorTx}
       />
     )
   }
@@ -306,6 +308,7 @@ export default function AddLiquidity({
 
   const handleDismissConfirmation = useCallback(() => {
     setShowConfirm(false)
+    setErrorTx('')
     // if there was a tx hash, we want to clear the input
     if (txHash) {
       onFieldAInput('')
@@ -334,7 +337,7 @@ export default function AddLiquidity({
             )}
             pendingText={pendingText}
           />
-          <AutoColumn gap="20px" style={{backgroundColor: theme.bg7, padding: '10px', borderRadius: '20px'}}>
+          <AutoColumn gap="20px" style={{padding: '10px', borderRadius: '20px'}}>
             {noLiquidity && (
               <ColumnCenter style={{padding: '10px'}}>
                 <BlueCard style={{background: 'transparent', border: `1px solid ${theme.anchorFloatBadge}`}}>
@@ -362,6 +365,7 @@ export default function AddLiquidity({
               currency={currencies[Field.CURRENCY_A]}
               id="add-liquidity-input-tokena"
               showCommonBases
+              tokens={[currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B]]}
             />
             <ColumnCenter>
               <Plus size="30" color='gray' />
@@ -377,6 +381,7 @@ export default function AddLiquidity({
               currency={currencies[Field.CURRENCY_B]}
               id="add-liquidity-input-tokenb"
               showCommonBases
+              tokens={[currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B]]}
             />
 
           </AutoColumn>
@@ -443,7 +448,7 @@ export default function AddLiquidity({
                         disabled={!isValid || approvalA !== ApprovalState.APPROVED || approvalB !== ApprovalState.APPROVED}
                         error={!isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]}
                       >
-                        <Text fontSize={20} fontWeight={400}>
+                        <Text fontSize={18} fontWeight={400}>
                           {error ?? 'Supply'}
                         </Text>
                       </ButtonError>

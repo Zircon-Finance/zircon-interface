@@ -13,7 +13,8 @@ export const nodes = [process.env.NEXT_PUBLIC_NODE_1, process.env.NEXT_PUBLIC_NO
 const getNodeUrl = () => {
   // Use custom node if available (both for development and production)
   // However on the testnet it wouldn't work, so if on testnet - comment out the NEXT_PUBLIC_NODE_PRODUCTION from env file
-  return "https://rpc.api.moonbase.moonbeam.network"
+  return 'https://rpc.testnet.moonbeam.network'
+
 }
 
 export default getNodeUrl

@@ -134,7 +134,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
 
     cardSmall: darkMode ? '#361E2A' : '#fcfbfc',
     cardLightBorder: '#f2f0f1',
-    cardExpanded: darkMode ? '#52273a' : '#f2f0f1',
+    cardExpanded: darkMode ? '#52273a' : '#faf5fc',
     badgeSmall: darkMode ? '#442734' : '#fcfbfc',
 
     changeButtonNormal: darkMode ? '#633d4e' : '#f1ebef',
@@ -150,7 +150,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     walletModal: darkMode ? '#52273a' : '#fff',
     opacitySmall: darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
 
-    searchInput: darkMode ? '#613244' : '#f5f3f3',
+    searchInput: darkMode ? '#5B3244' : '#f5f3f3',
 
     // color text
     primaryText1: '#ffffff',

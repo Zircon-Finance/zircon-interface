@@ -90,7 +90,7 @@ animation: ${({ expanded }) =>
   border: 1px solid transparent;
   outline: none;
   border-radius: 17px;
-  color: white;
+  color: ${({ theme }) => theme.text1};
   -webkit-appearance: none;
   transition: all 1s;
 

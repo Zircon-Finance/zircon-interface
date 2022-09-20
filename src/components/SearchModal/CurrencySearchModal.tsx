@@ -11,6 +11,7 @@ import { ListSelect } from './ListSelect'
 interface CurrencySearchModalProps {
   isOpen: boolean
   onDismiss: () => void
+  isFloat?: boolean
   selectedCurrency?: Currency | null
   onCurrencySelect: (currency: Currency) => void
   otherSelectedCurrency?: Currency | null
@@ -19,6 +20,7 @@ interface CurrencySearchModalProps {
 
 export default function CurrencySearchModal({
   isOpen,
+  isFloat,
   onDismiss,
   onCurrencySelect,
   selectedCurrency,
@@ -78,6 +80,7 @@ export default function CurrencySearchModal({
           selectedCurrency={selectedCurrency}
           otherSelectedCurrency={otherSelectedCurrency}
           showCommonBases={showCommonBases}
+          isFloat={isFloat}
         />
       )}
     </Modal>

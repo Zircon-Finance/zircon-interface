@@ -246,7 +246,8 @@ const ListRow = memo(function ListRow({ listUrl, onBack }: { listUrl: string; on
                     padding: '0.5rem .35rem',
                     borderRadius: '12px',
                     fontSize: '16px',
-                    fontWeight: 400
+                    fontWeight: 400,
+                    height: '42px'
                   }}
                   onClick={selectThisList}
               >
@@ -362,8 +363,8 @@ export function ListSelect({ onDismiss, onBack }: { onDismiss: () => void; onBac
           </RowBetween>
         </PaddedColumn>
 
-        <PaddedColumn gap="10px">
-          <Text fontWeight={400}>
+        <PaddedColumn gap="10px" >
+          <Text fontWeight={400} style={{display: 'flex', alignItems: 'center'}}>
             Add a list{' '}
             <QuestionHelper text="Token lists are an open specification for lists of ERC20 tokens. You can use any token list by entering its URL below. Beware that third party token lists can contain fake or malicious ERC20 tokens." />
           </Text>

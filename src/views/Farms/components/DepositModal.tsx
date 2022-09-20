@@ -11,7 +11,7 @@ import { getInterestBreakdown } from '../../../utils/compoundApyHelpers'
 import { ButtonLight, ButtonOutlined, ButtonPrimary } from '../../../components/Button'
 import { Link } from 'rebass'
 import { StyledErrorMessage } from '../../../components/ModalFarm/ModalInput'
-import { Token } from 'zircon-sdk'
+import {Token} from 'zircon-sdk'
 
 const AnnualRoiContainer = styled(Flex)`
   cursor: pointer;

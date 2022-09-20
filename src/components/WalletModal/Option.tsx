@@ -11,6 +11,10 @@ const InfoCard = styled.button<{ active?: boolean }>`
   border-radius: 12px;
   width: 100% !important;
   margin: auto;
+  &:hover {
+    cursor: pointer;
+    background: ${({ theme, active }) => active ? theme.bg14 : theme.opacitySmall};
+  }
 `
 
 const OptionCard = styled(InfoCard as any)`

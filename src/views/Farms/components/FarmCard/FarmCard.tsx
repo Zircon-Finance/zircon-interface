@@ -19,11 +19,13 @@ import { Link } from 'react-router-dom'
 import { useTransactionAdder } from '../../../../state/transactions/hooks'
 import { DeserializedPool } from '../../../../state/types'
 import { fetchPoolsUserDataAsync } from '../../../../state/pools'
-import { usePairLiquidity } from '../../../../state/pools/hooks'
-import { getPoolAprAddress } from '../../../../utils/apr'
+// import { usePairLiquidity } from '../../../../state/pools/hooks'
 import { useCurrency } from '../../../../hooks/Tokens'
 import { useGamma } from '../../../../data/PylonData'
 import {useDerivedPylonMintInfo} from "../../../../state/mint/pylonHooks";
+import { StyledLinkExternal } from '../FarmTable/Actions/ActionPanel'
+import CapacityIndicatorSmall from '../../../../components/CapacityIndicatorSmall'
+import { useWindowDimensions } from '../../../../hooks'
 
 const StyledCard = styled(Card)`
   align-self: baseline;
@@ -69,7 +71,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
   //     : ''
 
   const lpLabel = `${farm.token1.symbol}-${farm.token2.symbol}`
-  const addLiquidityUrl = '#/add-pro/' + farm.token1.address+'/' + farm.token2.address
+  const addLiquidityUrl = '#/add-pro/' + farm.token1.address+'/' + farm.token2.address + '/' + farm.isAnchor ? "stable":"float"
   const isPromotedFarm = farm.token1.symbol === 'CAKE'
   const isApproved = account && farm.userData.allowance && farm.userData.allowance.isGreaterThan(0)
   const [showModalDeposit, setShowModalDeposit] = useState(false)
@@ -90,7 +92,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
   );
   const gammaBig = useGamma(pylonPair?.address)
   const gamma = new BigNumber(gammaBig).div(new BigNumber(10).pow(18))
-
+  const {width} = useWindowDimensions()
 
   const handleStake = async (amount: string) => {
     const receipt = await fetchWithCatchTxError(() => {
@@ -115,8 +117,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
       dispatch(fetchPoolsUserDataAsync(account))
     }
   }
-  const pairLiquidity = usePairLiquidity(farm.token1, farm.token2)
-  const pylonLiquidity = usePairLiquidity(farm.token1, farm.token2)
+  const pairLiquidity = 0 //usePairLiquidity(farm.token1, farm.token2)
 
   return (
     <StyledCard isActive={isPromotedFarm}>
@@ -130,6 +131,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
           quoteToken={farm.token2}
           gamma={gamma}
           healthFactor={healthFactor}
+          sousId={farm.sousId}
         />
         {farm.userData.stakedBalance.gt(0) || !isApproved ? (
           <CardActionsContainer
@@ -146,7 +148,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
                 <DepositModal
                   max={farm.userData.stakingTokenBalance}
                   lpLabel={lpLabel}
-                  apr={farm.apr}
+                  apr={farm?.apr}
                   onDismiss={() => setShowModalDeposit(false)}
                   displayApr={"111"}
                   stakedBalance={farm.userData.stakedBalance}
@@ -155,7 +157,9 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
                   addLiquidityUrl={
                     farm.isClassic
                       ? `#/add/${farm.token1.address}/${farm.token2.address}`
-                      : `#/add-pro/${farm.token1.address}/${farm.token2.address}`
+                      : `#/add-pro/${farm.token1.address}/${
+                          farm.token2.address
+                        }/${farm.isAnchor ? "stable" : "float"}`
                   }
                   cakePrice={(112 as unknown) as BigNumber}
                   token={farm.stakingToken}
@@ -172,30 +176,49 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
         )}
 
         {!removed && (
-          <Flex justifyContent="space-between" alignItems="center" mt="15px">
-            <Text color={theme.text1} fontSize="13px">{t("APR")}:</Text>
-            <Text color={theme.text1}
-              fontSize="13px"
+          <Flex justifyContent="space-between" alignItems="center" mt={width <= 500 && '15px' }>
+            <Text color={theme.whiteHalf} fontSize="14px">
+              {t("APR")}:
+            </Text>
+            <Text
+              color={theme.text1}
+              fontSize="14px"
               style={{ display: "flex", alignItems: "center" }}
             >
               {" "}
-              {getPoolAprAddress(farm.contractAddress)}%
+              {farm?.apr?.toFixed(2)}%
             </Text>
           </Flex>
         )}
         <Flex mt="10px" justifyContent="space-between">
-          <Text color={theme.text1} fontSize="13px">
+          <Text color={theme.whiteHalf} fontSize="14px">
             {t("Liquidity")}:
           </Text>
-          <Text color={theme.text1} fontSize="13px">
-            {farm.isClassic ? pairLiquidity : pylonLiquidity}
+          <Text color={theme.text1} fontSize="14px">
+            {farm.isClassic ? pairLiquidity : new BigNumber(farm?.liquidity).toFixed(2)} USD
           </Text>
         </Flex>
+        {account && (
+            <Flex justifyContent="space-between" alignItems="center" mt="10px">
+              <Text color={theme.whiteHalf} fontSize="14px">
+                {`Health Factor`}:
+              </Text>
+              <CapacityIndicatorSmall
+                gamma={gamma}
+                health={healthFactor}
+                isFloat={!farm.isAnchor}
+                noSpan={false}
+                hoverPage={"tableCard"}
+              />
+            </Flex>
+          )}
         <Link
           to={
             farm.isClassic
               ? `/add/${farm.token1.address}/${farm.token2.address}`
-              : `/add-pro/${farm.token1.address}/${farm.token2.address}`
+              : `/add-pro/${farm.token1.address}/${farm.token2.address}/${
+                  farm.isAnchor ? "stable" : "float"
+                }`
           }
         >
           <ButtonOutlined
@@ -213,6 +236,23 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
             {`Get ${farm.token1.name} - ${farm.token2.name} LP tokens`}
           </ButtonOutlined>
         </Link>
+        <Flex justifyContent={'space-around'} mb={width <= 500 && '10px'}>
+          <StyledLinkExternal
+            style={{ color: theme.pinkBrown, fontWeight: 500, marginRight: '10px' }}
+            href={"Placeholder"}
+          >
+            {"See Pair Info ↗"}
+          </StyledLinkExternal>
+          <StyledLinkExternal
+            style={{
+              color: theme.pinkBrown,
+              fontWeight: 500,
+            }}
+            href={"Placeholder"}
+          >
+            {"View Contract ↗"}
+          </StyledLinkExternal>
+        </Flex>
       </FarmCardInnerContainer>
     </StyledCard>
   );

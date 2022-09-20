@@ -42,6 +42,7 @@ export const ButtonPrimary = styled(Base)`
   background-color: ${({ theme }) => theme.bg8};
   font-weight: 500;
   height: 60px;
+  font-size: 18px;
   color: white;
   &:hover {
     background-color: ${({ theme }) => theme.colors.input};
@@ -211,7 +212,7 @@ export const ButtonLighter = styled(Base)`
   color: ${({ theme }) => theme.text1};
 
   &:hover {
-    background-color: ${({ theme }) => theme.bg11};
+    background-color: ${({ theme }) => theme.opacitySmall};
   }
   &:disabled {
     opacity: 50%;
@@ -282,8 +283,9 @@ export const ButtonWhite = styled(Base)`
 `
 
 const ButtonConfirmedStyle = styled(Base)`
-  background-color: #261e37;
+  background-color: #4491333A;
   color: #449133;
+  font-weight: 500;
 
   &:disabled {
     opacity: 50%;

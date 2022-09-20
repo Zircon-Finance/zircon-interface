@@ -136,6 +136,7 @@ export const transformPool = (pool: SerializedPool): DeserializedPool => {
 export const getTokenPricesFromFarm = (farms: SerializedFarm[]) => {
   return farms.reduce((prices, farm) => {
     const quoteTokenAddress = farm.quoteToken.address.toLocaleLowerCase()
+    console.log("quoteTokenAddress", quoteTokenAddress)
     const tokenAddress = farm.token.address.toLocaleLowerCase()
     /* eslint-disable no-param-reassign */
     if (!prices[quoteTokenAddress]) {

@@ -28,7 +28,6 @@ const LabelRow = styled.div`
   padding: 5px;
   span:hover {
     cursor: pointer;
-    color: white;
   }
 `
 
@@ -186,7 +185,7 @@ export default function CurrencyInputPanel({
                   </div>
                   {currency &&
                   <Text style={{paddingRight: '0.75rem', alignSelf: 'center'}} color={theme.whiteHalf}>
-                    {'0$' /* This was added, it's supposed to convert to $ */}
+                    {'' /* This was added, it's supposed to convert to $ */}
                   </Text>
                   }
                 </TYPE.body>
@@ -203,6 +202,7 @@ export default function CurrencyInputPanel({
           selectedCurrency={currency}
           otherSelectedCurrency={otherCurrency}
           showCommonBases={showCommonBases}
+          isFloat={isFloat}
         />
       )}
     </InputPanel>

@@ -29,7 +29,7 @@ import {currencyId} from '../../utils/currencyId'
 import useDebouncedChangeHandler from '../../utils/useDebouncedChangeHandler'
 import {wrappedCurrency} from '../../utils/wrappedCurrency'
 import AppBodySmaller from '../AppBodySmaller'
-import {MaxButton, WrapperWithPadding} from '../Pool/styleds'
+import {WrapperWithPadding} from '../Pool/styleds'
 import {ApprovalState, useApproveCallback} from '../../hooks/useApproveCallback'
 import {Dots} from '../../components/swap/styleds'
 import {useBurnActionHandlers, useBurnState, useDerivedPylonBurnInfo} from '../../state/burn/hooks'
@@ -40,6 +40,30 @@ import {BigNumber} from '@ethersproject/bignumber'
 import {RouteComponentProps} from "react-router-dom";
 import LearnIcon from '../../components/LearnIcon'
 import {usePylonConstants} from "../../data/PylonData";
+import styled from 'styled-components'
+import BigNumberJs from "bignumber.js";
+import CapacityIndicator from "../../components/CapacityIndicator";
+import { StyledWarningIcon } from '../AddLiquidity/ConfirmAddModalBottom'
+
+export const PercButton = styled.button<{ width: string }>`
+  padding: 0.5rem 1rem;
+  background-color: ${({theme}) => theme.darkMode ? '#482537' : theme.darkerContrastPink};
+  color: ${({theme}) => theme.slippageActive};
+  border-radius: 17px;
+  font-size: 13px;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 0.25rem 0.5rem;
+  `};
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  overflow: hidden;
+  :hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: ${({theme}) => theme.text1};
+  }
+`
 
 export default function RemoveProLiquidity({
                                              history,
@@ -63,7 +87,7 @@ export default function RemoveProLiquidity({
 
   // burn state
   const { independentField, typedValue } = useBurnState()
-  const { pylon, parsedAmounts, error } = useDerivedPylonBurnInfo(currencyA ?? undefined, currencyB ?? undefined, isFloat, sync)
+  const { pylon, parsedAmounts, error, healthFactor, gamma, burnInfo } = useDerivedPylonBurnInfo(currencyA ?? undefined, currencyB ?? undefined, isFloat, sync)
   const { onUserInput: _onUserInput } = useBurnActionHandlers()
   const isValid = !error
 
@@ -189,6 +213,7 @@ export default function RemoveProLiquidity({
 
   // tx sending
   const addTransaction = useTransactionAdder()
+  const [errorTx, setErrorTx] = useState<string>('')
   async function onRemove() {
     if (!chainId || !library || !account) throw new Error('missing dependencies')
     const { [Field.CURRENCY_A]: currencyAmountA, [Field.CURRENCY_B]: currencyAmountB } = parsedAmounts
@@ -311,13 +336,13 @@ export default function RemoveProLiquidity({
             addTransaction(response, {
               summary:
                   sync ? 'Remove Sync' : 'Remove Async' +
-                  parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
-                  ' ' +
-                  currencyA?.symbol +
-                  ' and ' +
-                  parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
-                  ' ' +
-                  currencyB?.symbol
+                      parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
+                      ' ' +
+                      currencyA?.symbol +
+                      ' and ' +
+                      parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
+                      ' ' +
+                      currencyB?.symbol
             })
 
             setTxHash(response.hash)
@@ -328,8 +353,9 @@ export default function RemoveProLiquidity({
               label: [currencyA?.symbol, currencyB?.symbol].join('/')
             })
           })
-          .catch((error: Error) => {
+          .catch((error) => {
             setAttemptingTxn(false)
+            setErrorTx(error?.data?.message);
             // we only care if the error is something _other_ than the user rejected the tx
             console.error(error)
           })
@@ -377,7 +403,7 @@ export default function RemoveProLiquidity({
         <>
           <RowBetween>
             <Text color={theme.text2} fontWeight={400} fontSize={16}>
-              {'UNI ' + currencyA?.symbol + '/' + currencyB?.symbol} Burned
+              {'ZPT ' + currencyA?.symbol + '/' + currencyB?.symbol} Burned
             </Text>
             <RowFixed>
               <DoubleCurrencyLogo currency0={currencyA} currency1={currencyB} margin={true} />
@@ -404,8 +430,14 @@ export default function RemoveProLiquidity({
                 </RowBetween>
               </>
           )}
+          {errorTx && (
+          <RowBetween mt={10}>
+            <StyledWarningIcon />
+            <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{errorTx}</span>
+          </RowBetween>
+          )}
           <ButtonPrimary disabled={!(approval === ApprovalState.APPROVED || signatureData !== null)} onClick={onRemove}>
-            <Text fontWeight={400} fontSize={20}>
+            <Text fontWeight={400} fontSize={18}>
               Confirm
             </Text>
           </ButtonPrimary>
@@ -427,14 +459,14 @@ export default function RemoveProLiquidity({
   const oneCurrencyIsETH = currencyA === DEV || currencyB === DEV
   const firstCurrencyIsETH = currencyA === DEV
   const oneCurrencyIsWDEV = Boolean(
-    chainId &&
+      chainId &&
       ((currencyA && currencyEquals(WDEV[chainId], currencyA)) ||
-        (currencyB && currencyEquals(WDEV[chainId], currencyB)))
+          (currencyB && currencyEquals(WDEV[chainId], currencyB)))
   )
   const firstCurrencyIsWDEV = Boolean(
-    chainId &&
+      chainId &&
       ((currencyA && currencyEquals(WDEV[chainId], currencyA))
-    )
+      )
   )
 
   const handleSelectCurrencyA = useCallback(
@@ -460,6 +492,7 @@ export default function RemoveProLiquidity({
 
   const handleDismissConfirmation = useCallback(() => {
     setShowConfirm(false)
+    setErrorTx('')
     setSignatureData(null) // important that we clear signature data to avoid bad sigs
     // if there was a tx hash, we want to clear the input
     if (txHash) {
@@ -496,17 +529,17 @@ export default function RemoveProLiquidity({
               <TransparentCard style={{padding: '0px'}}>
                 <AutoColumn gap="20px">
                   <Flex justifyContent={'center'}>
-                  <div style={{display: 'flex', border: `1px solid ${theme.bg9}`, borderRadius: '17px', justifyContent: 'center'}}>
+                    <div style={{display: 'flex', background: theme.darkMode ? '#482537' : theme.darkerContrastPink, borderRadius: '17px', justifyContent: 'center', height: '33px'}}>
 
                       <ButtonAnchor borderRadius={'12px'} padding={'5px 15px'}
-                                    style={{backgroundColor: !showDetailed ? theme.bg9 : 'transparent', fontWeight: 400, fontSize: '13px', color: showDetailed ? theme.whiteHalf : theme.text1}}
+                                    style={{backgroundColor: !showDetailed ? theme.slippageActive : 'transparent', fontWeight: 500, fontSize: '13px', color: !showDetailed ? '#fff' : theme.slippageActive}}
                                     onClick={()=> {setShowDetailed(!showDetailed)}}>
-                        Simple
+                        SIMPLE
                       </ButtonAnchor>
                       <ButtonAnchor borderRadius={'12px'} padding={'5px 15px'}
-                                    style={{backgroundColor: showDetailed ? theme.bg9 : 'transparent', fontWeight: 400, fontSize: '13px', color: !showDetailed ? theme.whiteHalf : theme.text1}}
+                                    style={{backgroundColor: showDetailed ? theme.slippageActive : 'transparent', fontWeight: 500, fontSize: '13px', color: showDetailed ? '#fff' : theme.slippageActive}}
                                     onClick={()=> {setShowDetailed(!showDetailed)}}>
-                        Detailed
+                        DETAILED
                       </ButtonAnchor>
                     </div>
 
@@ -519,48 +552,50 @@ export default function RemoveProLiquidity({
                   {!showDetailed && (
                       <>
                         <Slider value={innerLiquidityPercentage} onChange={setInnerLiquidityPercentage} />
-                        <div style={{justifyContent: 'space-between', width: '90%', display: 'flex', margin: 'auto'}}>
-                          <MaxButton onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '25')} width="20%" style={{color: theme.text1}}>
+                        <div style={{justifyContent: 'space-between', width: '80%', display: 'flex', margin: 'auto'}}>
+                          <PercButton onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '25')} width="20%" >
                             25%
-                          </MaxButton>
-                          <MaxButton onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '50')} width="20%" style={{color: theme.text1}}>
+                          </PercButton>
+                          <PercButton onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '50')} width="20%" >
                             50%
-                          </MaxButton>
-                          <MaxButton onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '75')} width="20%" style={{color: theme.text1}}>
+                          </PercButton>
+                          <PercButton onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '75')} width="20%" >
                             75%
-                          </MaxButton>
-                          <MaxButton onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '100')} width="20%" style={{color: theme.text1}}>
+                          </PercButton>
+                          <PercButton onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '100')} width="20%">
                             MAX
-                          </MaxButton>
+                          </PercButton>
                         </div>
                       </>
                   )}
                 </AutoColumn>
               </TransparentCard>
-              <div style={{display: 'flex', border: `1px solid ${theme.navigationBorder}`, borderRadius: '17px', justifyContent: 'space-between'}}>
-                <span style={{display: 'inline', alignSelf: 'center', fontSize: '13px', margin: 'auto', fontWeight: 400}}>{'Withdrawal Mode'}</span>
-                <div style={{display: 'flex', borderLeft: `1px solid ${theme.bg9}`, borderRadius: '17px', padding: '5px'}}>
+              <div style={{display: 'flex', borderRadius: '17px', justifyContent: 'space-between'}}>
+                <span style={{display: 'inline', alignSelf: 'center', fontSize: '13px', marginLeft: '10px', fontWeight: 400}}>{'BURN AND SWAP'}</span>
+                <div style={{display: 'flex', borderRadius: '17px', padding: '5px', background: theme.liquidityBg}}>
 
                   <ButtonAnchor borderRadius={'12px'} padding={'10px'}
-                                style={{backgroundColor: sync ? theme.bg9 : 'transparent', fontWeight: 400, fontSize: '13px', color: theme.text1}}
+                                style={{backgroundColor: sync ? theme.badgeSmall : 'transparent',
+                                  fontWeight: 400, fontSize: '13px',
+                                  color: sync ? theme.text1 : theme.meatPinkBrown}}
                                 onClick={()=> {setSync(true)}}>
-                    SYNC
+                    OFF
                   </ButtonAnchor>
                   <ButtonAnchor borderRadius={'12px'} padding={'10px'}
-                                style={{backgroundColor: !sync ? theme.bg9 : 'transparent', fontWeight: 400, fontSize: '13px', color: theme.text1}}
+                                style={{backgroundColor: !sync ? theme.badgeSmall : 'transparent',
+                                  fontWeight: 400, fontSize: '13px',
+                                  color: !sync ? theme.text1 : theme.meatPinkBrown}}
                                 onClick={()=> {
                                   setSync(false)}}>
-                    50/50 Async
+                    ON
                   </ButtonAnchor>
                 </div>
               </div>
               {!showDetailed && (
                   <>
-                    <ColumnCenter>
-                      <span style={{width: '100%', marginLeft: '20px', fontSize: '13px'}}>You will receive</span>
-                    </ColumnCenter>
                     <LightPinkCard>
                       <AutoColumn gap="10px">
+                        <span style={{width: '100%', fontSize: '13px'}}>{'YOU WILL RECEIVE'}</span>
                         {(!sync || isFloat) && <RowBetween>
                           <RowFixed>
                             <CurrencyLogo currency={currencyA} style={{ marginRight: '12px' }} />
@@ -624,6 +659,7 @@ export default function RemoveProLiquidity({
                         currency={pylon?.pair?.liquidityToken}
                         pair={pylon?.pair}
                         id="liquidity-amount"
+                        tokens={[currencyA, currencyB]}
                     />
                     <ColumnCenter>
                       <ArrowDown size="16" color={theme.text2} />
@@ -639,6 +675,7 @@ export default function RemoveProLiquidity({
                         label={'Output'}
                         onCurrencySelect={handleSelectCurrencyA}
                         id="remove-liquidity-tokena"
+                        tokens={[currencyA, currencyB]}
                     />
                     <ColumnCenter>
                       <Plus size="16" color={theme.text2} />
@@ -654,15 +691,16 @@ export default function RemoveProLiquidity({
                         label={'Output'}
                         onCurrencySelect={handleSelectCurrencyB}
                         id="remove-liquidity-tokenb"
+                        tokens={[currencyA, currencyB]}
                     />
                   </>
               )}
               {pylon?.pair && (
                   <div style={{ padding: '10px 20px' }}>
                     <RowBetween>
-                      <Text fontSize={13} fontWeight={400}>Price: </Text>
+                      <Text fontSize={13} fontWeight={400} color={theme.whiteHalf}>Price: </Text>
                       <div>
-                        <Text fontSize={13} fontWeight={400}>
+                        <Text fontSize={13} fontWeight={400} color={theme.whiteHalf}>
                           1 {currencyA?.symbol} = {tokenA ? pylon?.pair.priceOf(tokenA).toSignificant(6) : '-'} {currencyB?.symbol}
                         </Text>
                       </div>
@@ -670,13 +708,24 @@ export default function RemoveProLiquidity({
                     <RowBetween>
                       <div />
                       <div>
-                        <Text fontSize={13} fontWeight={400}>
+                        <Text fontSize={13} fontWeight={400} color={theme.whiteHalf}>
                           1 {currencyB?.symbol} = {tokenB ? pylon?.pair.priceOf(tokenB).toSignificant(6) : '-'} {currencyA?.symbol}
                         </Text>
                       </div>
                     </RowBetween>
                   </div>
               )}
+              <div style={{marginBottom: 32}}>
+                <CapacityIndicator
+                    gamma={new BigNumberJs(gamma).div(new BigNumberJs(10).pow(18))}
+                    health={healthFactor}
+                    isFloat={isFloat}
+                    slashingOmega={new BigNumberJs(burnInfo?.omegaSlashingPercentage.toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
+                    blocked={burnInfo?.blocked || burnInfo?.asyncBlocked}
+                    feePercentage={new BigNumberJs(burnInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
+                    isDeltaGamma={burnInfo?.deltaApplied}
+                />
+              </div>
               <div style={{ position: 'relative' }}>
                 {!account ? (
                     <ButtonLight onClick={toggleWalletModal}>Connect Wallet</ButtonLight>
@@ -713,6 +762,9 @@ export default function RemoveProLiquidity({
                 )}
               </div>
             </AutoColumn>
+
+
+
           </WrapperWithPadding>
         </AppBodySmaller>
 

@@ -15,7 +15,6 @@ const LabelRow = styled.div`
   padding: 5px;
   span:hover {
     cursor: pointer;
-    color: white;
   }
 `
 
@@ -49,6 +48,7 @@ interface CurrencyInputPanelProps {
   id: string
   style?: React.CSSProperties
   showCommonBases?: boolean
+  isFloat: boolean
 }
 
 export default function CurrencyInputPanel({
@@ -62,6 +62,7 @@ export default function CurrencyInputPanel({
   otherCurrency,
   id,
   style,
+  isFloat,
   showCommonBases
 }: CurrencyInputPanelProps) {
 
@@ -99,6 +100,7 @@ export default function CurrencyInputPanel({
           selectedCurrency={currency}
           otherSelectedCurrency={otherCurrency}
           showCommonBases={showCommonBases}
+          isFloat={isFloat}
         />
       )}
     </InputPanel>

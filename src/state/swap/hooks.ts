@@ -1,6 +1,17 @@
 import useENS from '../../hooks/useENS'
 import { parseUnits } from '@ethersproject/units'
-import { ChainId, Currency, CurrencyAmount, DEV, JSBI, Pair, Token, TokenAmount, Trade, MOONBASE_ADDRESSES } from 'zircon-sdk'
+import {
+  ChainId,
+  Currency,
+  CurrencyAmount,
+  DEV,
+  JSBI,
+  Pair,
+  Token,
+  TokenAmount,
+  Trade,
+  MOONBASE_ADDRESSES,
+} from 'zircon-sdk'
 import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -406,8 +417,8 @@ export const useFetchPairPrices = ({
   useEffect(() => {
     const updatePairId = () => {
       try {
-        const token0AsTokenInstance = new Token(ChainId.MOONBASE, token0Address, 18)
-        const token1AsTokenInstance = new Token(ChainId.MOONBASE, token1Address, 18)
+        const token0AsTokenInstance = new Token(ChainId.MOONRIVER, token0Address, 18)
+        const token1AsTokenInstance = new Token(ChainId.MOONRIVER, token1Address, 18)
         const pairAddress = Pair.getAddress(token0AsTokenInstance, token1AsTokenInstance).toLowerCase()
         if (pairAddress !== pairId) {
           setPairId(pairAddress)

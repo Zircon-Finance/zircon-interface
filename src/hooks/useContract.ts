@@ -94,7 +94,7 @@ export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contrac
         break
       case ChainId.STANDALONE:
         break
-      case ChainId.MOONBASE:
+      case ChainId.MOONRIVER:
         break
     }
   }

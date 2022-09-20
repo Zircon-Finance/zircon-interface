@@ -10,7 +10,7 @@ import AddLiquidity from './AddLiquidity'
 import AddLiquidityPro from './AddLiquidityPro'
 // import MobileView from './MobileView'
 import {
-  RedirectDuplicateTokenIdsPro,
+  RedirectDuplicateTokenIdsPro, RedirectDuplicateTokenIdsProAnchor,
   RedirectOldAddLiquidityProPathStructure,
   RedirectToAddLiquidityPro
 } from './AddLiquidityPro/redirects'
@@ -99,7 +99,7 @@ export default function App() {
     <Suspense fallback={null}>
       <HashRouter>
         {/* {isMobile && <Redirect to="/mobile" />}
-        {isMobile && <MobileWrapper><MobileView 
+        {isMobile && <MobileWrapper><MobileView
           icon='laptop'
           upperText='Please use your desktop to try the Zircon Beta'
           lowerText='Our app will be available on your phone soon'  />
@@ -132,6 +132,7 @@ export default function App() {
                 <Route exact path="/add-pro" component={AddLiquidityPro} />
                 <Route exact path="/add-pro/:currencyIdA" component={RedirectOldAddLiquidityProPathStructure} />
                 <Route exact path="/add-pro/:currencyIdA/:currencyIdB" component={RedirectDuplicateTokenIdsPro} />
+                <Route exact path="/add-pro/:currencyIdA/:currencyIdB/:side" component={RedirectDuplicateTokenIdsProAnchor} />
                 <Route exact path="/farm" component={Farms} />
                 <Route exact strict path="/remove/:tokens" component={RedirectOldRemoveLiquidityPathStructure} />
                 <Route exact strict path="/remove/:currencyIdA/:currencyIdB" component={RemoveLiquidity} />

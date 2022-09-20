@@ -7,7 +7,8 @@ import {
     usePylonFactoryContract
 } from '../hooks/useContract'
 import {useSingleCallResult, useSingleContractMultipleMethods} from '../state/multicall/hooks'
-import {MOONBASE_ADDRESSES, PylonFactory} from "zircon-sdk";
+import {EN_FACTORY_ADDRESS, FACTORY_ADDRESS, PYLON_FACTORY_ADDRESS, PylonFactory} from "zircon-sdk";
+import {useActiveWeb3React} from "../hooks";
 
 // returns undefined if input token is undefined, or fails to get token contract,
 // or contract total supply cannot be fetched
@@ -60,9 +61,11 @@ export function usePylonInfo(address?: string): (any)[] | undefined {
 
 
 export function usePylonConstants(): PylonFactory | undefined {
-    const pylonFactoryContract = usePylonFactoryContract(MOONBASE_ADDRESSES.pylonFactory, false)
-    const factoryContract = usePairFactoryContract(MOONBASE_ADDRESSES.factory, false)
-    const energyFactoryContract = useEnergyFactoryContract(MOONBASE_ADDRESSES.energyFactory, false)
+    const { chainId } = useActiveWeb3React()
+
+    const pylonFactoryContract = usePylonFactoryContract( PYLON_FACTORY_ADDRESS[chainId], false)
+    const factoryContract = usePairFactoryContract(FACTORY_ADDRESS[chainId], false)
+    const energyFactoryContract = useEnergyFactoryContract(EN_FACTORY_ADDRESS[chainId], false)
 
     const pylonResult = useSingleContractMultipleMethods(pylonFactoryContract, [
         "maximumPercentageSync",

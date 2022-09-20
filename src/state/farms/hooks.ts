@@ -108,7 +108,7 @@ export const useFarmUser = (sousId): DeserializedPool => {
       stakedBalance,
       pendingReward
     }
-    
+
   }
 }
 
@@ -116,6 +116,5 @@ export const useFarmUser = (sousId): DeserializedPool => {
  * @@deprecated use the BUSD hook in /hooks
  */
 export const usePriceCakeBusd = (): BigNumber => {
-
   return 1 as unknown as BigNumber
 }

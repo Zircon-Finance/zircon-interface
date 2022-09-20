@@ -5,23 +5,15 @@ import BigNumber from 'bignumber.js'
 import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber'
 import { useWeb3React } from '@web3-react/core'
 import { RowType, Toggle, Text, Flex } from '@pancakeswap/uikit'
-import lpAprs from '../../constants/lpAprs.json'
-// import { ChainId } from 'zircon-sdk'
-// import { NextLinkFromReactRouter } from 'components/NextLink'
 import styled, { useTheme } from 'styled-components'
 import Page from '../../components/Layout/Page'
 import { usePriceCakeBusd } from '../../state/farms/hooks'
 import useIntersectionObserver from '../../hooks/useIntersectionObserver'
-// import { DeserializedFarm } from '../../state/types'
 import { useTranslation } from 'react-i18next'
-import { getBalanceNumber } from '../../utils/formatBalance'
-// import { getFarmApr } from '../../utils/apr'
-// import isArchivedPid from '../../utils/farmHelpers'
-// import { latinise } from '../../utils/latinise'
+import {getBalanceNumber, getBalanceUSD} from '../../utils/formatBalance'
 import { useIsDarkMode, useShowMobileSearchBarManager, useUserFarmsFilterAnchorFloat, useUserFarmsFilterPylonClassic, useUserFarmStakedOnly, useUserFarmsViewMode } from '../../state/user/hooks'
 import {
   FarmFilter,
-  // FarmFilter,
   FarmFilterAnchorFloat,
   ViewMode } from '../../state/user/actions'
 import SearchInput from '../../components/SearchInput'
@@ -30,7 +22,7 @@ import { RowProps } from './components/FarmTable/Row'
 import { DesktopColumnSchema,
   // FarmWithStakedValue
 } from './components/types'
-import { AnchorFloatTab, FarmTabButtons, PylonClassicTab, ViewModeTabs } from '../../components/FarmSelectTabs'
+import { AnchorFloatTab, PylonClassicTab, ViewModeTabs } from '../../components/FarmSelectTabs'
 import FarmRepeatIcon from '../../components/FarmRepeatIcon'
 import FarmsPage from '../../pages/Farm/'
 import Select from '../../components/Select/Select'
@@ -40,7 +32,7 @@ import { fetchPoolsUserDataAsync } from '../../state/pools'
 import { DeserializedPool, DeserializedPoolVault } from '../../state/types'
 import orderBy from 'lodash/orderBy'
 import { formatUnits } from 'ethers/lib/utils'
-import { getPoolAprAddress } from '../../utils/apr'
+import {getPoolAprAddress } from '../../utils/apr'
 
 const FlexLayout = styled.div`
   display: flex;
@@ -144,17 +136,18 @@ const TableData = styled.td`
 `
 
 const PinkArrows = styled.div`
- svg {
+  svg {
     fill: ${({ theme }) => theme.meatPink};
     stroke: ${({ theme }) => theme.meatPink};
- }
- `
+  }
+`
 
 const SelectedOptionDiv = styled.div`
   position: absolute;
   top: 44px;
+  left: -10px;
   width: 50%;
-  background: ${({ theme }) => theme.cardExpanded};
+  background: ${({ theme }) => theme.meatPink};
   height: 5px;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
@@ -184,7 +177,7 @@ export const ModalContainer = styled.div`
   }
 `
 
- const NUMBER_OF_POOLS_VISIBLE = 12
+const NUMBER_OF_POOLS_VISIBLE = 12
 
 export const getDisplayApr = (cakeRewardsApr?: number, lpRewardsApr?: number) => {
   if (cakeRewardsApr && lpRewardsApr) {
@@ -234,7 +227,7 @@ const Farms: React.FC = ({ children }) => {
   let activeFarms = pools
 
   const stakedOnlyFarms = activeFarms.filter(
-    (farm) => farm.userData && new BigNumber(farm.userData.stakedBalance).gt(0),
+      (farm) => farm.userData && new BigNumber(farm.userData.stakedBalance).gt(0),
   )
 
   const handleChangeQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -245,26 +238,25 @@ const Farms: React.FC = ({ children }) => {
   const options = ['Earned', 'Staked', 'APR', 'Liquidty']
   const [showMobileSearchBar] = useShowMobileSearchBarManager()
 
-    const sortPools = (sortOption: string, poolsToSort: DeserializedPool[]) => {
-      switch (sortOption) {
-        case 'apr':
-          // Ternary is needed to prevent pools without APR (like MIX) getting top spot
-          return orderBy(poolsToSort, (pool: DeserializedPool) =>
-          lpAprs[pool.contractAddress] || 0, 'desc')
-        case 'earned':
-          return orderBy(
+  const sortPools = (sortOption: string, poolsToSort: DeserializedPool[]) => {
+    switch (sortOption) {
+      case 'apr':
+        // Ternary is needed to prevent pools without APR (like MIX) getting top spot
+        return orderBy(poolsToSort, (pool: DeserializedPool) => getPoolAprAddress(pool.contractAddress) ?? 0)
+      case 'earned':
+        return orderBy(
             poolsToSort,
             (pool: DeserializedPool) => {
               if (!pool.userData || !pool.earningTokenPrice) {
                 return 0
               }
 
-              return pool.userData.pendingReward.times(pool.earningTokenPrice).toNumber()
+              return 0 //pool.userData.pendingReward.times(pool.earningTokenPrice).toNumber()
             },
             'desc',
-          )
-        case 'totalStaked': {
-          return orderBy(
+        )
+      case 'totalStaked': {
+        return orderBy(
             poolsToSort,
             (pool: DeserializedPool) => {
               let totalStaked = Number.NaN
@@ -272,25 +264,25 @@ const Farms: React.FC = ({ children }) => {
                 const vault = pool as DeserializedPoolVault
                 if (pool.stakingTokenPrice && vault.totalCakeInVault.isFinite()) {
                   totalStaked =
-                    +formatUnits(EthersBigNumber.from(vault.totalCakeInVault.toString()), pool.stakingToken.decimals) *
-                    pool.stakingTokenPrice
+                      +formatUnits(EthersBigNumber.from(vault.totalCakeInVault.toString()), pool.stakingToken.decimals) *
+                      pool.stakingTokenPrice
                 }
               } else if (pool.totalStaked?.isFinite() && pool.stakingTokenPrice) {
                 totalStaked =
-                  +formatUnits(EthersBigNumber.from(pool.totalStaked.toString()), pool.stakingToken.decimals) *
-                  pool.stakingTokenPrice
+                    +formatUnits(EthersBigNumber.from(pool.totalStaked.toString()), pool.stakingToken.decimals) *
+                    pool.stakingTokenPrice
               }
               return Number.isFinite(totalStaked) ? totalStaked : 0
             },
             'desc',
-          )
-        }
-        case 'latest':
-          return orderBy(poolsToSort, (pool: DeserializedPool) => Number(pool.sousId), 'desc')
-        default:
-          return poolsToSort
+        )
       }
+      case 'latest':
+        return orderBy(poolsToSort, (pool: DeserializedPool) => Number(pool.sousId), 'desc')
+      default:
+        return poolsToSort
     }
+  }
 
   let chosenPools = activeFarms
 
@@ -305,21 +297,21 @@ const Farms: React.FC = ({ children }) => {
     if (query) {
       const lowercaseQuery = query.toLowerCase()
       sortedPools = sortedPools.filter((pool) =>
-      pool.token1.symbol.toLowerCase().includes(lowercaseQuery) ||
-      pool.token2.symbol.toLowerCase().includes(lowercaseQuery))
+          pool.token1.symbol.toLowerCase().includes(lowercaseQuery) ||
+          pool.token2.symbol.toLowerCase().includes(lowercaseQuery))
     }
 
     sortedPools =
-    filterAnchorFloat === FarmFilterAnchorFloat.ANCHOR ?
-    sortedPools.filter((pool) => pool.isAnchor === true) :
-    filterAnchorFloat === FarmFilterAnchorFloat.FLOAT ?
-    sortedPools.filter((pool) => !pool.isAnchor === true) :
-    sortedPools
+        filterAnchorFloat === FarmFilterAnchorFloat.ANCHOR ?
+            sortedPools.filter((pool) => pool.isAnchor === true) :
+            filterAnchorFloat === FarmFilterAnchorFloat.FLOAT ?
+                sortedPools.filter((pool) => !pool.isAnchor === true) :
+                sortedPools
 
     sortedPools =
-    filter === FarmFilter.CLASSIC ?
-    sortedPools.filter((pool) => pool.isClassic === true) :
-    sortedPools.filter((pool) => !pool.isClassic === true)
+        filter === FarmFilter.CLASSIC ?
+            sortedPools.filter((pool) => pool.isClassic === true) :
+            sortedPools.filter((pool) => !pool.isClassic === true)
 
     return sortedPools
   }, [query, stakedOnly, stakedOnlyFarms, chosenPools, sortOption, filterAnchorFloat, filter])
@@ -336,7 +328,7 @@ const Farms: React.FC = ({ children }) => {
 
     const row: RowProps = {
       apr: {
-        value: getPoolAprAddress(farm.contractAddress),
+        value: Math.floor(farm.apr).toString(),
         // getDisplayApr(farm.apr, farm.lpRewardsApr),
         pid: farm.sousId,
         lpLabel,
@@ -358,12 +350,13 @@ const Farms: React.FC = ({ children }) => {
       },
       earned: {
         earnings: getBalanceNumber(new BigNumber(farm.userData.pendingReward)),
+        earningsUSD: getBalanceUSD(new BigNumber(farm.userData.pendingReward), farm.earningTokenCurrentPrice),
         pid: farm.sousId,
         hovered: false,
         setHovered: () => {},
       },
       liquidity: {
-        liquidity: farm.totalStaked,
+        liquidity: BigNumber(farm.liquidity),
         hovered: false,
         setHovered: () => {},
         farm: farm,
@@ -397,6 +390,11 @@ const Farms: React.FC = ({ children }) => {
               return 0
             case 'earned':
               return a.original.earned.earnings - b.original.earned.earnings
+              // case 'liquidity':
+              //   if (a.original.liquidity.value && b.original.liquidity.) {
+              //     return Number(a.original.liquidity.value) - Number(b.original.liquidity.value)
+              //   }
+              //   return 0
             default:
               return 1
           }
@@ -410,102 +408,91 @@ const Farms: React.FC = ({ children }) => {
   const darkMode = useIsDarkMode()
   activeFarms = chosenPools
   return (
-    <FarmsContext.Provider value={{ activeFarms }}>
-      <Page>
-      <Text color={theme.text1} fontWeight={300} fontSize={'30px'} style={{textAlign: 'center', alignSelf: 'center', marginBottom: width >= 700 ? '30px' : '20px'}}>
-          {'Farms'}
-        </Text>
-        <ControlContainer>
-          <Flex m={'0px'}>
-            <PylonClassicTab active={filter} />
-            <AnchorFloatTab active={filterAnchorFloat} />
-          </Flex>
-          <Flex position={'relative'} width={width < 500 ? showMobileSearchBar ? '100%' : 'auto' : 'auto'} height={'70px'}>
-            { (!showMobileSearchBar || width > 500) && <ViewControls>
-              <ToggleWrapper style={{marginRight: '10px', position: 'relative'}}>
-                <Text fontSize='13px' color={theme.text1} mr={'10px'} width={'max-content'} letterSpacing={'0.05em'}> {width > 700 ? 'STAKED ONLY' : 'STAKED'}</Text>
-                <Toggle
-                  id="staked-only-farms"
-                  checked={stakedOnly}
-                  checkedColor={'dropdownDeep'}
-                  defaultColor={'dropdownDeep'}
-                  onChange={() => setStakedOnly(!stakedOnly)}
-                  scale="sm"
-                />
-              </ToggleWrapper>
-              <FarmTabButtons active='Active' />
-            </ViewControls>}
-            <FilterContainer>
-              <LabelWrapper style={{ marginLeft: showMobileSearchBar ? 0 : 10, width: '100%' }}>
-                <SearchInput onChange={handleChangeQuery} placeholder="SEARCH FARMS" />
-              </LabelWrapper>
-            </FilterContainer>
-          </Flex>
-        </ControlContainer>
-        <MainContainer>
-          <table style={{width: '100%', borderBottom: `1px solid ${theme.opacitySmall}`, paddingBottom: '5px'}}>
-            <tr style={viewMode === ViewMode.CARD || (viewMode === ViewMode.TABLE && width <= 992) ?
-              ({display: 'flex', justifyContent: 'space-between', alignItems: 'center'})
-              : null}>
-              <TableData style={{minWidth: width >= 600 ? '275px' : 'auto'}}>
-                <ViewModeTabs active={viewMode} />
-              </TableData>
-              {viewMode === ViewMode.TABLE && width > 992 ? options.map((option) => (
-                <TableData key={option} style={{cursor: 'pointer'}} onClick={() =>
-                sortOption === option.toLowerCase() ? setSortOption('hot') :
-                setSortOption(option.toLowerCase())}>
-                  <PinkArrows style={{display: 'flex', alignItems: 'center'}}>
-                    <p style={{fontSize: '13px', color: !darkMode ? theme.text1 : theme.meatPink, fontWeight: 500, margin: 0}}>{option}</p>
-                    <FarmRepeatIcon />
-                  </PinkArrows>
-                  {sortOption === option.toLowerCase() ? <SelectedOptionDiv /> : null}
-                </TableData>)) :
-                (
-                  <TableData style={{display: 'flex', width: '200px', paddingRight: width <= 992 ? '0px' : '5px'}}>
-                    <Text style={{width: '100px', alignSelf: 'center'}} color={theme.whiteHalf} fontSize={'15px'} >{t('Sort by')}</Text>
-                    <Select
-                      options={[
-                        {
-                          label: t('Hot'),
-                          value: 'hot',
-                        },
-                        {
-                          label: t('APR'),
-                          value: 'apr',
-                        },
-                        {
-                          label: t('Multiplier'),
-                          value: 'multiplier',
-                        },
-                        {
-                          label: t('Earned'),
-                          value: 'earned',
-                        },
-                        {
-                          label: t('Liquidity'),
-                          value: 'liquidity',
-                        },
-                        {
-                          label: t('Latest'),
-                          value: 'latest',
-                        },
-                      ]}
-                      onOptionChange={(option) => setSortOption(option.value)}
-                    />
-                  </TableData>
-                )}
-              {viewMode === ViewMode.TABLE && width > 992 && (<TableData style={{width: '15%'}}/>)}
-            </tr>
-          </table>
+      <FarmsContext.Provider value={{ activeFarms }}>
+        <Page>
+          <Text color={theme.text1} fontWeight={300} fontSize={'30px'} style={{textAlign: 'center', alignSelf: 'center', marginBottom: width >= 700 ? '30px' : '20px'}}>
+            {'Farms'}
+          </Text>
+          <ControlContainer>
+            <Flex m={'0px'}>
+              <PylonClassicTab active={filter} />
+              <AnchorFloatTab active={filterAnchorFloat} />
+            </Flex>
+            <Flex position={'relative'} width={width < 500 ? showMobileSearchBar ? '100%' : 'auto' : 'auto'} height={'70px'}>
+              { (!showMobileSearchBar || width > 500) && <ViewControls>
+                <ToggleWrapper style={{marginRight: '10px', position: 'relative'}}>
+                  <Text style={{marginLeft: -10}} fontSize='13px' color={theme.text1} mr={'10px'} width={'max-content'} letterSpacing={'0.05em'}> {width > 700 ? 'SHOW ONLY MINE' : 'SHOW ONLY MINE'}</Text>
+                  <Toggle
+                      id="staked-only-farms"
+                      checked={stakedOnly}
+                      checkedColor={'dropdownDeep'}
+                      defaultColor={'dropdownDeep'}
+                      onChange={() => setStakedOnly(!stakedOnly)}
+                      scale="sm"
+                  />
+                </ToggleWrapper>
+                {/*<FarmTabButtons active='Active' />*/}
+              </ViewControls>}
+              <FilterContainer>
+                <LabelWrapper style={{ marginLeft: showMobileSearchBar ? 0 : 10, width: '100%' }}>
+                  <SearchInput onChange={handleChangeQuery} placeholder="SEARCH FARMS" />
+                </LabelWrapper>
+              </FilterContainer>
+            </Flex>
+          </ControlContainer>
+          <MainContainer>
+            <table style={{width: '100%', borderBottom: `1px solid ${theme.opacitySmall}`, paddingBottom: '5px'}}>
+              <tr style={viewMode === ViewMode.CARD || (viewMode === ViewMode.TABLE && width <= 992) ?
+                  ({display: 'flex', justifyContent: 'space-between', alignItems: 'center'})
+                  : null}>
+                <TableData style={{minWidth: width >= 600 ? '275px' : 'auto'}}>
+                  <ViewModeTabs active={viewMode} />
+                </TableData>
+                {viewMode === ViewMode.TABLE && width > 992 ? options.map((option) => (
+                        <TableData key={option} style={{cursor: (option === 'Earned' || option === 'Staked') && 'pointer'}} onClick={() => {
+                          (option === 'Earned' || option === 'Staked') && (
+                              sortOption === option.toLowerCase() ? setSortOption('hot') :
+                                  setSortOption(option.toLowerCase()))}}>
+                          <PinkArrows style={{display: 'flex', alignItems: 'center'}}>
+                            <p style={{fontSize: '13px', color: !darkMode ? theme.text1 : theme.meatPink, fontWeight: 500, margin: 0}}>{option}</p>
+                            {(option === 'Earned' || option === 'Staked') && <FarmRepeatIcon />}
+                          </PinkArrows>
+                          {sortOption === option.toLowerCase() ? <SelectedOptionDiv /> : null}
+                        </TableData>)) :
+                    (
+                        <TableData style={{display: 'flex', width: '200px', paddingRight: width <= 992 ? '0px' : '5px'}}>
+                          <Text style={{width: '100px', alignSelf: 'center'}} color={theme.whiteHalf} fontSize={'15px'} >{t('Sort by')}</Text>
+                          <Select
+                              options={[
+                                {
+                                  label: t('Hot'),
+                                  value: 'hot',
+                                },
+                                {
+                                  label: t('APR'),
+                                  value: 'apr',
+                                },
+                                {
+                                  label: t('Earned'),
+                                  value: 'earned',
+                                },
+                              ]}
+                              onOptionChange={(option) => setSortOption(option.value)}
+                          />
+                        </TableData>
+                    )}
+                {viewMode === ViewMode.TABLE && width > 992 && (<TableData style={{width: '15%'}}/>)}
+              </tr>
+            </table>
             {renderContent()}
-        </MainContainer>
-        {account && !userDataLoaded && stakedOnly && (
-          <Flex justifyContent="center">
-          </Flex>
-        )}
-        <div ref={observerRef} />
-      </Page>
-    </FarmsContext.Provider>
+          </MainContainer>
+          {account && !userDataLoaded && stakedOnly && (
+              <Flex justifyContent="center">
+              </Flex>
+          )}
+          <div ref={observerRef} />
+        </Page>
+      </FarmsContext.Provider>
   )
 }
 

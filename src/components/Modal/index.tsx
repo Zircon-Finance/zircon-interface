@@ -38,6 +38,22 @@ const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, ...r
     width: 350px;
     overflow: hidden;
 
+    #claim_modal {
+      div {
+        border-bottom: none;
+      }
+      h2 {
+        font-size: 18px;
+        font-weight: 500;
+        color: ${({ theme }) => theme.text1};
+      }
+      svg {
+        path {
+          fill: ${({ theme }) => theme.text1};
+        }
+      }
+    }
+
     align-self: ${({ mobile }) => (mobile ? 'flex-end' : 'center')};
 
     max-width: 420px;

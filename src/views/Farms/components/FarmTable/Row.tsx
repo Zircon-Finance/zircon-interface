@@ -36,6 +36,7 @@ import {useDerivedPylonMintInfo} from "../../../../state/mint/pylonHooks";
 import BigNumberJs from "bignumber.js";
 import {useGamma} from "../../../../data/PylonData";
 import CapacityIndicatorSmall from "../../../../components/CapacityIndicatorSmall";
+import { fetchPoolsUserDataAsync } from '../../../../state/pools'
 // import { useFarmUser } from '../../../../state/farms/hooks'
 
 export interface RowProps {
@@ -61,8 +62,12 @@ const cells = {
   liquidity: Liquidity,
 }
 
+interface ToolTipProps {
+  option: string
+}
+
 const CellInner = styled.div`
-  padding: 19px 0px;
+  padding: 14px 0px;
   display: flex;
   width: 100%;
   align-items: center;
@@ -168,7 +173,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     details,
      userDataReady,
   } = props
-  const [currency1,currency2] = [useCurrency(details.token1.address),useCurrency(details.token2.address)]
+  const [currency1, currency2] = [useCurrency(details.token1.address),useCurrency(details.token2.address)]
   // const [, pylonPair] = usePylon(currency1, currency2)
 
   // const gamma = new BigNumber(gammaBig).div(new BigNumber(10).pow(18))
@@ -193,10 +198,12 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const theme = useTheme()
   const {width} = useWindowDimensions()
 
-  const TooltipContentRisk = () => {return (
+  const TooltipContentRisk: React.FC<ToolTipProps> = ({option}) => {return (
     <ToolTip show={hoverRisk}>
       <Text fontSize='13px' fontWeight={500} color={theme.text1}>
-        {`The risk factor keeps track of the farms' stability. `}
+      {`${option === 'health' ? 'The health factor measures how balanced this Stable vault is. Imbalanced vaults may be partially slashed when withdrawing during critical market activity.' :
+          option === 'divergence' ? 'Divergence measures how much impermanent loss the Float vault is suffering.' :
+          'General info'}`}
       </Text>
     </ToolTip>
   )}
@@ -208,32 +215,23 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   useStartBlock(details.sousId).then((block?) => setStartBlock(block))
   useEndBlock(details.sousId).then((block?) => setEndBlock(block))
   useCurrentBlock().then((block?) => setCurrentBlock(block))
-
+  //TODO: this has to be only one component PD and shared between Row and this
   const RewardPerBlock = ({ token }: { token: Token }) => {
     const { pool } = usePool(details.sousId)
     const balance = useTokenBalance(pool.vaultAddress, token)
     const blocksLeft = endBlock - Math.max(currentBlock, startBlock)
-    const rewardBlocksPerDay = parseFloat((balance?.toFixed(6)))/(blocksLeft)*5500
+    // console.log("current", currentBlock)
+    // console.log("start", startBlock)
+    // console.log("balance", balance)
+    // console.log("blocksLeft", blocksLeft)
+    const rewardBlocksPerDay = (parseFloat((balance?.toFixed(6)))/blocksLeft)*6400*30
     return(
-        <Text fontSize='13px' fontWeight={500}>
-          {`~ ${rewardBlocksPerDay}  ${token.symbol}`}
+        <Text fontSize='13px' fontWeight={500} color={'#4e7455'}>
+          {`~ ${rewardBlocksPerDay.toFixed(4)}  ${token.symbol}`}
         </Text>
       )
     }
   //--------------------------------------------------------------------------------------------------//
-
-  const TooltipContentEarned = () => {return (
-    <ToolTip show={hoverEarned}>
-      <Text fontSize='13px' fontWeight={500} color={theme.text1}>
-        {'Tokens rewarded per block:'}
-      </Text>
-      { account ? details.earningToken.map((token) => <RewardPerBlock token={token} />) :
-        <Text fontSize='13px' fontWeight={500} color={theme.text1}>
-          {'Please connect your wallet'}
-        </Text>
-      }
-    </ToolTip>
-  )}
 
   const toggleActionPanel = () => {
     setActionPanelExpanded(!actionPanelExpanded)
@@ -271,6 +269,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
         },
         receipt.transactionHash
       )
+      dispatch(fetchPoolsUserDataAsync(account))
       dispatch(fetchFarmUserDataAsync({ account, pids: [details.sousId] }))
     }
   },
@@ -296,9 +295,12 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const stakedAmount = usePool(details.sousId).pool.userData.stakedBalance.toNumber()
   const toggleWalletModal = useWalletModalToggle()
   const darkMode = useIsDarkMode()
-  let rewardTokens = ''
-  props.farm.earningToken.forEach((token) => rewardTokens += `${token.symbol} `)
-  const [hoverEarned, setHoverEarned] = useState(false)
+  const [rewardTokens, setRewardTokens] = useState("")
+  useEffect(() => {
+    let r = ''
+    props.farm?.earningToken.forEach((token) => r += ` ${token.symbol} &`)
+    setRewardTokens(r.slice(0, -1))
+  }, [])
   const [hoverRisk, setHoverRisk] = useState(false)
   const gammaAdjusted = new BigNumberJs(gamma).div(new BigNumberJs(10).pow(18))
 
@@ -322,13 +324,14 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                   <TableData key={key} style={{width: gamma ? '15%' : '12%'}}>
                     <CellInner>
                       <CellLayout>
-                      <div style={{width: '70%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
-                            <CapacityIndicatorSmall gamma={gammaAdjusted} health={healthFactor} isFloat={!props.farm.isAnchor} noSpan={true}/>
+                      <div style={{width: '200%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
+                            <CapacityIndicatorSmall gamma={gammaAdjusted} health={healthFactor} isFloat={!props.farm.isAnchor} noSpan={false}
+                            hoverPage={'farmRow'}/>
                             <QuestionMarkContainer
                               onMouseEnter={() => setHoverRisk(true)}
                               onMouseLeave={() => setHoverRisk(false)}
                               >{hoverRisk && (
-                                <TooltipContentRisk />
+                                <TooltipContentRisk option={!props.farm.isAnchor ? 'divergence' : 'health'} />
                               )}
                             <QuestionMarkIcon />
                             </QuestionMarkContainer>
@@ -340,12 +343,11 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                 )
               case 'farm':
                 return (
-                  <TableData style={{minWidth: '280px'}} key={key}>
+                  <TableData style={{minWidth: '280px', maxWidth: '281px'}} key={key}>
                     <CellInner style={{width: '100%',justifyContent: 'flex-start'}}>
                       <CellLayout hovered={hovered} label={hovered && t(tableSchema[columnIndex].label)}>
                         <Flex width={'100%'} justifyContent={'space-between'}>
                         {createElement(cells[key], { ...props[key] })}
-
                         </Flex>
                       </CellLayout>
                     </CellInner>
@@ -373,17 +375,20 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                     ) : (
                       <Flex style={{alignItems: 'center'}}>
                         <>
-                        <Text color={'#4e7455'}>
-                          {`Earn ${rewardTokens}`}
+                        {!account ? (
+                        <Text style={{width: '50%'}} color={'#4e7455'}>
+                          {`Earn${rewardTokens.slice(0, -1)}`}
                         </Text>
-                            <QuestionMarkContainer
-                            onMouseEnter={() => setHoverEarned(true)}
-                            onMouseLeave={() => setHoverEarned(false)}
-                            >{hoverEarned && (
-                              <TooltipContentEarned />
-                            )}
-                            <QuestionMarkIcon />
-                            </QuestionMarkContainer>
+                        ) : (
+                        <Flex flexDirection={'column'}>
+                          <Text fontSize='13px' fontWeight={500} color={4e7455} marginBottom={2}>
+                            {'Monthly Rewards:'}
+                          </Text>
+                          <>
+                            {details.earningToken.map((token) => <RewardPerBlock token={token} />)}
+                          </>
+                        </Flex>
+                        )}
                         </>
                       </Flex>
                   )}

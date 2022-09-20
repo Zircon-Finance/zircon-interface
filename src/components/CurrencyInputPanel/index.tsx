@@ -14,6 +14,8 @@ import { useActiveWeb3React } from '../../hooks'
 import { useTranslation } from 'react-i18next'
 import { Text } from 'rebass'
 import { useIsDarkMode } from '../../state/user/hooks'
+// import { PRICE_API } from '../../constants/lists'
+// import axios from 'axios'
 
 const InputRow = styled.div<{ selected: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -44,6 +46,9 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
   :hover {
     background-color: ${({ theme, selected }) => !selected ? theme.meatPinkBrown : theme.darkMode ? '#513642' : '#E5D9DB'};
     color: ${({ theme, selected }) => !selected ? '#fff' : theme.darkMode ? '#fff' : theme.blackBrown};
+    path {
+      stroke: #fff;
+    }
   }
 `
 
@@ -70,7 +75,7 @@ const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
   height: 35%;
 
   path {
-    stroke: ${({ selected, theme }) => (selected ? theme.whiteHalf : theme.whiteHalf)};
+    stroke: ${({ selected, theme }) => (selected ? theme.whiteHalf : theme.blackBrown)};
     stroke-width: 1.5px;
   }
 `
@@ -134,6 +139,8 @@ interface CurrencyInputPanelProps {
   id: string
   style?: React.CSSProperties
   showCommonBases?: boolean
+  isFloat?: boolean
+  tokens: Currency[]
 }
 
 export default function CurrencyInputPanel({
@@ -150,7 +157,9 @@ export default function CurrencyInputPanel({
   hideInput = false,
   otherCurrency,
   id,
+  isFloat,
   style,
+  tokens,
   showCommonBases
 }: CurrencyInputPanelProps) {
   const { t } = useTranslation()
@@ -168,6 +177,13 @@ export default function CurrencyInputPanel({
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
   }, [setModalOpen])
+
+  // const priceToken = async(token0: Currency, token1: Currency) => {
+  //   // const [tokenSelected, setTokenSelected] = useState(null)
+  //   const price1 = token0 && await axios.get(`${PRICE_API+token0?.symbol}BUSD`).then((res) => res?.data?.price).then((price) => price)
+  //   const price2 = token1 && await axios.get(`${PRICE_API+token1?.symbol}BUSD`).then((res) => res?.data?.price).then((price) => price)
+  //   return price1 || price2
+  // }
 
   return (
     <InputPanel id={id}>
@@ -202,7 +218,7 @@ export default function CurrencyInputPanel({
                         ? currency.symbol.slice(0, 4) +
                           '...' +
                           currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
-                        : currency?.symbol) || t('selectToken')}
+                        : currency?.symbol) || <p style={{height: '24px', margin: 0}}>{t("selectToken")}</p>}
                     </StyledTokenName>
                   )}
                   {!disableCurrencySelect && <StyledDropDown selected={!!currency} />}
@@ -250,7 +266,7 @@ export default function CurrencyInputPanel({
                   </div>
                   {currency && !hideBalance &&
                   <Text style={{paddingRight: '0.75rem', alignSelf: 'center', marginTop: showMaxButton ? '10px' : '0px'}} color={theme.whiteHalf}>
-                    {'0$' /* This was added, it's supposed to convert to $ */}
+                    {'' /* This was added, it's supposed to convert to $ */}
                   </Text>
                   }
                 </TYPE.body>
@@ -267,6 +283,7 @@ export default function CurrencyInputPanel({
           selectedCurrency={currency}
           otherSelectedCurrency={otherCurrency}
           showCommonBases={showCommonBases}
+          isFloat={isFloat}
         />
       )}
     </InputPanel>

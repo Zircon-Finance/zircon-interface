@@ -94,7 +94,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
       const rewardBlocksPerDay = (parseFloat((balance?.toFixed(6)))/blocksLeft)*6400*30
     return(
         <Text fontSize='13px' fontWeight={500} color={'#4e7455'}>
-          {`~ ${rewardBlocksPerDay.toFixed(4)}  ${token.symbol}`}
+          {`~ ${rewardBlocksPerDay.toFixed(0)}  ${token.symbol}`}
         </Text>
       )
     }

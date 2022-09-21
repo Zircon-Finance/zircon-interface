@@ -220,14 +220,10 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     const { pool } = usePool(details.sousId)
     const balance = useTokenBalance(pool.vaultAddress, token)
     const blocksLeft = endBlock - Math.max(currentBlock, startBlock)
-    // console.log("current", currentBlock)
-    // console.log("start", startBlock)
-    // console.log("balance", balance)
-    // console.log("blocksLeft", blocksLeft)
     const rewardBlocksPerDay = (parseFloat((balance?.toFixed(6)))/blocksLeft)*6400*30
     return(
         <Text fontSize='13px' fontWeight={500} color={'#4e7455'}>
-          {`~ ${rewardBlocksPerDay.toFixed(4)}  ${token.symbol}`}
+          {`~ ${rewardBlocksPerDay.toFixed(0)}  ${token.symbol}`}
         </Text>
       )
     }
@@ -495,7 +491,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
       {shouldRenderChild && (
         <tr style={{display: 'flex', flexDirection: 'column'}}>
           <td colSpan={6}>
-            <ActionPanel {...props} expanded={actionPanelExpanded} clickAction={setActionPanelExpanded} gamma={gammaAdjusted.toNumber()}healthFactor={healthFactor} />
+            <ActionPanel {...props} expanded={actionPanelExpanded} clickAction={setActionPanelExpanded} gamma={gammaAdjusted.toNumber()}healthFactor={healthFactor} RewardBlock={RewardPerBlock} />
           </td>
         </tr>
       )}

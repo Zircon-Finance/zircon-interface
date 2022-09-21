@@ -51,7 +51,8 @@ export interface ActionPanelProps {
   expanded: boolean
   clickAction: Dispatch<SetStateAction<boolean>>
   gamma: number
-  healthFactor: string
+  healthFactor: string,
+  RewardBlock: any
 }
 
 interface ToolTipProps {
@@ -216,7 +217,8 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                                                                   clickAction,
                                                                   expanded,
                                                                   gamma,
-                                                                  healthFactor
+                                                                  healthFactor,
+                                                                  RewardBlock
                                                                 }) => {
   const farm = details
   const staked = details.userData.stakedBalance.gt(0)
@@ -398,8 +400,12 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
               {width >= 800 ? (
                   <>
                     <SpaceBetween>
-                      <Text color={theme.text1}>{`Earn ${rewardTokens}`}</Text>
-
+                    {!account ?  <Text color={theme.text1}>{`Earn${rewardTokens}`}</Text> :
+                      <Flex flexDirection={'column'} style={{width: '100%'}}>
+                        <Text color={theme.text1} style={{minWidth: 'max-content', fontSize: '14px'}} fontWeight={400}>{'Monthly rewards:'}</Text>
+                        {farm.earningToken.map((token) => <RewardBlock token={token} />)}
+                      </Flex>
+                      }
                       <div style={{width: '50%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
                         <CapacityIndicatorSmall gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true} hoverPage={'farmAction'}/>
                         <QuestionMarkContainer
@@ -424,7 +430,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                         <StyledLinkExternal color={theme.meatPink} href={info}>{t('See Pair Info ↗')}</StyledLinkExternal>
                       </Flex>
                       <Flex flexDirection={"column"}>
-                        <Text color={theme.text1}>{`Earn${rewardTokens}`}</Text>
+                      <Text color={theme.text1}>{`Earn${rewardTokens}`}</Text>
                         <div style={{display: 'flex', marginLeft: '10px', alignItems: 'center', justifyContent: 'flex-end'}}>
                           <CapacityIndicatorSmall gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true} hoverPage={'farmActionMobile'}/>
 

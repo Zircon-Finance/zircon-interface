@@ -54,7 +54,7 @@ const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan
           <TooltipContentRisk gamma={gamma} health={health} isFloat={isFloat}/>
         )}
         {isFloat ? <div style={{display: "flex", flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-          {!noSpan && <span style={{marginRight: 8, color: theme.text1, fontSize: font && font}}>{`${gamma >= 0.7 ? 'Full' : gamma < 0.4 ? 'Empty' : 'Free'}`}</span>}
+          {!noSpan && <span style={{marginRight: 8, color: theme.text1, fontSize: font && font}}>{`${gamma >= 0.7 ? 'High' : gamma <= 0.4 ? 'Negative' : 'Low'}`}</span>}
 
               {gamma < 0.4 && <svg width="22" height="16" viewBox="0 0 22 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="0.5" y="0.5" width="21" height="15" rx="4.5" stroke="#DEC54E" strokeOpacity="0.9"/>

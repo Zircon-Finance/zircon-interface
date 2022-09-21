@@ -165,7 +165,7 @@ export function useDerivedPylonMintInfo(
       wrappedCurrencyAmount(currencyAAmount, chainId),
       wrappedCurrencyAmount(currencyBAmount, chainId)
     ]
-
+    console.log("sync mint info", parsedAmounts, chainId, pylonPair, pylonSupply, totalSupply, ptTotalSupply,lastK, pylonPoolBalance, isFloat,  sync, userLiquidity, pylonInfo, pylonConstants)
     if (pylonPair && pylonSupply && tokenAmountA && tokenAmountB && totalSupply && ptTotalSupply && userLiquidity && pylonPoolBalance && pylonInfo.length > 8 && pylonConstants) {
       if (sync === "off") {
         let syncMintInfo;
@@ -187,7 +187,7 @@ export function useDerivedPylonMintInfo(
           }
         }
 
-
+        console.log("syncMintInfo", syncMintInfo)
         //{new BigNumberJs(syncMintInfo?.amountsToInvest.async.toString()).div(mintInfo?.amountsToInvest.sync.toString()).multipliedBy()}
 
         return {...syncMintInfo, extraFeeTreshold: extraFeeTreshold}

@@ -37,17 +37,6 @@ const Container = styled.div`
   }
 `
 
-const AprWrapper = styled.div`
-  min-width: 60px;
-  text-align: left;
-  font-size: 13px !important;
-  color: ${({ theme }) => theme.whiteHalf};
-  @media (min-width: 992px) {
-    font-size: 16px;
-    color: ${({ theme }) => theme.text1};
-  }
-`
-
 const Apr: React.FC<AprProps> = ({
   value,
   left,
@@ -62,9 +51,8 @@ const Apr: React.FC<AprProps> = ({
 }) => {
   // const liquidityUrlPathParts = getLiquidityUrlPathParts({ quoteTokenAddress, tokenAddress })
   const addLiquidityUrl = `placeholder`
-  return originalValue !== 0 ? (
+  return value !== 'NaN' ? (
     <Container>
-      {originalValue ? (
         <ApyButton
           variant={hideButton ? 'text' : 'text-and-button'}
           pid={pid}
@@ -75,15 +63,10 @@ const Apr: React.FC<AprProps> = ({
           displayApr={value}
           addLiquidityUrl={addLiquidityUrl}
         />
-      ) : (
-        <AprWrapper>
-          <Skeleton width={60} />
-        </AprWrapper>
-      )}
     </Container>
   ) : (
     <Container>
-      <AprWrapper style={left ? {textAlign: 'right'} : null}>{originalValue}%</AprWrapper>
+      <Skeleton width={60} />
     </Container>
   )
 }

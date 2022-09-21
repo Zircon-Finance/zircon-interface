@@ -117,8 +117,11 @@ export function CurrencySearch({
     ]
   }, [filteredTokens, searchQuery, searchToken, tokenComparator])
 
-  const selectedFloatTokens = [filteredSortedTokens[23], filteredSortedTokens[6], DEV, filteredSortedTokens[15], filteredSortedTokens[16], filteredSortedTokens[12]]
-  const selectedAnchorTokens = [filteredSortedTokens[23], filteredSortedTokens[33], filteredSortedTokens[6], filteredSortedTokens[15], DEV]
+  const floatTokens = ['MOVR', 'ETH', 'KSM', 'LDO', 'kBTC']
+  const anchorTokens = ['MOVR','USDC', 'ETH', 'KSM']
+
+  const selectedFloatTokens = filteredSortedTokens.filter(token => floatTokens.includes(token.symbol))
+  const selectedAnchorTokens = filteredSortedTokens.filter(token => anchorTokens.includes(token.symbol))
 
   const handleCurrencySelect = useCallback(
     (currency: Currency) => {

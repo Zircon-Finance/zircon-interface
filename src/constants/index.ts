@@ -46,6 +46,7 @@ const WDEV_ONLY: ChainTokenList = {
   [ChainId.MAINNET]: [WDEV[ChainId.MAINNET]],
   [ChainId.STANDALONE]: [WDEV[ChainId.STANDALONE]],
   [ChainId.MOONRIVER]: [WDEV[ChainId.MOONRIVER]],
+  [ChainId.MOONROCK]: [WDEV[ChainId.MOONROCK]],
   [ChainId.MOONBASE]: [WDEV[ChainId.MOONBASE]],
   [ChainId.MOONSHADOW]: [WDEV[ChainId.MOONSHADOW]],
 }

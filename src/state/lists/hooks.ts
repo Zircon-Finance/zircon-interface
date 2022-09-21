@@ -34,6 +34,7 @@ const EMPTY_LIST: TokenAddressMap = {
   [ChainId.MAINNET]: {},
   [ChainId.STANDALONE]: {},
   [ChainId.MOONRIVER]: {},
+  [ChainId.MOONROCK]: {},
   [ChainId.MOONBASE]: {},
   [ChainId.MOONSHADOW]: {}
 }

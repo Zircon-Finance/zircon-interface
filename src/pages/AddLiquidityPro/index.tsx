@@ -685,7 +685,7 @@ export default function AddLiquidityPro({
             >
               {(formattedLiquidity && formattedLiquidity.toString().length > 8 && formattedLiquidity < 0.001)
                   ? "0.00..." + String(formattedLiquidity).slice(Math.ceil(formattedLiquidity.toString().length-5))
-                  : formattedLiquidity}
+                  : formattedLiquidity > 0 ? formattedLiquidity : ""}
             </Text>
             <Text
                 fontSize="16px"

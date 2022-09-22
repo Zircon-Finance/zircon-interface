@@ -27,8 +27,9 @@ const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan
   const theme = useTheme()
   const {width} = useWindowDimensions()
   const TooltipContentRisk: React.FC<Props> = ({gamma, health, isFloat}) => {return (
-    <ToolTip style={hoverPage === 'addLiq' ? {bottom: '140px', left: '260px'} :
-      hoverPage === 'removeLiq' ? {bottom: '140px', left: '260px'} :
+    <ToolTip style={
+      hoverPage === 'addLiq' ? {bottom: '140px', left: '260px'} :
+      hoverPage === 'removeLiq' ? {bottom: '150px', left: '200px'} :
       hoverPage === 'farmRow' ? {bottom: '55px', left: '-50px'} :
       hoverPage === 'farmAction' ? {bottom: '0px', left: '0px'} :
       hoverPage === 'farmActionMobile' ? {bottom: '50%', left: '20%'} :

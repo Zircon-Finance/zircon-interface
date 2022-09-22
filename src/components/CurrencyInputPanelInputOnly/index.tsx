@@ -118,6 +118,7 @@ interface CurrencyInputPanelProps {
   style?: React.CSSProperties
   showCommonBases?: boolean
   anchor?: boolean
+  price?: number
 }
 
 export default function CurrencyInputPanel({
@@ -132,7 +133,8 @@ export default function CurrencyInputPanel({
   id,
   style,
   showCommonBases,
-  anchor
+  anchor,
+  price,
 }: CurrencyInputPanelProps) {
   const { t } = useTranslation()
 

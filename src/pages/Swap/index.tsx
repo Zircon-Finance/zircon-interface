@@ -48,6 +48,8 @@ import Loader from '../../components/Loader'
 import LearnIcon from '../../components/LearnIcon'
 import PriceChartContainer from '../../components/Chart/PriceChartContainer'
 import NoChartAvailable from '../../components/Chart/NoChartAvailable'
+import { usePairPrices } from '../../state/mint/pylonHooks'
+import { usePair } from '../../data/Reserves'
 
 export default function Swap() {
   const { t } = useTranslation()
@@ -267,6 +269,9 @@ export default function Swap() {
 
   const singleTokenPrice = useSingleTokenSwapInfo(inputCurrencyId, inputCurrency, outputCurrencyId, outputCurrency)
 
+  const [pairState,pair] = usePair(inputCurrency, outputCurrency)
+  const prices = usePairPrices(inputCurrency, outputCurrency, pair, pairState)
+
   return (
     <>
     <div style={{width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', gap: '20px'}}>
@@ -344,7 +349,7 @@ export default function Swap() {
               onCurrencySelect={handleInputSelect}
               otherCurrency={currencies[Field.OUTPUT]}
               id="swap-currency-input"
-              tokens={[currencies[Field.OUTPUT], currencies[Field.INPUT]]}
+              price={ prices[0]}
             />
             <AutoColumn>
               <AutoRow justify={isExpertMode ? recipient === null ? 'space-between' : 'center' : 'center'} style={{ padding: '0 1rem'}}>
@@ -381,7 +386,7 @@ export default function Swap() {
               onCurrencySelect={handleOutputSelect}
               otherCurrency={currencies[Field.INPUT]}
               id="swap-currency-output"
-              tokens={[currencies[Field.OUTPUT], currencies[Field.INPUT]]}
+              price={prices[1]}
             />
 
             {recipient !== null && !showWrap && isExpertMode && (

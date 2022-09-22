@@ -86,6 +86,7 @@ interface CurrencyInputPanelProps {
   isFloat?: boolean
   sync?: string
   exists?: boolean
+  price?: number
 }
 
 export default function CurrencyInputPanel({
@@ -106,7 +107,8 @@ export default function CurrencyInputPanel({
   showCommonBases,
   isFloat,
   sync,
-  exists
+  exists,
+  price
 }: CurrencyInputPanelProps) {
 
   const [modalOpen, setModalOpen] = useState(false)
@@ -181,11 +183,10 @@ export default function CurrencyInputPanel({
                     ? 'Balance: ' + selectedCurrencyBalance?.toSignificant(6)
                     : ' -'}
                   </Text>
-
                   </div>
                   {currency &&
                   <Text style={{paddingRight: '0.75rem', alignSelf: 'center'}} color={theme.whiteHalf}>
-                    {'' /* This was added, it's supposed to convert to $ */}
+                    {`${price && (price*parseFloat(selectedCurrencyBalance?.toFixed(6))).toFixed(4) || ''} ${price > 0 ? `$` : ''}` /* This was added, it's supposed to convert to $ */}
                   </Text>
                   }
                 </TYPE.body>

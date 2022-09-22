@@ -14,8 +14,6 @@ import { useActiveWeb3React } from '../../hooks'
 import { useTranslation } from 'react-i18next'
 import { Text } from 'rebass'
 import { useIsDarkMode } from '../../state/user/hooks'
-// import { PRICE_API } from '../../constants/lists'
-// import axios from 'axios'
 
 const InputRow = styled.div<{ selected: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -140,7 +138,7 @@ interface CurrencyInputPanelProps {
   style?: React.CSSProperties
   showCommonBases?: boolean
   isFloat?: boolean
-  tokens: Currency[]
+  price? : number
 }
 
 export default function CurrencyInputPanel({
@@ -159,7 +157,7 @@ export default function CurrencyInputPanel({
   id,
   isFloat,
   style,
-  tokens,
+  price,
   showCommonBases
 }: CurrencyInputPanelProps) {
   const { t } = useTranslation()
@@ -177,13 +175,6 @@ export default function CurrencyInputPanel({
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
   }, [setModalOpen])
-
-  // const priceToken = async(token0: Currency, token1: Currency) => {
-  //   // const [tokenSelected, setTokenSelected] = useState(null)
-  //   const price1 = token0 && await axios.get(`${PRICE_API+token0?.symbol}BUSD`).then((res) => res?.data?.price).then((price) => price)
-  //   const price2 = token1 && await axios.get(`${PRICE_API+token1?.symbol}BUSD`).then((res) => res?.data?.price).then((price) => price)
-  //   return price1 || price2
-  // }
 
   return (
     <InputPanel id={id}>
@@ -266,7 +257,7 @@ export default function CurrencyInputPanel({
                   </div>
                   {currency && !hideBalance &&
                   <Text style={{paddingRight: '0.75rem', alignSelf: 'center', marginTop: showMaxButton ? '10px' : '0px'}} color={theme.whiteHalf}>
-                    {'' /* This was added, it's supposed to convert to $ */}
+                    {`${price && (price*parseFloat(selectedCurrencyBalance?.toFixed(6))).toFixed(4) || ''} ${price > 0 ? `$` : ''}` /* This was added, it's supposed to convert to $ */}
                   </Text>
                   }
                 </TYPE.body>

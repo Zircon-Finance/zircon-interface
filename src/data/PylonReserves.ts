@@ -65,7 +65,6 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
           // const { _reserve0, reserve1 } = resPair.result;
           // console.log(reserve0, reserve1)
           const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA]
-
           return [
             PylonState.ONLY_PAIR,
             new Pylon(new Pair(new TokenAmount(token0, reserve0.toString()), new TokenAmount(token1, reserve1.toString())),new TokenAmount(tokenA, "0"), new TokenAmount(tokenB, "0"))

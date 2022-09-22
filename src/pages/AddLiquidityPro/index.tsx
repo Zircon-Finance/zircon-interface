@@ -29,7 +29,7 @@ import {useCurrency} from "../../hooks/Tokens";
 import {ApprovalState, useApproveCallback,} from "../../hooks/useApproveCallback";
 import {useBlockNumber, useWalletModalToggle} from "../../state/application/hooks";
 import {Field} from "../../state/mint/actions";
-import {useDerivedPylonMintInfo, useMintActionHandlers, useMintState,} from "../../state/mint/pylonHooks";
+import {useDerivedPylonMintInfo, useMintActionHandlers, useMintState, usePairPrices,} from "../../state/mint/pylonHooks";
 
 import {useTransactionAdder} from "../../state/transactions/hooks";
 import {useIsExpertMode, useUserDeadline, useUserSlippageTolerance,} from "../../state/user/hooks";
@@ -58,6 +58,7 @@ import {useGamma, usePylonConstants} from "../../data/PylonData";
 import Lottie from "lottie-react-web";
 import animation from '../../assets/lotties/0uCdcx9Hn5.json'
 import CapacityIndicator from "../../components/CapacityIndicator";
+import { usePair } from "../../data/Reserves";
 
 const IconContainer = styled.div`
   display: flex;
@@ -117,7 +118,6 @@ export default function AddLiquidityPro({
 
   const { independentField, typedValue, otherTypedValue } = useMintState();
   const [isFloat, setIsFloat] = useState(true);
-  console.log("hello currencies", currencyIdA, currencyIdB)
   const {
     dependentField,
     currencies,
@@ -357,9 +357,6 @@ export default function AddLiquidityPro({
         });
   }
 
-  console.log('parsed amounts a', parsedAmounts[Field.CURRENCY_A]?.raw?.toString(), 'parsed amounts b', parsedAmounts[Field.CURRENCY_B]?.raw?.toString())
-  console.log('error is', error)
-
   // Function to create Pylon / Add liquidity to Pylon
   async function onAdd(stake?: boolean) {
     if (!chainId || !library || !account) return;
@@ -376,6 +373,7 @@ export default function AddLiquidityPro({
       [Field.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, 0)[0],
       [Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, 0)[0]
     }
+
     const liquidityMin = calculateSlippageAmount(mintInfo.liquidity, noPylon ? 0 : allowedSlippage)[0]
 
     const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline;
@@ -816,7 +814,8 @@ export default function AddLiquidityPro({
   const feePercentage = new BigNumberJs(mintInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18))
   const health = healthFactor?.toLowerCase()
 
-
+  const [pairState,pair] = usePair(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B])
+  const prices = usePairPrices(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B], pair, pairState)
 
   // console.log("currencyA", float.currency_a )
   // console.log("curremciesA", currencies[Field.CURRENCY_A])
@@ -897,6 +896,7 @@ export default function AddLiquidityPro({
                     id="add-liquidity-input-tokena"
                     showCommonBases
                     anchor={false}
+                    price={prices[0]}
                 />
                 <IconContainer
                     onClick={handleSwapCurrencies}
@@ -910,6 +910,7 @@ export default function AddLiquidityPro({
                     id="add-liquidity-input-tokenb_bal"
                     showCommonBases
                     anchor={true}
+                    price={prices[1]}
                 />
               </div>
 
@@ -1162,6 +1163,7 @@ export default function AddLiquidityPro({
                             showCommonBases
                             isFloat={isFloat}
                             sync={sync}
+                            price={isFloat ? prices[0] : prices[1]}
                         />
                         {sync === "half" || pylonState !== PylonState.EXISTS ? (
                             <CurrencyInputPanelBalOnly
@@ -1190,6 +1192,7 @@ export default function AddLiquidityPro({
                                 isFloat={!isFloat}
                                 sync={sync}
                                 exists={pylonState === PylonState.EXISTS}
+                                price={isFloat ? prices[1] : prices[0]}
                             />
                         ) : null}
                       </div>

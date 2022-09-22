@@ -1,5 +1,5 @@
 import {Currency, CurrencyAmount, DEV, JSBI, Pair, Percent, Price, Pylon, TokenAmount} from 'zircon-sdk'
-import {useCallback, useMemo} from 'react'
+import {useCallback, useEffect, useMemo, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {useTotalSupply} from '../../data/TotalSupply'
 import {useTranslation} from 'react-i18next'
@@ -14,6 +14,9 @@ import {PylonState, usePylon} from '../../data/PylonReserves'
 import {useLastK, usePylonConstants, usePylonInfo,} from "../../data/PylonData";
 import {useBlockNumber} from "../application/hooks";
 import {usePylonFactoryContract} from '../../hooks/useContract'
+import axios from 'axios'
+import { PRICE_API } from '../../constants/lists'
+import { PairState } from '../../data/Reserves'
 
 const ZERO = JSBI.BigInt(0)
 
@@ -346,3 +349,23 @@ export const useHealthFactor = (  currencyA: Currency | undefined,
   }, [pylonInfo, pylonPair, ptbEnergy, reserveAnchor, ptb, ptt, lastK, pylonFactory])
   return healthFactorResult
 }
+
+export function usePairPrices(token0: Currency, token1: Currency, pair: Pair, pairState: PairState) {
+    async function getPrices() {
+        console.log('Reserves: ', pair?.reserve0?.toFixed(9) , pair?.reserve1?.toFixed(9))
+        const price0 = token0 && await axios.get(`${PRICE_API+token0?.symbol}BUSD`).then((res) => res?.data?.price).catch((e) => console.log(e))
+        const price1 = token1 && await axios.get(`${PRICE_API+token1?.symbol}BUSD`).then((res) => res?.data?.price).catch((e) => console.log(e))
+        return price0 !== undefined ? [price0, ((parseFloat(pair?.reserve1?.toFixed(9)) / parseFloat(pair?.reserve0?.toFixed(9))) * price0)] : 
+        price1 !== undefined ? [((parseFloat(pair?.reserve1?.toFixed(9)) / parseFloat(pair?.reserve0?.toFixed(9))) * price1), price1] : [0,0]
+    }
+    const [prices, setPrices] = useState([0,0])
+    useEffect(() => {
+        getPrices().then((res) => setPrices(res))
+    }, [token0, token1, pairState])
+    return prices
+
+
+}
+
+// return price1 !== undefined ? [price1, ((parseFloat(pylon?.reserve0?.toFixed(9)) / parseFloat(pylon?.reserve1?.toFixed(9))) * price1)] : 
+//         price2 !== undefined ? [((parseFloat(pylon?.reserve1?.toFixed(9)) / parseFloat(pylon?.reserve0?.toFixed(9))) * price2), price2] : [0,0]

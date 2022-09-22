@@ -117,8 +117,10 @@ export function CurrencySearch({
     ]
   }, [filteredTokens, searchQuery, searchToken, tokenComparator])
 
-  const selectedFloatTokens = [filteredSortedTokens[23], filteredSortedTokens[6], DEV, filteredSortedTokens[15], filteredSortedTokens[16], filteredSortedTokens[12]]
-  const selectedAnchorTokens = [filteredSortedTokens[23], filteredSortedTokens[33], filteredSortedTokens[6], filteredSortedTokens[15], DEV]
+  console.log('tokens', filteredSortedTokens)
+
+  const selectedFloatTokens = [filteredSortedTokens[2], filteredSortedTokens[8], DEV, filteredSortedTokens[17], filteredSortedTokens[14], filteredSortedTokens[18]]
+  const selectedAnchorTokens = [filteredSortedTokens[2], filteredSortedTokens[33], filteredSortedTokens[8], DEV, filteredSortedTokens[17]]
 
   const handleCurrencySelect = useCallback(
     (currency: Currency) => {
@@ -200,7 +202,7 @@ export function CurrencySearch({
           selectedFloatTokens?.map((token, i) => (
             <SmallPlanet onClick={()=>handleCurrencySelect(token)}>
               <CurrencyLogo currency={token} size={'18px'} />
-              <Text fontWeight={500} fontSize={14} style={{padding: '0 5px 0 5px'}}>{token?.symbol}</Text>
+              <Text fontWeight={500} fontSize={14} style={{padding: '0 5px 0 5px'}}>{(token?.symbol === 'MOVR' && token !== DEV) ? 'wMOVR' : token?.symbol}</Text>
             </SmallPlanet>
           ))
         }
@@ -208,7 +210,7 @@ export function CurrencySearch({
           selectedAnchorTokens?.map((token, i) => (
             <SmallPlanet onClick={()=>handleCurrencySelect(token)}>
               <CurrencyLogo currency={token} size={'18px'} />
-              <Text fontWeight={500} fontSize={14} style={{padding: '0 5px 0 5px'}}>{token?.symbol}</Text>
+              <Text fontWeight={500} fontSize={14} style={{padding: '0 5px 0 5px'}}>{(token?.symbol === 'MOVR' && token !== DEV) ? 'wMOVR' : token?.symbol}</Text>
             </SmallPlanet>
           ))
         }

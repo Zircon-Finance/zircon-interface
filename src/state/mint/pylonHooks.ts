@@ -1,4 +1,4 @@
-import {Currency, CurrencyAmount, DEV, JSBI, Pair, Percent, Price, Pylon, TokenAmount} from 'zircon-sdk'
+import {BASE, Currency, CurrencyAmount, DEV, JSBI, Pair, Percent, Price, Pylon, TokenAmount} from 'zircon-sdk'
 import {useCallback, useMemo} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {useTotalSupply} from '../../data/TotalSupply'
@@ -77,7 +77,6 @@ export function useDerivedPylonMintInfo(
   const pylonConstants = usePylonConstants()
   const blockNumber = useBlockNumber()
   const userLiquidity = useTokenBalance(account ?? undefined, isFloat ? pylonPair?.floatLiquidityToken : pylonPair?.anchorLiquidityToken)
-  console.log("float/anchor", pylonPair?.floatLiquidityToken, pylonPair?.anchorLiquidityToken)
   const pylonPoolBalance = useTokenBalance(pylonPair?.address, pylonPair?.pair.liquidityToken)
   const ptTotalSupply = useTotalSupply(isFloat ? pylonPair?.floatLiquidityToken : pylonPair?.anchorLiquidityToken)
   const totalSupply = useTotalSupply(pylonPair?.pair.liquidityToken)
@@ -166,41 +165,32 @@ export function useDerivedPylonMintInfo(
       wrappedCurrencyAmount(currencyAAmount, chainId),
       wrappedCurrencyAmount(currencyBAmount, chainId)
     ]
-    console.log("welcome to...", parsedAmounts, chainId, pylonPair, pylonSupply, totalSupply, ptTotalSupply,lastK, pylonPoolBalance, isFloat, sync, userLiquidity, pylonInfo, pylonConstants)
 
     if (pylonPair && pylonSupply && tokenAmountA && tokenAmountB && totalSupply && ptTotalSupply && userLiquidity && pylonPoolBalance && pylonInfo.length > 8 && pylonConstants) {
       if (sync === "off") {
         let syncMintInfo;
         let extraFeeTreshold = ZERO;
-        syncMintInfo ={
-          amountsToInvest: {
-            sync: ZERO,
-            async: ZERO
-          },
-          extraSlippagePercentage: ZERO,
-          blocked: false,
-          fee: new TokenAmount(pylonPair.pair.liquidityToken, ZERO),
-          liquidity: new TokenAmount(pylonPair.pair.liquidityToken, ZERO),
-          deltaApplied: false,
-          feePercentage: ZERO
-        };
-        // if (isFloat) {
-        //
-        //       // pylonPair.getFloatSyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA,
-        //       // pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-        //       // pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK))
-        //   if (JSBI.greaterThan(syncMintInfo?.amountsToInvest.sync, ZERO) && JSBI.greaterThan(syncMintInfo?.amountsToInvest.async, ZERO)) {
-        //     extraFeeTreshold = JSBI.subtract(tokenAmountA.raw, JSBI.divide(JSBI.multiply(tokenAmountA.raw, JSBI.divide(JSBI.multiply(syncMintInfo?.amountsToInvest.async, BASE), JSBI.add(syncMintInfo?.amountsToInvest.async, syncMintInfo?.amountsToInvest.sync))), BASE))
-        //   }
-        //
-        // }else{
-        //   syncMintInfo = pylonPair.getAnchorSyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountB,
-        //       pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-        //       pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK))
-        //   if (JSBI.greaterThan(syncMintInfo?.amountsToInvest.sync, ZERO) && JSBI.greaterThan(syncMintInfo?.amountsToInvest.async, ZERO)) {
-        //     extraFeeTreshold = JSBI.subtract(tokenAmountB.raw,JSBI.divide(JSBI.multiply(tokenAmountB.raw, JSBI.divide(JSBI.multiply(syncMintInfo?.amountsToInvest.async, BASE), JSBI.add(syncMintInfo?.amountsToInvest.async, syncMintInfo?.amountsToInvest.sync))), BASE))
-        //   }
-        // }
+        if (isFloat) {
+          console.log(pylonPair.pair.reserve0.raw.toString(), pylonPair.pair.reserve0.raw.toString(), pylonPair.reserve0.raw.toString(), pylonPair.reserve1.raw.toString(), totalSupply.raw.toString(), ptTotalSupply.raw.toString(), tokenAmountA.raw.toString(),
+              pylonInfo[0].toString(), pylonInfo[1].toString(), pylonInfo[2].toString(), pylonPoolBalance.raw.toString(), pylonInfo[3].toString(), BigInt(blockNumber), pylonConstants,
+              pylonInfo[4].toString(), pylonInfo[5].toString(), pylonInfo[6].toString(), pylonInfo[7].toString(), pylonInfo[8].toString(), pylonInfo[9].toString(), BigInt(lastK).toString())
+
+          syncMintInfo = pylonPair.getFloatSyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA,
+              pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
+              pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK))
+
+          if (JSBI.greaterThan(syncMintInfo?.amountsToInvest.sync, ZERO) && JSBI.greaterThan(syncMintInfo?.amountsToInvest.async, ZERO)) {
+            extraFeeTreshold = JSBI.subtract(tokenAmountA.raw, JSBI.divide(JSBI.multiply(tokenAmountA.raw, JSBI.divide(JSBI.multiply(syncMintInfo?.amountsToInvest.async, BASE), JSBI.add(syncMintInfo?.amountsToInvest.async, syncMintInfo?.amountsToInvest.sync))), BASE))
+          }
+
+        }else{
+          syncMintInfo = pylonPair.getAnchorSyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountB,
+              pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
+              pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK))
+          if (JSBI.greaterThan(syncMintInfo?.amountsToInvest.sync, ZERO) && JSBI.greaterThan(syncMintInfo?.amountsToInvest.async, ZERO)) {
+            extraFeeTreshold = JSBI.subtract(tokenAmountB.raw,JSBI.divide(JSBI.multiply(tokenAmountB.raw, JSBI.divide(JSBI.multiply(syncMintInfo?.amountsToInvest.async, BASE), JSBI.add(syncMintInfo?.amountsToInvest.async, syncMintInfo?.amountsToInvest.sync))), BASE))
+          }
+        }
 
 
         //{new BigNumberJs(syncMintInfo?.amountsToInvest.async.toString()).div(mintInfo?.amountsToInvest.sync.toString()).multipliedBy()}

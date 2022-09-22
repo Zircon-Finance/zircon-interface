@@ -244,10 +244,13 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const dispatch = useDispatch()
   const sousChefContract = useSousChef(details.sousId)
   const { callWithGasPrice } = useCallWithGasPrice()
+  const [pendingTx, setPendingTx] = useState(false)
+  console.log('pendingTx', pendingTx)
 
   const handleApproval = useCallback(async () => {
     const receipt = await fetchWithCatchTxError(() => {
       return callWithGasPrice(lpContract, 'approve', [sousChefContract.address, MaxUint256]).then(response => {
+        setPendingTx(true)
         addTransaction(response, {
           summary:  `Enable ${details.token1.symbol}-${details.token2.symbol} stake contract`
         })
@@ -265,6 +268,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
         },
         receipt.transactionHash
       )
+      setPendingTx(false)
       dispatch(fetchPoolsUserDataAsync(account))
       dispatch(fetchFarmUserDataAsync({ account, pids: [details.sousId] }))
     }
@@ -403,8 +407,8 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                       </CellInner>) : (
                       <StakeAdd row={true} margin={true} width={'75%'} />)
                     : (
-                      <ButtonPinkGamma style={{width: '80%', fontSize: '13px', padding: '10px', borderRadius: '12px'}}
-                      onClick={handleApproval}>{'Enable contract'}</ButtonPinkGamma>)) : (
+                      <ButtonPinkGamma style={{width: '80%', fontSize: '13px', padding: '10px', borderRadius: '12px'}} disabled={pendingTx}
+                      onClick={handleApproval}>{pendingTx ? 'Enabling...' : 'Enable contract'}</ButtonPinkGamma>)) : (
                         <ButtonPinkGamma style={{width: '80%', fontSize: '13px', padding: '10px', borderRadius: '12px'}}
                     onClick={toggleWalletModal}>{'Connect wallet'}</ButtonPinkGamma>)}
                   </TableData>
@@ -461,8 +465,8 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                       </Flex>
                     </ButtonPinkGamma>
                   )) : (
-                    <ButtonPinkGamma style={{fontSize: '13px', padding: '10px', borderRadius: '12px'}}
-                    onClick={handleApproval}>{'Enable contract'}</ButtonPinkGamma>
+                    <ButtonPinkGamma style={{fontSize: '13px', padding: '10px', borderRadius: '12px'}} disabled={pendingTx}
+                    onClick={handleApproval}>{pendingTx ? 'Enabling...' : 'Enable contract'}</ButtonPinkGamma>
                   )) : (
                     <ButtonPinkGamma style={{fontSize: '13px', padding: '10px', borderRadius: '12px'}}
                     onClick={toggleWalletModal}>{'Connect wallet'}</ButtonPinkGamma>

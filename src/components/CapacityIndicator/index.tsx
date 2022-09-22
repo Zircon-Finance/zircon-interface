@@ -126,7 +126,7 @@ const CapacityIndicator: React.FC<Props> = ({gamma, hoverPage, health, isFloat, 
             <RowContainer>
                 <SmallContainer>
 
-                    {!noSpan && <span style={{marginLeft: 8}}>{blocked ? "Transaction likely to fail" : isFloat ? 'Divergence' : 'Health factor'}</span>}
+                    {!noSpan && <span style={{marginLeft: 8}}>{blocked ? "Tx likely to fail" : isFloat ? 'Divergence' : 'Health factor'}</span>}
                     <QuestionMarkContainer
                         onMouseEnter={() => setHoverRisk(true)}
                         onMouseLeave={() => setHoverRisk(false)}

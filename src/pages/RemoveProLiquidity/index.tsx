@@ -717,6 +717,7 @@ export default function RemoveProLiquidity({
               )}
               <div style={{marginBottom: 32}}>
                 <CapacityIndicator
+                    hoverPage='removeLiq'
                     gamma={new BigNumberJs(gamma).div(new BigNumberJs(10).pow(18))}
                     health={healthFactor}
                     isFloat={isFloat}

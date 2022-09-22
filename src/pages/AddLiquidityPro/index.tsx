@@ -375,6 +375,7 @@ export default function AddLiquidityPro({
     }
 
     const liquidityMin = calculateSlippageAmount(mintInfo.liquidity, noPylon ? 0 : allowedSlippage)[0]
+    console.log("min liquidity", liquidityMin.toString());
 
     const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline;
 

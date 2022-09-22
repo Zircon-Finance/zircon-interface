@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction } from 'react'
 import styled, { css, useTheme } from 'styled-components'
-import { IconButton, Text } from '@pancakeswap/uikit'
+import { IconButton, Skeleton, Text } from '@pancakeswap/uikit'
 import BigNumber from 'bignumber.js'
 import { expandAnimation, collapseAnimation } from './Staked'
 import PlusIcon from '../PlusIcon'
@@ -89,8 +89,8 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
       <LiquidityWrapper>
         <Text fontSize="13px" color={theme.text1}>
           {farm.isClassic
-            ? pairLiquidity
-            : pylonLiquidity} USD
+            ? pairLiquidity !== 'NaN' ? pairLiquidity+' USD' : <Skeleton width={60} />
+            : pylonLiquidity !== 'NaN' ? pylonLiquidity+' USD' : <Skeleton width={60} />}
         </Text>
         {// liquidity.gt(0) &&
         hovered && width >= 1100 && (

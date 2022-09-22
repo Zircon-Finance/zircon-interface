@@ -1,3 +1,4 @@
+import { Skeleton } from '@pancakeswap/uikit'
 import React from 'react'
 import { Flex, Text } from 'rebass'
 import { useTheme } from 'styled-components'
@@ -54,7 +55,7 @@ const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan
         {hoverIndicator && (
           <TooltipContentRisk gamma={gamma} health={health} isFloat={isFloat}/>
         )}
-        {isFloat ? <div style={{display: "flex", flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+        {(!gamma || !health) ? <Skeleton width={60} /> : isFloat ? <div style={{display: "flex", flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
           {!noSpan && <span style={{marginRight: 8, color: theme.text1, fontSize: font && font}}>{`${gamma >= 0.7 ? 'High' : gamma <= 0.4 ? 'Negative' : 'Low'}`}</span>}
 
               {gamma < 0.4 && <svg width="22" height="16" viewBox="0 0 22 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -98,7 +99,7 @@ const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan
               </svg>
               }
             </div>
-        }
+         }
       </Flex>
   )
 }

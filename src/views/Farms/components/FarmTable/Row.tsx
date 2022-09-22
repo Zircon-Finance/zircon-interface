@@ -188,6 +188,8 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
       "off"
   );
   const gamma = useGamma(pylonPair?.address)
+  console.log('AAAAAAAAAAAAAAA', gamma)
+  console.log('pylonpair', pylonPair)
 
   const hasStakedAmount = !!usePool(details.sousId).pool.userData.stakedBalance.toNumber()
   const [actionPanelExpanded, setActionPanelExpanded] = useState(false)
@@ -223,7 +225,10 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     const rewardBlocksPerDay = (parseFloat((balance?.toFixed(6)))/blocksLeft)*6400*30
     return(
         <Text fontSize='13px' fontWeight={500} color={'#4e7455'}>
-          {`~ ${rewardBlocksPerDay.toFixed(0)}  ${token.symbol}`}
+          {rewardBlocksPerDay.toFixed(0) !== 'NaN' ?
+          `~ ${rewardBlocksPerDay.toFixed(0)}  ${token.symbol}` :
+          'Loading...'
+          }
         </Text>
       )
     }

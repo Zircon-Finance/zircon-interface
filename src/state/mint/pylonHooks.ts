@@ -343,19 +343,17 @@ export const useHealthFactor = (  currencyA: Currency | undefined,
 export function usePairPrices(token0: Currency, token1: Currency, pair: Pair, pairState: PairState) {
     async function getPrices() {
         console.log('Reserves: ', pair?.reserve0?.toFixed(9) , pair?.reserve1?.toFixed(9))
+        console.log('Token0: ', token0?.symbol, token0?.decimals)
+        console.log('Token1: ', token1?.symbol, token1?.decimals)
         const price0 = token0 && await axios.get(`${PRICE_API+token0?.symbol}BUSD`).then((res) => res?.data?.price).catch((e) => console.log(e))
         const price1 = token1 && await axios.get(`${PRICE_API+token1?.symbol}BUSD`).then((res) => res?.data?.price).catch((e) => console.log(e))
-        return price0 !== undefined ? [price0, ((parseFloat(pair?.reserve1?.toFixed(9)) / parseFloat(pair?.reserve0?.toFixed(9))) * price0)] : 
+        return price0 !== undefined ? [price0, ((parseFloat(pair?.reserve0?.toFixed(9)) / parseFloat(pair?.reserve1?.toFixed(9))) * price0)] : 
         price1 !== undefined ? [((parseFloat(pair?.reserve1?.toFixed(9)) / parseFloat(pair?.reserve0?.toFixed(9))) * price1), price1] : [0,0]
     }
     const [prices, setPrices] = useState([0,0])
     useEffect(() => {
         getPrices().then((res) => setPrices(res))
+        console.log('Prices: ', prices)
     }, [token0, token1, pairState])
     return prices
-
-
 }
-
-// return price1 !== undefined ? [price1, ((parseFloat(pylon?.reserve0?.toFixed(9)) / parseFloat(pylon?.reserve1?.toFixed(9))) * price1)] : 
-//         price2 !== undefined ? [((parseFloat(pylon?.reserve1?.toFixed(9)) / parseFloat(pylon?.reserve0?.toFixed(9))) * price2), price2] : [0,0]

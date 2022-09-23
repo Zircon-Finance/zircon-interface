@@ -150,11 +150,14 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
   omegaSlashingPercentage?: JSBI;
 } {
 
-  if(!ptTotalSupply || !userLiquidity) {
+  if(!ptTotalSupply || !userLiquidity || !pylonPoolBalance || !totalSupply || !pylonInfo || !pylonConstants || !lastK || !blockNumber || !pylonInfo[0]) {
     return undefined
   }
   if(isSync) {
     if(JSBI.greaterThanOrEqual(ptTotalSupply.raw, userLiquidity.raw)) {
+      console.log("hello", totalSupply, ptTotalSupply, userLiquidity,
+          pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
+          pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK))
       let burnInfo = isFloat ?
           pylon.burnFloat(totalSupply, ptTotalSupply, userLiquidity,
               pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,

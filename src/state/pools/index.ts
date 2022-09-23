@@ -194,9 +194,9 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
       }) : []
       let earningTokenCurrentBalance = currentBlock > blockLimit.startBlock ? pool.earningToken.map((token,index) => {
         if (token.symbol === "ZRG") {
-          return new BigNumber(rewardsData[i][0][index]?.balance?.toString()).dividedBy(pool.vaultTotalSupply)//.dividedBy(new BigNumber(10).pow(18)).toNumber()
+          return new BigNumber(rewardsData[i][0][index]?.balance?.toString()).dividedBy(pool.vaultTotalSupply);//.dividedBy(new BigNumber(10).pow(18)).toNumber()
         } else if (token.symbol === "MOVR") {
-          return new BigNumber(rewardsData[i][0][index]?.balance?.toString()).dividedBy(pool.vaultTotalSupply)//.dividedBy(new BigNumber(10).pow(18)).toNumber()
+          return new BigNumber(rewardsData[i][0][index]?.balance?.toString()).dividedBy(pool.vaultTotalSupply);//.dividedBy(new BigNumber(10).pow(18)).toNumber()
         }else {
           return 0
         }
@@ -210,6 +210,7 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
               earningTokenPrice,
           )
           : 0
+
       return {
         ...blockLimit,
         ...totalStaking,

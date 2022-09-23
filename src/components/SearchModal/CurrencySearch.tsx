@@ -195,13 +195,13 @@ export function CurrencySearch({
         </RowBetween>
       </PaddedColumn>
 
-      {(isFloat !== undefined && filteredSortedTokens.length > 0 && !searchQuery) && 
+      {(isFloat !== undefined && filteredSortedTokens.length > 0 && !searchQuery) &&
       <Flex flexDirection="column" style={{padding: '0 20px', gap: '5px'}}>
         <Text color={theme.whiteHalf}>{`Recommended for ${isFloat ? 'Float' : 'Anchor'}`}</Text>
         <Flex flexDirection="row" style={{display: 'flex', marginBottom: '15px', flexWrap: 'wrap'}}>
         {isFloat === true &&
           selectedFloatTokens?.map((token, i) => (
-            <SmallPlanet onClick={()=>handleCurrencySelect(token)}>
+            <SmallPlanet key={i} onClick={()=>handleCurrencySelect(token)}>
               <CurrencyLogo currency={token} size={'18px'} />
               <Text fontWeight={500} fontSize={14} style={{padding: '0 5px 0 5px'}}>{(token?.symbol === 'MOVR' && token !== DEV) ? 'wMOVR' : token?.symbol}</Text>
             </SmallPlanet>
@@ -254,7 +254,7 @@ export function CurrencySearch({
             </Row>
           ) : null}
           <ButtonPositionsMobile
-            style={{ height: '34px', padding: '10px 12px', fontWeight: 400, color: theme.white, fontSize: 13, width: 'auto', 
+            style={{ height: '34px', padding: '10px 12px', fontWeight: 400, color: theme.white, fontSize: 13, width: 'auto',
             background: hover ? theme.changeButtonHover : theme.changeButtonNormal }}
             onClick={onChangeList}
             id="currency-search-change-list-button"

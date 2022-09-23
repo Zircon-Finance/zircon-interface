@@ -15,8 +15,8 @@ import {useLastK, usePylonConstants, usePylonInfo,} from "../../data/PylonData";
 import {useBlockNumber} from "../application/hooks";
 import {usePylonFactoryContract} from '../../hooks/useContract'
 import axios from 'axios'
-import { PRICE_API } from '../../constants/lists'
-import { PairState } from '../../data/Reserves'
+import {PRICE_API} from '../../constants/lists'
+import {PairState} from '../../data/Reserves'
 
 const ZERO = JSBI.BigInt(0)
 
@@ -169,7 +169,7 @@ export function useDerivedPylonMintInfo(
       wrappedCurrencyAmount(currencyBAmount, chainId)
     ]
 
-    if (pylonPair && pylonSupply && tokenAmountA && tokenAmountB && totalSupply && ptTotalSupply && userLiquidity && pylonPoolBalance && pylonInfo.length > 8 && pylonConstants) {
+    if (pylonState === PylonState.EXISTS && pylonPair && pylonSupply && tokenAmountA && tokenAmountB && totalSupply && ptTotalSupply && userLiquidity && pylonPoolBalance && pylonInfo.length > 8 && pylonConstants) {
       if (sync === "off") {
         let syncMintInfo;
         let extraFeeTreshold = ZERO;

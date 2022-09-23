@@ -516,6 +516,7 @@ export function MinimalPositionPylonCard({ pylon, showUnwrapped = false, border,
     const [token0Deposited, token1Deposited] =
         !!pylon &&
         !!pylonInfo &&
+            !!pylonInfo[0] &&
         !!pylonConstants &&
         !!userPoolBalance &&
         !!pylonPoolBalance &&

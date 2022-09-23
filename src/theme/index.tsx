@@ -169,7 +169,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     yellow2: '#D75FA3',
 
     colors: {
-      backgroundDisabled: "#c4648e",
+      backgroundDisabled: darkMode ? "#482C38" : '#F0EDEE',
       backgroundAlt: '#4A303E',
       backgroundAlt2: "rgba(255, 255, 255, 0.7)",
       cardBorder: '#361E2A',

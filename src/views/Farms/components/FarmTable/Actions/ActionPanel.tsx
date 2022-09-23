@@ -527,7 +527,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           {width >= 800 && <QuarterContainer onClick={() => clickAction(false)} style={{justifyContent: 'center', alignItems: 'center', cursor: 'pointer'}}>
             <ArrowIcon toggled={expanded}  />
           </QuarterContainer>}
-        {account && 
+        {account && width <= 800 &&
         <Flex justifyContent={'space-around'} my={'5px'}>
         <StyledLinkExternal
           style={{ color: theme.pinkBrown, fontWeight: 500, marginRight: '10px' }}

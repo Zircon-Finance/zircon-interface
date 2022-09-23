@@ -5,7 +5,7 @@ import Modal from '../Modal'
 import { ExternalLink } from '../../theme'
 import { Text } from 'rebass'
 import { CloseIcon } from '../../theme/components'
-import { RowBetween } from '../Row'
+import { RowBetween, RowFixed } from '../Row'
 import { AlertTriangle, ArrowUpCircle } from 'react-feather'
 import { ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from '../Column'
@@ -15,6 +15,8 @@ import { getEtherscanLink } from '../../utils'
 import { useActiveWeb3React } from '../../hooks'
 import Lottie from "lottie-react-web";
 import animation2 from "../../assets/lotties/z9rH3jsFYe.json";
+import useAddTokenToMetaMask from '../../hooks/useAddTokenToMetaMask'
+import { useToken } from '../../hooks/Tokens'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -81,12 +83,17 @@ function ConfirmationPendingContent({ onDismiss, pendingText }: { onDismiss: () 
 function TransactionSubmittedContent({
                                        onDismiss,
                                        chainId,
-                                       hash
+                                       hash,
+                                       outputCurrency
                                      }: {
   onDismiss: () => void
   hash: string | undefined
   chainId: ChainId
+  outputCurrency?: string | undefined
 }) {
+  const {library} = useActiveWeb3React()
+  const token = useToken(outputCurrency)
+  const { addToken, success } = useAddTokenToMetaMask(token)
 
   return (
       <Wrapper>
@@ -109,6 +116,20 @@ function TransactionSubmittedContent({
                     View on Moonriver explorer ↗
                   </Text>
                 </ExternalLink>
+            )}
+            {outputCurrency && token !== undefined && library?.provider?.isMetaMask && (
+            <ButtonPrimary onClick={addToken} style={{fontSize: '14px', height: '30px', width: '350px', borderRadius: '12px', marginTop: '15px'}}
+            disabled={success}>
+              {!success ? (
+                <RowFixed className="mx-auto space-x-2">
+                  <span>{`Add ${token?.symbol} to MetaMask`}</span>
+                </RowFixed>
+              ) : (
+                <RowFixed>
+                  {`Added ${token?.symbol}`}
+                </RowFixed>
+              )}
+            </ButtonPrimary>
             )}
             <ButtonPrimary onClick={onDismiss} style={{ margin: '20px 0 0 0' }}>
               <Text fontWeight={400} fontSize={20}>
@@ -180,6 +201,7 @@ interface ConfirmationModalProps {
   content: () => React.ReactNode
   attemptingTxn: boolean
   pendingText: string
+  outputCurrency?: string | undefined
 }
 
 export default function TransactionConfirmationModal({
@@ -188,7 +210,8 @@ export default function TransactionConfirmationModal({
                                                        attemptingTxn,
                                                        hash,
                                                        pendingText,
-                                                       content
+                                                       content,
+                                                       outputCurrency
                                                      }: ConfirmationModalProps) {
   const { chainId } = useActiveWeb3React()
 
@@ -200,7 +223,7 @@ export default function TransactionConfirmationModal({
         {attemptingTxn ? (
             <ConfirmationPendingContent onDismiss={onDismiss} pendingText={pendingText} />
         ) : hash ? (
-            <TransactionSubmittedContent chainId={chainId} hash={hash} onDismiss={onDismiss} />
+            <TransactionSubmittedContent chainId={chainId} hash={hash} onDismiss={onDismiss} outputCurrency={outputCurrency} />
         ) : (
             content()
         )}

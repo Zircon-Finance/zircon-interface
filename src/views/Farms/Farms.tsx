@@ -234,6 +234,7 @@ const Farms: React.FC = ({ children }) => {
     event.persist()
     setQuery(event.target.value)
   }
+  
 
   const options = ['Earned', 'Staked', 'APR', 'Liquidty']
   const [showMobileSearchBar] = useShowMobileSearchBarManager()
@@ -324,6 +325,7 @@ const Farms: React.FC = ({ children }) => {
     const tokenAddress = token1.address
     const quoteTokenAddress = token2.address
     const lpLabel = `${farm.token1.symbol}-${farm.token2.symbol}`
+
 
 
     const row: RowProps = {

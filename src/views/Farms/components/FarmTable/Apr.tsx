@@ -18,6 +18,7 @@ export interface AprProps {
   originalValue: number
   hideButton?: boolean
   left?: boolean
+  white? : boolean
 }
 
 const Container = styled.div`
@@ -48,6 +49,7 @@ const Apr: React.FC<AprProps> = ({
   cakePrice,
   originalValue,
   hideButton = false,
+  white,
 }) => {
   // const liquidityUrlPathParts = getLiquidityUrlPathParts({ quoteTokenAddress, tokenAddress })
   const addLiquidityUrl = `placeholder`
@@ -62,6 +64,7 @@ const Apr: React.FC<AprProps> = ({
           apr={originalValue}
           displayApr={value}
           addLiquidityUrl={addLiquidityUrl}
+          white={white}
         />
     </Container>
   ) : (

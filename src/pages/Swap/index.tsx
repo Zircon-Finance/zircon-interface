@@ -269,8 +269,8 @@ export default function Swap() {
 
   const singleTokenPrice = useSingleTokenSwapInfo(inputCurrencyId, inputCurrency, outputCurrencyId, outputCurrency)
 
-  const [pairState,pair] = usePair(inputCurrency, outputCurrency)
-  const prices = usePairPrices(inputCurrency, outputCurrency, pair, pairState)
+  const [pairState,pair] = usePair(currencies[Field.INPUT], currencies[Field.OUTPUT])
+  const prices = usePairPrices(currencies[Field.INPUT], currencies[Field.OUTPUT], pair, pairState)
 
   return (
     <>

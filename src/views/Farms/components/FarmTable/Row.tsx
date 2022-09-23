@@ -188,8 +188,6 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
       "off"
   );
   const gamma = useGamma(pylonPair?.address)
-  console.log('AAAAAAAAAAAAAAA', gamma)
-  console.log('pylonpair', pylonPair)
 
   const hasStakedAmount = !!usePool(details.sousId).pool.userData.stakedBalance.toNumber()
   const [actionPanelExpanded, setActionPanelExpanded] = useState(false)
@@ -250,7 +248,6 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const sousChefContract = useSousChef(details.sousId)
   const { callWithGasPrice } = useCallWithGasPrice()
   const [pendingTx, setPendingTx] = useState(false)
-  console.log('pendingTx', pendingTx)
 
   const handleApproval = useCallback(async () => {
     const receipt = await fetchWithCatchTxError(() => {

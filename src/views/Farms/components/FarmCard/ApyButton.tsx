@@ -6,9 +6,9 @@ import RoiCalculatorModal from '../../../../components/RoiCalculatorModal'
 import { useTranslation } from 'react-i18next'
 import { usePool } from '../../../../state/pools/hooks'
 
-const ApyLabelContainer = styled(Flex)`
+const ApyLabelContainer = styled(Flex)<{ white: boolean }>`
   font-size: 13px;
-  color: ${({ theme }) => theme.whiteHalf};
+  color: ${({ theme, white }) => white ? theme.text1 : theme.whiteHalf};
   margin-left: 3px;
   @media (min-width: 992px) {
     font-size: 16px;
@@ -27,6 +27,7 @@ export interface ApyButtonProps {
   apr?: number
   displayApr?: string
   addLiquidityUrl?: string
+  white?: boolean
 }
 
 const ApyButton: React.FC<ApyButtonProps> = ({
@@ -39,6 +40,7 @@ const ApyButton: React.FC<ApyButtonProps> = ({
   multiplier,
   displayApr,
   addLiquidityUrl,
+  white,
 }) => {
   const { t } = useTranslation()
   const { pool } = usePool(pid)
@@ -65,7 +67,7 @@ const ApyButton: React.FC<ApyButtonProps> = ({
   }
 
   return (
-    <ApyLabelContainer alignItems="center" onClick={handleClickButton}>
+    <ApyLabelContainer alignItems="center" onClick={handleClickButton} white={white}>
       {displayApr}%
     </ApyLabelContainer>
   )

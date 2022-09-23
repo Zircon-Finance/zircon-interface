@@ -1371,14 +1371,13 @@ export default function AddLiquidityPro({
                                             (farmIsApproved() ?
                                                 "Add & Farm" : "Enable farm contract")}
                                       </Text>
-                                      {/*{(farmIsApproved() || error) &&*/}
-                                      {/*<Text*/}
-                                      {/*    fontSize={width > 700 ? 14 : 13}*/}
-                                      {/*    fontWeight={400}*/}
-                                      {/*>*/}
-                                      {/*  {`${apr}% APR`}*/}
-                                      {/*</Text>*/}
-                                      {/*}*/}
+                                      {farmIsApproved() &&
+                                      <Text
+                                          fontSize={width > 700 ? 14 : 13}
+                                          fontWeight={400}
+                                      >
+                                        {`${pool.apr.toFixed(0)}% APR`}
+                                      </Text>}
                                     </Flex>
                                   </ButtonError>
                               )}

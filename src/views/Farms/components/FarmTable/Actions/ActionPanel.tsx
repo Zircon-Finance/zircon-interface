@@ -373,7 +373,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                     )}
                   </SpaceBetween>
               ) : (
-                  <SpaceBetween style={{paddingTop: '16px'}}>
+                  <SpaceBetween style={{paddingTop: '16px', paddingBottom: '5px', marginBottom: '5px', borderBottom: `1px solid ${theme.opacitySmall}`}}>
                     <Flex alignItems={'center'}>
                       {isClassic ? (
                           <DoubleCurrencyLogo currency0={token1} currency1={token2} margin={false} size={width >= 500 ? 25 : 30} />
@@ -387,12 +387,13 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                                 style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', display: 'flex', alignItems: 'center', marginRight: '5px'}}>
                               <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{!isClassic && isAnchor ? token2.symbol : token1.symbol} </span>{isClassic ? 'CLASSIC' :!isAnchor ? 'FLOAT' : 'STABLE'}
                             </BadgeSmall>
-                            <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{`${token1.symbol}/${token2.symbol}`}</Text>                    </Flex>
+                          </Flex>
                         </>
                       </div>
                     </Flex>
                     <QuarterContainer onClick={() => clickAction(false)}
-                                      style={{justifyContent: 'center', alignItems: 'center', cursor: 'pointer'}}>
+                                      style={{justifyContent: 'center', alignItems: 'center', cursor: 'pointer', flexDirection: 'row'}}>
+                    <Text color={theme.whiteHalf} style={{minWidth: 'max-content'}} fontWeight={400}>{`${token1.symbol}/${token2.symbol}`}</Text>                    
                       <ArrowIcon toggled={expanded}  />
                     </QuarterContainer>
                   </SpaceBetween>
@@ -423,7 +424,8 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                       <StyledLinkExternal color={theme.meatPink} href={info}>{t('See Pair Info ↗')}</StyledLinkExternal>
                     </SpaceBetween>
                   </> ) : (
-                  <>
+                  !account ? 
+                    <>
                     <SpaceBetween style={{marginBottom: '16px'}}>
                       <Flex style={{flexDirection: 'column'}}>
                         <StyledLinkExternal style={{margin: '5px 0 5px 0'}} color={theme.meatPink} href={bsc}>{t('View Contract ↗')}</StyledLinkExternal>
@@ -446,6 +448,13 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                       </Flex>
                     </SpaceBetween>
                   </>
+                  :
+                  <SpaceBetween style={{marginBottom: '16px'}}>
+                    <Text color={theme.whiteHalf} style={{minWidth: 'max-content', fontSize: '14px'}} fontWeight={400}>{'Monthly rewards:'}</Text>
+                    <Flex flexDirection={"column"}>
+                      {farm.earningToken.map((token) => <RewardBlock token={token} />)}
+                    </Flex>
+                  </SpaceBetween>
               )}
 
               {/* <TagsContainer> */}
@@ -485,9 +494,15 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
 
           <QuarterContainer style={{padding: width < 992 ? '0 10px' : '0 0 0 10px'}}>
             <ValueContainer>
+              {account &&
+              <ValueWrapper>
+                <Text fontSize='13px' fontWeight={300} color={theme.text1}>{`${!isAnchor ? 'Divergence' : 'Health Factor'}`}</Text>
+                <CapacityIndicatorSmall gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true} hoverPage={'farmAction'}/>
+              </ValueWrapper>
+              }
               <ValueWrapper>
                 <Text fontSize='13px' fontWeight={300} color={theme.text1}>{t('APR')}</Text>
-                <Apr left={true} {...apr} />
+                <Apr white={true} left={true} {...apr} />
               </ValueWrapper>
               <ValueWrapper>
                 <Text color={theme.text1} fontSize='13px' fontWeight={300}>{t('Liquidity')}</Text>
@@ -512,7 +527,25 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           {width >= 800 && <QuarterContainer onClick={() => clickAction(false)} style={{justifyContent: 'center', alignItems: 'center', cursor: 'pointer'}}>
             <ArrowIcon toggled={expanded}  />
           </QuarterContainer>}
-
+        {account && 
+        <Flex justifyContent={'space-around'} my={'5px'}>
+        <StyledLinkExternal
+          style={{ color: theme.pinkBrown, fontWeight: 500, marginRight: '10px' }}
+          href={"Placeholder"}
+        >
+          {"See Pair Info ↗"}
+        </StyledLinkExternal>
+        <StyledLinkExternal
+          style={{
+            color: theme.pinkBrown,
+            fontWeight: 500,
+          }}
+          href={"Placeholder"}
+        >
+          {"View Contract ↗"}
+        </StyledLinkExternal>
+      </Flex>
+        }
         </Container>
       </>
   )

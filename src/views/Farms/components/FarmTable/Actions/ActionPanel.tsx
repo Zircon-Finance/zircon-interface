@@ -173,10 +173,12 @@ interface ModalProps {
   addLiquidityUrl: string
   cakePrice: BigNumber
   token: Token
+  pool?: DeserializedPool
 }
 
 export const ModalTopDeposit: React.FunctionComponent<ModalProps> = ({
                                                                        max,
+                                                                       pool,
                                                                        lpLabel,
                                                                        apr,
                                                                        onDismiss,
@@ -202,6 +204,7 @@ export const ModalTopDeposit: React.FunctionComponent<ModalProps> = ({
               addLiquidityUrl={addLiquidityUrl}
               cakePrice={cakePrice}
               token={token}
+              pool={pool}
           />
         </ModalContainer>
       </Portal>
@@ -335,6 +338,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
       <>
         {showModal && (
             <ModalTopDeposit
+                pool={pool}
                 max={tokenBalance}
                 lpLabel = {lpLabel}
                 apr = {1}

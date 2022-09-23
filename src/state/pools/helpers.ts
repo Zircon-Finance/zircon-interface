@@ -49,11 +49,15 @@ export const transformPool = (pool: SerializedPool): DeserializedPool => {
     earningToken,
     profileRequirement,
     startBlock,
+    staked,
+    stakedFL,
     ...rest
   } = pool
 
   return {
     ...rest,
+    staked: new BigNumber(staked),
+    stakedFL: new BigNumber(stakedFL),
     startBlock,
     profileRequirement: transformProfileRequirement(profileRequirement),
     stakingToken: deserializeToken(stakingToken),

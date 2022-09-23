@@ -31,6 +31,7 @@ const fetchPools = async (poolsToFetch: SerializedPoolConfig[]): Promise<Seriali
         let inverseGamma = new BigNumber(BIG_TEN.pow(18)).minus(new BigNumber(gamma))
 
         const staked = lpTotalInQuoteToken.multipliedBy(inverseGamma).multipliedBy(ptb).dividedBy(lpTotalSupply).dividedBy(BIG_TEN.pow(18))
+        const stakedFL = lpTotalInQuoteToken.multipliedBy(gamma).multipliedBy(ptb).dividedBy(lpTotalSupply).dividedBy(BIG_TEN.pow(18))
 
 
         // console.log("values::", pool.lpTotalInQuoteToken, pool.gamma, new BigNumber(pool.ptb.toString()), pool.lpTotalSupply)
@@ -63,6 +64,7 @@ const fetchPools = async (poolsToFetch: SerializedPoolConfig[]): Promise<Seriali
             staked: new BigNumber(staked).toJSON(),
             quoteTokenBalanceLP: new BigNumber(quoteTokenBalanceLP).toJSON(),
             vaultTotalSupply: new BigNumber(vaultTotalSupply).toJSON(),
+            stakedFL: new BigNumber(stakedFL).toJSON(),
             // poolWeight: poolWeight.toJSON(),
             // multiplier: `${allocPoint.div(100).toString()}X`,
         }

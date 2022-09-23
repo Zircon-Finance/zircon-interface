@@ -12,6 +12,7 @@ import { ButtonLight, ButtonOutlined, ButtonPrimary } from '../../../components/
 import { Link } from 'rebass'
 import { StyledErrorMessage } from '../../../components/ModalFarm/ModalInput'
 import {Token} from 'zircon-sdk'
+import { DeserializedPool } from '../../../state/types'
 
 const AnnualRoiContainer = styled(Flex)`
   cursor: pointer;
@@ -38,6 +39,7 @@ interface DepositModalProps {
   addLiquidityUrl?: string
   cakePrice?: BigNumber
   token: Token
+  pool: DeserializedPool
 }
 
 const DepositModal: React.FC<DepositModalProps> = ({
@@ -53,6 +55,7 @@ const DepositModal: React.FC<DepositModalProps> = ({
   addLiquidityUrl,
   cakePrice,
   token,
+  pool,
 }) => {
   const [val, setVal] = useState('')
   const [pendingTx, setPendingTx] = useState(false)
@@ -62,15 +65,18 @@ const DepositModal: React.FC<DepositModalProps> = ({
     return getFullDisplayBalance(max)
   }, [max])
 
+
   const lpTokensToStake = new BigNumber(val)
   const fullBalanceNumber = new BigNumber(fullBalance)
 
-  const usdToStake = lpTokensToStake.times(1)
+  const usdToStake = lpTokensToStake.times(pool.isAnchor ? pool.staked : pool.stakedFL)
+  console.log('Multiplying user input: ', lpTokensToStake.toFixed(6),' by ZPT price: ', 
+  pool.isAnchor ? pool.staked.toFixed(6) : pool.stakedFL.toFixed(6), ' to get USD value: ', usdToStake.toFixed(6))
 
   const interestBreakdown = getInterestBreakdown({
     principalInUSD: !lpTokensToStake.isNaN() ? usdToStake.toNumber() : 0,
     apr,
-    earningTokenPrice: 1,
+    earningTokenPrice: pool.earningTokenPrice ? pool?.earningTokenPrice[0] : 0,
   })
   const two = new BigNumber(2)
   const annualRoi = two.times(interestBreakdown[3])

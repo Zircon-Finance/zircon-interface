@@ -344,6 +344,8 @@ export function usePairPrices(token0: Currency, token1: Currency, pair: Pair, pa
     async function getPrices() {
         const price0 = token0 && await axios.get(`${PRICE_API+token0?.symbol}BUSD`).then((res) => res?.data?.price).catch((e) => console.log(e))
         const price1 = token1 && await axios.get(`${PRICE_API+token1?.symbol}BUSD`).then((res) => res?.data?.price).catch((e) => console.log(e))
+        console.log('price 0', price0)
+        console.log('price 1', price1)
         return price0 !== undefined
           ? [
               price0,
@@ -356,10 +358,10 @@ export function usePairPrices(token0: Currency, token1: Currency, pair: Pair, pa
           : price1 !== undefined
           ? [
               (pair?.token1 === token1
-                ? parseFloat(pair?.reserve1?.toFixed(9)) /
-                  parseFloat(pair?.reserve0?.toFixed(9))
-                : parseFloat(pair?.reserve0?.toFixed(9)) /
-                  parseFloat(pair?.reserve1?.toFixed(9))) * price1,
+                ? parseFloat(pair?.reserve0?.toFixed(9)) /
+                  parseFloat(pair?.reserve1?.toFixed(9))
+                : parseFloat(pair?.reserve1?.toFixed(9)) /
+                  parseFloat(pair?.reserve0?.toFixed(9))) * price1,
               price1,
             ]
           : [0, 0];

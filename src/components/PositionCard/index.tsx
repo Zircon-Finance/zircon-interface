@@ -623,7 +623,7 @@ export function MinimalPositionPylonCard({ pylon, showUnwrapped = false, border,
                             </RowFixed>
                         </FixedHeightRow>
                         <AutoColumn gap="4px">
-                            <FixedHeightRow>
+                            {isFloat && <FixedHeightRow>
                                 <Text color={theme.text1} fontSize={13} fontWeight={400}>
                                     Pooled {currency0.symbol}
                                 </Text>
@@ -641,8 +641,8 @@ export function MinimalPositionPylonCard({ pylon, showUnwrapped = false, border,
                                 ) : (
                                     "-"
                                 )}
-                            </FixedHeightRow>
-                            <FixedHeightRow>
+                            </FixedHeightRow>}
+                            {!isFloat && <FixedHeightRow>
                                 <Text color={theme.text1} fontSize={13} fontWeight={400}>
                                     Pooled {currency1.symbol}
                                 </Text>
@@ -660,7 +660,7 @@ export function MinimalPositionPylonCard({ pylon, showUnwrapped = false, border,
                                 ) : (
                                     "-"
                                 )}
-                            </FixedHeightRow>
+                            </FixedHeightRow>}
                         </AutoColumn>
                     </AutoColumn>
                 </OutlineCard>

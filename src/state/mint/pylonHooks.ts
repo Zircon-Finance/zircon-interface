@@ -90,7 +90,7 @@ export function useDerivedPylonMintInfo(
   const reserveAnchor = useTokenBalance(energyAddress, pylonPair?.anchorLiquidityToken)
 
   const healthFactor = useMemo(() => {
-    return pylonInfo && pylonPair && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && lastK && pylonConstants && pylonState === PylonState.EXISTS?
+    return pylonInfo && pylonInfo[0] && pylonState === PylonState.EXISTS && pylonPair && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && lastK && pylonConstants && pylonState === PylonState.EXISTS?
         pylonPair.getHealthFactor(
             pylonInfo[0],
             pylonPoolBalance,
@@ -322,7 +322,7 @@ export const useHealthFactor = (  currencyA: Currency | undefined,
   // console.log("lastK", lastK)
   // console.log("ea", energyAddress)
   const healthFactorResult = useMemo(() => {
-    return pylonInfo && pylonPair && ptbEnergy && reserveAnchor && ptb && ptt && lastK && pylonFactory ?
+    return pylonInfo && pylonPair &&  pylonInfo[0] && ptbEnergy && reserveAnchor && ptb && ptt && lastK && pylonFactory ?
         pylonPair.getHealthFactor(
             pylonInfo[0],
             ptb,
@@ -344,24 +344,22 @@ export function usePairPrices(token0: Currency, token1: Currency, pair: Pair, pa
     async function getPrices() {
         const price0 = token0 && await axios.get(`${PRICE_API+token0?.symbol}BUSD`).then((res) => res?.data?.price).catch((e) => console.log(e))
         const price1 = token1 && await axios.get(`${PRICE_API+token1?.symbol}BUSD`).then((res) => res?.data?.price).catch((e) => console.log(e))
-        console.log('price 0', price0)
-        console.log('price 1', price1)
         return price0 !== undefined
           ? [
               price0,
               (pair?.token0 === token0
-                ? parseFloat(pair?.reserve0?.toFixed(9)) /
-                  parseFloat(pair?.reserve1?.toFixed(9))
-                : parseFloat(pair?.reserve1?.toFixed(9)) /
-                  parseFloat(pair?.reserve0?.toFixed(9))) * price0,
+                ? parseFloat(pair?.reserve0?.toFixed(2)) /
+                  parseFloat(pair?.reserve1?.toFixed(2))
+                : parseFloat(pair?.reserve1?.toFixed(2)) /
+                  parseFloat(pair?.reserve0?.toFixed(2))) * price0,
             ]
           : price1 !== undefined
           ? [
               (pair?.token1 === token1
-                ? parseFloat(pair?.reserve0?.toFixed(9)) /
-                  parseFloat(pair?.reserve1?.toFixed(9))
-                : parseFloat(pair?.reserve1?.toFixed(9)) /
-                  parseFloat(pair?.reserve0?.toFixed(9))) * price1,
+                ? parseFloat(pair?.reserve0?.toFixed(2)) /
+                  parseFloat(pair?.reserve1?.toFixed(2))
+                : parseFloat(pair?.reserve1?.toFixed(2)) /
+                  parseFloat(pair?.reserve0?.toFixed(2))) * price1,
               price1,
             ]
           : [0, 0];

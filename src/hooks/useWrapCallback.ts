@@ -44,13 +44,13 @@ export default function useWrapCallback(
             ? async () => {
                 try {
                   const txReceipt = await wethContract.deposit({ value: `0x${inputAmount.raw.toString(16)}` })
-                  addTransaction(txReceipt, { summary: `Wrap ${inputAmount.toSignificant(6)} DEV to WDEV` })
+                  addTransaction(txReceipt, { summary: `Wrap ${inputAmount.toSignificant(6)} MOVR to WMOVR` })
                 } catch (error) {
                   console.error('Could not deposit', error)
                 }
               }
             : undefined,
-        inputError: sufficientBalance ? undefined : 'Insufficient DEV balance'
+        inputError: sufficientBalance ? undefined : 'Insufficient MOVR balance'
       }
     } else if (currencyEquals(WDEV[chainId], inputCurrency) && outputCurrency === DEV) {
       return {
@@ -60,13 +60,13 @@ export default function useWrapCallback(
             ? async () => {
                 try {
                   const txReceipt = await wethContract.withdraw(`0x${inputAmount.raw.toString(16)}`)
-                  addTransaction(txReceipt, { summary: `Unwrap ${inputAmount.toSignificant(6)} WDEV to ETH` })
+                  addTransaction(txReceipt, { summary: `Unwrap ${inputAmount.toSignificant(6)} WMOVR to MOVR` })
                 } catch (error) {
                   console.error('Could not withdraw', error)
                 }
               }
             : undefined,
-        inputError: sufficientBalance ? undefined : 'Insufficient WDEV balance'
+        inputError: sufficientBalance ? undefined : 'Insufficient WMOVR balance'
       }
     } else {
       return NOT_APPLICABLE

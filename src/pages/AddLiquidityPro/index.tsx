@@ -383,6 +383,7 @@ export default function AddLiquidityPro({
         method: (...args: any) => Promise<TransactionResponse>,
         args: Array<string | string[] | number | boolean>,
         value: BigNumber | null;
+
     const tokenBIsETH = getCurrency(false) === DEV;
 
     console.log('args', [
@@ -397,6 +398,7 @@ export default function AddLiquidityPro({
     ])
     if (sync === "off") {
       if (getCurrency(true) === DEV) {
+
         estimate = router.estimateGas.addSyncLiquidityETH;
         method = router.addSyncLiquidityETH;
         args = [
@@ -410,6 +412,7 @@ export default function AddLiquidityPro({
           stake ? contractAddress : AddressZero,
           deadlineFromNow,
         ];
+        console.log("args", args);
         value = !tokenBIsETH
             ? BigNumber.from(
                 (isFloat
@@ -434,6 +437,8 @@ export default function AddLiquidityPro({
           stake ? contractAddress : AddressZero,
           deadlineFromNow,
         ];
+        console.log("args", args);
+
         value = null;
       }
     } else {
@@ -1371,13 +1376,13 @@ export default function AddLiquidityPro({
                                             (farmIsApproved() ?
                                                 "Add & Farm" : "Enable farm contract")}
                                       </Text>
-                                      {farmIsApproved() &&
+                                      {farmIsApproved() && pool?.apr && (
                                       <Text
                                           fontSize={width > 700 ? 14 : 13}
                                           fontWeight={400}
                                       >
-                                        {`${pool.apr.toFixed(0)}% APR`}
-                                      </Text>}
+                                        {`${pool?.apr ? "" : pool?.apr?.toFixed(0)}% APR`}
+                                      </Text>)}
                                     </Flex>
                                   </ButtonError>
                               )}

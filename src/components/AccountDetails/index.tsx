@@ -165,7 +165,7 @@ const WalletName = styled.div`
   color: ${({ theme }) => theme.text1};
 `
 
-const IconWrapper = styled.div<{ size?: number }>`
+export const IconWrapper = styled.div<{ size?: number }>`
   ${({ theme }) => theme.flexColumnNoWrap};
   align-items: center;
   justify-content: center;

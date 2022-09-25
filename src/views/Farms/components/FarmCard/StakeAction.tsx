@@ -164,6 +164,7 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
           tokenName={'lpSymbol'}
           addLiquidityUrl={'#/add-pro/'+token1.address+'/'+token2.address + '/' + isAnchor ? 'stable' : 'float' }
           token={stakingToken}
+          pool={pool}
           />
         }
 

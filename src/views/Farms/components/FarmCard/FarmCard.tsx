@@ -163,6 +163,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
                   }
                   cakePrice={(112 as unknown) as BigNumber}
                   token={farm.stakingToken}
+                  pool={farm}
                 />
               </ModalContainer>
             )}

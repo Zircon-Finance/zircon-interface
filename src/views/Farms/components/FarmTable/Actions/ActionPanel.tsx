@@ -173,10 +173,12 @@ interface ModalProps {
   addLiquidityUrl: string
   cakePrice: BigNumber
   token: Token
+  pool?: DeserializedPool
 }
 
 export const ModalTopDeposit: React.FunctionComponent<ModalProps> = ({
                                                                        max,
+                                                                       pool,
                                                                        lpLabel,
                                                                        apr,
                                                                        onDismiss,
@@ -202,6 +204,7 @@ export const ModalTopDeposit: React.FunctionComponent<ModalProps> = ({
               addLiquidityUrl={addLiquidityUrl}
               cakePrice={cakePrice}
               token={token}
+              pool={pool}
           />
         </ModalContainer>
       </Portal>
@@ -335,6 +338,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
       <>
         {showModal && (
             <ModalTopDeposit
+                pool={pool}
                 max={tokenBalance}
                 lpLabel = {lpLabel}
                 apr = {1}
@@ -527,7 +531,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           {width >= 800 && <QuarterContainer onClick={() => clickAction(false)} style={{justifyContent: 'center', alignItems: 'center', cursor: 'pointer'}}>
             <ArrowIcon toggled={expanded}  />
           </QuarterContainer>}
-        {account && 
+        {account && width <= 800 &&
         <Flex justifyContent={'space-around'} my={'5px'}>
         <StyledLinkExternal
           style={{ color: theme.pinkBrown, fontWeight: 500, marginRight: '10px' }}

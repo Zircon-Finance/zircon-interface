@@ -222,6 +222,8 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
         liquidity: liquidity,
         zrgPrice: priceZRG[0]?.tokenPrice,
         movrPrice: priceZRG[0]?.quotePrice,
+        staked: pool.staked,
+        stakedFL: pool.stakedFL,
         apr,
         isFinished: isPoolFinished,
       }

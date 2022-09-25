@@ -335,6 +335,7 @@ export default function Swap() {
             onConfirm={handleSwap}
             swapErrorMessage={swapErrorMessage}
             onDismiss={handleConfirmDismiss}
+            outputCurrency={outputCurrencyId}
           />
 
 

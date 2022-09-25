@@ -80,7 +80,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     advancedBG: 'rgba(0,0,0,0.05)',
 
     //primary colors
-    primary1: '#A69BB5',
+    primary1: '#5C3D3B',
     primary2: '#A548E9',
     primary3: '#BA73ED',
     primary4: '#A548E970',
@@ -169,7 +169,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     yellow2: '#D75FA3',
 
     colors: {
-      backgroundDisabled: "#c4648e",
+      backgroundDisabled: darkMode ? "#482C38" : '#F0EDEE',
       backgroundAlt: '#4A303E',
       backgroundAlt2: "rgba(255, 255, 255, 0.7)",
       cardBorder: '#361E2A',

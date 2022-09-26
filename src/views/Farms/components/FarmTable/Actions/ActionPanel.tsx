@@ -424,7 +424,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                       </div>
                     </SpaceBetween>
                     <SpaceBetween>
-                      <StyledLinkExternal style={{marginBottom: '5px'}} color={theme.meatPink} href={bsc}>{t('View Contract ↗')}</StyledLinkExternal>
+                      <StyledLinkExternal color={theme.meatPink} href={bsc}>{t('View Contract ↗')}</StyledLinkExternal>
                       <StyledLinkExternal color={theme.meatPink} href={info}>{t('See Pair Info ↗')}</StyledLinkExternal>
                     </SpaceBetween>
                   </> ) : (
@@ -498,7 +498,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
 
           <QuarterContainer style={{padding: width < 992 ? '0 10px' : '0 0 0 10px'}}>
             <ValueContainer>
-              {account &&
+              {account && width <= 800 &&
               <ValueWrapper>
                 <Text fontSize='13px' fontWeight={300} color={theme.text1}>{`${!isAnchor ? 'Divergence' : 'Health Factor'}`}</Text>
                 <CapacityIndicatorSmall gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true} hoverPage={'farmAction'}/>

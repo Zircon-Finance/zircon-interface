@@ -154,7 +154,6 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
     return undefined
   }
   let isLastRoot = new BigNumber(pylonInfo[7].toString()).isEqualTo(0)
-  console.log("a", pylonInfo[7].toString(),isLastRoot )
   if(isLastRoot) {
     return undefined;
   }else{

@@ -375,7 +375,6 @@ export default function AddLiquidityPro({
     }
 
     const liquidityMin = calculateSlippageAmount(mintInfo.liquidity, noPylon ? 0 : allowedSlippage)[0]
-    console.log("min liquidity", liquidityMin.toString());
 
     const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline;
 
@@ -412,7 +411,6 @@ export default function AddLiquidityPro({
           stake ? contractAddress : AddressZero,
           deadlineFromNow,
         ];
-        console.log("args", args);
         value = !tokenBIsETH
             ? BigNumber.from(
                 (isFloat
@@ -437,7 +435,6 @@ export default function AddLiquidityPro({
           stake ? contractAddress : AddressZero,
           deadlineFromNow,
         ];
-        console.log("args", args);
 
         value = null;
       }

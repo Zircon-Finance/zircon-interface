@@ -201,7 +201,7 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
           return 0
         }
       }) : []
-      console.log("earningTokenCurrentPrice", earningTokenCurrentPrice)
+      // console.log("earningTokenCurrentPrice", earningTokenCurrentPrice)
       let liquidity  = String(BigNumber(pool.quotePrice.toString()).multipliedBy(pool.quoteTokenBalanceLP).multipliedBy(2).dividedBy(BIG_TEN.pow(pool.quoteTokenDecimals)).toString())
 
       const apr = !isPoolFinished

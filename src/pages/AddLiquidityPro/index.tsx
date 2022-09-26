@@ -369,10 +369,12 @@ export default function AddLiquidityPro({
     if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB) {
       return;
     }
-    const amountsMin = {
-      [Field.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, 0)[0],
-      [Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, 0)[0]
-    }
+
+    // TODO: check amount Min Value
+    // const amountsMin = {
+    //   [Field.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, 0)[0],
+    //   [Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, 0)[0]
+    // }
 
     const liquidityMin = calculateSlippageAmount(mintInfo.liquidity, noPylon ? 0 : allowedSlippage)[0]
 
@@ -454,8 +456,8 @@ export default function AddLiquidityPro({
               chainId
           )?.address ?? "", // token
           (currencies[Field.CURRENCY_A] === DEV ? parsedAmountB : parsedAmountA).raw.toString(),
-          '1',
-          '1',
+          '0',
+          '0',
           currencies[Field.CURRENCY_A] === DEV,
           !isFloat, // second option is anchor so it should mint anchor when float.currency a is equal to b
           account,
@@ -471,16 +473,10 @@ export default function AddLiquidityPro({
         args = [
           wrappedCurrency(currencies[Field.CURRENCY_A], chainId)?.address ?? "",
           wrappedCurrency(currencies[Field.CURRENCY_B], chainId)?.address ?? "",
-          (isFloat
-                  ? parsedAmountB
-                  : parsedAmountA
-          ).raw.toString(),
-          (isFloat
-                  ? parsedAmountA
-                  : parsedAmountB
-          ).raw.toString(),
-          amountsMin[Field.CURRENCY_A].toString(),
-          amountsMin[Field.CURRENCY_B].toString(),
+          (parsedAmountA).raw.toString(),
+          (parsedAmountB).raw.toString(),
+          '0',
+          '0',
           !isFloat,
           account,
           stake ? contractAddress : AddressZero,
@@ -489,7 +485,7 @@ export default function AddLiquidityPro({
         value = null;
       }
     }
-
+    console.log('args', args)
     setAttemptingTxn(true);
     await estimate(...args, value ? { value } : {})
         .then((estimatedGasLimit) =>

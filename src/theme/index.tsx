@@ -80,7 +80,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     advancedBG: 'rgba(0,0,0,0.05)',
 
     //primary colors
-    primary1: '#5C3D3B',
+    primary1: '#A69BB5',
     primary2: '#A548E9',
     primary3: '#BA73ED',
     primary4: '#A548E970',

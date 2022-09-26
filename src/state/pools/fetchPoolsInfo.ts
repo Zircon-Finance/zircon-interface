@@ -33,7 +33,7 @@ const fetchPools = async (poolsToFetch: SerializedPoolConfig[]): Promise<Seriali
         const staked = lpTotalInQuoteToken.multipliedBy(inverseGamma).multipliedBy(ptb).dividedBy(lpTotalSupply).dividedBy(BIG_TEN.pow(18))
         const stakedFL = lpTotalInQuoteToken.multipliedBy(gamma).multipliedBy(ptb).dividedBy(lpTotalSupply).dividedBy(BIG_TEN.pow(18))
 
-
+        console.log("staked", lpTotalSupply.toString(), inverseGamma.toString(), ptb.toString(), staked.toString())
         // console.log("values::", pool.lpTotalInQuoteToken, pool.gamma, new BigNumber(pool.ptb.toString()), pool.lpTotalSupply)
         // let liquidityBySDK = Pylon.calculateLiquidity(pool.gamma, JSBI.BigInt(new BigNumber(pool.lpTotalInQuoteToken.toString()).toString()),
         //     JSBI.BigInt(new BigNumber(pool.ptb.toString()).toString()), JSBI.BigInt(new BigNumber(pool.lpTotalSupply.toString()).toString()))

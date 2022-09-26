@@ -21,7 +21,7 @@ const priceHelperLps: SerializedPoolConfig[] = [
         contractAddress: '0x7CeEa7A00520F7f110314d177edE06EE9A3895d9',
         vaultAddress: '0x77FA7c931d04CA5e8C000D01b6D87380f9C0F3d0',
         lpAddress: "0x89bb1bd89c764e1c2d4aa6469062590732b26323",
-        pylonAddress: "0x027c902dc32B8E98663cd048Aa7545e50479B674",
+        pylonAddress: "0xdbb6e1438a0c48A53D033757fB8a09f5aE879Da8",
         poolCategory: PoolCategory.CORE,
         harvest: true,
         sortOrder: 1,

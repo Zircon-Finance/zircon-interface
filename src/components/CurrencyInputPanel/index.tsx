@@ -219,6 +219,7 @@ export default function CurrencyInputPanel({
                 {!hideInput && (
                   <>
                     <NumericalInput
+                      currency={currency}
                       onFocus={()=>setIsFocus(true)}
                       onBlur={()=>setIsFocus(false)}
                       style={{textAlign: 'end'}}

@@ -367,8 +367,8 @@ export function usePairPrices(token0: Currency, token1: Currency, pair: Pair, pa
           : price1 !== undefined
           ? [
               (pair?.token1 === token1
-                ? parseFloat(pair?.reserve0?.toFixed(2)) /
-                  parseFloat(pair?.reserve1?.toFixed(2))
+                ? parseFloat(pair?.reserve1?.toFixed(2)) /
+                  parseFloat(pair?.reserve0?.toFixed(2))
                 : parseFloat(pair?.reserve1?.toFixed(2)) /
                   parseFloat(pair?.reserve0?.toFixed(2))) * price1,
               price1,
@@ -376,6 +376,7 @@ export function usePairPrices(token0: Currency, token1: Currency, pair: Pair, pa
           : [0, 0];
     }
     const [prices, setPrices] = useState([0,0])
+    console.log('reserves', pair?.reserve0?.toFixed(2), pair?.reserve1?.toFixed(2))
     useEffect(() => {
         getPrices().then((res) => setPrices(res))
         console.log('Prices: ', prices)

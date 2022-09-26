@@ -149,6 +149,7 @@ export default function CurrencyInputPanel({
                       <span style={{fontSize: width < 700 ? '13px' : '16px', color: theme.whiteHalf}}>{isFloat ? 'FLOAT' : 'STABLE'}</span>
 
                     <NumericalInput
+                      currency={currency}
                       onFocus={()=>setIsFocus(true)}
                       onBlur={()=>setIsFocus(false)}
                       style={{background: 'transparent', textAlign: 'end'}}

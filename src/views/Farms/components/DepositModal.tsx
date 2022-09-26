@@ -69,14 +69,14 @@ const DepositModal: React.FC<DepositModalProps> = ({
   const lpTokensToStake = new BigNumber(val)
   const fullBalanceNumber = new BigNumber(fullBalance)
 
-  const usdToStake = lpTokensToStake.times(pool.isAnchor ? pool.staked : pool.stakedFL)
-  console.log('Multiplying user input: ', lpTokensToStake.toFixed(6),' by ZPT price: ', 
-  pool.isAnchor ? pool.staked.toFixed(6) : pool.stakedFL.toFixed(6), ' to get USD value: ', usdToStake.toFixed(6))
+  const usdToStake = lpTokensToStake.times(pool?.isAnchor ? pool?.staked : pool?.stakedFL)
+  console.log('Multiplying user input: ', lpTokensToStake?.toFixed(6),' by ZPT price: ', 
+  pool?.isAnchor ? pool?.staked.toFixed(6) : pool?.stakedFL.toFixed(6), ' to get USD value: ', usdToStake.toFixed(6))
 
   const interestBreakdown = getInterestBreakdown({
     principalInUSD: !lpTokensToStake.isNaN() ? usdToStake.toNumber() : 0,
     apr,
-    earningTokenPrice: pool.earningTokenPrice ? pool?.earningTokenPrice[0] : 0,
+    earningTokenPrice: pool?.earningTokenPrice ? pool?.earningTokenPrice[0] : 0,
   })
   const two = new BigNumber(2)
   const annualRoi = two.times(interestBreakdown[3])

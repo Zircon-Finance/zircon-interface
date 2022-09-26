@@ -155,49 +155,42 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
   }
   let isLastRoot = new BigNumber(pylonInfo[7].toString()).isEqualTo(0)
   console.log("a", pylonInfo[7].toString(),isLastRoot )
-  if(pylon.address.toString() === "0x1C3C082c22a22a5B81F049084Dac401B64E4D9A4" || isLastRoot) {
+  if(isLastRoot) {
     return undefined;
   }else{
-    console.log("WTF")
-    if(isSync) {
-      if(JSBI.greaterThanOrEqual(ptTotalSupply.raw, userLiquidity.raw)) {
-        console.log("hello", pylon.address.toString(), totalSupply.raw.toString(), ptTotalSupply.raw.toString(), userLiquidity.raw.toString(),
-            pylonInfo[0].toString(), pylonInfo[1].toString(), pylonInfo[2].toString(), pylonPoolBalance.raw.toString(), pylonInfo[3].toString(), BigInt(blockNumber).toString(), pylonConstants.toString(),
-            pylonInfo[4].toString(), pylonInfo[5].toString(), pylonInfo[6].toString(), pylonInfo[7].toString(), pylonInfo[8].toString(), pylonInfo[9].toString(), BigInt(lastK).toString())
+    try{
+      if(isSync) {
+        if(JSBI.greaterThanOrEqual(ptTotalSupply.raw, userLiquidity.raw)) {
+          let burnInfo = isFloat ?
+              pylon.burnFloat(totalSupply, ptTotalSupply, userLiquidity,
+                  pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
+                  pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK)) :
+              pylon.burnAnchor(totalSupply, ptTotalSupply, userLiquidity,
+                  pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
+                  pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK));
+          return {...burnInfo, liquidity: isFloat ? [burnInfo.amount, new TokenAmount(pylon.token1, BigInt(0))] : [new TokenAmount(pylon.token0, BigInt(0)), burnInfo.amount]}
+        }else{
+          return undefined
+        }
+      }else{
         let burnInfo = isFloat ?
-            pylon.burnFloat(totalSupply, ptTotalSupply, userLiquidity,
+            pylon.burnAsyncFloat(totalSupply, ptTotalSupply, userLiquidity,
                 pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
                 pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK)) :
-            pylon.burnAnchor(totalSupply, ptTotalSupply, userLiquidity,
+            pylon.burnAsyncAnchor(totalSupply, ptTotalSupply, userLiquidity,
                 pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK));
-        return {...burnInfo, liquidity: isFloat ? [burnInfo.amount, new TokenAmount(pylon.token1, BigInt(0))] : [new TokenAmount(pylon.token0, BigInt(0)), burnInfo.amount]}
-      }else{
-        return undefined
+                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK))
+
+        return {...burnInfo, liquidity: [burnInfo.amountA, burnInfo.amountB]}
+
+
       }
-    }else{
-      // let burnInfo = isFloat ?
-      //     pylon.burnAsyncFloat(totalSupply, ptTotalSupply, userLiquidity,
-      //         pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-      //         pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK)) :
-      //     pylon.burnAnchor(totalSupply, ptTotalSupply, userLiquidity,
-      //         pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-      //         pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK));
-      //
-      //
-      // if (isFloat) {
-
-      let burnInfo = isFloat ?
-          pylon.burnAsyncFloat(totalSupply, ptTotalSupply, userLiquidity,
-              pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-              pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK)) :
-          pylon.burnAsyncAnchor(totalSupply, ptTotalSupply, userLiquidity,
-              pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-              pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK))
-
-      return {...burnInfo, liquidity: [burnInfo.amountA, burnInfo.amountB]}
-
-
+    }catch (e) {
+      console.log("hello", pylon.address.toString(), totalSupply.raw.toString(), ptTotalSupply.raw.toString(), userLiquidity.raw.toString(),
+          pylonInfo[0].toString(), pylonInfo[1].toString(), pylonInfo[2].toString(), pylonPoolBalance.raw.toString(), pylonInfo[3].toString(), BigInt(blockNumber).toString(), pylonConstants.toString(),
+          pylonInfo[4].toString(), pylonInfo[5].toString(), pylonInfo[6].toString(), pylonInfo[7].toString(), pylonInfo[8].toString(), pylonInfo[9].toString(), BigInt(lastK).toString())
+      console.log(e)
+      return undefined
     }
   }
 }

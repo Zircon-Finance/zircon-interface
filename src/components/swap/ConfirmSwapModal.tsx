@@ -107,6 +107,7 @@ export default function ConfirmSwapModal({
       content={confirmationContent}
       pendingText={pendingText}
       outputCurrency={outputCurrency}
+      smallClose={outputCurrency !== 'ETH'}
     />
   )
 }

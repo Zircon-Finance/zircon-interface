@@ -22,7 +22,7 @@ const Wrapper = styled.div`
   width: 100%;
 `
 const Section = styled(AutoColumn)`
-  padding: 30px;
+  padding: 20px;
 `
 
 const BottomSection = styled(Section)`
@@ -84,16 +84,19 @@ function TransactionSubmittedContent({
                                        onDismiss,
                                        chainId,
                                        hash,
-                                       outputCurrency
+                                       outputCurrency,
+                                       smallClose
                                      }: {
   onDismiss: () => void
   hash: string | undefined
   chainId: ChainId
   outputCurrency?: string | undefined
+  smallClose?: boolean
 }) {
   const {library} = useActiveWeb3React()
   const token = useToken(outputCurrency)
   const { addToken, success } = useAddTokenToMetaMask(token)
+  const theme = useTheme()
 
   return (
       <Wrapper>
@@ -103,7 +106,7 @@ function TransactionSubmittedContent({
             <CloseIcon onClick={onDismiss} />
           </RowBetween>
           <ConfirmedIcon>
-            <ArrowUpCircle strokeWidth={0.5} size={90} color={'#9082A2'} />
+            <ArrowUpCircle strokeWidth={0.5} size={90} color={theme.text1} />
           </ConfirmedIcon>
           <AutoColumn gap="12px" justify={'center'}>
             <Text fontWeight={400} fontSize={20}>
@@ -112,13 +115,13 @@ function TransactionSubmittedContent({
 
             {chainId && hash && (
                 <ExternalLink href={getEtherscanLink(chainId, hash, 'transaction')}>
-                  <Text fontWeight={400} fontSize={14} color={'#9082A2'}>
+                  <Text fontWeight={400} fontSize={14} color={theme.meatPink}>
                     View on Moonriver explorer ↗
                   </Text>
                 </ExternalLink>
             )}
             {outputCurrency && token !== undefined && library?.provider?.isMetaMask && (
-            <ButtonPrimary onClick={addToken} style={{fontSize: '14px', height: '30px', width: '350px', borderRadius: '12px', marginTop: '15px'}}
+            <ButtonPrimary onClick={addToken} style={{fontSize: '14px', marginTop: '15px'}}
             disabled={success}>
               {!success ? (
                 <RowFixed className="mx-auto space-x-2">
@@ -131,8 +134,9 @@ function TransactionSubmittedContent({
               )}
             </ButtonPrimary>
             )}
-            <ButtonPrimary onClick={onDismiss} style={{ margin: '20px 0 0 0' }}>
-              <Text fontWeight={400} fontSize={20}>
+            <ButtonPrimary style={smallClose ? {background: 'transparent', color: theme.meatPink, height: 'auto', padding: '0px'} 
+            : { margin: '20px 0 0 0' }} onClick={onDismiss}>
+              <Text fontWeight={400} fontSize={smallClose ? 16 : 20}>
                 Close
               </Text>
             </ButtonPrimary>
@@ -202,6 +206,7 @@ interface ConfirmationModalProps {
   attemptingTxn: boolean
   pendingText: string
   outputCurrency?: string | undefined
+  smallClose? : boolean
 }
 
 export default function TransactionConfirmationModal({
@@ -211,7 +216,8 @@ export default function TransactionConfirmationModal({
                                                        hash,
                                                        pendingText,
                                                        content,
-                                                       outputCurrency
+                                                       outputCurrency,
+                                                       smallClose=false
                                                      }: ConfirmationModalProps) {
   const { chainId } = useActiveWeb3React()
 
@@ -223,7 +229,7 @@ export default function TransactionConfirmationModal({
         {attemptingTxn ? (
             <ConfirmationPendingContent onDismiss={onDismiss} pendingText={pendingText} />
         ) : hash ? (
-            <TransactionSubmittedContent chainId={chainId} hash={hash} onDismiss={onDismiss} outputCurrency={outputCurrency} />
+            <TransactionSubmittedContent chainId={chainId} hash={hash} onDismiss={onDismiss} outputCurrency={outputCurrency} smallClose={smallClose} />
         ) : (
             content()
         )}

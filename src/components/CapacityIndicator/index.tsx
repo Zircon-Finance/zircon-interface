@@ -87,12 +87,12 @@ const CapacityIndicator: React.FC<Props> = ({gamma, hoverPage, health, isFloat, 
                         <QuestionMarkIcon />
                     </QuestionMarkContainer>
                 </SmallContainer>
-                <span style={{marginLeft: 8}}>{feePercentage?.toFixed(4)}%</span>
+                <span style={{marginLeft: 8}}>{feePercentage?.toFixed(2)}%</span>
             </RowContainer>}
 
             {!blocked && extraFee.gt(0) && <RowContainer>
                 <SmallContainer>
-                    {!noSpan && <span style={{marginLeft: 8}}>{'Slippage For Amount > ' + extraFeeTreshold.toFixed(4)}</span>}
+                    {!noSpan && <span style={{marginLeft: 8}}>{'Slippage For Amount > ' + extraFeeTreshold.toFixed(2)}</span>}
                     <QuestionMarkContainer
                         onMouseEnter={() => setHoverSlippage(true)}
                         onMouseLeave={() => setHoverSlippage(false)}
@@ -103,7 +103,7 @@ const CapacityIndicator: React.FC<Props> = ({gamma, hoverPage, health, isFloat, 
                         <QuestionMarkIcon />
                     </QuestionMarkContainer>
                 </SmallContainer>
-                <span style={{marginLeft: 8}}>{extraFee?.toFixed(4)}%</span>
+                <span style={{marginLeft: 8}}>{extraFee?.toFixed(2)}%</span>
             </RowContainer>}
 
             {!blocked && slashingOmega.gt(0) && <RowContainer>
@@ -119,7 +119,7 @@ const CapacityIndicator: React.FC<Props> = ({gamma, hoverPage, health, isFloat, 
                         <QuestionMarkIcon />
                     </QuestionMarkContainer>
                 </SmallContainer>
-                <span style={{marginLeft: 8}}>{slashingOmega?.toFixed(4)}%</span>
+                <span style={{marginLeft: 8}}>{slashingOmega?.toFixed(2)}%</span>
             </RowContainer>}
 
             <RowContainer>

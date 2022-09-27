@@ -14,8 +14,7 @@ import QuestionMarkIcon from "../../../../components/QuestionMarkIcon";
 import { QuestionMarkContainer, ToolTip } from "../FarmTable/Row";
 import CapacityIndicatorSmall from "../../../../components/CapacityIndicatorSmall/index";
 import { useActiveWeb3React, useWindowDimensions } from "../../../../hooks";
-import { useCurrentBlock, useEndBlock, usePool, useStartBlock } from "../../../../state/pools/hooks";
-import { useTokenBalance } from "../../../../state/wallet/hooks";
+import { RewardPerBlock } from "../../Farms";
 
 export interface ExpandableSectionProps {
     lpLabel?: string;
@@ -29,6 +28,7 @@ export interface ExpandableSectionProps {
     gamma: any;
     healthFactor: string;
     sousId: number;
+    vaultAddress: string;
 }
 
 interface ToolTipProps {
@@ -49,7 +49,8 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
                                                            quoteToken,
                                                            gamma,
                                                            healthFactor,
-                                                           sousId
+                                                           sousId,
+                                                           vaultAddress,
                                                        }) => {
     const theme = useTheme();
     // const risk = gamma && (gamma.isLessThanOrEqualTo(0.7) || gamma.isGreaterThanOrEqualTo(0.5))
@@ -72,33 +73,9 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
             </Text>
         </ToolTip>
     )}
-
     const {width} = useWindowDimensions()
 
-    // POOL HARVEST DATA
-    const [startBlock, setStartBlock] = useState(0)
-    const [endBlock, setEndBlock] = useState(0)
-    const [currentBlock, setCurrentBlock] = useState(0)
-    useStartBlock(sousId).then((block?) => setStartBlock(block))
-    useEndBlock(sousId).then((block?) => setEndBlock(block))
-    useCurrentBlock().then((block?) => setCurrentBlock(block))
-
-    //TODO: this has to be only one component PD and shared between Row and this
-  const RewardPerBlock = ({ token }: { token: any }) => {
-      const { pool } = usePool(sousId)
-      const balance = useTokenBalance(pool.vaultAddress, token)
-      const blocksLeft = endBlock - Math.max(currentBlock, startBlock)
-      // console.log("current", currentBlock)
-      // console.log("start", startBlock)
-      // console.log("end", endBlock)
-      const rewardBlocksPerDay = (parseFloat((balance?.toFixed(6)))/blocksLeft)*6400*30
-    return(
-        <Text fontSize='13px' fontWeight={500} color={'#4e7455'}>
-          {`~ ${rewardBlocksPerDay.toFixed(0)}  ${token.symbol}`}
-        </Text>
-      )
-    }
-
+    console.log('PARAMS: ', vaultAddress, sousId, earningToken)
     return (
       <div
         style={{ padding: "10px", color: theme.text1 }}
@@ -222,7 +199,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
                   <Flex flexDirection={width >= 700 ? 'column' : 'row'} style={{textAlign: 'right', width: '60%',
                   display: width <= 700 && 'flex',
                   justifyContent: width <= 700 && 'flex-end'}}>
-                    {earningToken.map((token) => <RewardPerBlock token={token} />)}
+                  <RewardPerBlock tokens={earningToken} sousId={sousId} vaultAddress={vaultAddress} />
                   </Flex>
                 </Flex>
                 )}

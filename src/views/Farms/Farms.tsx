@@ -27,12 +27,13 @@ import FarmRepeatIcon from '../../components/FarmRepeatIcon'
 import FarmsPage from '../../pages/Farm/'
 import Select from '../../components/Select/Select'
 import { useWindowDimensions } from '../../hooks'
-import { usePools, usePoolsPageFetch } from '../../state/pools/hooks'
+import { useCurrentBlock, useEndBlock, usePools, usePoolsPageFetch, useStartBlock } from '../../state/pools/hooks'
 import { fetchPoolsUserDataAsync } from '../../state/pools'
 import { DeserializedPool, DeserializedPoolVault } from '../../state/types'
 import orderBy from 'lodash/orderBy'
 import { formatUnits } from 'ethers/lib/utils'
 import {getPoolAprAddress } from '../../utils/apr'
+import { useVaultTokens } from '../../state/mint/pylonHooks'
 
 const FlexLayout = styled.div`
   display: flex;
@@ -189,6 +190,30 @@ export const getDisplayApr = (cakeRewardsApr?: number, lpRewardsApr?: number) =>
   return null
 }
 
+export const RewardPerBlock = ({ tokens, vaultAddress, sousId }: { tokens: any[], vaultAddress: string, sousId: number }) => {
+  const [startBlock, setStartBlock] = useState(0)
+  const [endBlock, setEndBlock] = useState(0)
+  const [currentBlock, setCurrentBlock] = useState(0)
+  useStartBlock(sousId).then((block?) => setStartBlock(block))
+  useEndBlock(sousId).then((block?) => setEndBlock(block))
+  useCurrentBlock().then((block?) => setCurrentBlock(block))
+  const tokenBalances = useVaultTokens(vaultAddress, tokens)
+  const blocksLeft = endBlock - Math.max(currentBlock, startBlock)
+  const rewardBlocksPerYear = tokens.map((token, index) => (parseFloat((tokenBalances[index]?.toFixed(6)))/blocksLeft)*6400*30)
+  return(
+    <>
+    {tokens[0] !== undefined && tokens.map((token, index) => (
+      <Text fontSize='13px' fontWeight={500} color={'#4e7455'}>
+        {rewardBlocksPerYear[index].toFixed(0) !== 'NaN' ?
+          `~ ${rewardBlocksPerYear[index].toFixed(0)}  ${token.symbol}` :
+          'Loading...'
+          }
+      </Text>
+    ))}
+    </>
+  )
+}
+
 const Farms: React.FC = ({ children }) => {
   const { pathname } = window.location
   const { t } = useTranslation()
@@ -252,7 +277,7 @@ const Farms: React.FC = ({ children }) => {
                 return 0
               }
 
-              return 0 //pool.userData.pendingReward.times(pool.earningTokenPrice).toNumber()
+              return pool.userData ? Number(pool.userData.pendingReward) : 0
             },
             'desc',
         )

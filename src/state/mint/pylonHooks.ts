@@ -383,3 +383,14 @@ export function usePairPrices(token0: Currency, token1: Currency, pair: Pair, pa
     }, [token0, token1, pairState])
     return prices
 }
+
+export const useVaultTokens = (vaultAddress: string, tokens: any[]) => {
+  const [balances, setBalances] = useState<any[]>([])
+  const tokenBalances = []
+  tokenBalances.push(useTokenBalance(vaultAddress, tokens[0]))
+  tokenBalances.push(useTokenBalance(vaultAddress, tokens[1]))
+  useEffect(() => {
+    setBalances(tokenBalances)
+  }, [tokens])
+  return balances
+}

@@ -27,16 +27,15 @@ import { useTransactionAdder } from '../../../../state/transactions/hooks'
 import { useDispatch } from 'react-redux'
 import { fetchFarmUserDataAsync } from '../../../../state/farms'
 import { useIsDarkMode } from '../../../../state/user/hooks'
-import { useCurrentBlock, useEndBlock, usePool, useStartBlock } from '../../../../state/pools/hooks'
+import { usePool } from '../../../../state/pools/hooks'
 import { useCallWithGasPrice } from '../../../../hooks/useCallWithGasPrice'
-import { useTokenBalance } from '../../../../state/wallet/hooks'
-import { Token } from 'zircon-sdk'
 import { useCurrency } from '../../../../hooks/Tokens'
 import {useDerivedPylonMintInfo} from "../../../../state/mint/pylonHooks";
 import BigNumberJs from "bignumber.js";
 import {useGamma} from "../../../../data/PylonData";
 import CapacityIndicatorSmall from "../../../../components/CapacityIndicatorSmall";
 import { fetchPoolsUserDataAsync } from '../../../../state/pools'
+import { RewardPerBlock } from '../../Farms'
 // import { useFarmUser } from '../../../../state/farms/hooks'
 
 export interface RowProps {
@@ -208,29 +207,6 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     </ToolTip>
   )}
 
-  // POOL HARVEST DATA
-  const [startBlock, setStartBlock] = useState(0)
-  const [endBlock, setEndBlock] = useState(0)
-  const [currentBlock, setCurrentBlock] = useState(0)
-  useStartBlock(details.sousId).then((block?) => setStartBlock(block))
-  useEndBlock(details.sousId).then((block?) => setEndBlock(block))
-  useCurrentBlock().then((block?) => setCurrentBlock(block))
-  //TODO: this has to be only one component PD and shared between Row and this
-  const RewardPerBlock = ({ token }: { token: Token }) => {
-    const { pool } = usePool(details.sousId)
-    const balance = useTokenBalance(pool.vaultAddress, token)
-    const blocksLeft = endBlock - Math.max(currentBlock, startBlock)
-    const rewardBlocksPerDay = (parseFloat((balance?.toFixed(6)))/blocksLeft)*6400*30
-    return(
-        <Text fontSize='13px' fontWeight={500} color={'#4e7455'}>
-          {rewardBlocksPerDay.toFixed(0) !== 'NaN' ?
-          `~ ${rewardBlocksPerDay.toFixed(0)}  ${token.symbol}` :
-          'Loading...'
-          }
-        </Text>
-      )
-    }
-  //--------------------------------------------------------------------------------------------------//
 
   const toggleActionPanel = () => {
     setActionPanelExpanded(!actionPanelExpanded)
@@ -386,9 +362,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                           <Text fontSize='13px' fontWeight={500} color={4e7455} marginBottom={2}>
                             {'Monthly Rewards:'}
                           </Text>
-                          <>
-                            {details.earningToken.map((token) => <RewardPerBlock token={token} />)}
-                          </>
+                            <RewardPerBlock tokens={details.earningToken} sousId={details.sousId} vaultAddress={details.vaultAddress}  />
                         </Flex>
                         )}
                         </>
@@ -497,7 +471,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
       {shouldRenderChild && (
         <tr style={{display: 'flex', flexDirection: 'column'}}>
           <td colSpan={6}>
-            <ActionPanel {...props} expanded={actionPanelExpanded} clickAction={setActionPanelExpanded} gamma={gammaAdjusted.toNumber()}healthFactor={healthFactor} RewardBlock={RewardPerBlock} />
+            <ActionPanel {...props} expanded={actionPanelExpanded} clickAction={setActionPanelExpanded} gamma={gammaAdjusted.toNumber()}healthFactor={healthFactor} />
           </td>
         </tr>
       )}

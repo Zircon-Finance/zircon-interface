@@ -24,7 +24,7 @@ import { useDispatch } from 'react-redux'
 import { useWeb3React } from '@web3-react/core'
 import BigNumber from 'bignumber.js'
 import { useERC20, useSousChef } from '../../../../../hooks/useContract'
-import { ModalContainer } from '../../../Farms'
+import { ModalContainer, RewardPerBlock } from '../../../Farms'
 import { useAddPopup, useWalletModalToggle } from '../../../../../state/application/hooks'
 import { Link } from 'react-router-dom'
 import { useTransactionAdder } from '../../../../../state/transactions/hooks'
@@ -52,7 +52,6 @@ export interface ActionPanelProps {
   clickAction: Dispatch<SetStateAction<boolean>>
   gamma: number
   healthFactor: string,
-  RewardBlock: any
 }
 
 interface ToolTipProps {
@@ -221,7 +220,6 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                                                                   expanded,
                                                                   gamma,
                                                                   healthFactor,
-                                                                  RewardBlock
                                                                 }) => {
   const farm = details
   const staked = details.userData.stakedBalance.gt(0)
@@ -408,7 +406,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                     {!account ?  <Text color={theme.text1}>{`Earn${rewardTokens}`}</Text> :
                       <Flex flexDirection={'column'} style={{width: '100%'}}>
                         <Text color={theme.text1} style={{minWidth: 'max-content', fontSize: '14px'}} fontWeight={400}>{'Monthly rewards:'}</Text>
-                        {farm.earningToken.map((token) => <RewardBlock token={token} />)}
+                        <RewardPerBlock tokens={pool.earningToken} sousId={pool.sousId} vaultAddress={pool.vaultAddress} />
                       </Flex>
                       }
                       <div style={{width: '50%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
@@ -456,7 +454,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                   <SpaceBetween style={{marginBottom: '16px'}}>
                     <Text color={theme.whiteHalf} style={{minWidth: 'max-content', fontSize: '14px'}} fontWeight={400}>{'Monthly rewards:'}</Text>
                     <Flex flexDirection={"column"}>
-                      {farm.earningToken.map((token) => <RewardBlock token={token} />)}
+                    <RewardPerBlock tokens={pool.earningToken} sousId={pool.sousId} vaultAddress={pool.vaultAddress} />
                     </Flex>
                   </SpaceBetween>
               )}

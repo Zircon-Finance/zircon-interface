@@ -78,7 +78,6 @@ const DepositModal: React.FC<DepositModalProps> = ({
         apr,
         earningTokenPrice: new BigNumber(pool?.movrPrice).toNumber() //? pool?.earningTokenPrice.reduce((a, r) => a+r) : 0,
     })
-    console.log("usdToStake", usdToStake.toString(), pool?.earningTokenPrice[0])
     const two = new BigNumber(2)
     const annualRoi = two.times(interestBreakdown[3])
     const annualRoiAsNumber = annualRoi.toNumber()

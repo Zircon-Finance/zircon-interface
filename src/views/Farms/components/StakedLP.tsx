@@ -1,6 +1,6 @@
 import { Heading, Flex } from '@pancakeswap/uikit'
 import { BigNumber } from 'bignumber.js'
-// import Balance from '../../../components/Balance'
+import Balance from '../../../components/Balance'
 import React, { useCallback } from 'react'
 import { getBalanceAmount, getFullDisplayBalance } from '../../../utils/formatBalance'
 import { useTheme } from 'styled-components'
@@ -26,6 +26,8 @@ interface StackedLPProps {
   percentage: string,
   field: Field,
   stakingToken: Token,
+  stakedFl: number,
+  stakedSl: number,
 }
 
 const StakedLP: React.FunctionComponent<StackedLPProps> = ({
@@ -40,6 +42,8 @@ const StakedLP: React.FunctionComponent<StackedLPProps> = ({
   tokenSymbol,
   percentage,
   field,
+  stakedFl,
+  stakedSl,
 }) => {
   // const lpPrice = useLpTokenPrice(lpSymbol)
   const theme = useTheme()
@@ -93,36 +97,36 @@ const StakedLP: React.FunctionComponent<StackedLPProps> = ({
   return (
     <Flex flexDirection="column" alignItems="flex-start">
       <Heading style={{color: theme.text1, fontWeight: 400, fontSize: '24px'}}>{displayBalance()}</Heading>
-      {/*{stakedBalance.gt(0) && (*/}
-      {/*  <>*/}
-      {/*    /!* <Balance*/}
-      {/*      fontSize="12px"*/}
-      {/*      color={theme.text1}*/}
-      {/*      decimals={2}*/}
-      {/*      value={1}*/}
-      {/*      unit=" USD"*/}
-      {/*      prefix="~"*/}
-      {/*    /> *!/*/}
-      {/*    <Flex style={{ gap: '4px' }}>*/}
-      {/*      <Balance*/}
-      {/*        fontSize="12px"*/}
-      {/*        color={theme.whiteHalf}*/}
-      {/*        decimals={2}*/}
-      {/*        value={isClassic ? token1Reserve : formattedAmounts[Field.CURRENCY_A]}*/}
-      {/*        unit={` ${tokenSymbol}`}*/}
-      {/*        prefix=" "*/}
-      {/*      />*/}
-      {/*      <Balance*/}
-      {/*        fontSize="12px"*/}
-      {/*        color={theme.whiteHalf}*/}
-      {/*        decimals={2}*/}
-      {/*        value={isClassic ? token2Reserve : formattedAmounts[Field.CURRENCY_B]}*/}
-      {/*        unit={` ${quoteTokenSymbol}`}*/}
-      {/*        prefix=" "*/}
-      {/*      />*/}
-      {/*    </Flex>*/}
-      {/*  </>*/}
-      {/*)}*/}
+      {stakedBalance.gt(0) && !isClassic && (
+        <>
+          <Balance
+            fontSize="12px"
+            color={theme.whiteHalf}
+            decimals={2}
+            value={parseFloat(displayBalance())*(isAnchor ? stakedFl : stakedSl)}
+            unit=" USD"
+            prefix="~"
+          />
+          {/* <Flex style={{ gap: '4px' }}>
+            <Balance
+              fontSize="12px"
+              color={theme.whiteHalf}
+              decimals={2}
+              value={isClassic ? token1Reserve : formattedAmounts[Field.CURRENCY_A]}
+              unit={` ${tokenSymbol}`}
+              prefix=" "
+            />
+            <Balance
+              fontSize="12px"
+              color={theme.whiteHalf}
+              decimals={2}
+              value={isClassic ? token2Reserve : formattedAmounts[Field.CURRENCY_B]}
+              unit={` ${quoteTokenSymbol}`}
+              prefix=" "
+            />
+          </Flex> */}
+        </>
+      )}
     </Flex>
   )}
 

@@ -1,4 +1,4 @@
-import {BASE, Currency, CurrencyAmount, DEV, JSBI, Pair, Percent, Price, Pylon, TokenAmount} from 'zircon-sdk'
+import {Currency, CurrencyAmount, DEV, JSBI, Pair, Percent, Price, Pylon, TokenAmount} from 'zircon-sdk'
 import {useCallback, useEffect, useMemo, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {useTotalSupply} from '../../data/TotalSupply'
@@ -184,18 +184,21 @@ export function useDerivedPylonMintInfo(
             syncMintInfo = pylonPair.getFloatSyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA,
                 pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
                 pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK))
+            console.log("syncMintInfo", syncMintInfo)
 
-            if (JSBI.greaterThan(syncMintInfo?.amountsToInvest.sync, ZERO) && JSBI.greaterThan(syncMintInfo?.amountsToInvest.async, ZERO)) {
-              extraFeeTreshold = JSBI.subtract(tokenAmountA.raw, JSBI.divide(JSBI.multiply(tokenAmountA.raw, JSBI.divide(JSBI.multiply(syncMintInfo?.amountsToInvest.async, BASE), JSBI.add(syncMintInfo?.amountsToInvest.async, syncMintInfo?.amountsToInvest.sync))), BASE))
+            if (JSBI.greaterThan(syncMintInfo?.amountsToInvest?.sync, ZERO) && JSBI.greaterThan(syncMintInfo?.amountsToInvest?.async, ZERO)) {
+              extraFeeTreshold = syncMintInfo?.amountsToInvest?.sync
+
             }
-
           }else{
             syncMintInfo = pylonPair.getAnchorSyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountB,
                 pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
                 pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK))
-            if (JSBI.greaterThan(syncMintInfo?.amountsToInvest.sync, ZERO) && JSBI.greaterThan(syncMintInfo?.amountsToInvest.async, ZERO)) {
-              extraFeeTreshold = JSBI.subtract(tokenAmountB.raw,JSBI.divide(JSBI.multiply(tokenAmountB.raw, JSBI.divide(JSBI.multiply(syncMintInfo?.amountsToInvest.async, BASE), JSBI.add(syncMintInfo?.amountsToInvest.async, syncMintInfo?.amountsToInvest.sync))), BASE))
+            if (JSBI.greaterThan(syncMintInfo?.amountsToInvest?.sync, ZERO) && JSBI.greaterThan(syncMintInfo?.amountsToInvest?.async, ZERO)) {
+
+              extraFeeTreshold = syncMintInfo?.amountsToInvest?.sync
             }
+
           }
 
 
@@ -352,36 +355,36 @@ export const useHealthFactor = (  currencyA: Currency | undefined,
 }
 
 export function usePairPrices(token0: Currency, token1: Currency, pair: Pair, pairState: PairState) {
-    async function getPrices() {
-        const price0 = token0 && await axios.get(`${PRICE_API+token0?.symbol}BUSD`).then((res) => res?.data?.price).catch((e) => console.log(e))
-        const price1 = token1 && await axios.get(`${PRICE_API+token1?.symbol}BUSD`).then((res) => res?.data?.price).catch((e) => console.log(e))
-        return price0 !== undefined
-          ? [
-              price0,
-              (pair?.token0 === token0
-                ? parseFloat(pair?.reserve0?.toFixed(2)) /
-                  parseFloat(pair?.reserve1?.toFixed(2))
-                : parseFloat(pair?.reserve1?.toFixed(2)) /
-                  parseFloat(pair?.reserve0?.toFixed(2))) * price0,
-            ]
-          : price1 !== undefined
-          ? [
+  async function getPrices() {
+    const price0 = token0 && await axios.get(`${PRICE_API+token0?.symbol}BUSD`).then((res) => res?.data?.price).catch((e) => console.log(e))
+    const price1 = token1 && await axios.get(`${PRICE_API+token1?.symbol}BUSD`).then((res) => res?.data?.price).catch((e) => console.log(e))
+    return price0 !== undefined
+        ? [
+          price0,
+          (pair?.token0 === token0
+              ? parseFloat(pair?.reserve0?.toFixed(2)) /
+              parseFloat(pair?.reserve1?.toFixed(2))
+              : parseFloat(pair?.reserve1?.toFixed(2)) /
+              parseFloat(pair?.reserve0?.toFixed(2))) * price0,
+        ]
+        : price1 !== undefined
+            ? [
               (pair?.token1 === token1
-                ? parseFloat(pair?.reserve1?.toFixed(2)) /
+                  ? parseFloat(pair?.reserve1?.toFixed(2)) /
                   parseFloat(pair?.reserve0?.toFixed(2))
-                : parseFloat(pair?.reserve1?.toFixed(2)) /
+                  : parseFloat(pair?.reserve1?.toFixed(2)) /
                   parseFloat(pair?.reserve0?.toFixed(2))) * price1,
               price1,
             ]
-          : [0, 0];
-    }
-    const [prices, setPrices] = useState([0,0])
-    console.log('reserves', pair?.reserve0?.toFixed(2), pair?.reserve1?.toFixed(2))
-    useEffect(() => {
-        getPrices().then((res) => setPrices(res))
-        console.log('Prices: ', prices)
-    }, [token0, token1, pairState])
-    return prices
+            : [0, 0];
+  }
+  const [prices, setPrices] = useState([0,0])
+  console.log('reserves', pair?.reserve0?.toFixed(2), pair?.reserve1?.toFixed(2))
+  useEffect(() => {
+    getPrices().then((res) => setPrices(res))
+    console.log('Prices: ', prices)
+  }, [token0, token1, pairState])
+  return prices
 }
 
 export const useVaultTokens = (vaultAddress: string, tokens: any[]) => {

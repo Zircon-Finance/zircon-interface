@@ -186,9 +186,10 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
       false,
       "off"
   );
-  const gamma = useGamma(pylonPair?.address)
+  const pool = usePool(details.sousId).pool
+  const gamma = useGamma(pylonPair?.address)//TODO: change with pool?.gamma
 
-  const hasStakedAmount = !!usePool(details.sousId).pool.userData.stakedBalance.toNumber()
+  const hasStakedAmount = !!pool.userData.stakedBalance.toNumber()
   const [actionPanelExpanded, setActionPanelExpanded] = useState(false)
   const [hovered, setHovered] = useState(false)
   const shouldRenderChild = actionPanelExpanded
@@ -362,7 +363,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                           <Text fontSize='13px' fontWeight={500} color={4e7455} marginBottom={2}>
                             {'Monthly Rewards:'}
                           </Text>
-                            <RewardPerBlock tokens={details.earningToken} sousId={details.sousId} vaultAddress={details.vaultAddress}  />
+                            <RewardPerBlock tokens={details?.earningToken} sousId={details?.sousId} vaultAddress={details?.vaultAddress}  />
                         </Flex>
                         )}
                         </>

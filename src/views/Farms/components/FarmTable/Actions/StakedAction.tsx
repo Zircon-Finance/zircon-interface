@@ -207,13 +207,14 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
         lpLabel={pool.token1.symbol+"-"+pool.token2.symbol}
         apr = {apr}
         onDismiss = {() => setshowModalDeposit(false)}
-        displayApr = '1'
+        displayApr = '111'
         stakedBalance = {stakedBalance}
         onConfirm = {handleStake}
         tokenName = {stakingToken.name}
         addLiquidityUrl = {`#/add-pro/${pool.token1.address}/${pool.token2.address}/${isAnchor ? 'stable' : 'float'}`}
         cakePrice = {1 as unknown as BigNumber}
         token = {stakingToken}
+        pool={pool}
         />
         }
 
@@ -258,6 +259,8 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
           </ActionTitles>
           <ActionContent>
             <StakedLP
+              stakedFl={pool.stakedFL}
+              stakedSl={pool.stakedSL}
               stakingToken = {stakingToken}
               isClassic={isClassic}
               percentage={percentage}

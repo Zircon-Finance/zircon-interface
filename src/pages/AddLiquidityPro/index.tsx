@@ -1374,7 +1374,7 @@ export default function AddLiquidityPro({
                                           fontSize={width > 700 ? 14 : 13}
                                           fontWeight={400}
                                       >
-                                        {`${pool?.apr ? "" : pool?.apr?.toFixed(0)}% APR`}
+                                        {`${pool?.apr ? "" : pool?.apr?.toFixed(2)}% APR`}
                                       </Text>)}
                                     </Flex>
                                   </ButtonError>

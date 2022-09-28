@@ -34,6 +34,7 @@ import orderBy from 'lodash/orderBy'
 import { formatUnits } from 'ethers/lib/utils'
 import {getPoolAprAddress } from '../../utils/apr'
 import { useVaultTokens } from '../../state/mint/pylonHooks'
+import { ButtonLighter } from '../../components/Button'
 
 const FlexLayout = styled.div`
   display: flex;
@@ -178,7 +179,7 @@ export const ModalContainer = styled.div`
   }
 `
 
-const NUMBER_OF_POOLS_VISIBLE = 12
+const NUMBER_OF_POOLS_VISIBLE = 6
 
 export const getDisplayApr = (cakeRewardsApr?: number, lpRewardsApr?: number) => {
   if (cakeRewardsApr && lpRewardsApr) {
@@ -242,6 +243,8 @@ const Farms: React.FC = ({ children }) => {
   if(account) {
     fetchPoolsUserDataAsync(account)
   }
+
+  const [numberOfFarmsVisible, setNumberOfFarmsVisible] = useState(NUMBER_OF_POOLS_VISIBLE)
 
   // Users with no wallet connected should see 0 as Earned amount
   // Connected users should see loading indicator until first userData has loaded
@@ -313,7 +316,7 @@ const Farms: React.FC = ({ children }) => {
   let chosenPools = activeFarms
 
   chosenPools = useMemo(() => {
-    let sortedPools = sortPools(sortOption, chosenPools).slice(0, NUMBER_OF_POOLS_VISIBLE)
+    let sortedPools = sortPools(sortOption, chosenPools).slice(0, numberOfFarmsVisible)
     if (stakedOnly) {
       sortedPools = stakedOnlyFarms
     }
@@ -340,7 +343,7 @@ const Farms: React.FC = ({ children }) => {
             sortedPools.filter((pool) => !pool.isClassic === true)
 
     return sortedPools
-  }, [query, stakedOnly, stakedOnlyFarms, chosenPools, sortOption, filterAnchorFloat, filter])
+  }, [query, stakedOnly, stakedOnlyFarms, chosenPools, sortOption, filterAnchorFloat, filter, numberOfFarmsVisible])
 
   chosenFarmsLength.current = activeFarms.length
 
@@ -398,6 +401,15 @@ const Farms: React.FC = ({ children }) => {
     return row
   })
 
+  const showMore = () => {
+    setNumberOfFarmsVisible((farmsCurrentlyVisible) => {
+      if (farmsCurrentlyVisible <= chosenFarmsLength.current) {
+        return farmsCurrentlyVisible + NUMBER_OF_POOLS_VISIBLE
+      }
+      return farmsCurrentlyVisible
+    })
+  }
+
   const renderContent = (): JSX.Element => {
     if (viewMode === ViewMode.TABLE && rowData.length) {
       const columnSchema = DesktopColumnSchema
@@ -433,94 +445,211 @@ const Farms: React.FC = ({ children }) => {
     return <FlexLayout><FarmsPage /></FlexLayout>
   }
   const darkMode = useIsDarkMode()
+  const [hoverButton, setHoverButton] = useState(false)
   activeFarms = chosenPools
   return (
-      <FarmsContext.Provider value={{ activeFarms }}>
-        <Page>
-          <Text color={theme.text1} fontWeight={300} fontSize={'30px'} style={{textAlign: 'center', alignSelf: 'center', marginBottom: width >= 700 ? '30px' : '20px'}}>
-            {'Farms'}
-          </Text>
-          <ControlContainer>
-            <Flex m={'0px'}>
-              <PylonClassicTab active={filter} />
-              <AnchorFloatTab active={filterAnchorFloat} />
-            </Flex>
-            <Flex position={'relative'} width={width < 500 ? showMobileSearchBar ? '100%' : 'auto' : 'auto'} height={'70px'}>
-              { (!showMobileSearchBar || width > 500) && <ViewControls>
-                <ToggleWrapper style={{marginRight: '10px', position: 'relative'}}>
-                  <Text style={{marginLeft: -10}} fontSize='13px' color={theme.text1} mr={'10px'} width={'max-content'} letterSpacing={'0.05em'}> {width > 700 ? 'SHOW ONLY MINE' : 'SHOW ONLY MINE'}</Text>
+    <FarmsContext.Provider value={{ activeFarms }}>
+      <Page>
+        <Text
+          color={theme.text1}
+          fontWeight={300}
+          fontSize={"30px"}
+          style={{
+            textAlign: "center",
+            alignSelf: "center",
+            marginBottom: width >= 700 ? "30px" : "20px",
+          }}
+        >
+          {"Farms"}
+        </Text>
+        <ControlContainer>
+          <Flex m={"0px"}>
+            <PylonClassicTab active={filter} />
+            <AnchorFloatTab active={filterAnchorFloat} />
+          </Flex>
+          <Flex
+            position={"relative"}
+            width={
+              width < 500 ? (showMobileSearchBar ? "100%" : "auto") : "auto"
+            }
+            height={"70px"}
+          >
+            {(!showMobileSearchBar || width > 500) && (
+              <ViewControls>
+                <ToggleWrapper
+                  style={{ marginRight: "10px", position: "relative" }}
+                >
+                  <Text
+                    style={{ marginLeft: -10 }}
+                    fontSize="13px"
+                    color={theme.text1}
+                    mr={"10px"}
+                    width={"max-content"}
+                    letterSpacing={"0.05em"}
+                  >
+                    {" "}
+                    {width > 700 ? "SHOW ONLY MINE" : "SHOW ONLY MINE"}
+                  </Text>
                   <Toggle
-                      id="staked-only-farms"
-                      checked={stakedOnly}
-                      checkedColor={'dropdownDeep'}
-                      defaultColor={'dropdownDeep'}
-                      onChange={() => setStakedOnly(!stakedOnly)}
-                      scale="sm"
+                    id="staked-only-farms"
+                    checked={stakedOnly}
+                    checkedColor={"dropdownDeep"}
+                    defaultColor={"dropdownDeep"}
+                    onChange={() => setStakedOnly(!stakedOnly)}
+                    scale="sm"
                   />
                 </ToggleWrapper>
                 {/*<FarmTabButtons active='Active' />*/}
-              </ViewControls>}
-              <FilterContainer>
-                <LabelWrapper style={{ marginLeft: showMobileSearchBar ? 0 : 10, width: '100%' }}>
-                  <SearchInput onChange={handleChangeQuery} placeholder="SEARCH FARMS" />
-                </LabelWrapper>
-              </FilterContainer>
-            </Flex>
-          </ControlContainer>
-          <MainContainer>
-            <table style={{width: '100%', borderBottom: `1px solid ${theme.opacitySmall}`, paddingBottom: '5px'}}>
-              <tr style={viewMode === ViewMode.CARD || (viewMode === ViewMode.TABLE && width <= 992) ?
-                  ({display: 'flex', justifyContent: 'space-between', alignItems: 'center'})
-                  : null}>
-                <TableData style={{minWidth: width >= 600 ? '275px' : 'auto'}}>
-                  <ViewModeTabs active={viewMode} />
+              </ViewControls>
+            )}
+            <FilterContainer>
+              <LabelWrapper
+                style={{
+                  marginLeft: showMobileSearchBar ? 0 : 10,
+                  width: "100%",
+                }}
+              >
+                <SearchInput
+                  onChange={handleChangeQuery}
+                  placeholder="SEARCH FARMS"
+                />
+              </LabelWrapper>
+            </FilterContainer>
+          </Flex>
+        </ControlContainer>
+        <MainContainer>
+          <table
+            style={{
+              width: "100%",
+              borderBottom: `1px solid ${theme.opacitySmall}`,
+              paddingBottom: "5px",
+            }}
+          >
+            <tr
+              style={
+                viewMode === ViewMode.CARD ||
+                (viewMode === ViewMode.TABLE && width <= 992)
+                  ? {
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }
+                  : null
+              }
+            >
+              <TableData style={{ minWidth: width >= 600 ? "275px" : "auto" }}>
+                <ViewModeTabs active={viewMode} />
+              </TableData>
+              {viewMode === ViewMode.TABLE && width > 992 ? (
+                options.map((option) => (
+                  <TableData
+                    key={option}
+                    style={{
+                      cursor:
+                        (option === "Earned" || option === "Staked") &&
+                        "pointer",
+                    }}
+                    onClick={() => {
+                      (option === "Earned" || option === "Staked") &&
+                        (sortOption === option.toLowerCase()
+                          ? setSortOption("hot")
+                          : setSortOption(option.toLowerCase()));
+                    }}
+                  >
+                    <PinkArrows
+                      style={{ display: "flex", alignItems: "center" }}
+                    >
+                      <p
+                        style={{
+                          fontSize: "13px",
+                          color: !darkMode ? theme.text1 : theme.meatPink,
+                          fontWeight: 500,
+                          margin: 0,
+                        }}
+                      >
+                        {option}
+                      </p>
+                      {(option === "Earned" || option === "Staked") && (
+                        <FarmRepeatIcon />
+                      )}
+                    </PinkArrows>
+                    {sortOption === option.toLowerCase() ? (
+                      <SelectedOptionDiv />
+                    ) : null}
+                  </TableData>
+                ))
+              ) : (
+                <TableData
+                  style={{
+                    display: "flex",
+                    width: "200px",
+                    paddingRight: width <= 992 ? "0px" : "5px",
+                  }}
+                >
+                  <Text
+                    style={{ width: "100px", alignSelf: "center" }}
+                    color={theme.whiteHalf}
+                    fontSize={"15px"}
+                  >
+                    {t("Sort by")}
+                  </Text>
+                  <Select
+                    options={[
+                      {
+                        label: t("Hot"),
+                        value: "hot",
+                      },
+                      {
+                        label: t("APR"),
+                        value: "apr",
+                      },
+                      {
+                        label: t("Earned"),
+                        value: "earned",
+                      },
+                    ]}
+                    onOptionChange={(option) => setSortOption(option.value)}
+                  />
                 </TableData>
-                {viewMode === ViewMode.TABLE && width > 992 ? options.map((option) => (
-                        <TableData key={option} style={{cursor: (option === 'Earned' || option === 'Staked') && 'pointer'}} onClick={() => {
-                          (option === 'Earned' || option === 'Staked') && (
-                              sortOption === option.toLowerCase() ? setSortOption('hot') :
-                                  setSortOption(option.toLowerCase()))}}>
-                          <PinkArrows style={{display: 'flex', alignItems: 'center'}}>
-                            <p style={{fontSize: '13px', color: !darkMode ? theme.text1 : theme.meatPink, fontWeight: 500, margin: 0}}>{option}</p>
-                            {(option === 'Earned' || option === 'Staked') && <FarmRepeatIcon />}
-                          </PinkArrows>
-                          {sortOption === option.toLowerCase() ? <SelectedOptionDiv /> : null}
-                        </TableData>)) :
-                    (
-                        <TableData style={{display: 'flex', width: '200px', paddingRight: width <= 992 ? '0px' : '5px'}}>
-                          <Text style={{width: '100px', alignSelf: 'center'}} color={theme.whiteHalf} fontSize={'15px'} >{t('Sort by')}</Text>
-                          <Select
-                              options={[
-                                {
-                                  label: t('Hot'),
-                                  value: 'hot',
-                                },
-                                {
-                                  label: t('APR'),
-                                  value: 'apr',
-                                },
-                                {
-                                  label: t('Earned'),
-                                  value: 'earned',
-                                },
-                              ]}
-                              onOptionChange={(option) => setSortOption(option.value)}
-                          />
-                        </TableData>
-                    )}
-                {viewMode === ViewMode.TABLE && width > 992 && (<TableData style={{width: '15%'}}/>)}
-              </tr>
-            </table>
-            {renderContent()}
-          </MainContainer>
-          {account && !userDataLoaded && stakedOnly && (
-              <Flex justifyContent="center">
-              </Flex>
+              )}
+              {viewMode === ViewMode.TABLE && width > 992 && (
+                <TableData style={{ width: "15%" }} />
+              )}
+            </tr>
+          </table>
+          {renderContent()}
+          {numberOfFarmsVisible < pools.length && (
+            <ButtonLighter
+              onClick={() => showMore()}
+              onMouseEnter={() => setHoverButton(true)}
+              onMouseLeave={() => setHoverButton(false)}
+              style={{
+                background: theme.darkMode ? hoverButton ? "transparent" : '#3E212D' : hoverButton ? "transparent" : '#EDEAEA',
+                borderRadius: "0px",
+                margin: "auto",
+                marginTop: "20px",
+                fontSize: "16px",
+                border: 'none',
+                width: 'calc(100% + 10px)',
+                position: "relative",
+                right: '5px',
+                marginBottom: '-5px',
+                borderBottomLeftRadius: '17px',
+                borderBottomRightRadius: '17px',
+                color: theme.pinkBrown
+              }}
+            >
+              {t("Show More")}
+            </ButtonLighter>
           )}
-          <div ref={observerRef} />
-        </Page>
-      </FarmsContext.Provider>
-  )
+        </MainContainer>
+        {account && !userDataLoaded && stakedOnly && (
+          <Flex justifyContent="center"></Flex>
+        )}
+        <div ref={observerRef} />
+      </Page>
+    </FarmsContext.Provider>
+  );
 }
 
 export const FarmsContext = createContext({ activeFarms: [] })

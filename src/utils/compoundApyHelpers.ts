@@ -14,7 +14,7 @@ export const getInterestBreakdown = ({
   principalInUSD,
   apr,
   earningTokenPrice,
-  compoundFrequency = 1,
+  compoundFrequency = 0,
   performanceFee = 0,
 }: {
   principalInUSD: number
@@ -37,6 +37,7 @@ export const getInterestBreakdown = ({
     const daysAsDecimalOfYear = days / 365
     // Calculate the starting TOKEN balance with a dollar balance of principalInUSD.
     const principal = principalInUSD / earningTokenPrice
+    console.log("principal", principal)
     let interestEarned = principal * aprAsDecimal * (days / 365)
     if (timesCompounded !== 0) {
       // This is a translation of the typical mathematical compounding APY formula. Details here: https://www.calculatorsoup.com/calculators/financial/compound-interest-calculator.php

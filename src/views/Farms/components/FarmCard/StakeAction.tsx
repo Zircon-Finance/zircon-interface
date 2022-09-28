@@ -175,6 +175,8 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
         }
     <Flex justifyContent="space-between" alignItems="center">
       <StakedLP
+        stakedFl={pool.stakedFL}
+        stakedSl={pool.stakedSL}
         stakingToken = {stakingToken}
         percentage={percentage}
         field={Field.LIQUIDITY_PERCENT}

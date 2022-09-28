@@ -728,6 +728,7 @@ export default function AddLiquidityPro({
             sync={sync}
             errorTx={errorTx}
             blocked={mintInfo?.blocked}
+            shouldBlock={mintInfo?.shouldBlock}
         />
     );
   };

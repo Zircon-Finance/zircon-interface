@@ -75,24 +75,24 @@ const DepositModal: React.FC<DepositModalProps> = ({
     // pool?.isAnchor ? pool?.staked.toFixed(6) : pool?.stakedFL.toFixed(6), ' to get USD value: ', usdToStake.toFixed(6))
     const stakingTokenPrice = new BigNumber(pool.staked.toString()).multipliedBy(new BigNumber(pool?.quotingPrice)).toNumber()
 
-    const aprs = pool?.earningTokenPrice.map((tokenPrice) => {
+    const aprs = pool?.earningTokenPrice?.map((tokenPrice) => {
         return getPoolApr(stakingTokenPrice, [tokenPrice])
     })
     console.log("APRS: ", pool?.earningToken)
-    const interestBreakdowns = pool?.earningToken.map((token, i ) => {
+    const interestBreakdowns = aprs ? pool?.earningToken.map((token, i ) => {
         return getInterestBreakdown({
             principalInUSD: !lpTokensToStake.isNaN() ? usdToStake.toNumber() : 0,
             apr: aprs[i],
             earningTokenPrice: token.symbol === "ZRG" ? pool?.zrgPrice : pool?.movrPrice,
         })
-    })
+    }) : []
     // const interestBreakdown = getInterestBreakdown({
     //     principalInUSD: !lpTokensToStake.isNaN() ? usdToStake.toNumber() : 0,
     //     apr,
     //     earningTokenPrice: pool ? pool?.earningTokenPrice.reduce((a, r) => a+r) : 0,
     // })
 
-    console.log("usdToStake", usdToStake.toString(), pool?.earningTokenPrice[0])
+    // console.log("usdToStake", usdToStake.toString(), pool?.earningTokenPrice[0])
     const two = new BigNumber(2)
     let interestBreakdown =  new BigNumber(0)
 

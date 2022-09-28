@@ -34,12 +34,19 @@ export const mainnetTokens = defineTokens({
     'CAKE',
     'PancakeSwap Token',
   ),
-  movr: new Token(
+  wmovr: new Token(
     ChainId.MOONRIVER,
     '0x98878B06940aE243284CA214f92Bb71a2b032B8A',
     18,
     'wMOVR',
     'Wrapped MoonRiver',
+  ),
+  movr: new Token(
+    ChainId.MOONRIVER,
+    '0x0000000000000000000000000000000000000000',
+    18,
+    'MOVR',
+    'MoonRiver',
   ),
   zrg: new Token(
     ChainId.MOONRIVER,

@@ -24,6 +24,7 @@ import { PaddedColumn, SearchInput, Separator } from './styleds'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { ButtonPositionsMobile } from '../Button'
 import CurrencyLogo from '../CurrencyLogo'
+import { mainnetTokens } from '../../constants/tokens'
 
 const SmallPlanet = styled.div`
   height: 28px;
@@ -117,11 +118,13 @@ export function CurrencySearch({
     ]
   }, [filteredTokens, searchQuery, searchToken, tokenComparator])
 
-  const floatTokens = ['MOVR', 'ETH', 'KSM', 'LDO', 'kBTC']
-  const anchorTokens = ['MOVR','USDC', 'ETH', 'KSM']
+  const floatTokens = ['ETH', 'KSM', 'LDO', 'kBTC', 'wMOVR']
+  const anchorTokens = ['USDC', 'ETH', 'KSM', 'wMOVR']
 
-  const selectedFloatTokens = filteredSortedTokens.filter(token => floatTokens.includes(token.symbol))
-  const selectedAnchorTokens = filteredSortedTokens.filter(token => anchorTokens.includes(token.symbol))
+  console.log('filteredSortedTokens', filteredSortedTokens)
+
+  const selectedFloatTokens = filteredSortedTokens.filter(token => floatTokens.includes(token.symbol)).concat(mainnetTokens.movr)
+  const selectedAnchorTokens = filteredSortedTokens.filter(token => anchorTokens.includes(token.symbol)).concat(mainnetTokens.movr)
 
   const handleCurrencySelect = useCallback(
     (currency: Currency) => {
@@ -201,17 +204,17 @@ export function CurrencySearch({
         <Flex flexDirection="row" style={{display: 'flex', marginBottom: '15px', flexWrap: 'wrap'}}>
         {isFloat === true &&
           selectedFloatTokens?.map((token, i) => (
-            <SmallPlanet key={i} onClick={()=>handleCurrencySelect(token)}>
+            <SmallPlanet key={i} onClick={()=>handleCurrencySelect(token.symbol === 'MOVR' ? DEV : token)}>
               <CurrencyLogo currency={token} size={'18px'} />
-              <Text fontWeight={500} fontSize={14} style={{padding: '0 5px 0 5px'}}>{(token?.symbol === 'MOVR' && token !== DEV) ? 'wMOVR' : token?.symbol}</Text>
+              <Text fontWeight={500} fontSize={14} style={{padding: '0 5px 0 5px'}}>{token?.symbol}</Text>
             </SmallPlanet>
           ))
         }
         {isFloat === false &&
           selectedAnchorTokens?.map((token, i) => (
-            <SmallPlanet onClick={()=>handleCurrencySelect(token)}>
+            <SmallPlanet onClick={()=>handleCurrencySelect(token.symbol === 'MOVR' ? DEV : token)}>
               <CurrencyLogo currency={token} size={'18px'} />
-              <Text fontWeight={500} fontSize={14} style={{padding: '0 5px 0 5px'}}>{(token?.symbol === 'MOVR' && token !== DEV) ? 'wMOVR' : token?.symbol}</Text>
+              <Text fontWeight={500} fontSize={14} style={{padding: '0 5px 0 5px'}}>{token?.symbol}</Text>
             </SmallPlanet>
           ))
         }

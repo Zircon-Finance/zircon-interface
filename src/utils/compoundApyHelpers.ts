@@ -36,7 +36,7 @@ export const getInterestBreakdown = ({
   return DAYS_TO_CALCULATE_AGAINST.map((days) => {
     const daysAsDecimalOfYear = days / 365
     // Calculate the starting TOKEN balance with a dollar balance of principalInUSD.
-    const principal = principalInUSD / earningTokenPrice
+    const principal = 0 / earningTokenPrice
     console.log("principal", principal)
     let interestEarned = principal * aprAsDecimal * (days / 365)
     if (timesCompounded !== 0) {

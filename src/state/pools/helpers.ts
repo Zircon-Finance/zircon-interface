@@ -51,13 +51,17 @@ export const transformPool = (pool: SerializedPool): DeserializedPool => {
     startBlock,
     staked,
     stakedFL,
+    stakedSL,
+    quotingPrice,
     ...rest
   } = pool
-
+  console.log('transformPool', parseFloat(stakedFL))
   return {
     ...rest,
     staked: new BigNumber(staked),
-    stakedFL: new BigNumber(stakedFL),
+    stakedFL: parseFloat(stakedFL ?? ""),
+    stakedSL: parseFloat(stakedSL ?? ""),
+    quotingPrice: quotingPrice,
     startBlock,
     profileRequirement: transformProfileRequirement(profileRequirement),
     stakingToken: deserializeToken(stakingToken),

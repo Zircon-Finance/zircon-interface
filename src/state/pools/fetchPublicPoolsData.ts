@@ -19,6 +19,17 @@ const fetchPoolCalls = (pool: SerializedPool) => {
             name: 'balanceOf',
             params: [lpAddress],
         },
+        {
+            address: token1.address,
+            name: 'balanceOf',
+            params: [pylonAddress],
+        },
+        // Balance of quote token on LP contract
+        {
+            address: token2.address,
+            name: 'balanceOf',
+            params: [pylonAddress],
+        },
         // Balance of LP tokens in the master chef contract
         {
             address: stakingToken.address,
@@ -66,7 +77,7 @@ export const fetchPublicPoolData = async (pools: SerializedPoolConfig[]): Promis
 
 
 export const fetchGammas = async (pools: SerializedPoolConfig[]): Promise<any[]> => {
-    const farmCalls = pools.map((pool) => ({address: pool.pylonAddress, name: 'gammaMulDecimals'}))
+    const farmCalls = pools.flatMap((pool) => ([{address: pool.pylonAddress, name: 'gammaMulDecimals'}, {address: pool.pylonAddress, name: 'virtualAnchorBalance'}]))
     const farmMultiCallResult = await multicall(PYLON_ABI, farmCalls)
     const chunkSize = farmCalls.length / pools.length
     return chunk(farmMultiCallResult, chunkSize)

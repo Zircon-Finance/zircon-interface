@@ -186,9 +186,10 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
       false,
       "off"
   );
-  const gamma = useGamma(pylonPair?.address)
+  const pool = usePool(details.sousId).pool
+  const gamma = useGamma(pylonPair?.address)//TODO: change with pool?.gamma
 
-  const hasStakedAmount = !!usePool(details.sousId).pool.userData.stakedBalance.toNumber()
+  const hasStakedAmount = !!pool.userData.stakedBalance.toNumber()
   const [actionPanelExpanded, setActionPanelExpanded] = useState(false)
   const [hovered, setHovered] = useState(false)
   const shouldRenderChild = actionPanelExpanded

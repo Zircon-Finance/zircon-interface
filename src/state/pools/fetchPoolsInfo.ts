@@ -12,10 +12,11 @@ const fetchPools = async (poolsToFetch: SerializedPoolConfig[]): Promise<Seriali
     const gammas = await fetchGammas(poolsToFetch)
 
     return poolsToFetch.map((pool, index) => {
-        const [tokenBalanceLP, quoteTokenBalanceLP, stakedTokenBalanceMC, lpTotalSupply, tokenDecimals, quoteTokenDecimals, ptb, stakedTotalSupply, vaultTotalSupply] =
+        const [tokenBalanceLP, quoteTokenBalanceLP, pylonTokenBalanceLP, pylonQuoteBalanceLP, stakedTokenBalanceMC, lpTotalSupply, tokenDecimals, quoteTokenDecimals, ptb, stakedTotalSupply, vaultTotalSupply] =
             poolResult[index]
-        const [gamma] = gammas[index]
+        const [gamma, virtualAnchorBalance] = gammas[index]
         // const [info, totalAllocPoint] = masterChefResult[index]
+        // console.log("pylon balances", pylonTokenBalanceLP.toString(), pylonQuoteBalanceLP.toString())
 
         // Ratio in % of LP tokens that are staked in the MC, vs the total number in circulation
         const lpTokenRatio = new BigNumber(stakedTokenBalanceMC).div(new BigNumber(stakedTotalSupply))
@@ -28,12 +29,16 @@ const fetchPools = async (poolsToFetch: SerializedPoolConfig[]): Promise<Seriali
 
         // Total staked in LP, in quote token value
         const lpTotalInQuoteToken = quoteTokenAmountMc.times(new BigNumber(2))
-        let inverseGamma = new BigNumber(BIG_TEN.pow(18)).minus(new BigNumber(gamma))
+        // let inverseGamma = new BigNumber(BIG_TEN.pow(18)).minus(new BigNumber(gamma))
 
-        const staked = lpTotalInQuoteToken.multipliedBy(inverseGamma).multipliedBy(ptb).dividedBy(lpTotalSupply).dividedBy(BIG_TEN.pow(18))
-        const stakedFL = lpTotalInQuoteToken.multipliedBy(gamma).multipliedBy(ptb).dividedBy(lpTotalSupply).dividedBy(BIG_TEN.pow(18))
+        const ratio = new BigNumber(quoteTokenBalanceLP).div(tokenBalanceLP)
+        const pylonRatio = new BigNumber(ptb).div(lpTotalSupply)
+        console.log("gamma", gamma.toString())
+        const staked =  (new BigNumber(lpTotalInQuoteToken).multipliedBy(gamma)).multipliedBy(pylonRatio).plus(new BigNumber(pylonTokenBalanceLP).multipliedBy(ratio)).dividedBy(BIG_TEN.pow(18));
+        const stakedFL = staked.multipliedBy(BIG_TEN.pow(18)).dividedBy(stakedTotalSupply)
+        const stakedSL = new BigNumber(virtualAnchorBalance).dividedBy(stakedTotalSupply)
 
-        console.log("staked", lpTotalSupply.toString(), inverseGamma.toString(), ptb.toString(), staked.toString())
+        console.log("staked", staked.toString(), stakedFL.toString(), stakedSL.toString(), staked.toString())
         // console.log("values::", pool.lpTotalInQuoteToken, pool.gamma, new BigNumber(pool.ptb.toString()), pool.lpTotalSupply)
         // let liquidityBySDK = Pylon.calculateLiquidity(pool.gamma, JSBI.BigInt(new BigNumber(pool.lpTotalInQuoteToken.toString()).toString()),
         //     JSBI.BigInt(new BigNumber(pool.ptb.toString()).toString()), JSBI.BigInt(new BigNumber(pool.lpTotalSupply.toString()).toString()))
@@ -61,10 +66,11 @@ const fetchPools = async (poolsToFetch: SerializedPoolConfig[]): Promise<Seriali
             tokenPriceVsQuote: quoteTokenAmountTotal.div(tokenAmountTotal).toJSON(),
             gamma: new BigNumber(gamma).toJSON(),
             ptb: new BigNumber(ptb).toJSON(),
-            staked: new BigNumber(staked).toJSON(),
-            quoteTokenBalanceLP: new BigNumber(quoteTokenBalanceLP).toJSON(),
-            vaultTotalSupply: new BigNumber(vaultTotalSupply).toJSON(),
             stakedFL: new BigNumber(stakedFL).toJSON(),
+            stakedSL: new BigNumber(stakedSL).toJSON(),
+            staked: new BigNumber(staked).toJSON(),
+            quoteTokenBalanceLP: (new BigNumber(quoteTokenBalanceLP).plus(pylonQuoteBalanceLP)).toJSON(),
+            vaultTotalSupply: new BigNumber(vaultTotalSupply).toJSON()
             // poolWeight: poolWeight.toJSON(),
             // multiplier: `${allocPoint.div(100).toString()}X`,
         }

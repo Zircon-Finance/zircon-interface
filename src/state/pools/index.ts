@@ -201,7 +201,7 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
           return 0
         }
       }) : []
-      // console.log("earningTokenCurrentPrice", earningTokenCurrentPrice)
+      console.log("earningTokenPrice", earningTokenPrice)
       let liquidity  = String(BigNumber(pool.quotePrice.toString()).multipliedBy(pool.quoteTokenBalanceLP).multipliedBy(2).dividedBy(BIG_TEN.pow(pool.quoteTokenDecimals)).toString())
 
       const apr = !isPoolFinished
@@ -210,7 +210,7 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
               earningTokenPrice,
           )
           : 0
-
+      console.log("welcome to apr", new BigNumber(pool.staked).toString(), pool.stakedSL)
       return {
         ...blockLimit,
         ...totalStaking,
@@ -222,10 +222,12 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
         liquidity: liquidity,
         zrgPrice: priceZRG[0]?.tokenPrice,
         movrPrice: priceZRG[0]?.quotePrice,
-        staked: pool.staked,
-        stakedFL: pool.stakedFL,
+        staked: new BigNumber(pool.staked).toString(),
+        stakedFL: new BigNumber(pool.stakedFL).toString(),
+        stakedSL: new BigNumber(pool.stakedSL).toString(),
         apr,
         isFinished: isPoolFinished,
+        quotingPrice: pool.quotePrice,
       }
     })
     dispatch(setPoolsPublicData(liveData))

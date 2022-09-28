@@ -83,7 +83,9 @@ interface CorePoolProps {
 export interface DeserializedPool extends DeserializedPoolConfig, CorePoolProps {
   totalStaked?: BigNumber
   staked: BigNumber
-  stakedFL: BigNumber
+  stakedFL: number
+  stakedSL: number
+  quotingPrice?: string
   stakingLimit?: BigNumber
   stakingLimitEndBlock?: number
   profileRequirement?: {
@@ -102,6 +104,7 @@ export interface DeserializedPool extends DeserializedPoolConfig, CorePoolProps 
 export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
   totalStaked?: SerializedBigNumber
   stakingLimit?: SerializedBigNumber
+  quotingPrice?: SerializedBigNumber
   numberBlocksForUserLimit?: number
   profileRequirement?: {
     required: boolean
@@ -125,6 +128,7 @@ export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
   vaultTotalSupply?: SerializedBigNumber
   staked?: SerializedBigNumber
   stakedFL?: SerializedBigNumber
+  stakedSL?: SerializedBigNumber
 }
 
 // Slices states
@@ -266,6 +270,7 @@ export interface PoolsState {
 export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
   totalStaked?: SerializedBigNumber
   stakingLimit?: SerializedBigNumber
+  quotingPrice?: SerializedBigNumber
   numberBlocksForUserLimit?: number
   profileRequirement?: {
     required: boolean

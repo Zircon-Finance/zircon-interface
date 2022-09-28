@@ -26,6 +26,7 @@ import {useDerivedPylonMintInfo} from "../../../../state/mint/pylonHooks";
 import { StyledLinkExternal } from '../FarmTable/Actions/ActionPanel'
 import CapacityIndicatorSmall from '../../../../components/CapacityIndicatorSmall'
 import { useWindowDimensions } from '../../../../hooks'
+import { CONTRACT_ADDRESS_BASE } from '../../../../constants/lists'
 
 const StyledCard = styled(Card)`
   align-self: baseline;
@@ -251,7 +252,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
               color: theme.pinkBrown,
               fontWeight: 500,
             }}
-            href={"Placeholder"}
+            href={CONTRACT_ADDRESS_BASE+farm.contractAddress}
           >
             {"View Contract ↗"}
           </StyledLinkExternal>

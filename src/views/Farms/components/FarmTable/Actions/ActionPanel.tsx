@@ -40,6 +40,7 @@ import { BIG_ZERO } from '../../../../../utils/bigNumber'
 import QuestionMarkIcon from '../../../../../components/QuestionMarkIcon'
 import { QuestionMarkContainer, ToolTip } from '../Row'
 import CapacityIndicatorSmall from '../../../../../components/CapacityIndicatorSmall/index'
+import { CONTRACT_ADDRESS_BASE } from '../../../../../constants/lists'
 
 export interface ActionPanelProps {
   apr: AprProps
@@ -230,7 +231,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   //   quoteTokenAddress: quoteToken.address,
   //   tokenAddress: token.address,
   // })
-  const bsc = 'placeholder'
+  const bsc = CONTRACT_ADDRESS_BASE+farm.contractAddress
   // getBscScanLink(lpAddress, 'address')
   const lpAddress = farm.stakingToken.address
   const info = `/info/pool/${lpAddress}`
@@ -542,7 +543,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
             color: theme.pinkBrown,
             fontWeight: 500,
           }}
-          href={"Placeholder"}
+          href={CONTRACT_ADDRESS_BASE+farm.contractAddress}
         >
           {"View Contract ↗"}
         </StyledLinkExternal>

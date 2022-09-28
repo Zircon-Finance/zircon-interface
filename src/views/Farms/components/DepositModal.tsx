@@ -13,6 +13,7 @@ import { Link } from 'rebass'
 import { StyledErrorMessage } from '../../../components/ModalFarm/ModalInput'
 import {Token} from 'zircon-sdk'
 import { DeserializedPool } from '../../../state/types'
+import {getPoolApr} from "../../../utils/apr";
 
 const AnnualRoiContainer = styled(Flex)`
   cursor: pointer;
@@ -72,15 +73,33 @@ const DepositModal: React.FC<DepositModalProps> = ({
     const usdToStake = lpTokensToStake.times(pool?.isAnchor ? pool?.stakedSL : pool?.stakedFL).multipliedBy(pool?.quotingPrice)
     // console.log('Multiplying user input: ', lpTokensToStake?.toFixed(6),' by ZPT price: ',
     // pool?.isAnchor ? pool?.staked.toFixed(6) : pool?.stakedFL.toFixed(6), ' to get USD value: ', usdToStake.toFixed(6))
+    const stakingTokenPrice = new BigNumber(pool.staked.toString()).multipliedBy(new BigNumber(pool?.quotingPrice)).toNumber()
 
-    const interestBreakdown = getInterestBreakdown({
-        principalInUSD: !lpTokensToStake.isNaN() ? usdToStake.toNumber() : 0,
-        apr,
-        earningTokenPrice: new BigNumber(pool?.movrPrice).toNumber() //? pool?.earningTokenPrice.reduce((a, r) => a+r) : 0,
+    const aprs = pool?.earningTokenPrice.map((tokenPrice) => {
+        return getPoolApr(stakingTokenPrice, [tokenPrice])
     })
+    console.log("APRS: ", pool?.earningToken)
+    const interestBreakdowns = pool?.earningToken.map((token, i ) => {
+        return getInterestBreakdown({
+            principalInUSD: !lpTokensToStake.isNaN() ? usdToStake.toNumber() : 0,
+            apr: aprs[i],
+            earningTokenPrice: token.symbol === "ZRG" ? pool?.zrgPrice : pool?.movrPrice,
+        })
+    })
+    // const interestBreakdown = getInterestBreakdown({
+    //     principalInUSD: !lpTokensToStake.isNaN() ? usdToStake.toNumber() : 0,
+    //     apr,
+    //     earningTokenPrice: pool ? pool?.earningTokenPrice.reduce((a, r) => a+r) : 0,
+    // })
+
     console.log("usdToStake", usdToStake.toString(), pool?.earningTokenPrice[0])
     const two = new BigNumber(2)
-    const annualRoi = two.times(interestBreakdown[3])
+    let interestBreakdown =  new BigNumber(0)
+
+    interestBreakdowns.forEach((breakdown) => {
+        interestBreakdown =  interestBreakdown.plus(breakdown[3])
+    })
+    const annualRoi = two.times(interestBreakdown)
     const annualRoiAsNumber = annualRoi.toNumber()
     const formattedAnnualRoi = formatNumber(annualRoiAsNumber, annualRoi.gt(10000) ? 0 : 2, annualRoi.gt(10000) ? 0 : 2)
 

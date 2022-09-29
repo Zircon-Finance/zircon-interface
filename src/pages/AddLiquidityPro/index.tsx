@@ -149,8 +149,8 @@ export default function AddLiquidityPro({
   // handle pool button values
   const farm = farmsConfig.find(
       (f) =>
-          f.token1.symbol === currencyA?.symbol &&
-          f.token2.symbol === currencyB?.symbol &&
+          f.token1.symbol === (currencyA?.symbol === 'wMOVR' ? 'MOVR' : currencyA?.symbol) &&
+          f.token2.symbol === (currencyB?.symbol === 'wMOVR' ? 'MOVR' : currencyB?.symbol) &&
           f.isAnchor === !isFloat
   );
   const { pool } = usePool(farm ? farm?.sousId : 1);
@@ -1375,7 +1375,7 @@ export default function AddLiquidityPro({
                                           fontSize={width > 700 ? 14 : 13}
                                           fontWeight={400}
                                       >
-                                        {`${pool?.apr ? "" : pool?.apr?.toFixed(2)}% APR`}
+                                        {`${!pool?.apr ? "" : pool?.apr?.toFixed(2)}% APR`}
                                       </Text>)}
                                     </Flex>
                                   </ButtonError>

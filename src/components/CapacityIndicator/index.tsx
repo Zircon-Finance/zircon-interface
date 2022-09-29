@@ -13,15 +13,12 @@ const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 80%;
-  height: 100%;
   color: ${({ theme }) => theme.darkMode ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)'};
   border: 1px solid ${({ theme }) => theme.darkMode ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)'};
   border-radius: 12px;
   font-size: 16px;
   margin: 8px auto 8px auto;
-  :last-child {
-    border-bottom: none;
-  }
+  border-bottom: none;
 `
 const RowContainer = styled.div`
   display: flex;
@@ -126,7 +123,7 @@ const CapacityIndicator: React.FC<Props> = ({gamma, hoverPage, health, isFloat, 
                 <span style={{marginRight: 8}}>{slashingOmega?.toFixed(2)}%</span>
             </RowContainer>}
 
-            <RowContainer style={{borderBottom: 'none'}}>
+            <RowContainer style={{borderBottomLeftRadius: '12px', borderBottomRightRadius: '12px'}}>
                 <SmallContainer>
 
                     {!noSpan && <span style={{marginLeft: 8}}>{blocked ? "Tx likely to fail" : isFloat ? 'Divergence' : 'Health factor'}</span>}

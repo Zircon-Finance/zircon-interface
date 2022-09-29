@@ -382,11 +382,11 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                           {createElement(cells[key], { ...props[key], hovered, setHovered })}
                         </CellLayout>
                       </CellInner>) : (
-                      <StakeAdd row={true} margin={true} width={'75%'} />)
+                      <StakeAdd row={true} margin={true} width={'60%'} height={'34px'} />)
                     : (
-                      <ButtonPinkGamma style={{width: '80%', fontSize: '13px', padding: '10px', borderRadius: '12px'}} disabled={pendingTx}
+                      <ButtonPinkGamma style={{width: '80%', fontSize: '13px', padding: '0 15px', borderRadius: '12px', height: '34px'}} disabled={pendingTx}
                       onClick={handleApproval}>{pendingTx ? 'Enabling...' : 'Enable contract'}</ButtonPinkGamma>)) : (
-                        <ButtonPinkGamma style={{width: '80%', fontSize: '13px', padding: '10px', borderRadius: '12px'}}
+                        <ButtonPinkGamma style={{width: '80%', fontSize: '13px', padding: '0 15px', borderRadius: '12px', height: '34px'}}
                     onClick={toggleWalletModal}>{'Connect wallet'}</ButtonPinkGamma>)}
                   </TableData>
                 )
@@ -435,17 +435,17 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                     <ButtonPinkGamma style={{fontSize: '13px', padding: '10px', borderRadius: '12px', maxHeight: '38px'}}>
                       <Flex justifyContent={'space-between'} flexDirection={'row'} alignItems={'center'}>
                         <svg width="25" height="25" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M22.75 9.875V36.125" stroke="#9D94AA" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M9.625 23H35.875" stroke="#9D94AA" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M22.75 9.875V36.125" stroke="#CA98BB" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M9.625 23H35.875" stroke="#CA98BB" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
                         <Text style={{minWidth: 'auto'}}>Stake</Text>
                       </Flex>
                     </ButtonPinkGamma>
                   )) : (
-                    <ButtonPinkGamma style={{fontSize: '13px', padding: '10px', borderRadius: '12px'}} disabled={pendingTx}
+                    <ButtonPinkGamma style={{fontSize: '13px', padding: '10px', borderRadius: '12px', height: '34px'}} disabled={pendingTx}
                     onClick={handleApproval}>{pendingTx ? 'Enabling...' : 'Enable contract'}</ButtonPinkGamma>
                   )) : (
-                    <ButtonPinkGamma style={{fontSize: '13px', padding: '10px', borderRadius: '12px'}}
+                    <ButtonPinkGamma style={{fontSize: '13px', padding: '10px', borderRadius: '12px', height: '34px'}}
                     onClick={toggleWalletModal}>{'Connect wallet'}</ButtonPinkGamma>
                   )}
 

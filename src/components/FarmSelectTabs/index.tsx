@@ -50,7 +50,7 @@ const StyledNavLink = styled(NavLink).attrs({
   &.${activeClassName} {
     border-radius: 7px;
     color: ${({ theme }) => theme.text1};
-    background-color: ${({ theme }) => theme.darkMode ? theme.positionsButtons : theme.bg1};
+    background-color: ${({ theme }) => theme.darkMode ? '#7d5956' : theme.bg1};
   }
 
   :hover,

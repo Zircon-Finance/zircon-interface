@@ -47,7 +47,7 @@ import {Toggle} from "@pancakeswap/uikit";
 // import {getPoolAprAddress} from "../../utils/apr";
 import {SpaceBetween} from "../../views/Farms/components/FarmTable/Actions/ActionPanel";
 import RepeatIcon from "../../components/RepeatIcon";
-import {useFetchPublicPoolsData, usePool} from "../../state/pools/hooks";
+import {usePool} from "../../state/pools/hooks";
 import {useERC20} from "../../hooks/useContract";
 import useApprovePool from "../../views/Farms/hooks/useApproveFarm";
 import {fetchPoolsUserDataAsync} from "../../state/pools";
@@ -149,12 +149,11 @@ export default function AddLiquidityPro({
   // handle pool button values
   const farm = farmsConfig.find(
       (f) =>
-          f.token1.symbol === (currencyA?.symbol === 'wMOVR' ? 'MOVR' : currencyA.symbol) &&
-          f.token2.symbol === (currencyB?.symbol === 'wMOVR' ? 'MOVR' : currencyB.symbol) &&
+          f.token1.symbol === currencyA?.symbol &&
+          f.token2.symbol === currencyB?.symbol &&
           f.isAnchor === !isFloat
   );
   const { pool } = usePool(farm ? farm?.sousId : 1);
-  useFetchPublicPoolsData()
   const addTransaction = useTransactionAdder()
   const lpContract = useERC20(pool?.stakingToken.address)
   const farmIsApproved = useCallback(
@@ -1376,7 +1375,7 @@ export default function AddLiquidityPro({
                                           fontSize={width > 700 ? 14 : 13}
                                           fontWeight={400}
                                       >
-                                        {`${!pool?.apr ? "" : pool?.apr?.toFixed(2)}% APR`}
+                                        {`${pool?.apr ? "" : pool?.apr?.toFixed(2)}% APR`}
                                       </Text>)}
                                     </Flex>
                                   </ButtonError>

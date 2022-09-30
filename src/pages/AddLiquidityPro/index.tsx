@@ -378,7 +378,7 @@ export default function AddLiquidityPro({
     //   [Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, 0)[0]
     // }
 
-    const liquidityMin = calculateSlippageAmount(mintInfo.liquidity, noPylon ? 0 : allowedSlippage)[0]
+    // const liquidityMin = calculateSlippageAmount(mintInfo.liquidity, noPylon ? 0 : allowedSlippage)[0]
 
     const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline;
 
@@ -410,7 +410,7 @@ export default function AddLiquidityPro({
               chainId
           )?.address ?? "", // token
           DEV === currencies[Field.CURRENCY_A], // second option is anchor so it should mint anchor when float.currency a is equal to b
-          liquidityMin.toString(),
+          '0',//liquidityMin.toString(),
           account,
           stake ? contractAddress : AddressZero,
           deadlineFromNow,
@@ -433,7 +433,7 @@ export default function AddLiquidityPro({
                   ? parsedAmountA
                   : parsedAmountB
           ).raw.toString(),
-          liquidityMin.toString(),
+          '0',//liquidityMin.toString(),
           !isFloat,
           account,
           stake ? contractAddress : AddressZero,
@@ -676,7 +676,7 @@ export default function AddLiquidityPro({
                 overflow: "hidden",
               }}
           >
-            {isStaking && 
+            {isStaking &&
               <Text fontSize="16px" fontWeight={400} style={{ margin: "auto" }}>
                 {'You will stake'}
               </Text>
@@ -1358,11 +1358,11 @@ export default function AddLiquidityPro({
                                   <ButtonError
                                       style={{ height: "60px" }}
                                       width={"48%"}
-                                      onClick={() => 
-                                        farm ? 
-                                        !farmIsApproved() ? 
-                                        (handleApprove()) : 
-                                        (setShowConfirm(true), setIsStaking(true)) : 
+                                      onClick={() =>
+                                        farm ?
+                                        !farmIsApproved() ?
+                                        (handleApprove()) :
+                                        (setShowConfirm(true), setIsStaking(true)) :
                                         (setShowConfirm(true), setIsStaking(true))
                                       }
                                       disabled={

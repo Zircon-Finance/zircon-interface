@@ -21,8 +21,10 @@ export function ConfirmAddModalBottom({
   isFloat,
   onAdd,
   errorTx,
+  isStaking,
   blocked,
-    shouldBlock
+  shouldBlock,
+  formattedLiquidity,
 }: {
   pylonState?: PylonState
   price?: Fraction
@@ -35,6 +37,8 @@ export function ConfirmAddModalBottom({
   errorTx?: string
   blocked?: boolean
   shouldBlock?: boolean
+  isStaking?: boolean
+  formattedLiquidity?: number
 }) {
   const theme = useTheme()
   return (
@@ -54,7 +58,7 @@ export function ConfirmAddModalBottom({
         </RowFixed>
       </RowBetween>}
       <Separator />
-      <RowBetween>
+      <RowBetween style={{marginBottom: '-10px'}}>
         <TYPE.smallerBody>Rates</TYPE.smallerBody>
         <TYPE.smallerBody>
           {`1 ${currencies[Field.CURRENCY_A]?.symbol} = ${price?.toSignificant(4)} ${
@@ -95,7 +99,7 @@ export function ConfirmAddModalBottom({
       {/*</RowBetween>*/}
       <ButtonPrimary disabled={shouldBlock} style={{ margin: '20px 0 0 0' }} onClick={() => shouldBlock ? console.log("nop") : onAdd()}>
         <Text fontWeight={400} fontSize={16}>
-          {pylonState === PylonState.EXISTS ? 'Confirm Supply' : pylonState === PylonState.ONLY_PAIR ? 'Create Pylon & Supply' : 'Create Pair' }
+          {pylonState === PylonState.EXISTS ? isStaking ? 'Add & Farm' : 'Confirm Supply' : pylonState === PylonState.ONLY_PAIR ? 'Create Pylon & Supply' : 'Create Pair' }
         </Text>
       </ButtonPrimary>
     </>

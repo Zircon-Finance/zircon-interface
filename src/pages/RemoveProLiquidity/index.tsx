@@ -22,7 +22,7 @@ import {useActiveWeb3React} from '../../hooks'
 import {useCurrency} from '../../hooks/Tokens'
 
 import {useTransactionAdder} from '../../state/transactions/hooks'
-import {StyledInternalLink, TYPE} from '../../theme'
+import {StyledInternalLink} from '../../theme'
 import {calculateSlippageAmount, getPylonRouterContract} from '../../utils'
 //calculateGasMargin,
 import {currencyId} from '../../utils/currencyId'
@@ -390,10 +390,10 @@ export default function RemoveProLiquidity({
             </RowFixed>
           </RowBetween>
 
-          <TYPE.italic fontSize={12} color={theme.text2} textAlign="left" padding={'12px 0 0 0'}>
+          <Text fontSize={12} textAlign="left" padding={"12px 0 0 0 "} color={theme.whiteHalf}>
             {`Output is estimated. If the price changes by more than ${allowedSlippage /
             100}% your transaction will revert.`}
-          </TYPE.italic>
+          </Text>
         </AutoColumn>
     )
   }

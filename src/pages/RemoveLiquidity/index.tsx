@@ -26,7 +26,7 @@ import { useCurrency } from '../../hooks/Tokens'
 import { usePairContract } from '../../hooks/useContract'
 
 // import { useTransactionAdder } from '../../state/transactions/hooks'
-import { StyledInternalLink, TYPE } from '../../theme'
+import { StyledInternalLink } from '../../theme'
 // import {calculateSlippageAmount, getRouterContract} from '../../utils'
 //calculateGasMargin,
 import { currencyId } from '../../utils/currencyId'
@@ -375,10 +375,10 @@ export default function RemoveLiquidity({
           </RowFixed>
         </RowBetween>
 
-        <TYPE.italic fontSize={12} color={theme.text2} textAlign="left" padding={'12px 0 0 0'}>
-          {`Output is estimated. If the price changes by more than ${allowedSlippage /
+        <Text fontSize={12} textAlign="left" padding={"12px 0 0 0 "} color={theme.whiteHalf}>
+            {`Output is estimated. If the price changes by more than ${allowedSlippage /
             100}% your transaction will revert.`}
-        </TYPE.italic>
+          </Text>
       </AutoColumn>
     )
   }

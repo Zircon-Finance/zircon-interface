@@ -139,7 +139,7 @@ const DepositModal: React.FC<DepositModalProps> = ({
     }
 
     return (
-        <Modal style={{position: 'absolute', width: 'auto', maxWidth: '360px'}} title={t('Stake LP tokens')} onDismiss={onDismiss}>
+        <Modal style={{position: 'absolute', width: 'auto', maxWidth: '360px'}} title={t(`Stake ${pool?.isAnchor ? 'stable' : 'float'} LP tokens`)} onDismiss={onDismiss}>
             <ModalInput
                 value={val}
                 onSelectMax={handleSelectMax}

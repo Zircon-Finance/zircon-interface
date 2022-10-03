@@ -444,7 +444,7 @@ export default function WalletModal({
           )}
           <span>
             <Text style={{textAlign: 'center', fontSize: '14px', marginTop: '10px'}}>
-              {'Connecting a wallet you accept'}
+              {'By connecting a wallet you accept'}
             </Text>
             <Text style={{textAlign: 'center', fontSize: '13px'}}>
               {` our `}
@@ -464,8 +464,11 @@ export default function WalletModal({
               border: "none",
               fontWeight: 500
             }}
+            onClick={() => {
+              window.open('https://ethereum.org/en/wallets/', '_blank');
+            }}
             >
-            <Link style={{textDecoration: 'none', color: theme.pinkGamma}} href="https://tokenlists.org" >
+            <Link style={{textDecoration: 'none', color: theme.pinkGamma}} href="#" >
               {'Learn how to connect'}
             </Link>
             </ButtonPink>

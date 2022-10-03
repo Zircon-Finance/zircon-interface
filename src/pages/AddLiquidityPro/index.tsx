@@ -378,7 +378,7 @@ export default function AddLiquidityPro({
     //   [Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, 0)[0]
     // }
 
-    // const liquidityMin = calculateSlippageAmount(mintInfo.liquidity, noPylon ? 0 : allowedSlippage)[0]
+    const liquidityMin = calculateSlippageAmount(mintInfo.liquidity, noPylon ? 0 : allowedSlippage)[0]
 
     const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline;
 
@@ -410,7 +410,7 @@ export default function AddLiquidityPro({
               chainId
           )?.address ?? "", // token
           DEV === currencies[Field.CURRENCY_A], // second option is anchor so it should mint anchor when float.currency a is equal to b
-          '0',//liquidityMin.toString(),
+          '0', //liquidityMin.toString(),
           account,
           stake ? contractAddress : AddressZero,
           deadlineFromNow,
@@ -433,7 +433,7 @@ export default function AddLiquidityPro({
                   ? parsedAmountA
                   : parsedAmountB
           ).raw.toString(),
-          '0',//liquidityMin.toString(),
+          '0', //liquidityMin.toString(),
           !isFloat,
           account,
           stake ? contractAddress : AddressZero,
@@ -458,8 +458,7 @@ export default function AddLiquidityPro({
               chainId
           )?.address ?? "", // token
           (currencies[Field.CURRENCY_A] === DEV ? parsedAmountB : parsedAmountA).raw.toString(),
-          '0',
-          '0',
+          liquidityMin.toString(),
           currencies[Field.CURRENCY_A] === DEV,
           !isFloat, // second option is anchor so it should mint anchor when float.currency a is equal to b
           account,
@@ -477,8 +476,7 @@ export default function AddLiquidityPro({
           wrappedCurrency(currencies[Field.CURRENCY_B], chainId)?.address ?? "",
           (parsedAmountA).raw.toString(),
           (parsedAmountB).raw.toString(),
-          '0',
-          '0',
+          liquidityMin.toString(),
           !isFloat,
           account,
           stake ? contractAddress : AddressZero,

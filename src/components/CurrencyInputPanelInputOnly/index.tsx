@@ -207,7 +207,6 @@ export default function CurrencyInputPanel({
                               width: '100%',
                               alignSelf: 'center',
                               display: 'flex',
-                              justifyContent: 'center',
                               alignItems: 'center',
                             }}
                           >

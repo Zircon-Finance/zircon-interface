@@ -75,10 +75,10 @@ export const ButtonPositionsMobile = styled(Base)`
     background-color: ${({ theme }) => darken(0.05, theme.primary1)};
   }
   &:hover {
-    background-color: ${({ theme }) => theme.navigationTabs};
+    background-color: ${({ theme }) => theme.changeButtonHover};
   }
   &:active {
-    background-color: ${({ theme }) => theme.navigationBorder};
+    background-color: ${({ theme }) => theme.changeButtonHover};
   }
   &:disabled {
     background-color: ${({ theme, altDisabledStyle }) => (altDisabledStyle ? theme.primary1 : '#36195A')};
@@ -224,14 +224,10 @@ export const ButtonPinkGamma = styled(Base)`
   border: none;
   font-weight: 500;
   background-color: ${({ theme }) => theme.tableButton};
-  color: ${({ theme }) => theme.pinkGamma};
+  color: ${({ theme }) => theme.darkMode ? '#CA90BB' : '#9E4D86'};
 
   &:hover {
-    path {
-      stroke: #fff;
-    }
-    background-color: ${({ theme }) => theme.pinkGamma};
-    color: #fff !important;
+    background-color: ${({ theme }) => theme.darkMode ? 'rgba(202, 144, 187, 0.2)' : 'rgba(158, 77, 134, 0.2)'};
   }
   &:disabled {
     opacity: 50%;

@@ -203,7 +203,7 @@ export const RewardPerBlock = ({ tokens, vaultAddress, sousId }: { tokens: any[]
   const rewardBlocksPerYear = tokens.map((token, index) => (parseFloat((tokenBalances[index]?.toFixed(6)))/blocksLeft)*6400*30)
   return(
     <>
-    {tokens[0] !== undefined && tokens.map((token, index) => (
+    {rewardBlocksPerYear && tokens[0] !== undefined && tokens.map((token, index) => (
       <Text fontSize='13px' fontWeight={500} color={'#4e7455'}>
         {rewardBlocksPerYear[index].toFixed(0) !== 'NaN' ?
           `~ ${rewardBlocksPerYear[index].toFixed(0)}  ${token.symbol}` :
@@ -262,7 +262,7 @@ const Farms: React.FC = ({ children }) => {
     event.persist()
     setQuery(event.target.value)
   }
-  
+
 
   const options = ['Earned', 'Staked', 'APR', 'Liquidty']
   const [showMobileSearchBar] = useShowMobileSearchBarManager()

@@ -34,9 +34,10 @@ const fetchPools = async (poolsToFetch: SerializedPoolConfig[]): Promise<Seriali
         const ratio = new BigNumber(quoteTokenBalanceLP).div(tokenBalanceLP)
         const pylonRatio = new BigNumber(ptb).div(lpTotalSupply)
         console.log("gamma", gamma.toString())
-        const staked =  (new BigNumber(lpTotalInQuoteToken).multipliedBy(gamma)).multipliedBy(pylonRatio).plus(new BigNumber(pylonTokenBalanceLP).multipliedBy(ratio)).dividedBy(BIG_TEN.pow(18));
-        const stakedFL = staked.multipliedBy(BIG_TEN.pow(18)).dividedBy(stakedTotalSupply)
+        const floatStaked = (new BigNumber(lpTotalInQuoteToken).multipliedBy(gamma)).multipliedBy(pylonRatio).plus(new BigNumber(pylonTokenBalanceLP).multipliedBy(ratio)).dividedBy(BIG_TEN.pow(18))
+        const stakedFL = floatStaked.multipliedBy(BIG_TEN.pow(18)).dividedBy(stakedTotalSupply)
         const stakedSL = new BigNumber(virtualAnchorBalance).dividedBy(stakedTotalSupply)
+        const staked = pool.isAnchor ? new BigNumber(virtualAnchorBalance).multipliedBy(lpTokenRatio).dividedBy(BIG_TEN.pow(quoteTokenDecimals)) : floatStaked;
 
         console.log("staked", staked.toString(), stakedFL.toString(), stakedSL.toString(), staked.toString())
         // console.log("values::", pool.lpTotalInQuoteToken, pool.gamma, new BigNumber(pool.ptb.toString()), pool.lpTotalSupply)

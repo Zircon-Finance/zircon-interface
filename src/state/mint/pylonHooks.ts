@@ -50,6 +50,7 @@ export function useDerivedPylonMintInfo(
     };
     extraSlippagePercentage?: JSBI;
     extraFeeTreshold?: JSBI;
+    shouldBlock?: boolean;
     feePercentage: JSBI;
   }
   poolTokenPercentage?: Percent
@@ -179,6 +180,7 @@ export function useDerivedPylonMintInfo(
         if (sync === "off") {
           let syncMintInfo;
           let extraFeeTreshold = ZERO;
+          let shouldBlock = false;
           if (isFloat) {
 
             syncMintInfo = pylonPair.getFloatSyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA,
@@ -188,8 +190,10 @@ export function useDerivedPylonMintInfo(
 
             if (JSBI.greaterThan(syncMintInfo?.amountsToInvest?.sync, ZERO) && JSBI.greaterThan(syncMintInfo?.amountsToInvest?.async, ZERO)) {
               extraFeeTreshold = syncMintInfo?.amountsToInvest?.sync
-
             }
+          if (JSBI.greaterThan(syncMintInfo?.amountsToInvest?.async, ZERO)) {
+            shouldBlock = true
+          }
           }else{
             syncMintInfo = pylonPair.getAnchorSyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountB,
                 pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
@@ -198,13 +202,16 @@ export function useDerivedPylonMintInfo(
 
               extraFeeTreshold = syncMintInfo?.amountsToInvest?.sync
             }
+            if (JSBI.greaterThan(syncMintInfo?.amountsToInvest?.async, ZERO)) {
+              shouldBlock = true
+            }
 
           }
 
 
           //{new BigNumberJs(syncMintInfo?.amountsToInvest.async.toString()).div(mintInfo?.amountsToInvest.sync.toString()).multipliedBy()}
 
-          return {...syncMintInfo, extraFeeTreshold: extraFeeTreshold}
+          return {...syncMintInfo, extraFeeTreshold: extraFeeTreshold, shouldBlock}
         }else {
           let asyncMintInfo;
           if (isFloat) {
@@ -216,7 +223,7 @@ export function useDerivedPylonMintInfo(
                 pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
                 pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK))
           }
-          return {...asyncMintInfo, extraFeeTreshold: ZERO, extraSlippagePercentage: ZERO}
+          return {...asyncMintInfo, extraFeeTreshold: ZERO, extraSlippagePercentage: ZERO, shouldBlock: false}
         }
       } else {
         return undefined

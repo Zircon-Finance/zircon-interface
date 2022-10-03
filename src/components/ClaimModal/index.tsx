@@ -18,6 +18,8 @@ import Lottie from "lottie-react-web";
 import axios from 'axios'
 import {useTransactionAdder} from "../../state/transactions/hooks";
 import TransactionConfirmationModal from '../TransactionConfirmationModal'
+import { RowBetween } from '../Row'
+import { StyledWarningIcon } from '../../pages/AddLiquidity/ConfirmAddModalBottom'
 
 interface ClaimModalProps {
     onConfirm?: (amount: string, token: Token) => void
@@ -35,6 +37,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
                                                }) => {
     const { t } = useTranslation()
     const { account } = useActiveWeb3React()
+    const [errorTx, setErrorTx] = useState<string>("");
     const theme = useTheme()
     const addTransaction = useTransactionAdder()
     const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false);
@@ -151,8 +154,9 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
 
                                             }
                                         ).catch((error) => {
+                                            setAttemptingTxn(false)
+                                            setErrorTx('AirDrop has been temporarily paused, it will be resumed soon!')
                                             setDataUser({...dataUser, isClaimed: true})
-                                            onDismiss()
                                         }))
                                         : [onDismiss(),toggleWalletModal()]
                             }>
@@ -167,6 +171,12 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
                 }}/>
             </LottieContainer>
             }
+            {errorTx && (
+            <RowBetween mt={10}>
+            <StyledWarningIcon />
+            <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{errorTx}</span>
+            </RowBetween>
+        )}
         </Modal>
     )
 

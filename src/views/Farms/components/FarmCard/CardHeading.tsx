@@ -60,7 +60,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
 
     useEffect(() => {
         let r = ''
-        earningToken.forEach((token) => r += ` ${token.symbol} &`)
+        earningToken.forEach((token) => r += ` ${token.symbol === 'MOVR' ? 'wMOVR' : token.symbol} &`)
         setRewardTokens(r.slice(0, -1))
     }, [])
 

@@ -277,7 +277,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const [rewardTokens, setRewardTokens] = useState("")
   useEffect(() => {
     let r = ''
-    props.farm?.earningToken.forEach((token) => r += ` ${token.symbol} &`)
+    props.farm?.earningToken.forEach((token) => r += ` ${token.symbol === 'MOVR' ? 'wMOVR' : token.symbol} &`)
     setRewardTokens(r.slice(0, -1))
   }, [])
   const [hoverRisk, setHoverRisk] = useState(false)
@@ -355,7 +355,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                       <Flex style={{alignItems: 'center'}}>
                         <>
                         {!account ? (
-                        <Text style={{width: '50%'}} color={'#4e7455'}>
+                        <Text style={{width: '70%'}} color={'#4e7455'}>
                           {`Earn${rewardTokens.slice(0, -1)}`}
                         </Text>
                         ) : (

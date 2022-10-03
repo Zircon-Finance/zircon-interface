@@ -206,7 +206,7 @@ export const RewardPerBlock = ({ tokens, vaultAddress, sousId }: { tokens: any[]
     {rewardBlocksPerYear && tokens[0] !== undefined && tokens.map((token, index) => (
       <Text fontSize='13px' fontWeight={500} color={'#4e7455'}>
         {rewardBlocksPerYear[index].toFixed(0) !== 'NaN' ?
-          `~ ${rewardBlocksPerYear[index].toFixed(0)}  ${token.symbol}` :
+          `~ ${rewardBlocksPerYear[index].toFixed(0)}  ${token.symbol === 'MOVR' ? 'wMOVR' : token.symbol}` :
           'Loading...'
           }
       </Text>
@@ -284,7 +284,7 @@ const Farms: React.FC = ({ children }) => {
             },
             'desc',
         )
-      case 'totalStaked': {
+      case 'staked': {
         return orderBy(
             poolsToSort,
             (pool: DeserializedPool) => {
@@ -606,6 +606,10 @@ const Farms: React.FC = ({ children }) => {
                       {
                         label: t("Earned"),
                         value: "earned",
+                      },
+                      {
+                        label: t("Staked"),
+                        value: "staked",
                       },
                     ]}
                     onOptionChange={(option) => setSortOption(option.value)}

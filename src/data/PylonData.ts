@@ -63,7 +63,7 @@ export function usePylonInfo(address?: string): (any)[] | undefined {
 export function usePylonConstants(): PylonFactory | undefined {
     const { chainId } = useActiveWeb3React()
 
-    const pylonFactoryContract = usePylonFactoryContract( PYLON_FACTORY_ADDRESS[chainId], false)
+    const pylonFactoryContract = usePylonFactoryContract(PYLON_FACTORY_ADDRESS[chainId], false)
     const factoryContract = usePairFactoryContract(FACTORY_ADDRESS[chainId], false)
     const energyFactoryContract = useEnergyFactoryContract(EN_FACTORY_ADDRESS[chainId], false)
 

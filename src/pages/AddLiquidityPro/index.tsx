@@ -410,7 +410,7 @@ export default function AddLiquidityPro({
               chainId
           )?.address ?? "", // token
           DEV === currencies[Field.CURRENCY_A], // second option is anchor so it should mint anchor when float.currency a is equal to b
-          '0', //liquidityMin.toString(),
+          liquidityMin.toString(),
           account,
           stake ? contractAddress : AddressZero,
           deadlineFromNow,
@@ -433,7 +433,7 @@ export default function AddLiquidityPro({
                   ? parsedAmountA
                   : parsedAmountB
           ).raw.toString(),
-          '0', //liquidityMin.toString(),
+          liquidityMin.toString(),
           !isFloat,
           account,
           stake ? contractAddress : AddressZero,

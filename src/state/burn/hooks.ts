@@ -77,6 +77,7 @@ export function useDerivedBurnInfo(
   }
 
   let percentToRemove: Percent = new Percent('0', '100')
+  console.log("percent", percentToRemove.toString())
   // user specified a %
   if (independentField === Field.LIQUIDITY_PERCENT) {
     percentToRemove = new Percent(typedValue, '100')
@@ -159,6 +160,9 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
   }else{
     try{
       if(isSync) {
+        console.log("burn::", totalSupply.raw.toString(), ptTotalSupply.raw.toString(), userLiquidity.raw.toString(),
+            pylonInfo[0].toString(), pylonInfo[1].toString(), pylonInfo[2].toString(), pylonPoolBalance.raw.toString(), pylonInfo[3].toString(), BigInt(blockNumber), pylonConstants,
+            pylonInfo[4].toString(), pylonInfo[5].toString(), pylonInfo[6].toString(), pylonInfo[7].toString(), pylonInfo[8].toString(), pylonInfo[9].toString(), BigInt(lastK))
         if(JSBI.greaterThanOrEqual(ptTotalSupply.raw, userLiquidity.raw)) {
           let burnInfo = isFloat ?
               pylon.burnFloat(totalSupply, ptTotalSupply, userLiquidity,
@@ -198,7 +202,8 @@ export function useDerivedPylonBurnInfo(
     currencyA: Currency | undefined,
     currencyB: Currency | undefined,
     isFloat: boolean,
-    isSync: boolean
+    isSync: boolean,
+    percentage?: string
 ): {
   pylon?: Pylon | null
   parsedAmounts: {
@@ -286,30 +291,6 @@ export function useDerivedPylonBurnInfo(
 
   }, [pylonInfo, pylon, ptbEnergy, reserveAnchor, pylonPoolBalance, totalSupply, lastK, pylonConstants])
 
-  // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
-
-
-
-  // const liquidityValueA =
-  //     pylon &&
-  //     totalSupply &&
-  //     userLiquidity &&
-  //     tokenA &&
-  //     // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
-  //     JSBI.greaterThanOrEqual(totalSupply.raw, userLiquidity.raw)
-  //         ? new TokenAmount(tokenA, pair.getLiquidityValue(tokenA, totalSupply, userLiquidity, false).raw)
-  //         : undefined
-  //
-  // const liquidityValueB =
-  //     pylon &&
-  //     totalSupply &&
-  //     userLiquidity &&
-  //     tokenB &&
-  //     // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
-  //     JSBI.greaterThanOrEqual(totalSupply.raw, userLiquidity.raw)
-  //         ? new TokenAmount(tokenB, pair.getLiquidityValue(tokenB, totalSupply, userLiquidity, false).raw)
-  //         : undefined
-
   const liquidityValues: { [Field.CURRENCY_A]?: TokenAmount; [Field.CURRENCY_B]?: TokenAmount } = {
     [Field.CURRENCY_A]: liquidityValueA,
     [Field.CURRENCY_B]: liquidityValueB
@@ -318,7 +299,12 @@ export function useDerivedPylonBurnInfo(
   let percentToRemove: Percent = new Percent('0', '100')
   // user specified a %
   if (independentField === Field.LIQUIDITY_PERCENT) {
-    percentToRemove = new Percent(typedValue, '100')
+    if(!percentage){
+      percentToRemove = new Percent(typedValue, '100')
+    }else{
+      percentToRemove = new Percent(percentage, '100')
+    }
+
   }
   // user specified a specific amount of liquidity tokens
   else if (independentField === Field.LIQUIDITY) {
@@ -380,7 +366,6 @@ export function useDerivedPylonBurnInfoFixedPercentage(
     isFloat: boolean,
     isSync: boolean,
     percentage: string,
-    field: Field,
     balance: any,
 ): {
   pylon?: Pylon | null
@@ -403,6 +388,7 @@ export function useDerivedPylonBurnInfoFixedPercentage(
     asyncBlocked?: boolean;
     liquidity?: [TokenAmount, TokenAmount];
   }
+  healthFactor?: string
 } {
   const { account, chainId } = useActiveWeb3React()
 
@@ -460,6 +446,33 @@ export function useDerivedPylonBurnInfoFixedPercentage(
             ? new TokenAmount(tokenB, percentToRemove.multiply(liquidityValueB.raw).quotient)
             : undefined
   }
+  // Getting energy constants for health factor calculation
+  const energyAddress = Pylon.getEnergyAddress(pylon?.token0, pylon?.token1) //useEnergyAddress(pylonPair?.token0, pylonPair?.token1)
+  const ptbEnergy = useTokenBalance(energyAddress, pylon?.pair.liquidityToken)
+  const reserveAnchor = useTokenBalance(energyAddress, pylon?.anchorLiquidityToken)
+
+
+  const healthFactor = useMemo(() => {
+    if (pylonInfo && pylon  && pylonInfo[0] && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && lastK && pylonConstants) {
+      return pylon.getHealthFactor(
+          pylonInfo[0],
+          pylonPoolBalance,
+          totalSupply,
+          reserveAnchor.raw,
+          ptbEnergy.raw,
+          pylonInfo[9],
+          pylonInfo[1],
+          pylonInfo[7],
+          pylonInfo[8],
+          JSBI.BigInt(lastK),
+          pylonConstants
+      ).toString();
+    }else{
+      return undefined
+    }
+
+  }, [pylonInfo, pylon, ptbEnergy, reserveAnchor, pylonPoolBalance, totalSupply, lastK, pylonConstants])
+
 
   let error: string | undefined
   if (!account) {
@@ -470,7 +483,7 @@ export function useDerivedPylonBurnInfoFixedPercentage(
     error = error ?? 'Enter an amount'
   }
 
-  return { pylon, parsedAmounts, error, burnInfo }
+  return { pylon, parsedAmounts, error, burnInfo, healthFactor }
 }
 
 export function useBurnActionHandlers(): {

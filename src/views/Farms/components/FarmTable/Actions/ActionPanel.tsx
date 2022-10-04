@@ -407,7 +407,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                     {!account ?  <Text color={theme.text1}>{`Earn${rewardTokens}`}</Text> :
                       <Flex flexDirection={'column'} style={{width: '100%'}}>
                         <Text color={theme.text1} style={{minWidth: 'max-content', fontSize: '14px'}} fontWeight={400}>{'Monthly rewards:'}</Text>
-                        <RewardPerBlock tokens={pool.earningToken} sousId={pool.sousId} vaultAddress={pool.vaultAddress} />
+                        <RewardPerBlock tokens={pool.earningToken} sousId={pool.sousId} rewardsData={pool.rewardsData} />
                       </Flex>
                       }
                       <div style={{width: '50%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
@@ -455,7 +455,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                   <SpaceBetween style={{marginBottom: '16px'}}>
                     <Text color={theme.whiteHalf} style={{minWidth: 'max-content', fontSize: '14px'}} fontWeight={400}>{'Monthly rewards:'}</Text>
                     <Flex flexDirection={"column"}>
-                    <RewardPerBlock tokens={pool.earningToken} sousId={pool.sousId} vaultAddress={pool.vaultAddress} />
+                    <RewardPerBlock tokens={pool.earningToken} sousId={pool.sousId} rewardsData={pool.rewardsData} />
                     </Flex>
                   </SpaceBetween>
               )}

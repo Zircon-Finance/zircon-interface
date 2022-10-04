@@ -33,8 +33,13 @@ import { DeserializedPool, DeserializedPoolVault } from '../../state/types'
 import orderBy from 'lodash/orderBy'
 import { formatUnits } from 'ethers/lib/utils'
 import {getPoolAprAddress } from '../../utils/apr'
-import { useVaultTokens } from '../../state/mint/pylonHooks'
 import { ButtonLighter } from '../../components/Button'
+
+interface Props {
+  tokens: any[]
+  rewardsData?: string[]
+  sousId: number
+}
 
 const FlexLayout = styled.div`
   display: flex;
@@ -191,24 +196,24 @@ export const getDisplayApr = (cakeRewardsApr?: number, lpRewardsApr?: number) =>
   return null
 }
 
-export const RewardPerBlock = ({ tokens, vaultAddress, sousId }: { tokens: any[], vaultAddress: string, sousId: number }) => {
+export const RewardPerBlock: React.FC<Props> = ({ tokens, sousId, rewardsData=['Loading...', 'Loading...'] }) => {
   const [startBlock, setStartBlock] = useState(0)
   const [endBlock, setEndBlock] = useState(0)
   const [currentBlock, setCurrentBlock] = useState(0)
   useStartBlock(sousId).then((block?) => setStartBlock(block))
   useEndBlock(sousId).then((block?) => setEndBlock(block))
   useCurrentBlock().then((block?) => setCurrentBlock(block))
-  const tokenBalances = useVaultTokens(vaultAddress, tokens)
   const blocksLeft = endBlock - Math.max(currentBlock, startBlock)
-  const rewardBlocksPerYear = tokens.map((token, index) => (parseFloat((tokenBalances[index]?.toFixed(6)))/blocksLeft)*6400*30)
+  const rewardBlocksPerYear = tokens.map((token, index) => rewardsData[index] !== undefined && 
+  (((parseFloat((rewardsData[index])))/Math.pow(10, token.decimals))/blocksLeft)*6400*30)
   return(
     <>
     {rewardBlocksPerYear && tokens[0] !== undefined && tokens.map((token, index) => (
-      <Text fontSize='13px' fontWeight={500} color={'#4e7455'}>
-        {rewardBlocksPerYear[index].toFixed(0) !== 'NaN' ?
-          `~ ${rewardBlocksPerYear[index].toFixed(0)}  ${token.symbol}` :
+      <Text fontSize='13px' fontWeight={500} color={'#4e7455'} key={token}>
+        {(rewardBlocksPerYear[index].toFixed(0) !== 'NaN' && rewardBlocksPerYear[index].toFixed(0) !== 'Infinity') ?
+          `~ ${rewardBlocksPerYear[index].toFixed(0)}  ${token.symbol === 'MOVR' ? 'wMOVR' : token.symbol}` :
           'Loading...'
-          }
+        }
       </Text>
     ))}
     </>
@@ -284,7 +289,7 @@ const Farms: React.FC = ({ children }) => {
             },
             'desc',
         )
-      case 'totalStaked': {
+      case 'staked': {
         return orderBy(
             poolsToSort,
             (pool: DeserializedPool) => {
@@ -606,6 +611,10 @@ const Farms: React.FC = ({ children }) => {
                       {
                         label: t("Earned"),
                         value: "earned",
+                      },
+                      {
+                        label: t("Staked"),
+                        value: "staked",
                       },
                     ]}
                     onOptionChange={(option) => setSortOption(option.value)}

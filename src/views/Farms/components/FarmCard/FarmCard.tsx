@@ -134,6 +134,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
           healthFactor={healthFactor}
           sousId={farm.sousId}
           vaultAddress={farm.vaultAddress}
+          rewardsData={farm.rewardsData}
         />
         {farm.userData.stakedBalance.gt(0) || !isApproved ? (
           <CardActionsContainer

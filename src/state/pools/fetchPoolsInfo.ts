@@ -40,20 +40,6 @@ const fetchPools = async (poolsToFetch: SerializedPoolConfig[]): Promise<Seriali
         const staked = pool.isAnchor ? new BigNumber(virtualAnchorBalance).multipliedBy(lpTokenRatio).dividedBy(BIG_TEN.pow(quoteTokenDecimals)) : floatStaked;
 
         console.log("staked", staked.toString(), stakedFL.toString(), stakedSL.toString(), staked.toString())
-        // console.log("values::", pool.lpTotalInQuoteToken, pool.gamma, new BigNumber(pool.ptb.toString()), pool.lpTotalSupply)
-        // let liquidityBySDK = Pylon.calculateLiquidity(pool.gamma, JSBI.BigInt(new BigNumber(pool.lpTotalInQuoteToken.toString()).toString()),
-        //     JSBI.BigInt(new BigNumber(pool.ptb.toString()).toString()), JSBI.BigInt(new BigNumber(pool.lpTotalSupply.toString()).toString()))
-        // const { pool } = usePool(details.sousId)
-        // const balance = useTokenBalance(pool.vaultAddress, token)
-        // const blocksLeft = endBlock - Math.max(currentBlock, startBlock)
-        // // console.log("current", currentBlock)
-        // // console.log("start", startBlock)
-        // // console.log("end", endBlock)
-        // const rewardBlocksPerDay = (parseFloat((balance?.toFixed(6)))/blocksLeft)*6600
-
-
-        // const allocPoint = info ? new BigNumber(info.allocPoint?._hex) : BIG_ZERO
-        // const poolWeight = totalAllocPoint ? allocPoint.div(new BigNumber(totalAllocPoint)) : BIG_ZERO
         return {
             ...pool,
             token1: pool.token1,

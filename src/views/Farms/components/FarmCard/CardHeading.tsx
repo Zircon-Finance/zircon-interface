@@ -118,7 +118,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
                       marginRight: "3px",
                     }}
                   >
-                    {token.symbol}{" "}
+                    {!isAnchor ? token.symbol : quoteToken.symbol}{" "}
                   </span>
                   {isClassic ? "CLASSIC" : isAnchor ? "STABLE" : "FLOAT"}
                 </BadgeSmall>

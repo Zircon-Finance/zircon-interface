@@ -29,6 +29,7 @@ export interface ExpandableSectionProps {
     healthFactor: string;
     sousId: number;
     vaultAddress: string;
+    rewardsData: string[];
 }
 
 interface ToolTipProps {
@@ -51,6 +52,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
                                                            healthFactor,
                                                            sousId,
                                                            vaultAddress,
+                                                           rewardsData,
                                                        }) => {
     const theme = useTheme();
     // const risk = gamma && (gamma.isLessThanOrEqualTo(0.7) || gamma.isGreaterThanOrEqualTo(0.5))
@@ -118,7 +120,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
                       marginRight: "3px",
                     }}
                   >
-                    {!isAnchor ? token.symbol : quoteToken.symbol}{" "}
+                    {token.symbol}{" "}
                   </span>
                   {isClassic ? "CLASSIC" : isAnchor ? "STABLE" : "FLOAT"}
                 </BadgeSmall>
@@ -199,7 +201,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
                   <Flex flexDirection={width >= 700 ? 'column' : 'row'} style={{textAlign: 'right', width: '60%',
                   display: width <= 700 && 'flex',
                   justifyContent: width <= 700 && 'flex-end'}}>
-                  <RewardPerBlock tokens={earningToken} sousId={sousId} vaultAddress={vaultAddress} />
+                  <RewardPerBlock tokens={earningToken} sousId={sousId} rewardsData={rewardsData} />
                   </Flex>
                 </Flex>
                 )}

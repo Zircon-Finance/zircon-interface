@@ -283,6 +283,7 @@ export default function RemoveProLiquidity({
             account,
             deadlineFromNow
           ]
+          console.log("args", args)
         }
         // removeLiquidity
         else {

@@ -98,7 +98,9 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
                 <Flex style={{marginLeft: '5px', marginBottom: '7px'}}>
                     {`${currentBalance.toFixed(6)} ${token.symbol === 'MOVR' ? 'wMOVR' : token.symbol}`}
                 </Flex>
-                <Balance ml={'5px'} textAlign={'left'} fontSize="12px" color={theme.whiteHalf} decimals={2} unit="" value={currentPrice} prefix=" ~ $" />
+                <Text color={theme.whiteHalf} ml={'5px'} textAlign={'left'} fontSize="12px">
+                    {`~ ${currentPrice?.toFixed(2)} USD`}
+                </Text>
             </>
         )
     }
@@ -112,7 +114,9 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
                         </Text>
                          {/*<Heading color={theme.text1} style={{margin: '8px 0', fontWeight: '400', fontSize: '24px'}}>{displayBalance}</Heading>*/}
                         {earningsBusd > 0 && (
-                            <Balance fontSize="12px" color={theme.whiteHalf} decimals={2} value={earningsBusd} unit=" USD" prefix="~" marginLeft={2}/>
+                            <Text color={theme.whiteHalf} ml={'5px'} textAlign={'left'} fontSize="12px">
+                                {`~ ${earningsBusd?.toFixed(2)} USD`}
+                            </Text>
                         )}
                     </div>
                     <HarvestButton

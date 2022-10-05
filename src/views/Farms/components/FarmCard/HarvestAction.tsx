@@ -66,8 +66,8 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, u
         setRewardTokens(r.slice(0, -1))
     }, [])
     const TokenRow = ({ token, index }: { token: Token; index: number }) => {
-        let currentBalance = earningTokenCurrentBalance ? getBalanceAmount(earningsBigNumber.times(earningTokenCurrentBalance[index])) : 0
-        let currentPrice = earningTokenCurrentPrice ? getBalanceAmount(earningsBigNumber.times(earningTokenCurrentPrice[index])) : 0
+        let currentBalance = getBalanceAmount(earningsBigNumber.times(earningTokenCurrentBalance[index]))
+        let currentPrice = getBalanceAmount(earningsBigNumber.times(earningTokenCurrentPrice[index]))
         return (
             <Flex justifyContent={'space-between'} style={{borderBottom: '1px solid rgba(255,255,255,0.1)', padding: '10px 0', alignItems: 'center'}}>
                 <Flex>
@@ -76,7 +76,9 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, u
                         {`${currentBalance?.toFixed(6)} ${token.symbol}`}
                     </Text>
                 </Flex>
-                <Balance fontSize="13px" color={theme.whiteHalf} decimals={2} value={currentPrice} unit=" USD" prefix="~" />
+                <Text fontSize="13px" color={theme.whiteHalf}>
+                    {`~ ${currentPrice?.toFixed(2)} USD`}
+                </Text>
             </Flex>
         )
     }
@@ -89,7 +91,9 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, u
                 <Flex style={{marginLeft: '5px', marginBottom: '7px', color: theme.text1}}>
                     {`${currentBalance.toFixed(6)} ${token.symbol === 'MOVR' ? 'wMOVR' : token.symbol}`}
                 </Flex>
-                <Balance ml={'5px'} textAlign={'left'} fontSize="12px" color={theme.whiteHalf} decimals={2} unit="" value={currentPrice} prefix=" ~ $" />
+                <Text color={theme.whiteHalf} ml={'5px'} textAlign={'left'} fontSize="12px">
+                    {`~ ${currentPrice?.toFixed(2)} USD`}
+                </Text>
             </>
         )
     }

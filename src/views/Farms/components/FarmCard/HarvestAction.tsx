@@ -66,8 +66,8 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, u
         setRewardTokens(r.slice(0, -1))
     }, [])
     const TokenRow = ({ token, index }: { token: Token; index: number }) => {
-        let currentBalance = getBalanceAmount(earningsBigNumber.times(earningTokenCurrentBalance[index]))
-        let currentPrice = getBalanceAmount(earningsBigNumber.times(earningTokenCurrentPrice[index]))
+        let currentBalance = earningTokenCurrentBalance ? getBalanceAmount(earningsBigNumber.times(earningTokenCurrentBalance[index])) : 0
+        let currentPrice = earningTokenCurrentPrice ? getBalanceAmount(earningsBigNumber.times(earningTokenCurrentPrice[index])) : 0
         return (
             <Flex justifyContent={'space-between'} style={{borderBottom: '1px solid rgba(255,255,255,0.1)', padding: '10px 0', alignItems: 'center'}}>
                 <Flex>

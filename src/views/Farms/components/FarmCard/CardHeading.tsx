@@ -19,6 +19,7 @@ import { RewardPerBlock } from "../../Farms";
 export interface ExpandableSectionProps {
     lpLabel?: string;
     multiplier?: string;
+    isFinished: boolean;
     isCommunityFarm?: boolean;
     token: SerializedToken;
     quoteToken: SerializedToken;
@@ -45,6 +46,7 @@ const Wrapper = styled(Flex)`
 const CardHeading: React.FC<ExpandableSectionProps> = ({
                                                            isClassic,
                                                            isAnchor,
+                                                           isFinished,
                                                            earningToken,
                                                            token,
                                                            quoteToken,
@@ -76,8 +78,6 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
         </ToolTip>
     )}
     const {width} = useWindowDimensions()
-
-    console.log('PARAMS: ', vaultAddress, sousId, earningToken)
     return (
       <div
         style={{ padding: "10px", color: theme.text1 }}
@@ -160,7 +160,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
               }}
             >{`Earn ${rewardTokens}`}</Text>
           </Flex>
-          <Flex
+          {!isFinished && <Flex
             flexDirection={"column"}
             justifyContent={"space-between"}
             height={60}
@@ -191,20 +191,20 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
                 <QuestionMarkIcon />
               </QuestionMarkContainer>
             </div>
-          </Flex>
+          </Flex>}
         </SpaceBetween>
         ) : (
-                <Flex flexDirection={'row'} style={{marginBottom: width <= 500 ? '20px' : earningToken.length === 1 && '17px'}}>
-                  <Text fontSize='13px' fontWeight={500} color={4e7455} style={{width: '45%'}}>
-                    {'Monthly Rewards:'}
-                  </Text>
-                  <Flex flexDirection={width >= 700 ? 'column' : 'row'} style={{textAlign: 'right', width: '60%',
-                  display: width <= 700 && 'flex',
-                  justifyContent: width <= 700 && 'flex-end'}}>
-                  <RewardPerBlock tokens={earningToken} sousId={sousId} rewardsData={rewardsData} />
-                  </Flex>
-                </Flex>
-                )}
+            !isFinished && <Flex flexDirection={'row'} style={{marginBottom: width <= 500 ? '20px' : earningToken.length === 1 && '17px'}}>
+              <Text fontSize='13px' fontWeight={500} color={4e7455} style={{width: '45%'}}>
+                {'Monthly Rewards:'}
+              </Text>
+              <Flex flexDirection={width >= 700 ? 'column' : 'row'} style={{textAlign: 'right', width: '60%',
+              display: width <= 700 && 'flex',
+              justifyContent: width <= 700 && 'flex-end'}}>
+              <RewardPerBlock tokens={earningToken} sousId={sousId} rewardsData={rewardsData} />
+              </Flex>
+            </Flex>
+            )}
       </div>
     );
 };

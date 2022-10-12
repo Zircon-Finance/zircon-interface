@@ -305,8 +305,8 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                   <TableData key={key} style={{width: gamma ? '15%' : '12%'}}>
                     <CellInner>
                       <CellLayout>
-                      <div style={{width: '200%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
-                            <CapacityIndicatorSmall gamma={gammaAdjusted} health={healthFactor} isFloat={!props.farm.isAnchor} noSpan={false}
+                        <div style={{width: '200%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
+                            {!props.farm.isFinished && <><CapacityIndicatorSmall gamma={gammaAdjusted} health={healthFactor} isFloat={!props.farm.isAnchor} noSpan={false}
                             hoverPage={'farmRow'}/>
                             <QuestionMarkContainer
                               onMouseEnter={() => setHoverRisk(true)}
@@ -315,8 +315,8 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                                 <TooltipContentRisk option={!props.farm.isAnchor ? 'divergence' : 'health'} />
                               )}
                             <QuestionMarkIcon />
-                            </QuestionMarkContainer>
-                            </div>
+                            </QuestionMarkContainer></>}
+                        </div>
                         <Details actionPanelToggled={actionPanelExpanded} />
                       </CellLayout>
                     </CellInner>
@@ -361,6 +361,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                           {`Earn${rewardTokens.slice(0, -1)}`}
                         </Text>
                         ) : (
+                        !props.farm.isFinished &&
                         <Flex flexDirection={'column'}>
                           <Text fontSize='13px' fontWeight={500} color={4e7455} marginBottom={2}>
                             {'Monthly Rewards:'}
@@ -384,9 +385,9 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                           {createElement(cells[key], { ...props[key], hovered, setHovered })}
                         </CellLayout>
                       </CellInner>) : (
-                      <StakeAdd row={true} margin={true} width={'60%'} height={'34px'} />)
+                      <StakeAdd row={true} margin={true} width={'60%'} height={'34px'} isFinished={props.farm.isFinished} />)
                     : (
-                      <ButtonPinkGamma style={{width: '80%', fontSize: '13px', padding: '0 15px', borderRadius: '12px', height: '34px'}} disabled={pendingTx}
+                      <ButtonPinkGamma style={{width: '80%', fontSize: '13px', padding: '0 15px', borderRadius: '12px', height: '34px'}} disabled={pendingTx || props.farm.isFinished}
                       onClick={handleApproval}>{pendingTx ? 'Enabling...' : 'Enable contract'}</ButtonPinkGamma>)) : (
                         <ButtonPinkGamma style={{width: '80%', fontSize: '13px', padding: '0 15px', borderRadius: '12px', height: '34px'}}
                     onClick={toggleWalletModal}>{'Connect wallet'}</ButtonPinkGamma>)}
@@ -444,7 +445,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                       </Flex>
                     </ButtonPinkGamma>
                   )) : (
-                    <ButtonPinkGamma style={{fontSize: '13px', padding: '10px', borderRadius: '12px', height: '34px'}} disabled={pendingTx}
+                    <ButtonPinkGamma style={{fontSize: '13px', padding: '10px', borderRadius: '12px', height: '34px'}} disabled={pendingTx || props.farm.isFinished}
                     onClick={handleApproval}>{pendingTx ? 'Enabling...' : 'Enable contract'}</ButtonPinkGamma>
                   )) : (
                     <ButtonPinkGamma style={{fontSize: '13px', padding: '10px', borderRadius: '12px', height: '34px'}}

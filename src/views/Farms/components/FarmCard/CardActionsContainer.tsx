@@ -21,7 +21,7 @@ import { usePools } from '../../../../state/pools/hooks'
 
 const Action = styled.div`
   padding: 0px;
-  min-height: 270px;
+  min-height: 245px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -121,7 +121,7 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
           <StakeAction {...farm} lpLabel={lpLabel} addLiquidityUrl={addLiquidityUrl} displayApr={displayApr} />
         </ActionContainer>
     ) : (
-      <ButtonPinkGamma width="100%" disabled={pendingTx} onClick={account ? handleApproval : toggleWalletModal}>
+      <ButtonPinkGamma width="100%" disabled={pendingTx || farm.isFinished} onClick={account ? handleApproval : toggleWalletModal}>
         {account ? 'Enable Contract' : 'Connect Wallet'}
       </ButtonPinkGamma>
     )

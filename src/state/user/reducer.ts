@@ -22,7 +22,9 @@ import {
   updateuserFarmsFilterAnchorFloat,
   FarmFilterAnchorFloat,
   updateGasPrice,
-  updateShowMobileSearchBar
+  updateShowMobileSearchBar,
+  updateUserFarmFinishedOnly,
+  FarmFinishedOnly
 } from './actions'
 import { GAS_PRICE_GWEI } from '../../utils/getGasPrice'
 
@@ -62,6 +64,7 @@ export interface UserState {
   userFarmsViewMode: ViewMode
   userFarmsFilterPylonClassic: FarmFilter
   userFarmsFilterAnchorFloat: FarmFilterAnchorFloat
+  userFarmFinishedOnly: FarmFinishedOnly
   gasPrice: string
 }
 
@@ -82,6 +85,7 @@ export const initialState: UserState = {
   userFarmsViewMode: ViewMode.TABLE,
   userFarmsFilterPylonClassic: FarmFilter.PYLON,
   userFarmsFilterAnchorFloat: FarmFilterAnchorFloat.ALL,
+  userFarmFinishedOnly: FarmFinishedOnly.FALSE,
   gasPrice: GAS_PRICE_GWEI.default,
   showMobileSearchBar: false
 }
@@ -131,6 +135,9 @@ export default createReducer(initialState, builder =>
     })
     .addCase(updateUserFarmStakedOnly, (state, { payload: { userFarmStakedOnly } }) => {
       state.userFarmStakedOnly = userFarmStakedOnly
+    })
+    .addCase(updateUserFarmFinishedOnly, (state, { payload: { userFarmFinishedOnly } }) => {
+      state.userFarmFinishedOnly = userFarmFinishedOnly
     })
     .addCase(updateuserFarmsFilterAnchorFloat, (state, { payload: { userFarmsFilterAnchorFloat } }) => {
       state.userFarmsFilterAnchorFloat = userFarmsFilterAnchorFloat

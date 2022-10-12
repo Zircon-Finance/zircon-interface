@@ -11,10 +11,11 @@ import { usePriceCakeBusd } from '../../state/farms/hooks'
 import useIntersectionObserver from '../../hooks/useIntersectionObserver'
 import { useTranslation } from 'react-i18next'
 import {getBalanceNumber, getBalanceUSD} from '../../utils/formatBalance'
-import { useIsDarkMode, useShowMobileSearchBarManager, useUserFarmsFilterAnchorFloat, useUserFarmsFilterPylonClassic, useUserFarmStakedOnly, useUserFarmsViewMode } from '../../state/user/hooks'
+import { useIsDarkMode, useShowMobileSearchBarManager, useUserFarmsFilterAnchorFloat, useUserFarmsFilterPylonClassic, useUserFarmsFinishedOnly, useUserFarmStakedOnly, useUserFarmsViewMode } from '../../state/user/hooks'
 import {
   FarmFilter,
   FarmFilterAnchorFloat,
+  FarmFinishedOnly,
   ViewMode } from '../../state/user/actions'
 import SearchInput from '../../components/SearchInput'
 import Table from './components/FarmTable/FarmTable'
@@ -22,7 +23,7 @@ import { RowProps } from './components/FarmTable/Row'
 import { DesktopColumnSchema,
   // FarmWithStakedValue
 } from './components/types'
-import { AnchorFloatTab, PylonClassicTab, ViewModeTabs } from '../../components/FarmSelectTabs'
+import { AnchorFloatTab, FarmTabButtons, PylonClassicTab, ViewModeTabs } from '../../components/FarmSelectTabs'
 import FarmRepeatIcon from '../../components/FarmRepeatIcon'
 import FarmsPage from '../../pages/Farm/'
 import Select from '../../components/Select/Select'
@@ -221,7 +222,6 @@ export const RewardPerBlock: React.FC<Props> = ({ tokens, sousId, rewardsData=['
 }
 
 const Farms: React.FC = ({ children }) => {
-  const { pathname } = window.location
   const { t } = useTranslation()
   const theme = useTheme()
   const { pools, userDataLoaded } = usePools()
@@ -232,6 +232,7 @@ const Farms: React.FC = ({ children }) => {
   const [viewMode] = useUserFarmsViewMode()
   const [filter] = useUserFarmsFilterPylonClassic()
   const [filterAnchorFloat] = useUserFarmsFilterAnchorFloat()
+  const [filtedFinishedOnly] = useUserFarmsFinishedOnly()
   const { account } = useWeb3React()
   const [sortOption, setSortOption] = useState('hot')
   const { observerRef,
@@ -240,9 +241,8 @@ const Farms: React.FC = ({ children }) => {
   const chosenFarmsLength = useRef(0)
   const { width } = useWindowDimensions()
 
-  const isArchived = pathname.includes('archived')
-  const isInactive = pathname.includes('history')
-  const isActive = !isInactive && !isArchived
+  const isInactive = filtedFinishedOnly === FarmFinishedOnly.TRUE
+  const isActive = !filtedFinishedOnly
 
   usePoolsPageFetch()
   if(account) {
@@ -257,7 +257,8 @@ const Farms: React.FC = ({ children }) => {
 
   const [stakedOnly, setStakedOnly] = useUserFarmStakedOnly(isActive)
 
-  let activeFarms = pools
+  let activeFarms = pools.filter((farm) => !farm.isFinished)
+  let inactiveFarms = pools.filter((farm) => farm.isFinished)
 
   const stakedOnlyFarms = activeFarms.filter(
       (farm) => farm.userData && new BigNumber(farm.userData.stakedBalance).gt(0),
@@ -335,6 +336,10 @@ const Farms: React.FC = ({ children }) => {
           pool.token2.symbol.toLowerCase().includes(lowercaseQuery))
     }
 
+    if (isInactive) {
+      sortedPools = inactiveFarms
+    }
+
     sortedPools =
         filterAnchorFloat === FarmFilterAnchorFloat.ANCHOR ?
             sortedPools.filter((pool) => pool.isAnchor === true) :
@@ -381,6 +386,7 @@ const Farms: React.FC = ({ children }) => {
         quoteToken: farm.token2,
         isAnchor: farm.isAnchor,
         isClassic: farm.isClassic,
+        isFinished: farm.isFinished,
         // This will be the function to get the health of the farm
       },
       earned: {
@@ -504,7 +510,7 @@ const Farms: React.FC = ({ children }) => {
                     scale="sm"
                   />
                 </ToggleWrapper>
-                {/*<FarmTabButtons active='Active' />*/}
+                <FarmTabButtons active='Active' />
               </ViewControls>
             )}
             <FilterContainer>

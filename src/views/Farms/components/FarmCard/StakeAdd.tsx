@@ -12,9 +12,10 @@ interface StakeAddProps {
   disabled? : boolean
   pink? : boolean
   height? : string
+  isFinished: boolean
 }
 
-const StakeAdd : React.FC<StakeAddProps> = ({clickAction, row, margin, width, disabled, pink=false, height}) => {
+const StakeAdd : React.FC<StakeAddProps> = ({clickAction, row, margin, width, disabled, pink=false, height, isFinished}) => {
   const theme = useTheme()
   return (
     <div
@@ -26,7 +27,7 @@ const StakeAdd : React.FC<StakeAddProps> = ({clickAction, row, margin, width, di
       onClick={clickAction}
     >
       <ButtonPinkGamma
-        disabled={disabled}
+        disabled={disabled || isFinished}
         onClick={clickAction}
         style={{
           background: pink && theme.pinkGamma,

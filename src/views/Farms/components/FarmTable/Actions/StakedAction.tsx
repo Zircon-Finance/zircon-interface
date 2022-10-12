@@ -249,7 +249,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
                 style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%'}}
                 variant="tertiary"
                 onClick={()=>{setshowModalDeposit(true)}}
-                disabled={['history', 'archived'].some((item) => window.location.pathname.includes(item))}
+                disabled={pool.isFinished}
               >
                 <Flex>
                   <PlusIcon />

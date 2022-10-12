@@ -40,6 +40,7 @@ const IconButtonWrapper = styled.div`
 const StakeAction: React.FC<FarmCardActionsProps> = ({
   isAnchor,
   isClassic,
+  isFinished,
   token1,
   token2,
   earningToken,
@@ -127,7 +128,7 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
 
   const renderStakingButtons = () => {
     return stakedBalance.eq(0) ? (
-      <StakeAdd row={true} />
+      <StakeAdd row={true} isFinished={isFinished} />
     ) : (
       <IconButtonWrapper>
         <IconButton
@@ -139,7 +140,7 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
           style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
           variant="tertiary"
           onClick={()=>setShowModalDeposit(true)}
-          disabled={['history', 'archived'].some((item) => window.location.pathname.includes(item))}
+          disabled={pool.isFinished}
         >
           <PlusIcon/>
         </IconButton>

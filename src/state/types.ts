@@ -83,9 +83,9 @@ interface CorePoolProps {
 export interface DeserializedPool extends DeserializedPoolConfig, CorePoolProps {
   totalStaked?: BigNumber
   staked: BigNumber
-  stakedFL: number
-  stakedSL: number
+  stakedBalancePool: number
   quotingPrice?: string
+  tokenPrice?: string
   stakingLimit?: BigNumber
   stakingLimitEndBlock?: number
   profileRequirement?: {
@@ -119,16 +119,17 @@ export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
   tokenPriceVsQuote?: SerializedBigNumber
   gamma?: SerializedBigNumber
   ptb?: SerializedBigNumber
-  quoteTokenBalanceLP?: SerializedBigNumber
+  quoteTokenBalanceTotal?: SerializedBigNumber
+  tokenBalanceTotal?: SerializedBigNumber
   lpTotalSupply?: SerializedBigNumber
   quotePrice?: SerializedBigNumber
   tokenPrice?: SerializedBigNumber
   lpTotalInQuoteToken?: SerializedBigNumber
   quoteTokenDecimals?: SerializedBigNumber
+  tokenDecimals?: SerializedBigNumber
   vaultTotalSupply?: SerializedBigNumber
   staked?: SerializedBigNumber
-  stakedFL?: SerializedBigNumber
-  stakedSL?: SerializedBigNumber
+  stakedBalancePool?: SerializedBigNumber
 }
 
 // Slices states
@@ -263,7 +264,7 @@ export interface State {
 
 export interface PoolsState {
   data: SerializedPool[]
-  // cakeVault: SerializedCakeVault
+  //cakeVault: SerializedCakeVault
   userDataLoaded: boolean
 }
 
@@ -271,6 +272,7 @@ export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
   totalStaked?: SerializedBigNumber
   stakingLimit?: SerializedBigNumber
   quotingPrice?: SerializedBigNumber
+  tokenPrice?: SerializedBigNumber
   numberBlocksForUserLimit?: number
   profileRequirement?: {
     required: boolean

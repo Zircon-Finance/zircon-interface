@@ -70,7 +70,7 @@ const DepositModal: React.FC<DepositModalProps> = ({
     const lpTokensToStake = new BigNumber(val)
     const fullBalanceNumber = new BigNumber(fullBalance)
 
-    const usdToStake = lpTokensToStake.times(pool?.isAnchor ? pool?.stakedSL : pool?.stakedFL).multipliedBy(pool?.quotingPrice)
+    const usdToStake = lpTokensToStake.times(pool?.stakedBalancePool).multipliedBy(pool?.quotingPrice)
     // console.log('Multiplying user input: ', lpTokensToStake?.toFixed(6),' by ZPT price: ',
     // pool?.isAnchor ? pool?.staked.toFixed(6) : pool?.stakedFL.toFixed(6), ' to get USD value: ', usdToStake.toFixed(6))
     const stakingTokenPrice = new BigNumber(pool.staked.toString()).multipliedBy(new BigNumber(pool?.quotingPrice)).toNumber()

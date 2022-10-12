@@ -26,8 +26,9 @@ interface StackedLPProps {
   percentage: string,
   field: Field,
   stakingToken: Token,
-  stakedFl: number,
-  stakedSl: number,
+  stakedBalancePool: number,
+  price?: string
+  staked: BigNumber
 }
 
 const StakedLP: React.FunctionComponent<StackedLPProps> = ({
@@ -42,11 +43,11 @@ const StakedLP: React.FunctionComponent<StackedLPProps> = ({
   tokenSymbol,
   percentage,
   field,
-  stakedFl,
-  stakedSl,
+    staked,
+                                                             stakedBalancePool,
+    price
 }) => {
   // const lpPrice = useLpTokenPrice(lpSymbol)
-  const theme = useTheme()
   const displayBalance = useCallback(() => {
     const stakedBalanceBigNumber = getBalanceAmount(stakedBalance)
     if (stakedBalanceBigNumber.gt(0) && stakedBalanceBigNumber.lt(0.0000001)) {
@@ -58,54 +59,20 @@ const StakedLP: React.FunctionComponent<StackedLPProps> = ({
     return stakedBalanceBigNumber.toFixed(3, BigNumber.ROUND_DOWN)
   }, [stakedBalance])
 
-
-  // const [currencyA, currencyB] = [useToken(token1.address) ?? undefined, useToken(token2.address) ?? undefined]
-
-  //calculate classic pair staked liquidity
-  // const percentagePair = parseFloat(stakedBalance.times(new BigNumber(100).div(max)).toFixed(3))
-  // const [,pair] = usePair(token1, token2)
-  // const [reserve0, reserve1] = [pair?.reserve0.toFixed(3), pair?.reserve1.toFixed(3)]
-  // const token1Reserve = parseFloat(reserve0)*percentagePair/100
-  // const token2Reserve = parseFloat(reserve1)*percentagePair/100
-  //
-  // //calculate pylon pair staked liquidity
-  // const { parsedAmounts } = useDerivedPylonBurnInfoFixedPercentage(
-  //   currencyA ?? undefined,
-  //   currencyB ?? undefined,
-  //   !isAnchor,
-  //   true,
-  //   percentage,
-  //   field,
-  //   stakedBalance,
-  // )
-
-  // const formattedAmounts = {
-  //   [Field.LIQUIDITY_PERCENT]: parsedAmounts[Field.LIQUIDITY_PERCENT].equalTo('0')
-  //       ? '0'
-  //       : parsedAmounts[Field.LIQUIDITY_PERCENT].lessThan(new Percent('1', '100'))
-  //           ? '<1'
-  //           : parsedAmounts[Field.LIQUIDITY_PERCENT].toFixed(0),
-  //   [Field.LIQUIDITY]:
-  //       parsedAmounts[Field.LIQUIDITY]?.toSignificant(3),
-  //   [Field.CURRENCY_A]:
-  //       parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
-  //   [Field.CURRENCY_B]:
-  //       parsedAmounts[Field.CURRENCY_B]?.toSignificant(3),
-  // }
-
+  const theme = useTheme()
 
   return (
     <Flex flexDirection="column" alignItems="flex-start">
-      <Heading style={{color: theme.text1, fontWeight: 400, fontSize: '24px'}}>{displayBalance()}</Heading>
+      <Heading style={{color: theme.text1, fontWeight: 400, fontSize: '24px'}}>{displayBalance() + " ZPT"}</Heading>
       {stakedBalance.gt(0) && !isClassic && (
         <>
           <Balance
             fontSize="12px"
             color={theme.whiteHalf}
             decimals={2}
-            value={parseFloat(displayBalance())*(isAnchor ? stakedFl : stakedSl)}
+            value={new BigNumber(stakedBalance).div(stakedBalancePool).multipliedBy(staked).multipliedBy(price)}
             unit=" USD"
-            prefix="~"
+            prefix="~ "
           />
           {/* <Flex style={{ gap: '4px' }}>
             <Balance

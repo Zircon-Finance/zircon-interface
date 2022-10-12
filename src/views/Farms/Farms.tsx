@@ -1,6 +1,7 @@
 import React, {
   // useEffect, useCallback,
-  useState, useRef, createContext, useMemo } from 'react'
+  useState, useRef, createContext, useMemo,
+} from 'react'
 import BigNumber from 'bignumber.js'
 import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber'
 import { useWeb3React } from '@web3-react/core'
@@ -204,7 +205,7 @@ export const RewardPerBlock: React.FC<Props> = ({ tokens, sousId, rewardsData=['
   useEndBlock(sousId).then((block?) => setEndBlock(block))
   useCurrentBlock().then((block?) => setCurrentBlock(block))
   const blocksLeft = endBlock - Math.max(currentBlock, startBlock)
-  const rewardBlocksPerYear = tokens.map((token, index) => rewardsData[index] !== undefined && 
+  const rewardBlocksPerYear = tokens.map((token, index) => rewardsData[index] !== undefined &&
   (((parseFloat((rewardsData[index])))/Math.pow(10, token.decimals))/blocksLeft)*6400*30)
   return(
     <>
@@ -397,7 +398,10 @@ const Farms: React.FC = ({ children }) => {
         farm: farm,
       },
       staked: {
-        staked: farm.userData.stakedBalance,
+        stakedBalance: farm.staked,
+        staked: farm.userData.stakedBalance ,
+        stakedBalancePool: farm.stakedBalancePool,
+        price: farm.quotingPrice,
         hovered: false,
         setHovered: () => {},
       },

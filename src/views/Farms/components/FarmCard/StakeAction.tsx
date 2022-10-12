@@ -38,18 +38,18 @@ const IconButtonWrapper = styled.div`
 `
 
 const StakeAction: React.FC<FarmCardActionsProps> = ({
-  isAnchor,
-  isClassic,
-  token1,
-  token2,
-  earningToken,
-  stakingToken,
-  sousId,
-  apr,
-  displayApr,
-  addLiquidityUrl,
-  lpLabel,
-}) => {
+                                                       isAnchor,
+                                                       isClassic,
+                                                       token1,
+                                                       token2,
+                                                       earningToken,
+                                                       stakingToken,
+                                                       sousId,
+                                                       apr,
+                                                       displayApr,
+                                                       addLiquidityUrl,
+                                                       lpLabel,
+                                                     }) => {
   const { onStake } = useStakeFarms(sousId)
   const { onUnstake } = useUnstakeFarms(sousId)
   const { pool } = usePool(sousId)
@@ -62,6 +62,7 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
   const [showModalDeposit, setShowModalDeposit] = useState(false)
   const [showModalWithdraw, setShowModalWithdraw] = useState(false)
   const addTransaction = useTransactionAdder()
+  // console.log("poool", pool.token1.symbol, pool.token2.symbol, pool.quotingPrice.toString(), pool.tokenPrice.toString())
 
   const handleStake = async (amount: string) => {
     const receipt = await fetchWithCatchTxError(() => {
@@ -75,14 +76,14 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
 
     if (receipt?.status) {
       addPopup(
-        {
-          txn: {
-            hash: receipt.transactionHash,
-            success: receipt.status === 1,
-            summary: 'Stake '+amount+' '+pool.token1.symbol+"-"+pool.token2.symbol+' LP to farm',
-          }
-        },
-        receipt.transactionHash
+          {
+            txn: {
+              hash: receipt.transactionHash,
+              success: receipt.status === 1,
+              summary: 'Stake '+amount+' '+pool.token1.symbol+"-"+pool.token2.symbol+' LP to farm',
+            }
+          },
+          receipt.transactionHash
       )
       dispatch(fetchPoolsUserDataAsync(account))
     }
@@ -99,14 +100,14 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
     })
     if (receipt?.status) {
       addPopup(
-        {
-          txn: {
-            hash: receipt.transactionHash,
-            success: receipt.status === 1,
-            summary: 'Unstake '+amount+' LP tokens from farm',
-          }
-        },
-        receipt.transactionHash
+          {
+            txn: {
+              hash: receipt.transactionHash,
+              success: receipt.status === 1,
+              summary: 'Unstake '+amount+' LP tokens from farm',
+            }
+          },
+          receipt.transactionHash
       )
       dispatch(fetchPoolsUserDataAsync(account))
     }
@@ -127,75 +128,77 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
 
   const renderStakingButtons = () => {
     return stakedBalance.eq(0) ? (
-      <StakeAdd row={true} />
+        <StakeAdd row={true} />
     ) : (
-      <IconButtonWrapper>
-        <IconButton
-        style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
-        variant="tertiary" onClick={()=>setShowModalWithdraw(true)} mr="6px">
-          <MinusIcon />
-        </IconButton>
-        <IconButton
-          style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
-          variant="tertiary"
-          onClick={()=>setShowModalDeposit(true)}
-          disabled={['history', 'archived'].some((item) => window.location.pathname.includes(item))}
-        >
-          <PlusIcon/>
-        </IconButton>
-      </IconButtonWrapper>
+        <IconButtonWrapper>
+          <IconButton
+              style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
+              variant="tertiary" onClick={()=>setShowModalWithdraw(true)} mr="6px">
+            <MinusIcon />
+          </IconButton>
+          <IconButton
+              style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
+              variant="tertiary"
+              onClick={()=>setShowModalDeposit(true)}
+              disabled={['history', 'archived'].some((item) => window.location.pathname.includes(item))}
+          >
+            <PlusIcon/>
+          </IconButton>
+        </IconButtonWrapper>
     )
   }
 
+
   return (
-    <>
+      <>
         {(showModalDeposit || showModalWithdraw) &&
-          <ModalContainer>
+        <ModalContainer>
 
-        {showModalDeposit &&
+          {showModalDeposit &&
           <DepositModal
-          max={tokenBalance}
-          lpLabel={lpLabel}
-          apr={apr}
-          onDismiss={() => setShowModalDeposit(false)}
-          displayApr={'111'}
-          stakedBalance={stakedBalance}
-          onConfirm={handleStake}
-          tokenName={'lpSymbol'}
-          addLiquidityUrl={'#/add-pro/'+token1.address+'/'+token2.address + '/' + isAnchor ? 'stable' : 'float' }
-          token={stakingToken}
-          pool={pool}
+              max={tokenBalance}
+              lpLabel={lpLabel}
+              apr={apr}
+              onDismiss={() => setShowModalDeposit(false)}
+              displayApr={'111'}
+              stakedBalance={stakedBalance}
+              onConfirm={handleStake}
+              tokenName={'lpSymbol'}
+              addLiquidityUrl={'#/add-pro/'+token1.address+'/'+token2.address + '/' + isAnchor ? 'stable' : 'float' }
+              token={stakingToken}
+              pool={pool}
           />
-        }
+          }
 
-        {showModalWithdraw &&
+          {showModalWithdraw &&
           <WithdrawModal max={stakedBalance} onConfirm={handleUnstake} tokenName={'ZPT'} onDismiss={()=>setShowModalWithdraw(false)} token={stakingToken} />
-        }
+          }
         </ModalContainer>
         }
-    <Flex justifyContent="space-between" alignItems="center">
-      <StakedLP
-        stakedFl={pool.stakedFL}
-        stakedSl={pool.stakedSL}
-        stakingToken = {stakingToken}
-        percentage={percentage}
-        field={Field.LIQUIDITY_PERCENT}
-        max={tokenBalance}
-        isClassic={isClassic}
-        isAnchor={isAnchor}
-        token1={deserializeToken(token1)}
-        token2={deserializeToken(token2)}
-        stakedBalance={stakedBalance}
-        lpSymbol={'lpSymbol'}
-        quoteTokenSymbol={stakingToken.symbol}
-        tokenSymbol={`${rewardTokens}`}
-        lpTotalSupply={1 as unknown as BigNumber}
-        tokenAmountTotal={1 as unknown as BigNumber}
-        quoteTokenAmountTotal={1 as unknown as BigNumber}
-      />
-      {renderStakingButtons()}
-    </Flex>
-    </>
+        <Flex justifyContent="space-between" alignItems="center">
+          <StakedLP
+              price={pool?.quotingPrice}
+              stakedBalancePool={pool.stakedBalancePool}
+              staked={pool.staked}
+              stakingToken = {stakingToken}
+              percentage={percentage}
+              field={Field.LIQUIDITY_PERCENT}
+              max={tokenBalance}
+              isClassic={isClassic}
+              isAnchor={isAnchor}
+              token1={deserializeToken(token1)}
+              token2={deserializeToken(token2)}
+              stakedBalance={stakedBalance}
+              lpSymbol={'lpSymbol'}
+              quoteTokenSymbol={stakingToken.symbol}
+              tokenSymbol={`${rewardTokens}`}
+              lpTotalSupply={1 as unknown as BigNumber}
+              tokenAmountTotal={1 as unknown as BigNumber}
+              quoteTokenAmountTotal={1 as unknown as BigNumber}
+          />
+          {renderStakingButtons()}
+        </Flex>
+      </>
   )
 }
 

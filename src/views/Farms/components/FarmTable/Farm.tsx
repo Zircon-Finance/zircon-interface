@@ -21,6 +21,7 @@ export interface FarmProps {
   isAnchor: boolean
   isClassic: boolean
   earningToken: SerializedToken[]
+  isFinished: boolean
 }
 
 const Container = styled.div`

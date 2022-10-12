@@ -19,6 +19,11 @@ export enum FarmStakedOnly {
   FALSE = 'false',
 }
 
+export enum FarmFinishedOnly {
+  TRUE = 'true',
+  FALSE = 'false',
+}
+
 export enum ViewMode {
   TABLE = 'TABLE',
   CARD = 'CARD',
@@ -51,6 +56,9 @@ export const updateuserFarmsFilterAnchorFloat = createAction<{ userFarmsFilterAn
   )
 export const updateUserFarmStakedOnly = createAction<{ userFarmStakedOnly: FarmStakedOnly }>(
   'user/updateUserFarmStakedOnly',
+)
+export const updateUserFarmFinishedOnly = createAction<{ userFarmFinishedOnly: FarmFinishedOnly }>(
+  'user/updateUserFarmFinishedOnly'
 )
 export const updateUserDeadline = createAction<{ userDeadline: number }>('user/updateUserDeadline')
 export const addSerializedToken = createAction<{ serializedToken: SerializedToken }>('user/addSerializedToken')

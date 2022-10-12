@@ -404,12 +404,14 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
               {width >= 800 ? (
                   <>
                     <SpaceBetween>
-                    {!account ?  <Text color={theme.text1}>{`Earn${rewardTokens}`}</Text> :
+                    {!account ? <Text color={theme.text1}>{`Earn${rewardTokens}`}</Text> :
+                    !farm.isFinished ?
+                    <>
                       <Flex flexDirection={'column'} style={{width: '100%'}}>
                         <Text color={theme.text1} style={{minWidth: 'max-content', fontSize: '14px'}} fontWeight={400}>{'Monthly rewards:'}</Text>
                         <RewardPerBlock tokens={pool.earningToken} sousId={pool.sousId} rewardsData={pool.rewardsData} />
                       </Flex>
-                      }
+                      
                       <div style={{width: '50%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
                         <CapacityIndicatorSmall gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true} hoverPage={'farmAction'}/>
                         <QuestionMarkContainer
@@ -420,7 +422,9 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                         )}
                           <QuestionMarkIcon />
                         </QuestionMarkContainer>
-                      </div>
+                      </div> 
+                    </> : <></>
+                    }
                     </SpaceBetween>
                     <SpaceBetween>
                       <StyledLinkExternal color={theme.meatPink} href={bsc}>{t('View Contract ↗')}</StyledLinkExternal>
@@ -436,7 +440,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                       </Flex>
                       <Flex flexDirection={"column"}>
                       <Text color={theme.text1}>{`Earn${rewardTokens}`}</Text>
-                        <div style={{display: 'flex', marginLeft: '10px', alignItems: 'center', justifyContent: 'flex-end'}}>
+                        {!farm.isFinished && <div style={{display: 'flex', marginLeft: '10px', alignItems: 'center', justifyContent: 'flex-end'}}>
                           <CapacityIndicatorSmall gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true} hoverPage={'farmActionMobile'}/>
 
                           <QuestionMarkContainer
@@ -447,17 +451,17 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                           )}
                             <QuestionMarkIcon />
                           </QuestionMarkContainer>
-                        </div>
+                        </div>}
                       </Flex>
                     </SpaceBetween>
                   </>
                   :
-                  <SpaceBetween style={{marginBottom: '16px'}}>
+                  !farm.isFinished && (<SpaceBetween style={{marginBottom: '16px'}}>
                     <Text color={theme.whiteHalf} style={{minWidth: 'max-content', fontSize: '14px'}} fontWeight={400}>{'Monthly rewards:'}</Text>
                     <Flex flexDirection={"column"}>
-                    <RewardPerBlock tokens={pool.earningToken} sousId={pool.sousId} rewardsData={pool.rewardsData} />
+                     <RewardPerBlock tokens={pool.earningToken} sousId={pool.sousId} rewardsData={pool.rewardsData} />
                     </Flex>
-                  </SpaceBetween>
+                  </SpaceBetween>)
               )}
 
               {/* <TagsContainer> */}
@@ -484,10 +488,10 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           ) : (
               <QuarterContainer >
                 {isApproved ? (
-                        <StakeAdd pink={true} clickAction={() => {setShowModal(true)}} row={true} margin={false} width={width > 992 ? '30%' : '60%'} />)
+                        <StakeAdd pink={true} clickAction={() => {!farm.isFinished && setShowModal(true)}} row={true} margin={false} width={width > 992 ? '30%' : '60%'} isFinished={farm.isFinished} />)
                     : (
                         <ButtonOutlined style={{background: theme.hoveredButton, border: 'none', color: '#FFF'}}
-                                        m="auto" width="50%" disabled={pendingTx} onClick={account ? handleApproval : toggleWalletModal}>
+                                        m="auto" width="50%" disabled={pendingTx || farm.isFinished} onClick={account ? handleApproval : toggleWalletModal}>
                           {account ? 'Enable Contract' : 'Connect Wallet'}
                         </ButtonOutlined>
                     )}
@@ -498,10 +502,10 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           <QuarterContainer style={{padding: width < 992 ? '0 10px' : '0 0 0 10px'}}>
             <ValueContainer>
               {account && width <= 800 &&
-              <ValueWrapper>
+              !farm.isFinished && (<ValueWrapper>
                 <Text fontSize='13px' fontWeight={300} color={theme.text1}>{`${!isAnchor ? 'Divergence' : 'Health Factor'}`}</Text>
                 <CapacityIndicatorSmall gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true} hoverPage={'farmAction'}/>
-              </ValueWrapper>
+              </ValueWrapper>)
               }
               <ValueWrapper>
                 <Text fontSize='13px' fontWeight={300} color={theme.text1}>{t('APR')}</Text>

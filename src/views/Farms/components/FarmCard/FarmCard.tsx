@@ -135,6 +135,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
           sousId={farm.sousId}
           vaultAddress={farm.vaultAddress}
           rewardsData={farm.rewardsData}
+          isFinished={farm.isFinished}
         />
         {farm.userData.stakedBalance.gt(0) || !isApproved ? (
           <CardActionsContainer
@@ -172,7 +173,8 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
             )}
 
             <StakeAdd
-              clickAction={() => setShowModalDeposit(true)}
+              isFinished = {farm.isFinished}
+              clickAction={() => !farm.isFinished && setShowModalDeposit(true)}
               row={false}
               disabled={pendingTx}
             />
@@ -202,7 +204,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
             {farm.isClassic ? pairLiquidity : new BigNumber(farm?.liquidity).toFixed(2)} USD
           </Text>
         </Flex>
-        {account && (
+        {account && !farm.isFinished && (
             <Flex justifyContent="space-between" alignItems="center" mt="10px">
               <Text color={theme.whiteHalf} fontSize="14px">
                 {`Health Factor`}:

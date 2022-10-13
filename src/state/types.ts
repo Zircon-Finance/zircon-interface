@@ -128,6 +128,7 @@ export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
   quoteTokenDecimals?: SerializedBigNumber
   tokenDecimals?: SerializedBigNumber
   vaultTotalSupply?: SerializedBigNumber
+  psionicFarmBalance?: SerializedBigNumber
   staked?: SerializedBigNumber
   stakedBalancePool?: SerializedBigNumber
 }

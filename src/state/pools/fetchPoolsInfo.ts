@@ -12,7 +12,7 @@ const fetchPools = async (poolsToFetch: SerializedPoolConfig[]): Promise<Seriali
     const gammas = await fetchGammas(poolsToFetch)
 
     return poolsToFetch.map((pool, index) => {
-        const [tokenBalanceLP, quoteTokenBalanceLP, pylonTokenBalanceLP, pylonQuoteBalanceLP, stakedTokenBalanceMC, lpTotalSupply, tokenDecimals, quoteTokenDecimals, ptb, stakedTotalSupply, vaultTotalSupply] =
+        const [tokenBalanceLP, quoteTokenBalanceLP, pylonTokenBalanceLP, pylonQuoteBalanceLP, stakedTokenBalanceMC, lpTotalSupply, tokenDecimals, quoteTokenDecimals, ptb, stakedTotalSupply, vaultTotalSupply, psionicFarmBalance] =
             poolResult[index]
         const [gamma, virtualAnchorBalance] = gammas[index]
 
@@ -44,19 +44,9 @@ const fetchPools = async (poolsToFetch: SerializedPoolConfig[]): Promise<Seriali
         console.log("pylon ratio", lpTotalInQuoteToken.toString(), gammaTotal.toString(), pylonTokenToQuote.toString(), pylonRatio.toString(), virtualAnchorBalance.toString(), lpTokenRatio.toString())
 
         const floatStaked = ((new BigNumber(lpTotalInQuoteToken).multipliedBy(gammaTotal)).multipliedBy(pylonRatio)).plus(pylonTokenToQuote)
-
-        // const stakedFL = floatStaked.multipliedBy(BIG_TEN.pow(18)).dividedBy(stakedTokenBalanceMC)
-        // console.log("stakedFL", stakedFL.toString(), lpTokenRatio.toString())
-        //
-        // const stakedSL = new BigNumber(virtualAnchorBalance).dividedBy(stakedTotalSupply)
-        // console.log("vab", virtualAnchorBalance.toString(), stakedTotalSupply.toString(), stakedSL.toString())
-        // For APR Calculation
-
         const staked = pool.isAnchor ? new BigNumber(vabTotal).multipliedBy(lpTokenRatio) : floatStaked;
 
-        // const stakedRatio = staked.div(stakedTokenBalanceMC)
         console.log("staRa: ", pool.token1.symbol, pool.token2.symbol, pool.isAnchor, staked.toString())
-        // console.log("staked", staked.toString(), stakedFL.toString(), stakedSL.toString(), staked.toString())
 
         return {
             ...pool,
@@ -76,7 +66,8 @@ const fetchPools = async (poolsToFetch: SerializedPoolConfig[]): Promise<Seriali
             staked: new BigNumber(staked).toJSON(),
             quoteTokenBalanceTotal: (new BigNumber(quoteTokenBalanceLP).plus(pylonQuoteBalanceLP)).toJSON(),
             tokenBalanceTotal: (new BigNumber(tokenBalanceLP).plus(pylonTokenBalanceLP)).toJSON(),
-            vaultTotalSupply: new BigNumber(vaultTotalSupply).toJSON()
+            vaultTotalSupply: new BigNumber(vaultTotalSupply).toJSON(),
+            psionicFarmBalance: new BigNumber(psionicFarmBalance).toJSON(),
             // poolWeight: poolWeight.toJSON(),
             // multiplier: `${allocPoint.div(100).toString()}X`,
         }

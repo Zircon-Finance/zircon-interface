@@ -63,7 +63,12 @@ const fetchPoolCalls = (pool: SerializedPool) => {
         {
             address: pool.vaultAddress,
             name: "totalSupply"
-        }
+        },
+        {
+            address: pool.vaultAddress,
+            name: "balanceOf",
+            params: [pool.contractAddress],
+        },
     ]
 
 }

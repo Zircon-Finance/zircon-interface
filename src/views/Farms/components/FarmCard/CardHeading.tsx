@@ -26,6 +26,7 @@ export interface ExpandableSectionProps {
     isClassic: boolean;
     isAnchor?: boolean;
     earningToken: SerializedToken[];
+    earningTokenBlock: {blockReward: number, blockRewardPrice: number, symbol: string}[];
     gamma: any;
     healthFactor: string;
     sousId: number;
@@ -55,6 +56,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
                                                            sousId,
                                                            vaultAddress,
                                                            rewardsData,
+                                                           earningTokenBlock
                                                        }) => {
     const theme = useTheme();
     // const risk = gamma && (gamma.isLessThanOrEqualTo(0.7) || gamma.isGreaterThanOrEqualTo(0.5))
@@ -201,7 +203,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
               <Flex flexDirection={width >= 700 ? 'column' : 'row'} style={{textAlign: 'right', width: '60%',
               display: width <= 700 && 'flex',
               justifyContent: width <= 700 && 'flex-end'}}>
-              <RewardPerBlock tokens={earningToken} sousId={sousId} rewardsData={rewardsData} />
+              <RewardPerBlock earningRewardsBlock={earningTokenBlock} />
               </Flex>
             </Flex>
             )}

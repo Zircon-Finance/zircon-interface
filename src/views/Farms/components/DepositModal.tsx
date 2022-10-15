@@ -75,8 +75,8 @@ const DepositModal: React.FC<DepositModalProps> = ({
     // pool?.isAnchor ? pool?.staked.toFixed(6) : pool?.stakedFL.toFixed(6), ' to get USD value: ', usdToStake.toFixed(6))
     const stakingTokenPrice = new BigNumber(pool.staked.toString()).multipliedBy(new BigNumber(pool?.quotingPrice)).toNumber()
 
-    const aprs = pool?.earningTokenPrice?.map((tokenPrice) => {
-        return getPoolApr(stakingTokenPrice, [tokenPrice])
+    const aprs = pool?.earningTokenPerBlock?.map((block) => {
+        return getPoolApr(stakingTokenPrice, [block])
     })
     console.log("APRS: ", pool?.earningToken)
     const interestBreakdowns = aprs ? pool?.earningToken.map((token, i ) => {

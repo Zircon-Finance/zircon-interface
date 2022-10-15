@@ -283,8 +283,6 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const [hoverRisk, setHoverRisk] = useState(false)
   const gammaAdjusted = new BigNumberJs(gamma).div(new BigNumberJs(10).pow(18))
 
-  console.log('details', pool.rewardsData)
-
   const handleRenderRow = () => {
     if (!mobileVer) {
       return (

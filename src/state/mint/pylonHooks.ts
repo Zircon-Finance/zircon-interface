@@ -335,12 +335,7 @@ export const useHealthFactor = (  currencyA: Currency | undefined,
   const ptt = useTotalSupply(pylonPair?.anchorLiquidityToken)
   const lastK = useLastK(pylonPair?.address)
   const pylonFactory = usePylonFactoryContract()
-  // console.log("ea", energyAddress)
-  // console.log("ptbEnergy", ptbEnergy)
-  // console.log("ptb", ptb)
-  // console.log("ptt", ptt)
-  // console.log("lastK", lastK)
-  // console.log("ea", energyAddress)
+
   const healthFactorResult = useMemo(() => {
     return pylonInfo && pylonPair &&  pylonInfo[0] && ptbEnergy && reserveAnchor && ptb && ptt && lastK && pylonFactory ?
         pylonPair.getHealthFactor(

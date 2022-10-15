@@ -41,12 +41,9 @@ const fetchPools = async (poolsToFetch: SerializedPoolConfig[]): Promise<Seriali
         const gammaTotal = new BigNumber(gamma).div(BIG_TEN.pow(18)) // Ratio of LP Tokens that are in the Pylon
         const vabTotal = new BigNumber(virtualAnchorBalance).div(BIG_TEN.pow(quoteTokenDecimals)) // Ratio of LP Tokens that are in the Pylon
 
-        // console.log("pylon ratio", pool.token1.symbol, pool.token2.symbol, lpTotalInQuoteToken.toString(), gammaTotal.toString(), pylonTokenToQuote.toString(), pylonRatio.toString(), virtualAnchorBalance.toString(), lpTokenRatio.toString())
-
         const floatStaked = ((new BigNumber(lpTotalInQuoteToken).multipliedBy(gammaTotal)).multipliedBy(pylonRatio)).plus(pylonTokenToQuote.times(lpTokenRatio))
         const staked = pool.isAnchor ? new BigNumber(vabTotal).multipliedBy(lpTokenRatio) : floatStaked;
 
-        // console.log("staRa: ", pool.token1.symbol, pool.token2.symbol, pool.isAnchor, staked.toString())
 
         return {
             ...pool,

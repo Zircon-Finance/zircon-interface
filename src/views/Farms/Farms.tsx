@@ -277,7 +277,7 @@ const Farms: React.FC = ({ children }) => {
         return orderBy(
             poolsToSort,
             (pool: DeserializedPool) => {
-              if (!pool.userData || !pool.earningTokenPrice) {
+              if (!pool.userData || !pool.earningTokenPerBlock) {
                 return 0
               }
               return pool.userData ? pool.userData.stakedBalance : 0
@@ -608,7 +608,7 @@ const Farms: React.FC = ({ children }) => {
           </table>
           {renderContent()}
           {(activeFarms.length < pools.length && activeFarms.length === numberOfFarmsVisible ||
-          (filterAnchorFloat === FarmFilterAnchorFloat.ANCHOR && pools.filter((pool) => stakedOnly ? 
+          (filterAnchorFloat === FarmFilterAnchorFloat.ANCHOR && pools.filter((pool) => stakedOnly ?
           (pool.isAnchor && pool.userData.stakedBalance.gt(0)) : pool.isAnchor).length > activeFarms.length) ||
           (filterAnchorFloat === FarmFilterAnchorFloat.FLOAT && pools.filter((pool) =>  stakedOnly ?
           (!pool.isAnchor && pool.userData.stakedBalance.gt(0)) : !pool.isAnchor).length > activeFarms.length)

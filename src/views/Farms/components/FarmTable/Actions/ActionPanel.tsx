@@ -409,7 +409,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                     <>
                       <Flex flexDirection={'column'} style={{width: '100%'}}>
                         <Text color={theme.text1} style={{minWidth: 'max-content', fontSize: '14px'}} fontWeight={400}>{'Monthly rewards:'}</Text>
-                        <RewardPerBlock earningRewardsBlock={pool.earningTokenPerBlock} />
+                        <RewardPerBlock earningRewardsBlock={pool.earningTokenInfo} />
                       </Flex>
 
                       <div style={{width: '50%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
@@ -459,7 +459,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                   !farm.isFinished && (<SpaceBetween style={{marginBottom: '16px'}}>
                     <Text color={theme.whiteHalf} style={{minWidth: 'max-content', fontSize: '14px'}} fontWeight={400}>{'Monthly rewards:'}</Text>
                     <Flex flexDirection={"column"}>
-                     <RewardPerBlock earningRewardsBlock={pool?.earningTokenPerBlock}  />
+                     <RewardPerBlock earningRewardsBlock={pool?.earningTokenInfo}  />
                     </Flex>
                   </SpaceBetween>)
               )}

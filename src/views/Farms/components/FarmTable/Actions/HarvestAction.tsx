@@ -41,11 +41,11 @@ interface HarvestActionProps extends DeserializedPool {
 }
 
 
-const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningToken ,sousId, userData, userDataReady, vaultAddress, earningTokenCurrentBalance, earningTokenCurrentPrice }) => {
+const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningToken ,sousId, userData, userDataReady, vaultAddress, earningTokenInfo }) => {
     const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
     const earningsBigNumber = new BigNumber(userData.pendingReward)
     let earnings = BIG_ZERO
-    let earningsBusd = getBalanceUSD(earningsBigNumber, earningTokenCurrentPrice)
+    let earningsBusd = getBalanceUSD(earningsBigNumber, earningTokenInfo?.map(t => t.currentPrice))
 
     // If user didn't connect wallet default balance will be 0
     if (!earningsBigNumber.isZero()) {
@@ -73,8 +73,8 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
 
     const TokenRow = ({ token, index }: { token: Token; index: number }) => {
 
-        let currentBalance = earningTokenCurrentBalance ? getBalanceAmount(earningsBigNumber.times(earningTokenCurrentBalance[index])) : 0
-        let currentPrice = earningTokenCurrentPrice ? getBalanceAmount(earningsBigNumber.times(earningTokenCurrentPrice[index])) : 0
+        let currentBalance = earningTokenInfo ? getBalanceAmount(earningsBigNumber.times(earningTokenInfo[index].current)) : 0
+        let currentPrice = earningTokenInfo ? getBalanceAmount(earningsBigNumber.times(earningTokenInfo[index].currentPrice)) : 0
         return (
             <Flex justifyContent={'space-between'} style={{borderBottom: '1px solid rgba(255,255,255,0.1)', padding: '10px 0', alignItems: 'center'}}>
                 <Flex>
@@ -90,8 +90,8 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
 
     const SwipeTokenCard = ({ token, index }: { token: Token; index: number }) => {
 
-        let currentBalance = earningTokenCurrentBalance ? getBalanceAmount(earningsBigNumber.times(earningTokenCurrentBalance[index])) : 0
-        let currentPrice = earningTokenCurrentPrice ? getBalanceAmount(earningsBigNumber.times(earningTokenCurrentPrice[index])) : 0
+        let currentBalance = earningTokenInfo ? getBalanceAmount(earningsBigNumber.times(earningTokenInfo[index].current)) : 0
+        let currentPrice = earningTokenInfo ? getBalanceAmount(earningsBigNumber.times(earningTokenInfo[index].currentPrice)) : 0
 
         return (
             <>

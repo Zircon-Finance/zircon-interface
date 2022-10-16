@@ -76,7 +76,7 @@ const DepositModal: React.FC<DepositModalProps> = ({
     // const stakingTokenPrice = new BigNumber(pool.staked.toString()).multipliedBy(new BigNumber(pool?.quotingPrice)).toNumber()
         // `${(new BigNumber(staked).div(stakedBalancePool).multipliedBy(stakedBalance).multipliedBy(price)).toFixed(1, BigNumber.ROUND_DOWN)}`
 
-    // const aprs = pool?.earningTokenPerBlock?.map((block) => {
+    // const aprs = pool?.earningTokenInfo?.map((block) => {
     //     return getPoolApr(stakingTokenPrice, [block])
     // })
     // console.log("APRS: ", pool?.earningToken)

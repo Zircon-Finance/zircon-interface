@@ -3,7 +3,6 @@ import React, {
   useState, useRef, createContext, useMemo,
 } from 'react'
 import BigNumber from 'bignumber.js'
-import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber'
 import { useWeb3React } from '@web3-react/core'
 import { RowType, Toggle, Text, Flex } from '@pancakeswap/uikit'
 import styled, { useTheme } from 'styled-components'
@@ -31,14 +30,12 @@ import Select from '../../components/Select/Select'
 import { useWindowDimensions } from '../../hooks'
 import {usePools, usePoolsPageFetch } from '../../state/pools/hooks'
 import { fetchPoolsUserDataAsync } from '../../state/pools'
-import { DeserializedPool, DeserializedPoolVault } from '../../state/types'
+import {DeserializedPool, EarningTokenInfo} from '../../state/types'
 import orderBy from 'lodash/orderBy'
-import { formatUnits } from 'ethers/lib/utils'
-import {getPoolAprAddress } from '../../utils/apr'
 import { ButtonLighter } from '../../components/Button'
 
 interface Props {
-  earningRewardsBlock:  {blockReward: number, blockRewardPrice: number, symbol: string}[]
+  earningRewardsBlock:  EarningTokenInfo[]
 }
 
 const FlexLayout = styled.div`
@@ -260,23 +257,19 @@ const Farms: React.FC = ({ children }) => {
   }
 
 
-  const options = ['Earned', 'Staked', 'APR', 'Liquidty']
+  const options = ['Earned', 'Staked', 'APR', 'Liquidity']
   const [showMobileSearchBar] = useShowMobileSearchBarManager()
 
   const sortPools = (sortOption: string, poolsToSort: DeserializedPool[]) => {
     switch (sortOption) {
-      case 'apr':
-        // Ternary is needed to prevent pools without APR (like MIX) getting top spot
-        return orderBy(poolsToSort, (pool: DeserializedPool) => getPoolAprAddress(pool.contractAddress) ?? 0)
       case 'earned':
         return orderBy(
             poolsToSort,
             (pool: DeserializedPool) => {
-              if (!pool.userData || !pool.earningTokenPerBlock) {
+              if (!pool.userData || !pool.earningTokenInfo) {
                 return 0
               }
-
-              return pool.userData ? Number(pool.userData.pendingReward) : 0
+              return pool.userData ? getBalanceUSD(new BigNumber(pool.userData.pendingReward), pool.earningTokenInfo?.map(t => t.currentPrice)) : 0
             },
             'desc',
         )
@@ -284,24 +277,18 @@ const Farms: React.FC = ({ children }) => {
         return orderBy(
             poolsToSort,
             (pool: DeserializedPool) => {
-              let totalStaked = Number.NaN
-              if (pool.vaultKey) {
-                const vault = pool as DeserializedPoolVault
-                if (pool.stakingTokenPrice && vault.totalCakeInVault.isFinite()) {
-                  totalStaked =
-                      +formatUnits(EthersBigNumber.from(vault.totalCakeInVault.toString()), pool.stakingToken.decimals) *
-                      pool.stakingTokenPrice
-                }
-              } else if (pool.totalStaked?.isFinite() && pool.stakingTokenPrice) {
-                totalStaked =
-                    +formatUnits(EthersBigNumber.from(pool.totalStaked.toString()), pool.stakingToken.decimals) *
-                    pool.stakingTokenPrice
+              if (!pool.userData || !pool.earningTokenInfo) {
+                return 0
               }
-              return Number.isFinite(totalStaked) ? totalStaked : 0
+              return pool.userData ? pool.userData.stakedBalance : 0
             },
             'desc',
         )
       }
+      case 'liquidity':
+        return orderBy(poolsToSort, (pool: DeserializedPool) => Math.floor(pool.liquidity) ?? 0, 'desc')
+      case 'apr':
+        return orderBy(poolsToSort, (pool: DeserializedPool) => Math.floor(pool.apr) ?? 0, 'desc')
       case 'latest':
         return orderBy(poolsToSort, (pool: DeserializedPool) => Number(pool.sousId), 'desc')
       default:
@@ -332,9 +319,9 @@ const Farms: React.FC = ({ children }) => {
 
     sortedPools =
         filterAnchorFloat === FarmFilterAnchorFloat.ANCHOR ?
-            sortedPools.filter((pool) => pool.isAnchor === true) :
+            sortedPools.filter((pool) => pool.isAnchor === true).slice(0, numberOfFarmsVisible) :
             filterAnchorFloat === FarmFilterAnchorFloat.FLOAT ?
-                sortedPools.filter((pool) => !pool.isAnchor === true) :
+                sortedPools.filter((pool) => !pool.isAnchor === true).slice(0, numberOfFarmsVisible) :
                 sortedPools
 
     sortedPools =
@@ -343,7 +330,7 @@ const Farms: React.FC = ({ children }) => {
             sortedPools.filter((pool) => !pool.isClassic === true)
 
     return sortedPools
-  }, [query, stakedOnly, stakedOnlyFarms, chosenPools, sortOption, filterAnchorFloat, filter, numberOfFarmsVisible])
+  }, [query, stakedOnly, stakedOnlyFarms, chosenPools, sortOption, filterAnchorFloat, filter, numberOfFarmsVisible, isInactive])
 
   chosenFarmsLength.current = activeFarms.length
 
@@ -353,8 +340,6 @@ const Farms: React.FC = ({ children }) => {
     const tokenAddress = token1.address
     const quoteTokenAddress = token2.address
     const lpLabel = `${farm.token1.symbol}-${farm.token2.symbol}`
-
-
 
     const row: RowProps = {
       apr: {
@@ -381,7 +366,7 @@ const Farms: React.FC = ({ children }) => {
       },
       earned: {
         earnings: getBalanceNumber(new BigNumber(farm.userData.pendingReward)),
-        earningsUSD: getBalanceUSD(new BigNumber(farm.userData.pendingReward), farm.earningTokenCurrentPrice),
+        earningsUSD: getBalanceUSD(new BigNumber(farm.userData.pendingReward), farm.earningTokenInfo?.map(t => t.currentPrice)),
         pid: farm.sousId,
         hovered: false,
         setHovered: () => {},
@@ -550,14 +535,12 @@ const Farms: React.FC = ({ children }) => {
                     key={option}
                     style={{
                       cursor:
-                        (option === "Earned" || option === "Staked") &&
                         "pointer",
                     }}
                     onClick={() => {
-                      (option === "Earned" || option === "Staked") &&
-                        (sortOption === option.toLowerCase()
+                        sortOption === option.toLowerCase()
                           ? setSortOption("hot")
-                          : setSortOption(option.toLowerCase()));
+                          : setSortOption(option.toLowerCase());
                     }}
                   >
                     <PinkArrows
@@ -573,9 +556,7 @@ const Farms: React.FC = ({ children }) => {
                       >
                         {option}
                       </p>
-                      {(option === "Earned" || option === "Staked") && (
                         <FarmRepeatIcon />
-                      )}
                     </PinkArrows>
                     {sortOption === option.toLowerCase() ? (
                       <SelectedOptionDiv />
@@ -626,7 +607,12 @@ const Farms: React.FC = ({ children }) => {
             </tr>
           </table>
           {renderContent()}
-          {numberOfFarmsVisible < pools.length && (
+          {(activeFarms.length < pools.length && activeFarms.length === numberOfFarmsVisible ||
+          (filterAnchorFloat === FarmFilterAnchorFloat.ANCHOR && pools.filter((pool) => stakedOnly ?
+          (pool.isAnchor && pool.userData.stakedBalance.gt(0)) : pool.isAnchor).length > activeFarms.length) ||
+          (filterAnchorFloat === FarmFilterAnchorFloat.FLOAT && pools.filter((pool) =>  stakedOnly ?
+          (!pool.isAnchor && pool.userData.stakedBalance.gt(0)) : !pool.isAnchor).length > activeFarms.length)
+          ) && (
             <ButtonLighter
               onClick={() => showMore()}
               onMouseEnter={() => setHoverButton(true)}

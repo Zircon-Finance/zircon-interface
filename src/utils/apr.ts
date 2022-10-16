@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import lpAprs from '..//constants/lpAprs.json'
+import {EarningTokenInfo} from "../state/types";
 
 const BSC_BLOCK_TIME = 13.5
 export const CAKE_PER_BLOCK = 40
@@ -16,7 +17,7 @@ export const CAKE_PER_YEAR = CAKE_PER_BLOCK * BLOCKS_PER_YEAR
  */
 export const getPoolApr = (
   stakingTokenPrice: number,
-  rewardTokenPrice: {blockReward: number, blockRewardPrice: number}[],
+  rewardTokenPrice: EarningTokenInfo[],
   // totalStaked: number,
   // tokenPerBlock: number,
 ): number => {

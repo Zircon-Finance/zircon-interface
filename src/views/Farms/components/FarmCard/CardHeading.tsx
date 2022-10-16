@@ -15,6 +15,7 @@ import { QuestionMarkContainer, ToolTip } from "../FarmTable/Row";
 import CapacityIndicatorSmall from "../../../../components/CapacityIndicatorSmall/index";
 import { useActiveWeb3React, useWindowDimensions } from "../../../../hooks";
 import { RewardPerBlock } from "../../Farms";
+import {EarningTokenInfo} from "../../../../state/types";
 
 export interface ExpandableSectionProps {
     lpLabel?: string;
@@ -26,7 +27,7 @@ export interface ExpandableSectionProps {
     isClassic: boolean;
     isAnchor?: boolean;
     earningToken: SerializedToken[];
-    earningTokenBlock: {blockReward: number, blockRewardPrice: number, symbol: string}[];
+    earningTokenBlock: EarningTokenInfo[];
     gamma: any;
     healthFactor: string;
     sousId: number;

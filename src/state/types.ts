@@ -61,6 +61,13 @@ export enum VaultKey {
   CakeVault = 'cakeVault',
   IfoPool = 'ifoPool',
 }
+export interface EarningTokenInfo {
+  blockReward: number,
+  blockRewardPrice: number,
+  symbol: string,
+  current: number,
+  currentPrice: number
+}
 
 interface CorePoolProps {
   startBlock?: number
@@ -72,9 +79,7 @@ interface CorePoolProps {
   rawApr?: number
   stakingTokenPrice?: number
   // earningTokenPrice?: number[]
-  earningTokenPerBlock?: {blockReward: number, blockRewardPrice: number, symbol: string}[]
-  earningTokenCurrentPrice?: number[]
-  earningTokenCurrentBalance?: number[]
+  earningTokenInfo?: EarningTokenInfo[]
   vaultKey?: VaultKey
   rewardsData?: string[],
   vTotalSupply?: number,

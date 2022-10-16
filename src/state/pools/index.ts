@@ -4,7 +4,7 @@ import poolsConfig from '../../constants/pools'
 import {
   PoolsState,
   SerializedPool,
-  // SerializedVaultFees,
+  EarningTokenInfo,
   // SerializedCakeVault,
   // SerializedLockedVaultUser,
 } from '../../state/types'
@@ -134,59 +134,34 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
       // As of Contract calculation on initialize it is minted 1e18 Psionic tokens to the farm contract so...
       const tokensRemaining = new BigNumber(blockRemaining).times(1e18)
       const pendingRewards = new BigNumber(pool.psionicFarmBalance).minus(tokensRemaining)
-
-
-
-      // const stakingTokenAddress = pool.stakingToken.address ? pool.stakingToken.address.toLowerCase() : null
-      // const stakingTokenPrice = pool.price
-      //
-      // const earningTokenAddress = pool.earningToken.map((token) => token.address ? token.address.toLowerCase() : null)
-      // const earningTokenPrice = earningTokenAddress ? earningTokenAddress.map((token) => prices[token]) : [0,0]
-      // return JSBI.divide(JSBI.multiply(JSBI.subtract(BASE, parseBigintIsh(gamme)), JSBI.divide(JSBI.multiply(JSBI.multiply(parseBigintIsh(reserve), TWO), parseBigintIsh(ptb)), parseBigintIsh(ptt))), BASE);
-
-      // console.log("values::", pool.lpTotalInQuoteToken, pool.gamma, new BigNumber(pool.ptb.toString()), pool.lpTotalSupply)
-      // let liquidityBySDK = Pylon.calculateLiquidity(pool.gamma, JSBI.BigInt(new BigNumber(pool.lpTotalInQuoteToken.toString()).toString()),
-      //     JSBI.BigInt(new BigNumber(pool.ptb.toString()).toString()), JSBI.BigInt(new BigNumber(pool.lpTotalSupply.toString()).toString()))
-
-      // console.log("liquidityBySDK", liquidityBySDK.toString())
-
+      
+      // Price of staked Token in USD
       const stakingTokenPrice = new BigNumber(pool.staked.toString()).multipliedBy(new BigNumber(pool.quotePrice)).toNumber()
 
-      let earningTokenPerBlock: {blockReward: number, blockRewardPrice: number, symbol: string}[] = pool.earningToken.map((token,index) => {
+      // Earning Tokens Information (ZRG, MOVR)
+      let earningTokenInfo: EarningTokenInfo[] = pool.earningToken.map((token,index) => {
         // Calculating remaining balance
-        const balance = new BigNumber(rewardsData[i][0][index]?.balance?.toString()).dividedBy(new BigNumber(1e18))
-        const pending = new BigNumber(pendingRewards).multipliedBy(balance).dividedBy(pool.vaultTotalSupply)
-        const remaining = balance.minus(pending)
+        const balance = new BigNumber(rewardsData[i][0][index]?.balance?.toString())
+        const balanceDivided = balance.dividedBy(new BigNumber(1e18))
+
+        // Calculating rewards per block (removing the pending exceeding rewards)
+        const pending = new BigNumber(pendingRewards).multipliedBy(balanceDivided).dividedBy(pool.vaultTotalSupply)
+        const remaining = (balanceDivided).minus(pending)
         let blockReward = remaining.dividedBy(blockRemaining)
 
-        if (token.symbol === "ZRG") {
-          return {symbol: token.symbol, blockReward: blockReward.toNumber(), blockRewardPrice: new BigNumber(priceZRGMOVR[0]?.tokenPrice).times(blockReward).toNumber()}
-        } else if (token.symbol === "MOVR") {
-          return {symbol: token.symbol, blockReward: blockReward.toNumber(), blockRewardPrice: new BigNumber(priceZRGMOVR[0]?.quotePrice).times(blockReward).toNumber()}
-        }else {
-          return {symbol: "", blockReward: 0, blockRewardPrice: 0}
-        }
-      })
+        // Obtaining Price (Normally ZRG will be Float side and MOVR Stable Side
+        let price = token.symbol === "ZRG" ? priceZRGMOVR[0]?.tokenPrice : priceZRGMOVR[0]?.quotePrice
 
-      let earningTokenCurrentPrice = currentBlock > blockLimit.startBlock ? pool.earningToken.map((token,index) => {
-        if (token.symbol === "ZRG") {
-          return new BigNumber(priceZRGMOVR[0]?.tokenPrice).times(rewardsData[i][0][index]?.balance?.toString()).dividedBy(pool.vaultTotalSupply)
-        } else if (token.symbol === "MOVR") {
-          return new BigNumber(priceZRGMOVR[0]?.quotePrice).times(rewardsData[i][0][index]?.balance?.toString()).dividedBy(pool.vaultTotalSupply)
-        }else {
-          return 0
+        return {
+          symbol: token.symbol,
+          blockReward: blockReward.toNumber(),
+          blockRewardPrice: new BigNumber(price).times(blockReward).toNumber(),
+          current: balance.dividedBy(pool.vaultTotalSupply).toNumber(),
+          currentPrice: balance.dividedBy(pool.vaultTotalSupply).multipliedBy(price).toNumber(),
         }
-      }) : []
+      }) || []
 
-      let earningTokenCurrentBalance = currentBlock > blockLimit.startBlock ? pool.earningToken.map((token,index) => {
-        if (token.symbol === "ZRG") {
-          return new BigNumber(rewardsData[i][0][index]?.balance?.toString()).dividedBy(pool.vaultTotalSupply);
-        } else if (token.symbol === "MOVR") {
-          return new BigNumber(rewardsData[i][0][index]?.balance?.toString()).dividedBy(pool.vaultTotalSupply);
-        }else {
-          return 0
-        }
-      }) : []
+
 
       // Calculating Total Liquidity in USD
       let tokenLiquidity = BigNumber(pool.tokenPrice.toString()).multipliedBy(pool.tokenBalanceTotal).dividedBy(BIG_TEN.pow(pool.tokenDecimals))
@@ -197,7 +172,7 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
       const apr = !isPoolFinished
           ? getPoolApr(
               stakingTokenPrice,
-              earningTokenPerBlock,
+              earningTokenInfo,
           )
           : 0
 
@@ -205,10 +180,8 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
       return {
         ...blockLimit,
         ...totalStaking,
-        earningTokenPerBlock: earningTokenPerBlock,
+        earningTokenInfo: earningTokenInfo || [],
         rewardsData: rewardsData[i][0].map((reward) => reward[0].toString()),
-        earningTokenCurrentPrice: earningTokenCurrentPrice,
-        earningTokenCurrentBalance: earningTokenCurrentBalance,
         vTotalSupply: pool.vaultTotalSupply,
         liquidity: liquidity,
         zrgPrice: priceZRGMOVR[0]?.tokenPrice,

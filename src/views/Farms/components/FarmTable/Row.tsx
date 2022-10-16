@@ -364,7 +364,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                           <Text fontSize='13px' fontWeight={500} color={4e7455} marginBottom={2}>
                             {'Monthly Rewards:'}
                           </Text>
-                            <RewardPerBlock earningRewardsBlock={details?.earningTokenPerBlock}  />
+                            <RewardPerBlock earningRewardsBlock={details?.earningTokenInfo}  />
                         </Flex>
                         )}
                         </>

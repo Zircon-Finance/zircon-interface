@@ -125,6 +125,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
       <FarmCardInnerContainer>
         <CardHeading
           earningToken={farm.earningToken}
+          earningTokenBlock={farm.earningTokenPerBlock}
           isClassic={farm.isClassic}
           isAnchor={farm.isAnchor}
           lpLabel={lpLabel}

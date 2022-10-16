@@ -28,16 +28,14 @@ import FarmRepeatIcon from '../../components/FarmRepeatIcon'
 import FarmsPage from '../../pages/Farm/'
 import Select from '../../components/Select/Select'
 import { useWindowDimensions } from '../../hooks'
-import { useCurrentBlock, useEndBlock, usePools, usePoolsPageFetch, useStartBlock } from '../../state/pools/hooks'
+import {usePools, usePoolsPageFetch } from '../../state/pools/hooks'
 import { fetchPoolsUserDataAsync } from '../../state/pools'
 import { DeserializedPool } from '../../state/types'
 import orderBy from 'lodash/orderBy'
 import { ButtonLighter } from '../../components/Button'
 
 interface Props {
-  tokens: any[]
-  rewardsData?: string[]
-  sousId: number
+  earningRewardsBlock:  {blockReward: number, blockRewardPrice: number, symbol: string}[]
 }
 
 const FlexLayout = styled.div`
@@ -195,26 +193,17 @@ export const getDisplayApr = (cakeRewardsApr?: number, lpRewardsApr?: number) =>
   return null
 }
 
-export const RewardPerBlock: React.FC<Props> = ({ tokens, sousId, rewardsData=['Loading...', 'Loading...'] }) => {
-  const [startBlock, setStartBlock] = useState(0)
-  const [endBlock, setEndBlock] = useState(0)
-  const [currentBlock, setCurrentBlock] = useState(0)
-  useStartBlock(sousId).then((block?) => setStartBlock(block))
-  useEndBlock(sousId).then((block?) => setEndBlock(block))
-  useCurrentBlock().then((block?) => setCurrentBlock(block))
-  const blocksLeft = endBlock - Math.max(currentBlock, startBlock)
-  const rewardBlocksPerYear = tokens.map((token, index) => rewardsData[index] !== undefined &&
-  (((parseFloat((rewardsData[index])))/Math.pow(10, token.decimals))/blocksLeft)*6400*30)
+export const RewardPerBlock: React.FC<Props> = ({ earningRewardsBlock }) => {
   return(
     <>
-    {rewardBlocksPerYear && tokens[0] !== undefined && tokens.map((token, index) => (
-      <Text fontSize='13px' fontWeight={500} color={'#4e7455'} key={token}>
-        {(rewardBlocksPerYear[index].toFixed(0) !== 'NaN' && rewardBlocksPerYear[index].toFixed(0) !== 'Infinity') ?
-          `~ ${rewardBlocksPerYear[index].toFixed(0)}  ${token.symbol === 'MOVR' ? 'wMOVR' : token.symbol}` :
+    {earningRewardsBlock ? earningRewardsBlock.map((reward, index) => (
+      <Text fontSize='13px' fontWeight={500} color={'#4e7455'} key={index}>
+        {(reward.blockReward.toFixed(0) !== 'NaN' && reward.blockReward.toFixed(0) !== 'Infinity') ?
+          `~ ${(reward.blockReward*6800*30).toFixed(0)}  ${reward.symbol === 'MOVR' ? 'wMOVR' : reward.symbol}` :
           'Loading...'
         }
       </Text>
-    ))}
+    )):<Text fontSize='13px' fontWeight={500} color={'#4e7455'}>Loading...</Text>}
     </>
   )
 }
@@ -277,7 +266,7 @@ const Farms: React.FC = ({ children }) => {
         return orderBy(
             poolsToSort,
             (pool: DeserializedPool) => {
-              if (!pool.userData || !pool.earningTokenPrice) {
+              if (!pool.userData || !pool.earningTokenPerBlock) {
                 return 0
               }
               return pool.userData ? getBalanceUSD(new BigNumber(pool.userData.pendingReward), pool.earningTokenCurrentPrice) : 0

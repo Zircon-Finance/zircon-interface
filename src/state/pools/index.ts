@@ -109,20 +109,7 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
       fetchPoolsTotalStaking(),
       currentBlockNumber ? Promise.resolve(currentBlockNumber) : simpleRpcProvider.getBlockNumber(),
     ])
-    // console.log("currentBlock", currentBlock)
-    // const activePriceHelperLpsConfig = priceHelperLpsConfig.filter((priceHelperLpConfig) => {
-    //   return (
-    //     poolsConfig
-    //       .filter((pool) => pool.earningToken.map((token) => token.address.toLowerCase() === priceHelperLpConfig.token.address.toLowerCase())).length > 0
-    //       // .filter((pool) => {
-    //       //   // const poolBlockLimit = blockLimits.find((blockLimit) => blockLimit.sousId === pool.sousId)
-    //       //   // if (poolBlockLimit) {
-    //       //   //   return poolBlockLimit.endBlock > currentBlock
-    //       //   // }
-    //       //   return false
-    //       // })
-    //   )
-    // })
+
     const rewardsData = []
     for (let i = 0; i < poolsConfig.length; i++) {
       rewardsData[i] = await fetchRewardsData(poolsConfig[i])
@@ -165,45 +152,37 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
 
       const stakingTokenPrice = new BigNumber(pool.staked.toString()).multipliedBy(new BigNumber(pool.quotePrice)).toNumber()
 
-      /// TODO: do the calculations here instead of in the component
-      // let earningTokenPerBlock = pool.earningToken.map((token,index) => {
-      //   if (token.symbol === "1SWAP") {
-      //     return new BigNumber(rewardsData[i][index].balance.toString()).dividedBy(new BigNumber(10).pow(18)).dividedBy(blockLimit.endBlock-blockLimit.startBlock).toNumber()
-      //   } else if (token.symbol === "MOVR") {
-      //     return new BigNumber(rewardsData[i][index].balance.toString()).dividedBy(new BigNumber(10).pow(18)).dividedBy(blockLimit.endBlock-blockLimit.startBlock).toNumber()
-      //   }else {
-      //     return 0
-      //   }
-      // })
-
-      // console.log("rewardsData", rewardsData)
-      let earningTokenPrice = pool.earningToken.map((token,index) => {
+      let earningTokenPerBlock: {blockReward: number, blockRewardPrice: number, symbol: string}[] = pool.earningToken.map((token,index) => {
+        // Calculating remaining balance
         const balance = new BigNumber(rewardsData[i][0][index]?.balance?.toString()).dividedBy(new BigNumber(1e18))
         const pending = new BigNumber(pendingRewards).multipliedBy(balance).dividedBy(pool.vaultTotalSupply)
+        const remaining = balance.minus(pending)
+        let blockReward = remaining.dividedBy(blockRemaining)
 
         if (token.symbol === "ZRG") {
-          return new BigNumber(priceZRGMOVR[0]?.tokenPrice).times(balance.minus(pending)).dividedBy(blockRemaining).toNumber()
+          return {symbol: token.symbol, blockReward: blockReward.toNumber(), blockRewardPrice: new BigNumber(priceZRGMOVR[0]?.tokenPrice).times(blockReward).toNumber()}
         } else if (token.symbol === "MOVR") {
-          return new BigNumber(priceZRGMOVR[0]?.quotePrice).times(balance.minus(pending)).dividedBy(blockRemaining).toNumber()
+          return {symbol: token.symbol, blockReward: blockReward.toNumber(), blockRewardPrice: new BigNumber(priceZRGMOVR[0]?.quotePrice).times(blockReward).toNumber()}
         }else {
-          return 0
+          return {symbol: "", blockReward: 0, blockRewardPrice: 0}
         }
       })
 
       let earningTokenCurrentPrice = currentBlock > blockLimit.startBlock ? pool.earningToken.map((token,index) => {
         if (token.symbol === "ZRG") {
-          return new BigNumber(priceZRGMOVR[0]?.tokenPrice).times(rewardsData[i][0][index]?.balance?.toString()).dividedBy(pool.vaultTotalSupply)//.dividedBy(new BigNumber(10).pow(18)).toNumber()
+          return new BigNumber(priceZRGMOVR[0]?.tokenPrice).times(rewardsData[i][0][index]?.balance?.toString()).dividedBy(pool.vaultTotalSupply)
         } else if (token.symbol === "MOVR") {
-          return new BigNumber(priceZRGMOVR[0]?.quotePrice).times(rewardsData[i][0][index]?.balance?.toString()).dividedBy(pool.vaultTotalSupply)//.dividedBy(new BigNumber(10).pow(18)).toNumber()
+          return new BigNumber(priceZRGMOVR[0]?.quotePrice).times(rewardsData[i][0][index]?.balance?.toString()).dividedBy(pool.vaultTotalSupply)
         }else {
           return 0
         }
       }) : []
+
       let earningTokenCurrentBalance = currentBlock > blockLimit.startBlock ? pool.earningToken.map((token,index) => {
         if (token.symbol === "ZRG") {
-          return new BigNumber(rewardsData[i][0][index]?.balance?.toString()).dividedBy(pool.vaultTotalSupply);//.dividedBy(new BigNumber(10).pow(18)).toNumber()
+          return new BigNumber(rewardsData[i][0][index]?.balance?.toString()).dividedBy(pool.vaultTotalSupply);
         } else if (token.symbol === "MOVR") {
-          return new BigNumber(rewardsData[i][0][index]?.balance?.toString()).dividedBy(pool.vaultTotalSupply);//.dividedBy(new BigNumber(10).pow(18)).toNumber()
+          return new BigNumber(rewardsData[i][0][index]?.balance?.toString()).dividedBy(pool.vaultTotalSupply);
         }else {
           return 0
         }
@@ -214,12 +193,11 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
       let quoteLiquidity = BigNumber(pool.quotePrice.toString()).multipliedBy(pool.quoteTokenBalanceTotal).dividedBy(BIG_TEN.pow(pool.quoteTokenDecimals))
       let liquidity = String(tokenLiquidity.plus(quoteLiquidity).toString())
 
-      console.log("stakingTokenPrice", stakingTokenPrice)
       // Calculating APR
       const apr = !isPoolFinished
           ? getPoolApr(
               stakingTokenPrice,
-              earningTokenPrice,
+              earningTokenPerBlock,
           )
           : 0
 
@@ -227,7 +205,7 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
       return {
         ...blockLimit,
         ...totalStaking,
-        earningTokenPrice: earningTokenPrice,
+        earningTokenPerBlock: earningTokenPerBlock,
         rewardsData: rewardsData[i][0].map((reward) => reward[0].toString()),
         earningTokenCurrentPrice: earningTokenCurrentPrice,
         earningTokenCurrentBalance: earningTokenCurrentBalance,

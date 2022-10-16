@@ -283,8 +283,6 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const [hoverRisk, setHoverRisk] = useState(false)
   const gammaAdjusted = new BigNumberJs(gamma).div(new BigNumberJs(10).pow(18))
 
-  console.log('details', pool.rewardsData)
-
   const handleRenderRow = () => {
     if (!mobileVer) {
       return (
@@ -366,7 +364,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                           <Text fontSize='13px' fontWeight={500} color={4e7455} marginBottom={2}>
                             {'Monthly Rewards:'}
                           </Text>
-                            <RewardPerBlock tokens={details?.earningToken} sousId={details?.sousId} rewardsData={pool?.rewardsData}  />
+                            <RewardPerBlock earningRewardsBlock={details?.earningTokenPerBlock}  />
                         </Flex>
                         )}
                         </>

@@ -71,11 +71,11 @@ interface CorePoolProps {
   movrPrice?: number
   rawApr?: number
   stakingTokenPrice?: number
-  earningTokenPrice?: number[]
+  // earningTokenPrice?: number[]
+  earningTokenPerBlock?: {blockReward: number, blockRewardPrice: number, symbol: string}[]
   earningTokenCurrentPrice?: number[]
   earningTokenCurrentBalance?: number[]
   vaultKey?: VaultKey
-  earningTokenPerBlock?: number[]
   rewardsData?: string[],
   vTotalSupply?: number,
 }

@@ -34,7 +34,8 @@ const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan
       hoverPage === 'farmRow' ? {bottom: '55px', left: '-50px'} :
       hoverPage === 'farmAction' ? {bottom: width >= 800 ? '0px' : '50px', left: width >= 800 ? '0px' : width <= 500 ? '100px' : '50%'} :
       hoverPage === 'farmActionMobile' ? {bottom: '50%', left: '20%'} :
-      hoverPage === 'tableCard' ? {bottom: '69%', left: width >= 800 ? '20%' : '30%'} :
+      hoverPage === 'tableCardTop' ? {bottom:'69%', left: width >= 800 ? '20%' : '30%'} :
+      hoverPage === 'tableCardBottom' ? {bottom:'125px', left: width >= 800 ? '20%' : '30%'} :
       hoverPage === 'positionCard' && {display: 'none', bottom: '50px', left: width >= 450 ? '70%' : '120px'}
       } show={hoverIndicator && (gamma !== undefined || health !== undefined)}>
         <Text fontSize='13px' fontWeight={500} color={theme.text1}>

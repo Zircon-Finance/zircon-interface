@@ -179,7 +179,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
                 health={healthFactor}
                 isFloat={!isAnchor}
                 noSpan={true}
-                hoverPage={"tableCard"}
+                hoverPage={"tableCardTop"}
               />
               <QuestionMarkContainer
                 onMouseEnter={() => setHoverRisk(true)}

@@ -89,7 +89,6 @@ export function useDerivedPylonMintInfo(
   const energyAddress = Pylon.getEnergyAddress(pylonPair?.token0, pylonPair?.token1) //useEnergyAddress(pylonPair?.token0, pylonPair?.token1)
   const ptbEnergy = useTokenBalance(energyAddress, pylonPair?.pair.liquidityToken)
   const reserveAnchor = useTokenBalance(energyAddress, pylonPair?.anchorLiquidityToken)
-
   const healthFactor = useMemo(() => {
     try {
       return pylonInfo && pylonInfo[0] && pylonState === PylonState.EXISTS && pylonPair && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && lastK && pylonConstants && pylonState === PylonState.EXISTS?
@@ -186,7 +185,7 @@ export function useDerivedPylonMintInfo(
             syncMintInfo = pylonPair.getFloatSyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA,
                 pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
                 pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK))
-            console.log("syncMintInfo", syncMintInfo)
+            // console.log("syncMintInfo", syncMintInfo)
 
             if (JSBI.greaterThan(syncMintInfo?.amountsToInvest?.sync, ZERO) && JSBI.greaterThan(syncMintInfo?.amountsToInvest?.async, ZERO)) {
               extraFeeTreshold = syncMintInfo?.amountsToInvest?.sync
@@ -336,12 +335,7 @@ export const useHealthFactor = (  currencyA: Currency | undefined,
   const ptt = useTotalSupply(pylonPair?.anchorLiquidityToken)
   const lastK = useLastK(pylonPair?.address)
   const pylonFactory = usePylonFactoryContract()
-  // console.log("ea", energyAddress)
-  // console.log("ptbEnergy", ptbEnergy)
-  // console.log("ptb", ptb)
-  // console.log("ptt", ptt)
-  // console.log("lastK", lastK)
-  // console.log("ea", energyAddress)
+
   const healthFactorResult = useMemo(() => {
     return pylonInfo && pylonPair &&  pylonInfo[0] && ptbEnergy && reserveAnchor && ptb && ptt && lastK && pylonFactory ?
         pylonPair.getHealthFactor(
@@ -386,10 +380,10 @@ export function usePairPrices(token0: Currency, token1: Currency, pair: Pair, pa
             : [0, 0];
   }
   const [prices, setPrices] = useState([0,0])
-  console.log('reserves', pair?.reserve0?.toFixed(2), pair?.reserve1?.toFixed(2))
+  // console.log('reserves', pair?.reserve0?.toFixed(2), pair?.reserve1?.toFixed(2))
   useEffect(() => {
     getPrices().then((res) => setPrices(res))
-    console.log('Prices: ', prices)
+    // console.log('Prices: ', prices)
   }, [token0, token1, pairState])
   return prices
 }

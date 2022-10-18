@@ -215,7 +215,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
                 health={healthFactor}
                 isFloat={!farm.isAnchor}
                 noSpan={false}
-                hoverPage={"tableCard"}
+                hoverPage={"tableCardBottom"}
                 font={'14px'}
               />
             </Flex>

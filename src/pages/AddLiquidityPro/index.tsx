@@ -1,12 +1,11 @@
 import {BigNumber} from "@ethersproject/bignumber";
 import {TransactionResponse} from "@ethersproject/providers";
 import {Currency, currencyEquals, DEV, TokenAmount, WDEV} from "zircon-sdk";
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import ReactGA from "react-ga4";
 import {RouteComponentProps} from "react-router-dom";
 import {Flex, Text} from "rebass";
 import styled, {useTheme} from "styled-components";
-import farmsConfig from "../../constants/pools";
 import {ButtonAnchor, ButtonError, ButtonLight, ButtonPrimary,} from "../../components/Button";
 import {BlueCard, GreyCard, LightCard} from "../../components/Card";
 import {AutoColumn, ColumnCenter} from "../../components/Column";
@@ -47,7 +46,7 @@ import {Toggle} from "@pancakeswap/uikit";
 // import {getPoolAprAddress} from "../../utils/apr";
 import {SpaceBetween} from "../../views/Farms/components/FarmTable/Actions/ActionPanel";
 import RepeatIcon from "../../components/RepeatIcon";
-import {usePool} from "../../state/pools/hooks";
+import {usePool, usePools} from "../../state/pools/hooks";
 import {useERC20} from "../../hooks/useContract";
 import useApprovePool from "../../views/Farms/hooks/useApproveFarm";
 import {fetchPoolsUserDataAsync} from "../../state/pools";
@@ -148,13 +147,16 @@ export default function AddLiquidityPro({
   const isValid = !error;
 
   // handle pool button values
-  const farm = farmsConfig.find(
+  const {pools} = usePools();
+  const farm = pools.find(
       (f) =>
           f.token1.symbol === (currencyA?.symbol === 'wMOVR' ? 'MOVR' : currencyA?.symbol) &&
           f.token2.symbol === (currencyB?.symbol === 'wMOVR' ? 'MOVR' : currencyB?.symbol) &&
-          f.isAnchor === !isFloat
+          f.isAnchor === !isFloat &&
+          f.apr !== 0
   );
-  const { pool } = usePool(farm ? farm?.sousId : 1);
+  console.log('farm', farm)
+  const { pool } = usePool(useMemo(() => farm ? farm?.sousId : 1, [farm]));
   const addTransaction = useTransactionAdder()
   const lpContract = useERC20(pool?.stakingToken.address)
   const farmIsApproved = useCallback(

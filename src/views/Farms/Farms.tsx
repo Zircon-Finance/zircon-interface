@@ -334,6 +334,23 @@ const Farms: React.FC = ({ children }) => {
 
   chosenFarmsLength.current = activeFarms.length
 
+  const totalEarnings = useMemo(() => {
+    return stakedOnlyFarms.reduce((accum, pool) => {
+      if (!pool.userData || !pool.earningTokenInfo) {
+        return accum
+      }
+      return accum.plus(getBalanceUSD(new BigNumber(pool.userData.pendingReward), pool.earningTokenInfo?.map(t => t.currentPrice)))
+    }, new BigNumber(0))
+  }, [stakedOnlyFarms])
+
+  const totalStaked = useMemo(() => {
+    return stakedOnlyFarms.reduce((accum, pool) => {
+      if (!pool.userData || !pool.earningTokenInfo) {
+        return accum
+      }
+      return accum.plus(new BigNumber(pool.userData.stakedBalance).div(pool.stakedBalancePool).multipliedBy(pool.staked).multipliedBy(pool.quotingPrice))
+    }, new BigNumber(0))
+  }, [stakedOnlyFarms])
 
   const rowData = chosenPools.map((farm) => {
     const { token1, token2 } = farm
@@ -556,11 +573,27 @@ const Farms: React.FC = ({ children }) => {
                       >
                         {option}
                       </p>
+                      {(option === "Earned" || option === "Staked") && (
                         <FarmRepeatIcon />
+                      )}
                     </PinkArrows>
                     {sortOption === option.toLowerCase() ? (
                       <SelectedOptionDiv />
                     ) : null}
+                    {(option === 'Earned' && totalEarnings.toFixed(0) !== '0') && (
+                      <Flex alignItems="center">
+                        <Text fontSize="12px" color={'#5ebe7b'}>
+                          ~{totalEarnings ? totalEarnings.toFixed(2) : 0} USD
+                        </Text>
+                      </Flex>
+                    )}
+                    {(option === 'Staked' && totalStaked.toFixed(0) !== '0') && (
+                      <Flex alignItems="center">
+                        <Text fontSize="12px" color={'#5ebe7b'}>
+                          ~{totalStaked ? totalStaked.toFixed(2) : 0} USD
+                        </Text>
+                      </Flex>
+                    )}
                   </TableData>
                 ))
               ) : (

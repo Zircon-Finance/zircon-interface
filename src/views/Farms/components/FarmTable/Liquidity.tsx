@@ -9,6 +9,7 @@ import { Flex } from 'rebass'
 import { useWindowDimensions } from '../../../../hooks'
 import { usePairLiquidity } from '../../../../state/pools/hooks'
 import BigNumberJs from "bignumber.js";
+import { formattedNum } from '../../../../utils/formatBalance'
 
 
 export interface LiquidityProps {
@@ -89,8 +90,8 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
       <LiquidityWrapper>
         <Text fontSize="13px" color={theme.text1}>
           {farm.isClassic
-            ? pairLiquidity !== 'NaN' ? pairLiquidity+' USD' : <Skeleton width={60} />
-            : pylonLiquidity !== 'NaN' ? pylonLiquidity+' USD' : <Skeleton width={60} />}
+            ? pairLiquidity !== 'NaN' ? formattedNum(pairLiquidity, true) : <Skeleton width={60} />
+            : pylonLiquidity !== 'NaN' ? formattedNum(pylonLiquidity, true) : <Skeleton width={60} />}
         </Text>
         {// liquidity.gt(0) &&
         hovered && width >= 1100 && (

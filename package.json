@@ -122,6 +122,7 @@
     "lottie-react-web": "^2.2.2",
     "lottie-web": "^5.9.6",
     "npm": "^8.5.5",
+    "numeral" : "^2.0.6",
     "react-countup": "^6.2.0",
     "react-ga4": "^1.4.1",
     "recharts": "^2.1.9",

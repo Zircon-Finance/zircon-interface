@@ -139,14 +139,14 @@ const TableData = styled.td`
   position: relative;
 `
 
-const PinkArrows = styled.div`
+export const PinkArrows = styled.div`
   svg {
     fill: ${({ theme }) => theme.meatPink};
     stroke: ${({ theme }) => theme.meatPink};
   }
 `
 
-const SelectedOptionDiv = styled.div`
+export const SelectedOptionDiv = styled.div`
   position: absolute;
   top: 44px;
   left: -10px;
@@ -573,9 +573,7 @@ const Farms: React.FC = ({ children }) => {
                       >
                         {option}
                       </p>
-                      {(option === "Earned" || option === "Staked") && (
                         <FarmRepeatIcon />
-                      )}
                     </PinkArrows>
                     {sortOption === option.toLowerCase() ? (
                       <SelectedOptionDiv />

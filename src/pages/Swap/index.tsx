@@ -2,7 +2,7 @@ import { CurrencyAmount, JSBI, Token, Trade } from 'zircon-sdk'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { ArrowDown } from 'react-feather'
 import ReactGA from 'react-ga4'
-import { Text } from 'rebass'
+import { Flex, Text } from 'rebass'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from 'styled-components'
 import AddressInputPanel from '../../components/AddressInputPanel'
@@ -23,7 +23,7 @@ import Settings from '../../components/Settings'
 
 import { INITIAL_ALLOWED_SLIPPAGE } from '../../constants'
 import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
-import { useCurrency } from '../../hooks/Tokens'
+import { getTopTokens, useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
 import useENSAddress from '../../hooks/useENSAddress'
 import { useSwapCallback } from '../../hooks/useSwapCallback'
@@ -50,6 +50,11 @@ import PriceChartContainer from '../../components/Chart/PriceChartContainer'
 import NoChartAvailable from '../../components/Chart/NoChartAvailable'
 import { usePairPrices } from '../../state/mint/pylonHooks'
 import { usePair } from '../../data/Reserves'
+import { SelectedOptionDiv } from '../../views/Farms/Farms'
+import { TableData } from '../../views/Farms/components/FarmTable/Row'
+import FarmRepeatIcon from '../../components/FarmRepeatIcon'
+import { useSelectedTokenList } from '../../state/lists/hooks'
+import { TopTokensRow } from '../../components/TopTokensRow'
 
 export default function Swap() {
   const { t } = useTranslation()
@@ -171,6 +176,10 @@ export default function Swap() {
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
     }
+    getTopTokens().then((res) => {
+      setTopTokens(res.query)
+      setTopTokensPrevious(res.oneDayAgoQueryData)
+    })
   }, [approval, approvalSubmitted])
 
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT])
@@ -271,6 +280,15 @@ export default function Swap() {
 
   const [pairState,pair] = usePair(currencies[Field.INPUT], currencies[Field.OUTPUT])
   const prices = usePairPrices(currencies[Field.INPUT], currencies[Field.OUTPUT], pair, pairState)
+
+  //Top tokens
+  const [topTokens, setTopTokens] = useState([])
+  const [topTokensPrevious, setTopTokensPrevious] = useState([])
+  const options = ['Price', 'Price change 24H', 'Volume 24H', 'TVL']
+  const [sortOption, setSortOption] = useState('price')
+  const allTokens = useSelectedTokenList()[1285]  
+  console.log('allTokens', allTokens)
+
 
   return (
     <>
@@ -535,9 +553,55 @@ export default function Swap() {
         {formattedAmounts[Field.INPUT] && formattedAmounts[Field.OUTPUT] && (<AdvancedSwapDetailsDropdown trade={trade} />)}
       </AppBody>
     </div>
+
+    <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none'}}>
+    <table
+      style={{
+        width: "100%",
+        borderBottom: `1px solid ${theme.opacitySmall}`,
+        paddingBottom: "5px",
+      }}
+    ><tr style={{display: 'flex', height: '40px'}}>
+      <Flex style={{width: '350px'}}><Text>{'Top Tokens'}</Text><FarmRepeatIcon /></Flex>
+          {options.map((option) => (
+            <TableData
+              key={option}
+              style={{
+                cursor:"pointer",
+                width: '20%',
+                display: 'flex',
+                alignItems: 'center',
+                height: '100%',
+                flexFlow: 'column',
+              }}
+              onClick={() => {
+                  sortOption === option.toLowerCase()
+                    ? setSortOption("hot")
+                    : setSortOption(option.toLowerCase());
+              }}
+            ><Flex style={{marginTop: '10px'}}>
+                <p
+                  style={{
+                    fontSize: "13px",
+                    color: !theme.darkMode ? theme.text1 : theme.meatPink,
+                    fontWeight: 500,
+                    margin: 0,
+                  }}
+                >
+                  {option}
+                </p><FarmRepeatIcon /></Flex>
+              {sortOption === option.toLowerCase() ? (
+                <SelectedOptionDiv style={{position: 'relative', top: '12px', width: '80%', left: '0px'}} />
+              ) : null}
+            </TableData>
+          ))}
+        </tr>
+        {(topTokensPrevious.length > 0 && topTokens.length > 0) && topTokens.map((token, index) => (
+          <TopTokensRow key={index} token={token} previousToken={topTokensPrevious[index]} index={index} />
+        ))}
+      </table>
+    </Flex>
     <LearnIcon />
     </>
   )
 }
-
-//465: {betterTradeLinkVersion && <BetterTradeLink version={betterTradeLinkVersion} />}

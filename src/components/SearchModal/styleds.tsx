@@ -104,7 +104,7 @@ animation: ${({ expanded }) =>
 export const Separator = styled.div`
   width: 100%;
   height: 1px;
-  background-color: ${({ theme }) => theme.bg6};
+  background-color: ${({ theme }) => theme.opacitySmall};
 `
 
 export const SeparatorDark = styled.div`

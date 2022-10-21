@@ -2,8 +2,8 @@
 // import { BIG_ONE, BIG_ZERO } from '../../utils/bigNumber'
 // import { filterFarmsByQuoteToken } from '../../utils/farmsPriceHelpers'
 import {SerializedPool} from '../types'
-import axios from "axios";
-import BigNumber from "bignumber.js";
+// import axios from "axios";
+// import BigNumber from "bignumber.js";
 // const getFarmFromTokenSymbol = (
 //     farms: SerializedFarm[],
 //     tokenSymbol: string,
@@ -85,15 +85,19 @@ import BigNumber from "bignumber.js";
 //     return BIG_ZERO
 // }
 
+// GAMMA CHANGE!
+
 const getPoolsPrices = async (pools: SerializedPool[]) => {
-    let calls = pools.map((pool) => axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${pool.token2.symbol}BUSD`))
+    // let calls = pools.map((pool) => axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${pool.token2.symbol}BUSD`))
     try{
-        let responses = (await axios.all(calls)).map((response) => response.data)
+        // let responses = (await axios.all(calls)).map((response) => response.data)
         return pools.map((pool, index) => {
             return {
                 ...pool,
-                quotePrice: String(responses[index].price.toString()),
-                tokenPrice: String(BigNumber(responses[index].price).multipliedBy(pool.tokenPriceVsQuote).toString()),
+                quotePrice: '1',
+                //String(responses[index].price.toString()),
+                tokenPrice: '1'
+                // String(BigNumber(responses[index].price).multipliedBy(pool.tokenPriceVsQuote).toString()),
             }
         })
     }catch (e) {

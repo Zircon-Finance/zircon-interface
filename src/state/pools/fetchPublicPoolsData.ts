@@ -19,6 +19,17 @@ const fetchPoolCalls = (pool: SerializedPool) => {
             name: 'balanceOf',
             params: [lpAddress],
         },
+        {
+            address: token1.address,
+            name: 'balanceOf',
+            params: [pylonAddress],
+        },
+        // Balance of quote token on LP contract
+        {
+            address: token2.address,
+            name: 'balanceOf',
+            params: [pylonAddress],
+        },
         // Balance of LP tokens in the master chef contract
         {
             address: stakingToken.address,
@@ -52,7 +63,12 @@ const fetchPoolCalls = (pool: SerializedPool) => {
         {
             address: pool.vaultAddress,
             name: "totalSupply"
-        }
+        },
+        {
+            address: pool.vaultAddress,
+            name: "balanceOf",
+            params: [pool.contractAddress],
+        },
     ]
 
 }
@@ -66,9 +82,20 @@ export const fetchPublicPoolData = async (pools: SerializedPoolConfig[]): Promis
 
 
 export const fetchGammas = async (pools: SerializedPoolConfig[]): Promise<any[]> => {
-    const farmCalls = pools.map((pool) => ({address: pool.pylonAddress, name: 'gammaMulDecimals'}))
+    const farmCalls = pools.flatMap((pool) => ([{address: pool.pylonAddress, name: 'gammaMulDecimals'}, {address: pool.pylonAddress, name: 'virtualAnchorBalance'}]))
     const farmMultiCallResult = await multicall(PYLON_ABI, farmCalls)
     const chunkSize = farmCalls.length / pools.length
     return chunk(farmMultiCallResult, chunkSize)
-
 }
+
+
+// export const fetchGammas = async (poolsToFetch: SerializedPoolConfig[]): Promise<any[]> => {
+//
+//     let pools = Array.from(new Set(poolsToFetch.map(pool => pool.pylonAddress)))
+//     const farmCalls = pools.flatMap((address) => ([{address, name: 'gammaMulDecimals'}, {address, name: 'virtualAnchorBalance'}]))
+//     const farmMultiCallResult = await multicall(PYLON_ABI, farmCalls)
+//     console.log("farmMultiCallResult",farmMultiCallResult)
+//     const chunkSize = farmCalls.length / pools.length
+//     return chunk(farmMultiCallResult, chunkSize)
+//
+// }

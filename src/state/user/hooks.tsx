@@ -25,7 +25,9 @@ import {
   ViewMode,
   FarmFilterAnchorFloat,
   updateuserFarmsFilterAnchorFloat,
-  updateShowMobileSearchBar
+  updateShowMobileSearchBar,
+  FarmFinishedOnly,
+  updateUserFarmFinishedOnly
 } from './actions'
 
 export function serializeToken(token: Token): SerializedToken {
@@ -102,6 +104,22 @@ export function useUserFarmsViewMode(): [ViewMode, (viewMode: ViewMode) => void]
   )
 
   return [userFarmsViewMode, setUserFarmsViewMode]
+}
+
+export function useUserFarmsFinishedOnly(): [FarmFinishedOnly, (finishedOnly: FarmFinishedOnly) => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const userFarmsFinishedOnly = useSelector<AppState, AppState['user']['userFarmFinishedOnly']>((state) => {
+    return state.user.userFarmFinishedOnly
+  })
+
+  const setUserFarmsFinishedOnly = useCallback(
+    (finishedOnly: FarmFinishedOnly) => {
+      dispatch(updateUserFarmFinishedOnly({ userFarmFinishedOnly: finishedOnly }))
+    },
+    [dispatch],
+  )
+
+  return [userFarmsFinishedOnly, setUserFarmsFinishedOnly]
 }
 
 export function useUserFarmsFilterPylonClassic(): [FarmFilter, (filter: FarmFilter) => void] {

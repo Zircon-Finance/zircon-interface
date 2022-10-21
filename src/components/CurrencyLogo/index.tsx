@@ -7,7 +7,7 @@ import MovrLogo from '../../assets/images/movr-logo.png'
 // import { WrappedTokenInfo } from '../../state/lists/hooks'
 import Logo from '../Logo'
 
-const getTokenLogoURL = (symbol: string) =>
+export const getTokenLogoURL = (symbol: string) =>
     `https://raw.githubusercontent.com/Zircon-Finance/zircon-tokenlist/main/${symbol}/logo.png`
 const getTokenLogoURL2 = (address: string) =>
     `https://raw.githubusercontent.com/solarbeamio/solarbeam-tokenlist/main/assets/moonriver/${address}/logo.png`

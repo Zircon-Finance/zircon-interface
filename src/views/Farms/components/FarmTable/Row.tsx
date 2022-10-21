@@ -27,16 +27,15 @@ import { useTransactionAdder } from '../../../../state/transactions/hooks'
 import { useDispatch } from 'react-redux'
 import { fetchFarmUserDataAsync } from '../../../../state/farms'
 import { useIsDarkMode } from '../../../../state/user/hooks'
-import { useCurrentBlock, useEndBlock, usePool, useStartBlock } from '../../../../state/pools/hooks'
+import { usePool } from '../../../../state/pools/hooks'
 import { useCallWithGasPrice } from '../../../../hooks/useCallWithGasPrice'
-import { useTokenBalance } from '../../../../state/wallet/hooks'
-import { Token } from 'zircon-sdk'
 import { useCurrency } from '../../../../hooks/Tokens'
 import {useDerivedPylonMintInfo} from "../../../../state/mint/pylonHooks";
 import BigNumberJs from "bignumber.js";
 import {useGamma} from "../../../../data/PylonData";
 import CapacityIndicatorSmall from "../../../../components/CapacityIndicatorSmall";
 import { fetchPoolsUserDataAsync } from '../../../../state/pools'
+import { RewardPerBlock } from '../../Farms'
 // import { useFarmUser } from '../../../../state/farms/hooks'
 
 export interface RowProps {
@@ -187,9 +186,10 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
       false,
       "off"
   );
-  const gamma = useGamma(pylonPair?.address)
+  const pool = usePool(details.sousId).pool
+  const gamma = useGamma(pylonPair?.address)//TODO: change with pool?.gamma
 
-  const hasStakedAmount = !!usePool(details.sousId).pool.userData.stakedBalance.toNumber()
+  const hasStakedAmount = !!pool.userData.stakedBalance.toNumber()
   const [actionPanelExpanded, setActionPanelExpanded] = useState(false)
   const [hovered, setHovered] = useState(false)
   const shouldRenderChild = actionPanelExpanded
@@ -208,30 +208,6 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     </ToolTip>
   )}
 
-  // POOL HARVEST DATA
-  const [startBlock, setStartBlock] = useState(0)
-  const [endBlock, setEndBlock] = useState(0)
-  const [currentBlock, setCurrentBlock] = useState(0)
-  useStartBlock(details.sousId).then((block?) => setStartBlock(block))
-  useEndBlock(details.sousId).then((block?) => setEndBlock(block))
-  useCurrentBlock().then((block?) => setCurrentBlock(block))
-  //TODO: this has to be only one component PD and shared between Row and this
-  const RewardPerBlock = ({ token }: { token: Token }) => {
-    const { pool } = usePool(details.sousId)
-    const balance = useTokenBalance(pool.vaultAddress, token)
-    const blocksLeft = endBlock - Math.max(currentBlock, startBlock)
-    // console.log("current", currentBlock)
-    // console.log("start", startBlock)
-    // console.log("balance", balance)
-    // console.log("blocksLeft", blocksLeft)
-    const rewardBlocksPerDay = (parseFloat((balance?.toFixed(6)))/blocksLeft)*6400*30
-    return(
-        <Text fontSize='13px' fontWeight={500} color={'#4e7455'}>
-          {`~ ${rewardBlocksPerDay.toFixed(4)}  ${token.symbol}`}
-        </Text>
-      )
-    }
-  //--------------------------------------------------------------------------------------------------//
 
   const toggleActionPanel = () => {
     setActionPanelExpanded(!actionPanelExpanded)
@@ -248,10 +224,12 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const dispatch = useDispatch()
   const sousChefContract = useSousChef(details.sousId)
   const { callWithGasPrice } = useCallWithGasPrice()
+  const [pendingTx, setPendingTx] = useState(false)
 
   const handleApproval = useCallback(async () => {
     const receipt = await fetchWithCatchTxError(() => {
       return callWithGasPrice(lpContract, 'approve', [sousChefContract.address, MaxUint256]).then(response => {
+        setPendingTx(true)
         addTransaction(response, {
           summary:  `Enable ${details.token1.symbol}-${details.token2.symbol} stake contract`
         })
@@ -269,6 +247,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
         },
         receipt.transactionHash
       )
+      setPendingTx(false)
       dispatch(fetchPoolsUserDataAsync(account))
       dispatch(fetchFarmUserDataAsync({ account, pids: [details.sousId] }))
     }
@@ -298,7 +277,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const [rewardTokens, setRewardTokens] = useState("")
   useEffect(() => {
     let r = ''
-    props.farm?.earningToken.forEach((token) => r += ` ${token.symbol} &`)
+    props.farm?.earningToken.forEach((token) => r += ` ${token.symbol === 'MOVR' ? 'wMOVR' : token.symbol} &`)
     setRewardTokens(r.slice(0, -1))
   }, [])
   const [hoverRisk, setHoverRisk] = useState(false)
@@ -324,8 +303,8 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                   <TableData key={key} style={{width: gamma ? '15%' : '12%'}}>
                     <CellInner>
                       <CellLayout>
-                      <div style={{width: '200%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
-                            <CapacityIndicatorSmall gamma={gammaAdjusted} health={healthFactor} isFloat={!props.farm.isAnchor} noSpan={false}
+                        <div style={{width: '200%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
+                            {!props.farm.isFinished && <><CapacityIndicatorSmall gamma={gammaAdjusted} health={healthFactor} isFloat={!props.farm.isAnchor} noSpan={false}
                             hoverPage={'farmRow'}/>
                             <QuestionMarkContainer
                               onMouseEnter={() => setHoverRisk(true)}
@@ -334,8 +313,8 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                                 <TooltipContentRisk option={!props.farm.isAnchor ? 'divergence' : 'health'} />
                               )}
                             <QuestionMarkIcon />
-                            </QuestionMarkContainer>
-                            </div>
+                            </QuestionMarkContainer></>}
+                        </div>
                         <Details actionPanelToggled={actionPanelExpanded} />
                       </CellLayout>
                     </CellInner>
@@ -376,17 +355,16 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                       <Flex style={{alignItems: 'center'}}>
                         <>
                         {!account ? (
-                        <Text style={{width: '50%'}} color={'#4e7455'}>
+                        <Text style={{width: '70%'}} color={'#4e7455'}>
                           {`Earn${rewardTokens.slice(0, -1)}`}
                         </Text>
                         ) : (
+                        !props.farm.isFinished &&
                         <Flex flexDirection={'column'}>
                           <Text fontSize='13px' fontWeight={500} color={4e7455} marginBottom={2}>
                             {'Monthly Rewards:'}
                           </Text>
-                          <>
-                            {details.earningToken.map((token) => <RewardPerBlock token={token} />)}
-                          </>
+                            <RewardPerBlock earningRewardsBlock={details?.earningTokenPerBlock}  />
                         </Flex>
                         )}
                         </>
@@ -405,11 +383,11 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                           {createElement(cells[key], { ...props[key], hovered, setHovered })}
                         </CellLayout>
                       </CellInner>) : (
-                      <StakeAdd row={true} margin={true} width={'75%'} />)
+                      <StakeAdd row={true} margin={true} width={'60%'} height={'34px'} isFinished={props.farm.isFinished} />)
                     : (
-                      <ButtonPinkGamma style={{width: '80%', fontSize: '13px', padding: '10px', borderRadius: '12px'}}
-                      onClick={handleApproval}>{'Enable contract'}</ButtonPinkGamma>)) : (
-                        <ButtonPinkGamma style={{width: '80%', fontSize: '13px', padding: '10px', borderRadius: '12px'}}
+                      <ButtonPinkGamma style={{width: '80%', fontSize: '13px', padding: '0 15px', borderRadius: '12px', height: '34px'}} disabled={pendingTx || props.farm.isFinished}
+                      onClick={handleApproval}>{pendingTx ? 'Enabling...' : 'Enable contract'}</ButtonPinkGamma>)) : (
+                        <ButtonPinkGamma style={{width: '80%', fontSize: '13px', padding: '0 15px', borderRadius: '12px', height: '34px'}}
                     onClick={toggleWalletModal}>{'Connect wallet'}</ButtonPinkGamma>)}
                   </TableData>
                 )
@@ -458,17 +436,17 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                     <ButtonPinkGamma style={{fontSize: '13px', padding: '10px', borderRadius: '12px', maxHeight: '38px'}}>
                       <Flex justifyContent={'space-between'} flexDirection={'row'} alignItems={'center'}>
                         <svg width="25" height="25" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M22.75 9.875V36.125" stroke="#9D94AA" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M9.625 23H35.875" stroke="#9D94AA" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M22.75 9.875V36.125" stroke="#CA98BB" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M9.625 23H35.875" stroke="#CA98BB" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
                         <Text style={{minWidth: 'auto'}}>Stake</Text>
                       </Flex>
                     </ButtonPinkGamma>
                   )) : (
-                    <ButtonPinkGamma style={{fontSize: '13px', padding: '10px', borderRadius: '12px'}}
-                    onClick={handleApproval}>{'Enable contract'}</ButtonPinkGamma>
+                    <ButtonPinkGamma style={{fontSize: '13px', padding: '10px', borderRadius: '12px', height: '34px'}} disabled={pendingTx || props.farm.isFinished}
+                    onClick={handleApproval}>{pendingTx ? 'Enabling...' : 'Enable contract'}</ButtonPinkGamma>
                   )) : (
-                    <ButtonPinkGamma style={{fontSize: '13px', padding: '10px', borderRadius: '12px'}}
+                    <ButtonPinkGamma style={{fontSize: '13px', padding: '10px', borderRadius: '12px', height: '34px'}}
                     onClick={toggleWalletModal}>{'Connect wallet'}</ButtonPinkGamma>
                   )}
 

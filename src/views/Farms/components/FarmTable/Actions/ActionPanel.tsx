@@ -24,7 +24,7 @@ import { useDispatch } from 'react-redux'
 import { useWeb3React } from '@web3-react/core'
 import BigNumber from 'bignumber.js'
 import { useERC20, useSousChef } from '../../../../../hooks/useContract'
-import { ModalContainer } from '../../../Farms'
+import { ModalContainer, RewardPerBlock } from '../../../Farms'
 import { useAddPopup, useWalletModalToggle } from '../../../../../state/application/hooks'
 import { Link } from 'react-router-dom'
 import { useTransactionAdder } from '../../../../../state/transactions/hooks'
@@ -40,6 +40,7 @@ import { BIG_ZERO } from '../../../../../utils/bigNumber'
 import QuestionMarkIcon from '../../../../../components/QuestionMarkIcon'
 import { QuestionMarkContainer, ToolTip } from '../Row'
 import CapacityIndicatorSmall from '../../../../../components/CapacityIndicatorSmall/index'
+import { CONTRACT_ADDRESS_BASE } from '../../../../../constants/lists'
 
 export interface ActionPanelProps {
   apr: AprProps
@@ -51,7 +52,7 @@ export interface ActionPanelProps {
   expanded: boolean
   clickAction: Dispatch<SetStateAction<boolean>>
   gamma: number
-  healthFactor: string
+  healthFactor: string,
 }
 
 interface ToolTipProps {
@@ -172,10 +173,12 @@ interface ModalProps {
   addLiquidityUrl: string
   cakePrice: BigNumber
   token: Token
+  pool?: DeserializedPool
 }
 
 export const ModalTopDeposit: React.FunctionComponent<ModalProps> = ({
                                                                        max,
+                                                                       pool,
                                                                        lpLabel,
                                                                        apr,
                                                                        onDismiss,
@@ -201,6 +204,7 @@ export const ModalTopDeposit: React.FunctionComponent<ModalProps> = ({
               addLiquidityUrl={addLiquidityUrl}
               cakePrice={cakePrice}
               token={token}
+              pool={pool}
           />
         </ModalContainer>
       </Portal>
@@ -216,7 +220,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                                                                   clickAction,
                                                                   expanded,
                                                                   gamma,
-                                                                  healthFactor
+                                                                  healthFactor,
                                                                 }) => {
   const farm = details
   const staked = details.userData.stakedBalance.gt(0)
@@ -227,7 +231,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   //   quoteTokenAddress: quoteToken.address,
   //   tokenAddress: token.address,
   // })
-  const bsc = 'placeholder'
+  const bsc = CONTRACT_ADDRESS_BASE+farm.contractAddress
   // getBscScanLink(lpAddress, 'address')
   const lpAddress = farm.stakingToken.address
   const info = `/info/pool/${lpAddress}`
@@ -333,6 +337,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
       <>
         {showModal && (
             <ModalTopDeposit
+                pool={pool}
                 max={tokenBalance}
                 lpLabel = {lpLabel}
                 apr = {1}
@@ -371,7 +376,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                     )}
                   </SpaceBetween>
               ) : (
-                  <SpaceBetween style={{paddingTop: '16px'}}>
+                  <SpaceBetween style={{paddingTop: '16px', paddingBottom: '5px', marginBottom: '5px', borderBottom: `1px solid ${theme.opacitySmall}`}}>
                     <Flex alignItems={'center'}>
                       {isClassic ? (
                           <DoubleCurrencyLogo currency0={token1} currency1={token2} margin={false} size={width >= 500 ? 25 : 30} />
@@ -385,12 +390,13 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                                 style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', display: 'flex', alignItems: 'center', marginRight: '5px'}}>
                               <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{!isClassic && isAnchor ? token2.symbol : token1.symbol} </span>{isClassic ? 'CLASSIC' :!isAnchor ? 'FLOAT' : 'STABLE'}
                             </BadgeSmall>
-                            <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{`${token1.symbol}/${token2.symbol}`}</Text>                    </Flex>
+                          </Flex>
                         </>
                       </div>
                     </Flex>
                     <QuarterContainer onClick={() => clickAction(false)}
-                                      style={{justifyContent: 'center', alignItems: 'center', cursor: 'pointer'}}>
+                                      style={{justifyContent: 'center', alignItems: 'center', cursor: 'pointer', flexDirection: 'row'}}>
+                    <Text color={theme.whiteHalf} style={{minWidth: 'max-content'}} fontWeight={400}>{`${token1.symbol}/${token2.symbol}`}</Text>
                       <ArrowIcon toggled={expanded}  />
                     </QuarterContainer>
                   </SpaceBetween>
@@ -398,7 +404,13 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
               {width >= 800 ? (
                   <>
                     <SpaceBetween>
-                      <Text color={theme.text1}>{`Earn ${rewardTokens}`}</Text>
+                    {!account ? <Text color={theme.text1}>{`Earn${rewardTokens}`}</Text> :
+                    !farm.isFinished ?
+                    <>
+                      <Flex flexDirection={'column'} style={{width: '100%'}}>
+                        <Text color={theme.text1} style={{minWidth: 'max-content', fontSize: '14px'}} fontWeight={400}>{'Monthly rewards:'}</Text>
+                        <RewardPerBlock earningRewardsBlock={pool.earningTokenPerBlock} />
+                      </Flex>
 
                       <div style={{width: '50%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
                         <CapacityIndicatorSmall gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true} hoverPage={'farmAction'}/>
@@ -411,21 +423,24 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                           <QuestionMarkIcon />
                         </QuestionMarkContainer>
                       </div>
+                    </> : <></>
+                    }
                     </SpaceBetween>
                     <SpaceBetween>
-                      <StyledLinkExternal style={{marginBottom: '5px'}} color={theme.meatPink} href={bsc}>{t('View Contract ↗')}</StyledLinkExternal>
+                      <StyledLinkExternal color={theme.meatPink} href={bsc}>{t('View Contract ↗')}</StyledLinkExternal>
                       <StyledLinkExternal color={theme.meatPink} href={info}>{t('See Pair Info ↗')}</StyledLinkExternal>
                     </SpaceBetween>
                   </> ) : (
-                  <>
+                  !account ?
+                    <>
                     <SpaceBetween style={{marginBottom: '16px'}}>
                       <Flex style={{flexDirection: 'column'}}>
                         <StyledLinkExternal style={{margin: '5px 0 5px 0'}} color={theme.meatPink} href={bsc}>{t('View Contract ↗')}</StyledLinkExternal>
                         <StyledLinkExternal color={theme.meatPink} href={info}>{t('See Pair Info ↗')}</StyledLinkExternal>
                       </Flex>
                       <Flex flexDirection={"column"}>
-                        <Text color={theme.text1}>{`Earn${rewardTokens}`}</Text>
-                        <div style={{display: 'flex', marginLeft: '10px', alignItems: 'center', justifyContent: 'flex-end'}}>
+                      <Text color={theme.text1}>{`Earn${rewardTokens}`}</Text>
+                        {!farm.isFinished && <div style={{display: 'flex', marginLeft: '10px', alignItems: 'center', justifyContent: 'flex-end'}}>
                           <CapacityIndicatorSmall gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true} hoverPage={'farmActionMobile'}/>
 
                           <QuestionMarkContainer
@@ -436,10 +451,17 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                           )}
                             <QuestionMarkIcon />
                           </QuestionMarkContainer>
-                        </div>
+                        </div>}
                       </Flex>
                     </SpaceBetween>
                   </>
+                  :
+                  !farm.isFinished && (<SpaceBetween style={{marginBottom: '16px'}}>
+                    <Text color={theme.whiteHalf} style={{minWidth: 'max-content', fontSize: '14px'}} fontWeight={400}>{'Monthly rewards:'}</Text>
+                    <Flex flexDirection={"column"}>
+                     <RewardPerBlock earningRewardsBlock={pool?.earningTokenPerBlock}  />
+                    </Flex>
+                  </SpaceBetween>)
               )}
 
               {/* <TagsContainer> */}
@@ -466,10 +488,10 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           ) : (
               <QuarterContainer >
                 {isApproved ? (
-                        <StakeAdd pink={true} clickAction={() => {setShowModal(true)}} row={true} margin={false} width={width > 992 ? '30%' : '60%'} />)
+                        <StakeAdd pink={true} clickAction={() => {!farm.isFinished && setShowModal(true)}} row={true} margin={false} width={width > 992 ? '30%' : '60%'} isFinished={farm.isFinished} />)
                     : (
                         <ButtonOutlined style={{background: theme.hoveredButton, border: 'none', color: '#FFF'}}
-                                        m="auto" width="50%" disabled={pendingTx} onClick={account ? handleApproval : toggleWalletModal}>
+                                        m="auto" width="50%" disabled={pendingTx || farm.isFinished} onClick={account ? handleApproval : toggleWalletModal}>
                           {account ? 'Enable Contract' : 'Connect Wallet'}
                         </ButtonOutlined>
                     )}
@@ -479,9 +501,15 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
 
           <QuarterContainer style={{padding: width < 992 ? '0 10px' : '0 0 0 10px'}}>
             <ValueContainer>
+              {account && width <= 800 &&
+              !farm.isFinished && (<ValueWrapper>
+                <Text fontSize='13px' fontWeight={300} color={theme.text1}>{`${!isAnchor ? 'Divergence' : 'Health Factor'}`}</Text>
+                <CapacityIndicatorSmall gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true} hoverPage={'farmAction'}/>
+              </ValueWrapper>)
+              }
               <ValueWrapper>
                 <Text fontSize='13px' fontWeight={300} color={theme.text1}>{t('APR')}</Text>
-                <Apr left={true} {...apr} />
+                <Apr white={true} left={true} {...apr} />
               </ValueWrapper>
               <ValueWrapper>
                 <Text color={theme.text1} fontSize='13px' fontWeight={300}>{t('Liquidity')}</Text>
@@ -506,7 +534,25 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           {width >= 800 && <QuarterContainer onClick={() => clickAction(false)} style={{justifyContent: 'center', alignItems: 'center', cursor: 'pointer'}}>
             <ArrowIcon toggled={expanded}  />
           </QuarterContainer>}
-
+        {account && width <= 800 &&
+        <Flex justifyContent={'space-around'} my={'5px'}>
+        <StyledLinkExternal
+          style={{ color: theme.pinkBrown, fontWeight: 500, marginRight: '10px' }}
+          href={"Placeholder"}
+        >
+          {"See Pair Info ↗"}
+        </StyledLinkExternal>
+        <StyledLinkExternal
+          style={{
+            color: theme.pinkBrown,
+            fontWeight: 500,
+          }}
+          href={CONTRACT_ADDRESS_BASE+farm.contractAddress}
+        >
+          {"View Contract ↗"}
+        </StyledLinkExternal>
+      </Flex>
+        }
         </Container>
       </>
   )

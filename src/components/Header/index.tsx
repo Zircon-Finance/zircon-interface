@@ -23,6 +23,7 @@ import { useDarkModeManager } from '../../state/user/hooks';
 import { ButtonOutlined } from '../Button';
 import Portal from '@reach/portal';
 import ClaimModal from '../ClaimModal';
+import { useFetchPublicPoolsData } from '../../state/pools/hooks';
 // import { connectNet } from '../WalletModal';
 // import VersionSwitch from './VersionSwitch'
 
@@ -173,6 +174,7 @@ export default function Header() {
   const [darkMode, toggleSetDarkMode] = useDarkModeManager();
   const [showClaimTokens, setShowClaimTokens] = React.useState(false);
   const theme = useTheme();
+  useFetchPublicPoolsData()
 
   return (
     <HeaderFrame>
@@ -292,7 +294,7 @@ export default function Header() {
               <AccountElement active={!!account} style={{ pointerEvents: 'auto', padding: '2px' }}>
                 {account && userEthBalance ? (
                   <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={400}>
-                    {userEthBalance?.toSignificant(4)} DEV
+                    {userEthBalance?.toSignificant(4)} MOVR
                   </BalanceText>
                 ) : null}
                 <Web3Status />

@@ -7,11 +7,13 @@ import { useWindowDimensions } from "../../hooks";
 import {
   useUserFarmsFilterAnchorFloat,
   useUserFarmsFilterPylonClassic,
+  useUserFarmsFinishedOnly,
   useUserFarmsViewMode,
 } from "../../state/user/hooks";
 import {
   FarmFilter,
   FarmFilterAnchorFloat,
+  FarmFinishedOnly,
   ViewMode,
 } from "../../state/user/actions";
 import CardIcon from "../ViewCardIcon";
@@ -50,7 +52,7 @@ const StyledNavLink = styled(NavLink).attrs({
   &.${activeClassName} {
     border-radius: 7px;
     color: ${({ theme }) => theme.text1};
-    background-color: ${({ theme }) => theme.darkMode ? theme.positionsButtons : theme.bg1};
+    background-color: ${({ theme }) => theme.darkMode ? '#7d5956' : theme.bg1};
   }
 
   :hover,
@@ -191,25 +193,29 @@ export function ViewModeTabs({ active }: { active: "TABLE" | "CARD" }) {
 export function FarmTabButtons({ active }: { active: "Active" | "Finished" }) {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
-  const theme = useTheme();
-  const { hash } = window.location;
+  const [finished, setFinished] = useUserFarmsFinishedOnly();
 
   return (
     <Tabs style={{ padding: "5px", width: width >= 700 ? "auto" : "100%" }}>
       <StyledNavLink
         id={`live-farms-select`}
         to={"/farm"}
-        isActive={() => hash === "#/farm"}
+        onClick={() => {
+          setFinished(FarmFinishedOnly.FALSE);
+        }}
+        isActive={() => finished === FarmFinishedOnly.FALSE}
       >
         {t("ACTIVE")}
       </StyledNavLink>
       <StyledNavLink
         id={`finished-farms-select`}
         to={"/farm"}
-        isActive={() => hash === "#/farm/history"
-        }
+        onClick={() => {
+          setFinished(FarmFinishedOnly.TRUE);
+        }}
+        isActive={() => finished === FarmFinishedOnly.TRUE}
       >
-        <span style={{color: theme.whiteHalf, cursor: 'default'}}>{t("FINISHED")}</span>
+        {t("FINISHED")}
       </StyledNavLink>
     </Tabs>
   );

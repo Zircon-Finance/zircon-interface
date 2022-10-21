@@ -22,7 +22,7 @@ import {useActiveWeb3React} from '../../hooks'
 import {useCurrency} from '../../hooks/Tokens'
 
 import {useTransactionAdder} from '../../state/transactions/hooks'
-import {StyledInternalLink, TYPE} from '../../theme'
+import {StyledInternalLink} from '../../theme'
 import {calculateSlippageAmount, getPylonRouterContract} from '../../utils'
 //calculateGasMargin,
 import {currencyId} from '../../utils/currencyId'
@@ -283,6 +283,7 @@ export default function RemoveProLiquidity({
             account,
             deadlineFromNow
           ]
+          console.log("args", args)
         }
         // removeLiquidity
         else {
@@ -390,10 +391,10 @@ export default function RemoveProLiquidity({
             </RowFixed>
           </RowBetween>
 
-          <TYPE.italic fontSize={12} color={theme.text2} textAlign="left" padding={'12px 0 0 0'}>
+          <Text fontSize={12} textAlign="left" padding={"12px 0 0 0 "} color={theme.whiteHalf}>
             {`Output is estimated. If the price changes by more than ${allowedSlippage /
             100}% your transaction will revert.`}
-          </TYPE.italic>
+          </Text>
         </AutoColumn>
     )
   }
@@ -659,7 +660,6 @@ export default function RemoveProLiquidity({
                         currency={pylon?.pair?.liquidityToken}
                         pair={pylon?.pair}
                         id="liquidity-amount"
-                        tokens={[currencyA, currencyB]}
                     />
                     <ColumnCenter>
                       <ArrowDown size="16" color={theme.text2} />
@@ -675,7 +675,6 @@ export default function RemoveProLiquidity({
                         label={'Output'}
                         onCurrencySelect={handleSelectCurrencyA}
                         id="remove-liquidity-tokena"
-                        tokens={[currencyA, currencyB]}
                     />
                     <ColumnCenter>
                       <Plus size="16" color={theme.text2} />
@@ -691,7 +690,6 @@ export default function RemoveProLiquidity({
                         label={'Output'}
                         onCurrencySelect={handleSelectCurrencyB}
                         id="remove-liquidity-tokenb"
-                        tokens={[currencyA, currencyB]}
                     />
                   </>
               )}
@@ -717,6 +715,7 @@ export default function RemoveProLiquidity({
               )}
               <div style={{marginBottom: 32}}>
                 <CapacityIndicator
+                    hoverPage='removeLiq'
                     gamma={new BigNumberJs(gamma).div(new BigNumberJs(10).pow(18))}
                     health={healthFactor}
                     isFloat={isFloat}

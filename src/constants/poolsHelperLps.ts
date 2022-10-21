@@ -1,5 +1,6 @@
 import {PoolCategory, SerializedPoolConfig} from './types'
 import {ChainId, Token} from "zircon-sdk";
+import { serializedTokens } from './farms'
 
 const priceHelperLps: SerializedPoolConfig[] = [
     /**
@@ -9,24 +10,24 @@ const priceHelperLps: SerializedPoolConfig[] = [
      * Prices are then fetched for all farms (masterchef + priceHelperLps).
      * Before storing to redux, farms without a PID are filtered out.
      */
-    {
-        sousId: 1,
-        token1: new Token(ChainId.MOONRIVER, '0x4545E94974AdACb82FC56BCf136B07943e152055', 18, 'ZRG', 'Zircon Gamma'),
-        token2: new Token(ChainId.MOONRIVER, '0x98878b06940ae243284ca214f92bb71a2b032b8a', 18, 'MOVR', 'Moonriver'),
+    // GAMMA CHANGE!
+     {
+        sousId: 2,
+        token1: serializedTokens.weth,
+        token2: serializedTokens.neptune,
         isClassic: false,
-        isAnchor: false,
-        earningToken: [new Token(ChainId.MOONRIVER, '0x98878B06940aE243284CA214f92Bb71a2b032B8A', 18, 'MOVR', 'MoonRiver'),
-            new Token(ChainId.MOONRIVER, '0x4545E94974AdACb82FC56BCf136B07943e152055', 18, 'ZRG', 'Zircon Gamma'),],
-        stakingToken: new Token(ChainId.MOONRIVER, '0x770AA7074297E465E823bf2F45194e926aF0D05d', 18, 'fZPT', 'Zircon Float Token'),
-        contractAddress: '0x7CeEa7A00520F7f110314d177edE06EE9A3895d9',
-        vaultAddress: '0x77FA7c931d04CA5e8C000D01b6D87380f9C0F3d0',
-        lpAddress: "0x89bb1bd89c764e1c2d4aa6469062590732b26323",
-        pylonAddress: "0x027c902dc32B8E98663cd048Aa7545e50479B674",
+        isAnchor: true,
+        earningToken: [serializedTokens.neptune],
+        stakingToken: new Token(ChainId.MOONBASE, '0x6b5c798dda380bf9bd33bfcf087b09ad9253e50b', 18, 'ZPT', 'Zircon'),
+        contractAddress: '0x60574fFe10F5562A84De60eb30fF2cdB0C13d42F',
+        vaultAddress: '0x2A6b2d29B6511Cb4060F70929D8aA368E9608e27',
         poolCategory: PoolCategory.CORE,
         harvest: true,
         sortOrder: 1,
         isFinished: false,
-    },
+        lpAddress: '0x6b5c798dda380bf9bd33bfcf087b09ad9253e50b',
+        pylonAddress: '0x6585F1F3A475873e9CF603730075D46d0f3B718b',
+      },
 ]
 
 export default priceHelperLps

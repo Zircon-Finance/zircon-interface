@@ -14,21 +14,24 @@ import QuestionMarkIcon from "../../../../components/QuestionMarkIcon";
 import { QuestionMarkContainer, ToolTip } from "../FarmTable/Row";
 import CapacityIndicatorSmall from "../../../../components/CapacityIndicatorSmall/index";
 import { useActiveWeb3React, useWindowDimensions } from "../../../../hooks";
-import { useCurrentBlock, useEndBlock, usePool, useStartBlock } from "../../../../state/pools/hooks";
-import { useTokenBalance } from "../../../../state/wallet/hooks";
+import { RewardPerBlock } from "../../Farms";
 
 export interface ExpandableSectionProps {
     lpLabel?: string;
     multiplier?: string;
+    isFinished: boolean;
     isCommunityFarm?: boolean;
     token: SerializedToken;
     quoteToken: SerializedToken;
     isClassic: boolean;
     isAnchor?: boolean;
     earningToken: SerializedToken[];
+    earningTokenBlock: {blockReward: number, blockRewardPrice: number, symbol: string}[];
     gamma: any;
     healthFactor: string;
     sousId: number;
+    vaultAddress: string;
+    rewardsData: string[];
 }
 
 interface ToolTipProps {
@@ -44,12 +47,16 @@ const Wrapper = styled(Flex)`
 const CardHeading: React.FC<ExpandableSectionProps> = ({
                                                            isClassic,
                                                            isAnchor,
+                                                           isFinished,
                                                            earningToken,
                                                            token,
                                                            quoteToken,
                                                            gamma,
                                                            healthFactor,
-                                                           sousId
+                                                           sousId,
+                                                           vaultAddress,
+                                                           rewardsData,
+                                                           earningTokenBlock
                                                        }) => {
     const theme = useTheme();
     // const risk = gamma && (gamma.isLessThanOrEqualTo(0.7) || gamma.isGreaterThanOrEqualTo(0.5))
@@ -59,7 +66,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
 
     useEffect(() => {
         let r = ''
-        earningToken.forEach((token) => r += ` ${token.symbol} &`)
+        earningToken.forEach((token) => r += ` ${token.symbol === 'MOVR' ? 'wMOVR' : token.symbol} &`)
         setRewardTokens(r.slice(0, -1))
     }, [])
 
@@ -72,33 +79,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
             </Text>
         </ToolTip>
     )}
-
     const {width} = useWindowDimensions()
-
-    // POOL HARVEST DATA
-    const [startBlock, setStartBlock] = useState(0)
-    const [endBlock, setEndBlock] = useState(0)
-    const [currentBlock, setCurrentBlock] = useState(0)
-    useStartBlock(sousId).then((block?) => setStartBlock(block))
-    useEndBlock(sousId).then((block?) => setEndBlock(block))
-    useCurrentBlock().then((block?) => setCurrentBlock(block))
-
-    //TODO: this has to be only one component PD and shared between Row and this
-  const RewardPerBlock = ({ token }: { token: any }) => {
-      const { pool } = usePool(sousId)
-      const balance = useTokenBalance(pool.vaultAddress, token)
-      const blocksLeft = endBlock - Math.max(currentBlock, startBlock)
-      // console.log("current", currentBlock)
-      // console.log("start", startBlock)
-      // console.log("end", endBlock)
-      const rewardBlocksPerDay = (parseFloat((balance?.toFixed(6)))/blocksLeft)*6400*30
-    return(
-        <Text fontSize='13px' fontWeight={500} color={'#4e7455'}>
-          {`~ ${rewardBlocksPerDay.toFixed(4)}  ${token.symbol}`}
-        </Text>
-      )
-    }
-
     return (
       <div
         style={{ padding: "10px", color: theme.text1 }}
@@ -141,7 +122,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
                       marginRight: "3px",
                     }}
                   >
-                    {token.symbol}{" "}
+                    {!isAnchor ? token.symbol : quoteToken.symbol}{" "}
                   </span>
                   {isClassic ? "CLASSIC" : isAnchor ? "STABLE" : "FLOAT"}
                 </BadgeSmall>
@@ -181,7 +162,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
               }}
             >{`Earn ${rewardTokens}`}</Text>
           </Flex>
-          <Flex
+          {!isFinished && <Flex
             flexDirection={"column"}
             justifyContent={"space-between"}
             height={60}
@@ -212,20 +193,20 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
                 <QuestionMarkIcon />
               </QuestionMarkContainer>
             </div>
-          </Flex>
+          </Flex>}
         </SpaceBetween>
         ) : (
-                <Flex flexDirection={'row'} style={{marginBottom: width <= 500 ? '20px' : earningToken.length === 1 && '17px'}}>
-                  <Text fontSize='13px' fontWeight={500} color={4e7455} style={{width: '45%'}}>
-                    {'Monthly Rewards:'}
-                  </Text>
-                  <Flex flexDirection={width >= 700 ? 'column' : 'row'} style={{textAlign: 'right', width: '60%',
-                  display: width <= 700 && 'flex',
-                  justifyContent: width <= 700 && 'flex-end'}}>
-                    {earningToken.map((token) => <RewardPerBlock token={token} />)}
-                  </Flex>
-                </Flex>
-                )}
+            !isFinished && <Flex flexDirection={'row'} style={{marginBottom: width <= 500 ? '20px' : earningToken.length === 1 && '17px'}}>
+              <Text fontSize='13px' fontWeight={500} color={4e7455} style={{width: '45%'}}>
+                {'Monthly Rewards:'}
+              </Text>
+              <Flex flexDirection={width >= 700 ? 'column' : 'row'} style={{textAlign: 'right', width: '60%',
+              display: width <= 700 && 'flex',
+              justifyContent: width <= 700 && 'flex-end'}}>
+              <RewardPerBlock earningRewardsBlock={earningTokenBlock} />
+              </Flex>
+            </Flex>
+            )}
       </div>
     );
 };

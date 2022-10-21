@@ -77,6 +77,7 @@ export function useDerivedBurnInfo(
   }
 
   let percentToRemove: Percent = new Percent('0', '100')
+  console.log("percent", percentToRemove.toString())
   // user specified a %
   if (independentField === Field.LIQUIDITY_PERCENT) {
     percentToRemove = new Percent(typedValue, '100')
@@ -150,45 +151,50 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
   omegaSlashingPercentage?: JSBI;
 } {
 
-  if(!ptTotalSupply || !userLiquidity) {
+  if(!ptTotalSupply || !userLiquidity || !pylonPoolBalance || !totalSupply || !pylonInfo || !pylonConstants || !lastK || !blockNumber || !pylonInfo[0]) {
     return undefined
   }
-  if(isSync) {
-    if(JSBI.greaterThanOrEqual(ptTotalSupply.raw, userLiquidity.raw)) {
-      let burnInfo = isFloat ?
-          pylon.burnFloat(totalSupply, ptTotalSupply, userLiquidity,
-              pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-              pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK)) :
-          pylon.burnAnchor(totalSupply, ptTotalSupply, userLiquidity,
-              pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-              pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK));
-      return {...burnInfo, liquidity: isFloat ? [burnInfo.amount, new TokenAmount(pylon.token1, BigInt(0))] : [new TokenAmount(pylon.token0, BigInt(0)), burnInfo.amount]}
-    }else{
+  let isLastRoot = new BigNumber(pylonInfo[7].toString()).isEqualTo(0)
+  if(isLastRoot) {
+    return undefined;
+  }else{
+    try{
+      if(isSync) {
+        console.log("burn::", totalSupply.raw.toString(), ptTotalSupply.raw.toString(), userLiquidity.raw.toString(),
+            pylonInfo[0].toString(), pylonInfo[1].toString(), pylonInfo[2].toString(), pylonPoolBalance.raw.toString(), pylonInfo[3].toString(), BigInt(blockNumber), pylonConstants,
+            pylonInfo[4].toString(), pylonInfo[5].toString(), pylonInfo[6].toString(), pylonInfo[7].toString(), pylonInfo[8].toString(), pylonInfo[9].toString(), BigInt(lastK))
+        if(JSBI.greaterThanOrEqual(ptTotalSupply.raw, userLiquidity.raw)) {
+          let burnInfo = isFloat ?
+              pylon.burnFloat(totalSupply, ptTotalSupply, userLiquidity,
+                  pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
+                  pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK)) :
+              pylon.burnAnchor(totalSupply, ptTotalSupply, userLiquidity,
+                  pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
+                  pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK));
+          return {...burnInfo, liquidity: isFloat ? [burnInfo.amount, new TokenAmount(pylon.token1, BigInt(0))] : [new TokenAmount(pylon.token0, BigInt(0)), burnInfo.amount]}
+        }else{
+          return undefined
+        }
+      }else{
+        let burnInfo = isFloat ?
+            pylon.burnAsyncFloat(totalSupply, ptTotalSupply, userLiquidity,
+                pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
+                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK)) :
+            pylon.burnAsyncAnchor(totalSupply, ptTotalSupply, userLiquidity,
+                pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
+                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK))
+
+        return {...burnInfo, liquidity: [burnInfo.amountA, burnInfo.amountB]}
+
+
+      }
+    }catch (e) {
+      console.log("hello", pylon.address.toString(), totalSupply.raw.toString(), ptTotalSupply.raw.toString(), userLiquidity.raw.toString(),
+          pylonInfo[0].toString(), pylonInfo[1].toString(), pylonInfo[2].toString(), pylonPoolBalance.raw.toString(), pylonInfo[3].toString(), BigInt(blockNumber).toString(), pylonConstants.toString(),
+          pylonInfo[4].toString(), pylonInfo[5].toString(), pylonInfo[6].toString(), pylonInfo[7].toString(), pylonInfo[8].toString(), pylonInfo[9].toString(), BigInt(lastK).toString())
+      console.log(e)
       return undefined
     }
-  }else{
-    // let burnInfo = isFloat ?
-    //     pylon.burnAsyncFloat(totalSupply, ptTotalSupply, userLiquidity,
-    //         pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-    //         pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK)) :
-    //     pylon.burnAnchor(totalSupply, ptTotalSupply, userLiquidity,
-    //         pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-    //         pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK));
-    //
-    //
-    // if (isFloat) {
-
-    let burnInfo = isFloat ?
-        pylon.burnAsyncFloat(totalSupply, ptTotalSupply, userLiquidity,
-            pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-            pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK)) :
-        pylon.burnAsyncAnchor(totalSupply, ptTotalSupply, userLiquidity,
-            pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-            pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK))
-
-    return {...burnInfo, liquidity: [burnInfo.amountA, burnInfo.amountB]}
-
-
   }
 }
 
@@ -196,7 +202,8 @@ export function useDerivedPylonBurnInfo(
     currencyA: Currency | undefined,
     currencyB: Currency | undefined,
     isFloat: boolean,
-    isSync: boolean
+    isSync: boolean,
+    percentage?: string
 ): {
   pylon?: Pylon | null
   parsedAmounts: {
@@ -250,10 +257,10 @@ export function useDerivedPylonBurnInfo(
   const totalSupply = useTotalSupply(pylon?.pair.liquidityToken)
   const lastK = useLastK(pylon ? Pair.getAddress(pylon.token0, pylon.token1) : "");
   // const pylonSupply = useTotalSupply(pylon?.pair.liquidityToken)
-  const energyAddress = Pylon.getEnergyAddress(pylon?.token0, pylon?.token1) //useEnergyAddress(pylonPair?.token0, pylonPair?.token1)
+  // const energyAddress = Pylon.getEnergyAddress(pylon?.token0, pylon?.token1) //useEnergyAddress(pylonPair?.token0, pylonPair?.token1)
 
-  const ptbEnergy = useTokenBalance(energyAddress, pylon?.pair.liquidityToken)
-  const reserveAnchor = useTokenBalance(energyAddress, pylon?.anchorLiquidityToken)
+  // const ptbEnergy = useTokenBalance(energyAddress, pylon?.pair.liquidityToken)
+  // const reserveAnchor = useTokenBalance(energyAddress, pylon?.anchorLiquidityToken)
 
   let burnInfo = useMemo(() => {
     return getLiquidityValues(pylon, userLiquidity, pylonPoolBalance,
@@ -263,50 +270,26 @@ export function useDerivedPylonBurnInfo(
 
   const [liquidityValueA, liquidityValueB] = !burnInfo ? [undefined, undefined] : burnInfo?.liquidity
 
-  const healthFactor = useMemo(() => {
-    if (pylonInfo && pylon && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && lastK && pylonConstants) {
-      return pylon.getHealthFactor(
-          pylonInfo[0],
-          pylonPoolBalance,
-          totalSupply,
-          reserveAnchor.raw,
-          ptbEnergy.raw,
-          pylonInfo[9],
-          pylonInfo[1],
-          pylonInfo[7],
-          pylonInfo[8],
-          JSBI.BigInt(lastK),
-          pylonConstants
-      ).toString();
-    }else{
-      return undefined
-    }
+  // const healthFactor = useMemo(() => {
+  //   if (pylonInfo && pylon  && pylonInfo[0] && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && lastK && pylonConstants) {
+  //     return pylon.getHealthFactor(
+  //         pylonInfo[0],
+  //         pylonPoolBalance,
+  //         totalSupply,
+  //         reserveAnchor.raw,
+  //         ptbEnergy.raw,
+  //         pylonInfo[9],
+  //         pylonInfo[1],
+  //         pylonInfo[7],
+  //         pylonInfo[8],
+  //         JSBI.BigInt(lastK),
+  //         pylonConstants
+  //     ).toString();
+  //   }else{
+  //     return undefined
+  //   }
 
-  }, [pylonInfo, pylon, ptbEnergy, reserveAnchor, pylonPoolBalance, totalSupply, lastK, pylonConstants])
-
-  // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
-
-
-
-  // const liquidityValueA =
-  //     pylon &&
-  //     totalSupply &&
-  //     userLiquidity &&
-  //     tokenA &&
-  //     // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
-  //     JSBI.greaterThanOrEqual(totalSupply.raw, userLiquidity.raw)
-  //         ? new TokenAmount(tokenA, pair.getLiquidityValue(tokenA, totalSupply, userLiquidity, false).raw)
-  //         : undefined
-  //
-  // const liquidityValueB =
-  //     pylon &&
-  //     totalSupply &&
-  //     userLiquidity &&
-  //     tokenB &&
-  //     // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
-  //     JSBI.greaterThanOrEqual(totalSupply.raw, userLiquidity.raw)
-  //         ? new TokenAmount(tokenB, pair.getLiquidityValue(tokenB, totalSupply, userLiquidity, false).raw)
-  //         : undefined
+  // }, [pylonInfo, pylon, ptbEnergy, reserveAnchor, pylonPoolBalance, totalSupply, lastK, pylonConstants])
 
   const liquidityValues: { [Field.CURRENCY_A]?: TokenAmount; [Field.CURRENCY_B]?: TokenAmount } = {
     [Field.CURRENCY_A]: liquidityValueA,
@@ -316,7 +299,12 @@ export function useDerivedPylonBurnInfo(
   let percentToRemove: Percent = new Percent('0', '100')
   // user specified a %
   if (independentField === Field.LIQUIDITY_PERCENT) {
-    percentToRemove = new Percent(typedValue, '100')
+    if(!percentage){
+      percentToRemove = new Percent(typedValue, '100')
+    }else{
+      percentToRemove = new Percent(percentage, '100')
+    }
+
   }
   // user specified a specific amount of liquidity tokens
   else if (independentField === Field.LIQUIDITY) {
@@ -369,7 +357,9 @@ export function useDerivedPylonBurnInfo(
     error = error ?? 'Enter an amount'
   }
 
-  return { pylon, parsedAmounts, error, burnInfo, healthFactor, gamma: pylonInfo?.[2]?.toString() }
+  return { pylon, parsedAmounts, error, burnInfo, 
+    // healthFactor, 
+    gamma: pylonInfo?.[2]?.toString() }
 }
 
 export function useDerivedPylonBurnInfoFixedPercentage(
@@ -378,7 +368,6 @@ export function useDerivedPylonBurnInfoFixedPercentage(
     isFloat: boolean,
     isSync: boolean,
     percentage: string,
-    field: Field,
     balance: any,
 ): {
   pylon?: Pylon | null
@@ -401,6 +390,7 @@ export function useDerivedPylonBurnInfoFixedPercentage(
     asyncBlocked?: boolean;
     liquidity?: [TokenAmount, TokenAmount];
   }
+  healthFactor?: string
 } {
   const { account, chainId } = useActiveWeb3React()
 
@@ -458,6 +448,33 @@ export function useDerivedPylonBurnInfoFixedPercentage(
             ? new TokenAmount(tokenB, percentToRemove.multiply(liquidityValueB.raw).quotient)
             : undefined
   }
+  // Getting energy constants for health factor calculation
+  const energyAddress = Pylon.getEnergyAddress(pylon?.token0, pylon?.token1) //useEnergyAddress(pylonPair?.token0, pylonPair?.token1)
+  const ptbEnergy = useTokenBalance(energyAddress, pylon?.pair.liquidityToken)
+  const reserveAnchor = useTokenBalance(energyAddress, pylon?.anchorLiquidityToken)
+
+
+  const healthFactor = useMemo(() => {
+    if (pylonInfo && pylon  && pylonInfo[0] && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && lastK && pylonConstants) {
+      return pylon.getHealthFactor(
+          pylonInfo[0],
+          pylonPoolBalance,
+          totalSupply,
+          reserveAnchor.raw,
+          ptbEnergy.raw,
+          pylonInfo[9],
+          pylonInfo[1],
+          pylonInfo[7],
+          pylonInfo[8],
+          JSBI.BigInt(lastK),
+          pylonConstants
+      ).toString();
+    }else{
+      return undefined
+    }
+
+  }, [pylonInfo, pylon, ptbEnergy, reserveAnchor, pylonPoolBalance, totalSupply, lastK, pylonConstants])
+
 
   let error: string | undefined
   if (!account) {
@@ -468,7 +485,7 @@ export function useDerivedPylonBurnInfoFixedPercentage(
     error = error ?? 'Enter an amount'
   }
 
-  return { pylon, parsedAmounts, error, burnInfo }
+  return { pylon, parsedAmounts, error, burnInfo, healthFactor }
 }
 
 export function useBurnActionHandlers(): {

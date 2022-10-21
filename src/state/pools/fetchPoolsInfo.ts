@@ -12,10 +12,15 @@ const fetchPools = async (poolsToFetch: SerializedPoolConfig[]): Promise<Seriali
     const gammas = await fetchGammas(poolsToFetch)
 
     return poolsToFetch.map((pool, index) => {
-        const [tokenBalanceLP, quoteTokenBalanceLP, stakedTokenBalanceMC, lpTotalSupply, tokenDecimals, quoteTokenDecimals, ptb, stakedTotalSupply, vaultTotalSupply] =
+        const [tokenBalanceLP, quoteTokenBalanceLP, pylonTokenBalanceLP, pylonQuoteBalanceLP, stakedTokenBalanceMC, lpTotalSupply, tokenDecimals, quoteTokenDecimals, ptb, stakedTotalSupply, vaultTotalSupply, psionicFarmBalance] =
             poolResult[index]
-        const [gamma] = gammas[index]
+        const [gamma, virtualAnchorBalance] = gammas[index]
+
+        // let it = index%2===0 ? index : Math.abs(index/2)-1
+        // console.log("index", it)
+        // const [gamma, virtualAnchorBalance] = gammas[it]
         // const [info, totalAllocPoint] = masterChefResult[index]
+        // console.log("pylon balances", pylonTokenBalanceLP.toString(), pylonQuoteBalanceLP.toString())
 
         // Ratio in % of LP tokens that are staked in the MC, vs the total number in circulation
         const lpTokenRatio = new BigNumber(stakedTokenBalanceMC).div(new BigNumber(stakedTotalSupply))
@@ -28,25 +33,18 @@ const fetchPools = async (poolsToFetch: SerializedPoolConfig[]): Promise<Seriali
 
         // Total staked in LP, in quote token value
         const lpTotalInQuoteToken = quoteTokenAmountMc.times(new BigNumber(2))
-        let inverseGamma = new BigNumber(BIG_TEN.pow(18)).minus(new BigNumber(gamma))
+        // let inverseGamma = new BigNumber(BIG_TEN.pow(18)).minus(new BigNumber(gamma))
+        const ratio = new BigNumber(quoteTokenBalanceLP).div(tokenBalanceLP)
+        const pylonTokenToQuote = (new BigNumber(pylonTokenBalanceLP).multipliedBy(ratio)).div(BIG_TEN.pow(tokenDecimals))
 
-        const staked = lpTotalInQuoteToken.multipliedBy(inverseGamma).multipliedBy(ptb).dividedBy(lpTotalSupply).dividedBy(BIG_TEN.pow(18))
+        const pylonRatio = new BigNumber(ptb).div(lpTotalSupply) // Ratio of LP Tokens that are in the Pylon
+        const gammaTotal = new BigNumber(gamma).div(BIG_TEN.pow(18)) // Ratio of LP Tokens that are in the Pylon
+        const vabTotal = new BigNumber(virtualAnchorBalance).div(BIG_TEN.pow(quoteTokenDecimals)) // Ratio of LP Tokens that are in the Pylon
 
-
-        // console.log("values::", pool.lpTotalInQuoteToken, pool.gamma, new BigNumber(pool.ptb.toString()), pool.lpTotalSupply)
-        // let liquidityBySDK = Pylon.calculateLiquidity(pool.gamma, JSBI.BigInt(new BigNumber(pool.lpTotalInQuoteToken.toString()).toString()),
-        //     JSBI.BigInt(new BigNumber(pool.ptb.toString()).toString()), JSBI.BigInt(new BigNumber(pool.lpTotalSupply.toString()).toString()))
-        // const { pool } = usePool(details.sousId)
-        // const balance = useTokenBalance(pool.vaultAddress, token)
-        // const blocksLeft = endBlock - Math.max(currentBlock, startBlock)
-        // // console.log("current", currentBlock)
-        // // console.log("start", startBlock)
-        // // console.log("end", endBlock)
-        // const rewardBlocksPerDay = (parseFloat((balance?.toFixed(6)))/blocksLeft)*6600
+        const floatStaked = ((new BigNumber(lpTotalInQuoteToken).multipliedBy(gammaTotal)).multipliedBy(pylonRatio)).plus(pylonTokenToQuote.times(lpTokenRatio))
+        const staked = pool.isAnchor ? new BigNumber(vabTotal).multipliedBy(lpTokenRatio) : floatStaked;
 
 
-        // const allocPoint = info ? new BigNumber(info.allocPoint?._hex) : BIG_ZERO
-        // const poolWeight = totalAllocPoint ? allocPoint.div(new BigNumber(totalAllocPoint)) : BIG_ZERO
         return {
             ...pool,
             token1: pool.token1,
@@ -56,13 +54,17 @@ const fetchPools = async (poolsToFetch: SerializedPoolConfig[]): Promise<Seriali
             lpTotalSupply: new BigNumber(lpTotalSupply).toJSON(),
             lpTotalInQuoteToken: quoteTokenAmountMc.toJSON(),
             quoteTokenDecimals: new BigNumber(quoteTokenDecimals).toJSON(),
+            tokenDecimals: new BigNumber(tokenDecimals).toJSON(),
             lpTokenRatio: lpTokenRatio.toJSON(),
             tokenPriceVsQuote: quoteTokenAmountTotal.div(tokenAmountTotal).toJSON(),
             gamma: new BigNumber(gamma).toJSON(),
             ptb: new BigNumber(ptb).toJSON(),
+            stakedBalancePool: new BigNumber(stakedTokenBalanceMC).toJSON(),
             staked: new BigNumber(staked).toJSON(),
-            quoteTokenBalanceLP: new BigNumber(quoteTokenBalanceLP).toJSON(),
+            quoteTokenBalanceTotal: (new BigNumber(quoteTokenBalanceLP).plus(pylonQuoteBalanceLP)).toJSON(),
+            tokenBalanceTotal: (new BigNumber(tokenBalanceLP).plus(pylonTokenBalanceLP)).toJSON(),
             vaultTotalSupply: new BigNumber(vaultTotalSupply).toJSON(),
+            psionicFarmBalance: new BigNumber(psionicFarmBalance).toJSON(),
             // poolWeight: poolWeight.toJSON(),
             // multiplier: `${allocPoint.div(100).toString()}X`,
         }

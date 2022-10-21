@@ -26,6 +26,7 @@ import {useDerivedPylonMintInfo} from "../../../../state/mint/pylonHooks";
 import { StyledLinkExternal } from '../FarmTable/Actions/ActionPanel'
 import CapacityIndicatorSmall from '../../../../components/CapacityIndicatorSmall'
 import { useWindowDimensions } from '../../../../hooks'
+import { CONTRACT_ADDRESS_BASE } from '../../../../constants/lists'
 
 const StyledCard = styled(Card)`
   align-self: baseline;
@@ -124,6 +125,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
       <FarmCardInnerContainer>
         <CardHeading
           earningToken={farm.earningToken}
+          earningTokenBlock={farm.earningTokenPerBlock}
           isClassic={farm.isClassic}
           isAnchor={farm.isAnchor}
           lpLabel={lpLabel}
@@ -132,6 +134,9 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
           gamma={gamma}
           healthFactor={healthFactor}
           sousId={farm.sousId}
+          vaultAddress={farm.vaultAddress}
+          rewardsData={farm.rewardsData}
+          isFinished={farm.isFinished}
         />
         {farm.userData.stakedBalance.gt(0) || !isApproved ? (
           <CardActionsContainer
@@ -163,12 +168,14 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
                   }
                   cakePrice={(112 as unknown) as BigNumber}
                   token={farm.stakingToken}
+                  pool={farm}
                 />
               </ModalContainer>
             )}
 
             <StakeAdd
-              clickAction={() => setShowModalDeposit(true)}
+              isFinished = {farm.isFinished}
+              clickAction={() => !farm.isFinished && setShowModalDeposit(true)}
               row={false}
               disabled={pendingTx}
             />
@@ -198,7 +205,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
             {farm.isClassic ? pairLiquidity : new BigNumber(farm?.liquidity).toFixed(2)} USD
           </Text>
         </Flex>
-        {account && (
+        {account && !farm.isFinished && (
             <Flex justifyContent="space-between" alignItems="center" mt="10px">
               <Text color={theme.whiteHalf} fontSize="14px">
                 {`Health Factor`}:
@@ -209,6 +216,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
                 isFloat={!farm.isAnchor}
                 noSpan={false}
                 hoverPage={"tableCard"}
+                font={'14px'}
               />
             </Flex>
           )}
@@ -248,7 +256,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
               color: theme.pinkBrown,
               fontWeight: 500,
             }}
-            href={"Placeholder"}
+            href={CONTRACT_ADDRESS_BASE+farm.contractAddress}
           >
             {"View Contract ↗"}
           </StyledLinkExternal>

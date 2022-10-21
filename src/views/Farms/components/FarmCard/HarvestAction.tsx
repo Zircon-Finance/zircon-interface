@@ -76,7 +76,9 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, u
                         {`${currentBalance?.toFixed(6)} ${token.symbol}`}
                     </Text>
                 </Flex>
-                <Balance fontSize="13px" color={theme.whiteHalf} decimals={2} value={currentPrice} unit=" USD" prefix="~" />
+                <Text fontSize="13px" color={theme.whiteHalf}>
+                    {`~ ${currentPrice?.toFixed(2)} USD`}
+                </Text>
             </Flex>
         )
     }
@@ -87,9 +89,11 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, u
         return (
             <>
                 <Flex style={{marginLeft: '5px', marginBottom: '7px', color: theme.text1}}>
-                    {`${currentBalance.toFixed(6)} ${token.symbol}`}
+                    {`${currentBalance.toFixed(6)} ${token.symbol === 'MOVR' ? 'wMOVR' : token.symbol}`}
                 </Flex>
-                <Balance ml={'5px'} textAlign={'left'} fontSize="12px" color={theme.whiteHalf} decimals={2} unit="" value={currentPrice} prefix=" ~ $" />
+                <Text color={theme.whiteHalf} ml={'5px'} textAlign={'left'} fontSize="12px">
+                    {`~ ${currentPrice?.toFixed(2)} USD`}
+                </Text>
             </>
         )
     }

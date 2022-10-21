@@ -253,10 +253,10 @@ export default function AddLiquidity({
           />
           </Text>
         </RowFlat>
-        <TYPE.italic fontSize={12} textAlign="left" padding={'8px 0 0 0 '}>
-          {`Output is estimated. If the price changes by more than ${allowedSlippage /
+        <Text fontSize={12} textAlign="left" padding={"8px 0 0 0 "} color={theme.whiteHalf}>
+            {`Output is estimated. If the price changes by more than ${allowedSlippage /
             100}% your transaction will revert.`}
-        </TYPE.italic>
+          </Text>
       </AutoColumn>
     )
   }
@@ -365,7 +365,6 @@ export default function AddLiquidity({
               currency={currencies[Field.CURRENCY_A]}
               id="add-liquidity-input-tokena"
               showCommonBases
-              tokens={[currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B]]}
             />
             <ColumnCenter>
               <Plus size="30" color='gray' />
@@ -381,7 +380,6 @@ export default function AddLiquidity({
               currency={currencies[Field.CURRENCY_B]}
               id="add-liquidity-input-tokenb"
               showCommonBases
-              tokens={[currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B]]}
             />
 
           </AutoColumn>

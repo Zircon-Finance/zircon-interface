@@ -17,7 +17,6 @@ const options = {
 
 const sousStake = async (sousChefContract, amount, decimals = 18) => {
   const gasPrice = getGasPrice()
-  console.log(new BigNumber(amount).times(BIG_TEN.pow(decimals)).toString(10))
   return sousChefContract.deposit(new BigNumber(amount).times(BIG_TEN.pow(decimals)).toString(10), {
     ...options,
     gasPrice,

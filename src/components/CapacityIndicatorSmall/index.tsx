@@ -1,3 +1,4 @@
+import { Skeleton } from '@pancakeswap/uikit'
 import React from 'react'
 import { Flex, Text } from 'rebass'
 import { useTheme } from 'styled-components'
@@ -19,21 +20,23 @@ interface Props {
   isFloat?: boolean
   noSpan?: boolean
   hoverPage?: string
+  font? : string
 }
 
-const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan, hoverPage}) => {
+const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan, hoverPage, font}) => {
   const [hoverIndicator, setHoverIndicator] = React.useState(false);
   const theme = useTheme()
   const {width} = useWindowDimensions()
   const TooltipContentRisk: React.FC<Props> = ({gamma, health, isFloat}) => {return (
-    <ToolTip style={hoverPage === 'addLiq' ? {bottom: '140px', left: '260px'} :
-      hoverPage === 'removeLiq' ? {bottom: '140px', left: '260px'} :
+    <ToolTip style={
+      hoverPage === 'addLiq' ? {bottom: '140px', left: '260px'} :
+      hoverPage === 'removeLiq' ? {bottom: '150px', left: '200px'} :
       hoverPage === 'farmRow' ? {bottom: '55px', left: '-50px'} :
-      hoverPage === 'farmAction' ? {bottom: '0px', left: '0px'} :
+      hoverPage === 'farmAction' ? {bottom: width >= 800 ? '0px' : '50px', left: width >= 800 ? '0px' : width <= 500 ? '100px' : '50%'} :
       hoverPage === 'farmActionMobile' ? {bottom: '50%', left: '20%'} :
-      hoverPage === 'tableCard' ? {bottom: '20%', left: '20%'} :
+      hoverPage === 'tableCard' ? {bottom: '69%', left: width >= 800 ? '20%' : '30%'} :
       hoverPage === 'positionCard' && {display: 'none', bottom: '50px', left: width >= 450 ? '70%' : '120px'}
-      } show={hoverIndicator}>
+      } show={hoverIndicator && (gamma !== undefined || health !== undefined)}>
         <Text fontSize='13px' fontWeight={500} color={theme.text1}>
             {isFloat ? gamma < 0.4 ? 'The vault has zero or negative impermanent loss to encourage new liquidity.' :
             (gamma < 0.7 && gamma >= 0.4) ? 'The Float vault is balanced, you will have very little impermanent loss' :
@@ -49,11 +52,11 @@ const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan
       <Flex onMouseEnter={() => setHoverIndicator(true)}
             onMouseLeave={() => setHoverIndicator(false)}
             style={{cursor: 'pointer'}}>
-        {hoverIndicator && (
+        {hoverIndicator && (gamma !== undefined || health !== undefined) && (
           <TooltipContentRisk gamma={gamma} health={health} isFloat={isFloat}/>
         )}
-        {isFloat ? <div style={{display: "flex", flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-          {!noSpan && <span style={{marginRight: 8}}>{`${gamma >= 0.7 ? 'Full' : gamma < 0.4 ? 'Empty' : 'Free'}`}</span>}
+        {(!gamma || !health) ? <Skeleton width={60} /> : isFloat ? <div style={{display: "flex", flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+          {!noSpan && <span style={{marginRight: 8, color: theme.text1, fontSize: font && font}}>{`${gamma >= 0.7 ? 'High' : gamma <= 0.4 ? 'Negative' : 'Low'}`}</span>}
 
               {gamma < 0.4 && <svg width="22" height="16" viewBox="0 0 22 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="0.5" y="0.5" width="21" height="15" rx="4.5" stroke="#DEC54E" strokeOpacity="0.9"/>
@@ -76,7 +79,7 @@ const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan
             </div>
             :
             <div style={{display: "flex", flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-              {!noSpan && <span style={{marginRight: 8}}>{`${health === 'low' ? 'Low' : health === 'medium' ? 'Medium' : 'High'}`}</span>}
+              {!noSpan && <span style={{marginRight: 8, color: theme.text1, fontSize: font && font}}>{`${health === 'low' ? 'Low' : health === 'medium' ? 'Medium' : 'High'}`}</span>}
               {health === "high" && <svg width="22" height="16" viewBox="0 0 22 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect y="10" width="6" height="6" rx="3" fill="#449133" fillOpacity="0.9"/>
                 <rect x="16" width="6" height="16" rx="3" fill="#449133" fillOpacity="0.9"/>
@@ -96,7 +99,7 @@ const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan
               </svg>
               }
             </div>
-        }
+         }
       </Flex>
   )
 }

@@ -118,15 +118,16 @@ export async function getTopTokens() {
   let unix = dayjs().tz('GMT').subtract(1, 'day').startOf('day').unix()
   let currentQuery = `{
     tokenDayDatas(
-      first: 8
-      orderBy: date
+      first: 20
+      orderBy: id
       orderDirection: desc
-      where: {dailyVolumeUSD_gt: "0"}
+      where: {dailyVolumeUSD_gt: "0", date: ${dayjs().tz('GMT').startOf('day').unix()}}
     ) {
       token {
         id
         name
         symbol
+        decimals
       }
       priceUSD
       dailyVolumeUSD
@@ -136,8 +137,8 @@ export async function getTopTokens() {
 
   let oneDayAgoQuery = `{
     tokenDayDatas(
-      first: 8
-      orderBy: date
+      first: 20
+      orderBy: id
       orderDirection: desc
       where: {dailyVolumeUSD_gt: "0", date: ${unix}}
     ) {
@@ -145,6 +146,7 @@ export async function getTopTokens() {
         id
         name
         symbol
+        decimals
       }
       priceUSD
       dailyVolumeUSD

@@ -20,7 +20,7 @@ import TradePrice from '../../components/swap/TradePrice'
 import TokenWarningModal from '../../components/TokenWarningModal'
 import ProgressSteps from '../../components/ProgressSteps'
 import Settings from '../../components/Settings'
-
+import orderBy from 'lodash/orderBy'
 import { INITIAL_ALLOWED_SLIPPAGE } from '../../constants'
 import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
 import { getTopTokens, useCurrency } from '../../hooks/Tokens'
@@ -38,7 +38,7 @@ import {
   useSwapActionHandlers,
   useSwapState
 } from '../../state/swap/hooks'
-import { useExpertModeManager, useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
+import { useChosenTokens, useExpertModeManager, useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
 import { LinkButtonHidden, LinkButtonLeftSide } from '../../theme'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
@@ -53,8 +53,8 @@ import { usePair } from '../../data/Reserves'
 import { SelectedOptionDiv } from '../../views/Farms/Farms'
 import { TableData } from '../../views/Farms/components/FarmTable/Row'
 import FarmRepeatIcon from '../../components/FarmRepeatIcon'
-import { useSelectedTokenList } from '../../state/lists/hooks'
-import { TopTokensRow } from '../../components/TopTokensRow'
+import { ArrowMarket, StarFull, TopTokensRow } from '../../components/TopTokensRow'
+import CurrencyLogo from '../../components/CurrencyLogo'
 
 export default function Swap() {
   const { t } = useTranslation()
@@ -99,6 +99,7 @@ export default function Swap() {
     currencies[Field.OUTPUT],
     typedValue
   )
+  const [chosenTokens] = useChosenTokens();
   const inputCurrency = useCurrency(inputCurrencyId)
   const outputCurrency = useCurrency(outputCurrencyId)
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
@@ -285,10 +286,24 @@ export default function Swap() {
   const [topTokens, setTopTokens] = useState([])
   const [topTokensPrevious, setTopTokensPrevious] = useState([])
   const options = ['Price', 'Price change 24H', 'Volume 24H', 'TVL']
-  const [sortOption, setSortOption] = useState('price')
-  const allTokens = useSelectedTokenList()[1285]  
-  console.log('allTokens', allTokens)
+  const [sortOption, setSortOption] = useState('null')
 
+  const sortTokens = (sortOption: string, tokensToSort: any[]) => {
+    switch (sortOption) {
+      case 'price':
+        return orderBy(tokensToSort, (token: any) => parseFloat(token.priceUSD) ?? 0, 'desc')
+      case 'price change 24h':
+        return orderBy(tokensToSort, (token: any) => parseFloat(token) ?? 0, 'desc')
+      case 'volume 24h':
+        return orderBy(tokensToSort, (token: any) => parseFloat(token.dailyVolumeUSD), 'desc')
+      case 'tvl':
+        return orderBy(tokensToSort, (token: any) => parseFloat(token.totalLiquidityUSD), 'desc')
+      default:
+        return tokensToSort
+    }
+  }
+
+  const sortedTokens = useMemo(() => sortTokens(sortOption, topTokens), [sortOption, topTokens])
 
   return (
     <>
@@ -554,6 +569,36 @@ export default function Swap() {
       </AppBody>
     </div>
 
+    {/* // User chosen tokens */}
+    {chosenTokens.length > 0 && (
+      <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none'}}>
+        <Flex style={{width: '100%', padding: '20px 0'}}>
+          <Flex style={{margin: '0 20px'}}>
+            <StarFull />
+          </Flex>
+          {chosenTokens.map((token, index) => {
+          const tokenData = topTokens.find((t) => t.token.id === token)
+          const tokenDataPrevious = topTokensPrevious.find((t) => t.token.id === token)
+          const changePercent = (((parseFloat(tokenData?.priceUSD) - parseFloat(tokenDataPrevious?.priceUSD)) / 
+          parseFloat(tokenDataPrevious?.priceUSD)) * 100).toFixed(2);
+          return(
+            <Flex>
+              <CurrencyLogo key={index} 
+                currency={{symbol: tokenData?.token.symbol === 'xcKSM' ? 'KSM' : tokenData?.token.symbol === 'xcRMRK' ? 'RMRK' : tokenData?.token.symbol
+                , decimals: tokenData?.token.decimals,name: tokenData?.token.name}}
+                size={'20px'} 
+                style={{marginRight: '5px'}} />  
+              <Text style={{marginRight: '5px'}}>{tokenData?.symbol}</Text>
+              <Flex style={{marginRight: '5px', rotate:parseFloat(changePercent) >= 0 ? '0deg' : '180deg'}}>
+                <ArrowMarket stroke={parseFloat(changePercent) >= 0 ? '#479E34' : '#BC2929'} />
+              </Flex>
+              <Text style={{marginRight: '10px', color: parseFloat(changePercent) >= 0 ? '#479E34' : '#BC2929'}}>{changePercent}%</Text>
+            </Flex>
+          )})}
+        </Flex>
+      </Flex>
+      )}
+
     <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none'}}>
     <table
       style={{
@@ -562,13 +607,13 @@ export default function Swap() {
         paddingBottom: "5px",
       }}
     ><tr style={{display: 'flex', height: '40px'}}>
-      <Flex style={{width: '350px'}}><Text>{'Top Tokens'}</Text><FarmRepeatIcon /></Flex>
+      <Flex style={{width: '30%'}}><Text>{'Top Tokens'}</Text><FarmRepeatIcon /></Flex>
           {options.map((option) => (
             <TableData
               key={option}
               style={{
                 cursor:"pointer",
-                width: '20%',
+                width: '18%',
                 display: 'flex',
                 alignItems: 'center',
                 height: '100%',
@@ -596,8 +641,8 @@ export default function Swap() {
             </TableData>
           ))}
         </tr>
-        {(topTokensPrevious.length > 0 && topTokens.length > 0) && topTokens.map((token, index) => (
-          <TopTokensRow key={index} token={token} previousToken={topTokensPrevious[index]} index={index} />
+        {(topTokensPrevious.length > 0 && topTokens.length > 0) && sortedTokens.map((token, index) => (
+          <TopTokensRow key={index} token={token} previousToken={topTokensPrevious.find((t) => t.token.id === token.token.id)} index={index} />
         ))}
       </table>
     </Flex>

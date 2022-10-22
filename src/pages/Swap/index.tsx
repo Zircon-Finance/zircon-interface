@@ -607,7 +607,7 @@ export default function Swap() {
         paddingBottom: "5px",
       }}
     ><tr style={{display: 'flex', height: '40px'}}>
-      <Flex style={{width: '30%'}}><Text>{'Top Tokens'}</Text><FarmRepeatIcon /></Flex>
+      <Flex style={{width: '30%', alignItems: 'center'}}><Text mx="10px">{'Top Tokens'}</Text><FarmRepeatIcon /></Flex>
           {options.map((option) => (
             <TableData
               key={option}
@@ -636,7 +636,7 @@ export default function Swap() {
                   {option}
                 </p><FarmRepeatIcon /></Flex>
               {sortOption === option.toLowerCase() ? (
-                <SelectedOptionDiv style={{position: 'relative', top: '12px', width: '80%', left: '0px'}} />
+                <SelectedOptionDiv style={{position: 'relative', top: '6px', width: '80%', left: '0px'}} />
               ) : null}
             </TableData>
           ))}

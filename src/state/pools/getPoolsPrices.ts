@@ -86,7 +86,13 @@ import BigNumber from "bignumber.js";
 // }
 
 const getPoolsPrices = async (pools: SerializedPool[]) => {
-    let calls = pools.map((pool) => axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${pool.token2.symbol}BUSD`))
+
+    let calls = pools.map((pool) => {
+        let symbol = pool.token2.symbol
+        symbol = symbol.replace('xc', '');
+        symbol = symbol === "WMOVR" ? "MOVR" : symbol;
+        return axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}BUSD`)
+    })
     try{
         let responses = (await axios.all(calls)).map((response) => response.data)
         return pools.map((pool, index) => {

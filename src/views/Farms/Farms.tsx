@@ -638,11 +638,11 @@ const Farms: React.FC = ({ children }) => {
             </tr>
           </table>
           {renderContent()}
-          {(activeFarms.length < pools.length && activeFarms.length === numberOfFarmsVisible ||
+          {((chosenPools.length < pools.length && chosenPools.length === numberOfFarmsVisible) ||
           (filterAnchorFloat === FarmFilterAnchorFloat.ANCHOR && pools.filter((pool) => stakedOnly ?
-          (pool.isAnchor && pool.userData.stakedBalance.gt(0)) : pool.isAnchor).length > activeFarms.length) ||
+          (pool.isAnchor && pool.userData.stakedBalance.gt(0)) : pool.isAnchor).length > chosenPools.length && chosenPools.length === (numberOfFarmsVisible/2)) ||
           (filterAnchorFloat === FarmFilterAnchorFloat.FLOAT && pools.filter((pool) =>  stakedOnly ?
-          (!pool.isAnchor && pool.userData.stakedBalance.gt(0)) : !pool.isAnchor).length > activeFarms.length)
+          (!pool.isAnchor && pool.userData.stakedBalance.gt(0)) : !pool.isAnchor).length > chosenPools.length && chosenPools.length === (numberOfFarmsVisible/2))
           ) && (
             <ButtonLighter
               onClick={() => showMore()}

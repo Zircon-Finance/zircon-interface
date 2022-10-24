@@ -88,7 +88,7 @@ const LineChart = ({ data, setHoverValue, setHoverDate, isChangePositive, timeWi
           axisLine={false}
           tickLine={false}
           tickFormatter={(time) => time.toLocaleString('EN', dateFormatting)}
-          minTickGap={8}
+          minTickGap={1}
         />
         <YAxis dataKey="value" axisLine={false} tickLine={false} domain={['auto', 'auto']} hide />
         <Tooltip
@@ -103,7 +103,7 @@ const LineChart = ({ data, setHoverValue, setHoverDate, isChangePositive, timeWi
             />
           )}
         />
-        <Area dataKey="value" type="linear" stroke={colors.stroke} fill="url(#gradient)" strokeWidth={2} />
+        <Area dataKey="value" type="natural" stroke={colors.stroke} fill="url(#gradient)" strokeWidth={2} />
       </AreaChart>
     </ResponsiveContainer>
   )

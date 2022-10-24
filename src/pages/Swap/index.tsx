@@ -53,8 +53,8 @@ import { usePair } from '../../data/Reserves'
 import { SelectedOptionDiv } from '../../views/Farms/Farms'
 import { TableData } from '../../views/Farms/components/FarmTable/Row'
 import FarmRepeatIcon from '../../components/FarmRepeatIcon'
-import { ArrowMarket, StarFull, TopTokensRow } from '../../components/TopTokensRow'
-import CurrencyLogo from '../../components/CurrencyLogo'
+import { StarFull, TopTokensRow } from '../../components/TopTokensRow'
+import FavTokensRow from '../../components/FavouriteTokensRow'
 
 export default function Swap() {
   const { t } = useTranslation()
@@ -100,6 +100,7 @@ export default function Swap() {
     typedValue
   )
   const [chosenTokens] = useChosenTokens();
+  console.log('chosenTokens', chosenTokens)
   const inputCurrency = useCurrency(inputCurrencyId)
   const outputCurrency = useCurrency(outputCurrencyId)
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
@@ -284,6 +285,7 @@ export default function Swap() {
 
   //Top tokens
   const [topTokens, setTopTokens] = useState([])
+  console.log('topTokens', topTokens)
   const [topTokensPrevious, setTopTokensPrevious] = useState([])
   const options = ['Price', 'Price change 24H', 'Volume 24H', 'TVL']
   const [sortOption, setSortOption] = useState('null')
@@ -293,6 +295,9 @@ export default function Swap() {
       case 'price':
         return orderBy(tokensToSort, (token: any) => parseFloat(token.priceUSD) ?? 0, 'desc')
       case 'price change 24h':
+        // const previousToken = tokensToSort.find((t) => t.token.id === tokensToSort)
+        //   const changePercent = (((parseFloat(tokenData?.priceUSD) - parseFloat(tokenDataPrevious?.priceUSD)) / 
+        //   parseFloat(tokenDataPrevious?.priceUSD)) * 100).toFixed(2);
         return orderBy(tokensToSort, (token: any) => parseFloat(token) ?? 0, 'desc')
       case 'volume 24h':
         return orderBy(tokensToSort, (token: any) => parseFloat(token.dailyVolumeUSD), 'desc')
@@ -572,28 +577,13 @@ export default function Swap() {
     {/* // User chosen tokens */}
     {chosenTokens.length > 0 && (
       <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none'}}>
-        <Flex style={{width: '100%', padding: '20px 0'}}>
-          <Flex style={{margin: '0 20px'}}>
+        <Flex style={{width: '100%', padding: '20px', flexWrap: 'wrap', gap: '5px'}}>
+          <Flex style={{margin: '0 20px 0 0'}}>
             <StarFull />
           </Flex>
           {chosenTokens.map((token, index) => {
-          const tokenData = topTokens.find((t) => t.token.id === token)
-          const tokenDataPrevious = topTokensPrevious.find((t) => t.token.id === token)
-          const changePercent = (((parseFloat(tokenData?.priceUSD) - parseFloat(tokenDataPrevious?.priceUSD)) / 
-          parseFloat(tokenDataPrevious?.priceUSD)) * 100).toFixed(2);
           return(
-            <Flex>
-              <CurrencyLogo key={index} 
-                currency={{symbol: tokenData?.token.symbol === 'xcKSM' ? 'KSM' : tokenData?.token.symbol === 'xcRMRK' ? 'RMRK' : tokenData?.token.symbol
-                , decimals: tokenData?.token.decimals,name: tokenData?.token.name}}
-                size={'20px'} 
-                style={{marginRight: '5px'}} />  
-              <Text style={{marginRight: '5px'}}>{tokenData?.symbol}</Text>
-              <Flex style={{marginRight: '5px', rotate:parseFloat(changePercent) >= 0 ? '0deg' : '180deg'}}>
-                <ArrowMarket stroke={parseFloat(changePercent) >= 0 ? '#479E34' : '#BC2929'} />
-              </Flex>
-              <Text style={{marginRight: '10px', color: parseFloat(changePercent) >= 0 ? '#479E34' : '#BC2929'}}>{changePercent}%</Text>
-            </Flex>
+            <FavTokensRow key={index} token={token} index={index} topTokens={topTokens} topTokensPrevious={topTokensPrevious} />
           )})}
         </Flex>
       </Flex>

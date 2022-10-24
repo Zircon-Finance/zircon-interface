@@ -55,7 +55,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
     const currency = useCurrency(token.token.id)
     const theme = useTheme();
     const [chosenTokens, addChosenTokenCallback, removeChosenTokenFeedback] = useChosenTokens();
-    const changePercent = (((parseFloat(token.priceUSD) - parseFloat(previousToken.priceUSD)) / parseFloat(previousToken.priceUSD)) * 100).toFixed(2);
+    const changePercent = (((parseFloat(token?.priceUSD) - parseFloat(previousToken?.priceUSD)) / parseFloat(previousToken?.priceUSD)) * 100).toFixed(2);
     return (
     <Row> 
     <TableData style={{width: '30%'}}>
@@ -100,7 +100,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
         <div style={{rotate:parseFloat(changePercent) >= 0 ? '0deg' : '180deg', height: '24px', width: '24px'}}>
             <ArrowMarket stroke={parseFloat(changePercent) >= 0 ? '#479E34' : '#BC2929'} />
         </div>
-        {changePercent}%
+        {changePercent !== 'NaN' ? `${changePercent}%` : 'No Data'}
         </Text>
     </TableData>
     <TableData>

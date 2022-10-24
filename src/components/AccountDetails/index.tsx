@@ -413,7 +413,7 @@ export default function AccountDetails({
                             href={getEtherscanLink(chainId, account, "address")}
                           >
                             <span style={{ marginLeft: "5px" }}>
-                              View on Moonbeam ↗
+                              View on Moonriver ↗
                             </span>
                           </AddressLink>
                         )}

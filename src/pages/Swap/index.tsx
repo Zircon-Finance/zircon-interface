@@ -315,7 +315,7 @@ export default function Swap() {
     <div style={{width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', gap: '20px'}}>
     { width > 1000 && (
     <div style={{
-      height: '450px',
+      height: '384px',
       position: 'relative',
       maxWidth: '480px',
       width: '100%',

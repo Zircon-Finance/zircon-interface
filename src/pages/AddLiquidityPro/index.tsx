@@ -6,7 +6,7 @@ import ReactGA from "react-ga4";
 import {RouteComponentProps} from "react-router-dom";
 import {Flex, Text} from "rebass";
 import styled, {useTheme} from "styled-components";
-import {ButtonAnchor, ButtonError, ButtonLight, ButtonPrimary,} from "../../components/Button";
+import {ButtonAnchor, ButtonError, ButtonErrorSecondary, ButtonLight, ButtonPrimary,} from "../../components/Button";
 import {BlueCard, GreyCard, LightCard} from "../../components/Card";
 import {AutoColumn, ColumnCenter} from "../../components/Column";
 import TransactionConfirmationModal, {ConfirmationModalContent,} from "../../components/TransactionConfirmationModal";
@@ -1355,8 +1355,8 @@ export default function AddLiquidityPro({
                                 </Text>
                               </ButtonError>
                               {pylonState === PylonState.EXISTS && farm && (
-                                  <ButtonError
-                                      style={{ height: "60px" }}
+                                  <ButtonErrorSecondary
+                                      style={{ height: "60px", color: theme.pinkBrown, borderRadius: '17px' }}
                                       width={"48%"}
                                       onClick={() =>
                                         farm ?
@@ -1395,7 +1395,7 @@ export default function AddLiquidityPro({
                                         {`${!pool?.apr ? "" : pool?.apr?.toFixed(2)}% APR`}
                                       </Text>)}
                                     </Flex>
-                                  </ButtonError>
+                                  </ButtonErrorSecondary>
                               )}
                             </SpaceBetween>
                           </AutoColumn>

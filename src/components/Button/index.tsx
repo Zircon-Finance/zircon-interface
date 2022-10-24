@@ -157,7 +157,7 @@ export const ButtonSecondary = styled(Base)`
     background-color: ${({ theme }) => theme.darkMode ? theme.bg12 : theme.navigationBorder};
   }
   &:disabled {
-    background-color: ${({ theme }) => theme.primary5};
+    background-color: ${({ theme }) => theme.opacitySmall};
     opacity: 50%;
     cursor: auto;
   }
@@ -338,6 +338,14 @@ export function ButtonError({ error, ...rest }: { error?: boolean } & ButtonProp
     return <ButtonErrorStyle {...rest} />
   } else {
     return <ButtonPrimary {...rest} />
+  }
+}
+
+export function ButtonErrorSecondary({ error, ...rest }: { error?: boolean } & ButtonProps) {
+  if (error) {
+    return <ButtonSecondary {...rest} />
+  } else {
+    return <ButtonSecondary {...rest} />
   }
 }
 

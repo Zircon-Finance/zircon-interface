@@ -14,7 +14,7 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious}) => {
     <Flex>
       <CurrencyLogo key={index} 
         currency={currency}
-        size={'20px'} 
+        size={'24px'} 
         style={{marginRight: '5px'}} />  
       <Text style={{marginRight: '5px'}}>{tokenData?.symbol}</Text>
       <Flex style={{marginRight: '5px', rotate:parseFloat(changePercent) >= 0 ? '0deg' : '180deg', display: changePercent === 'NaN' ? 'none' : 'flex'}}>

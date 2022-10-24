@@ -599,13 +599,13 @@ export default function Swap() {
         paddingBottom: "5px",
       }}
     ><tr style={{display: 'flex', height: '40px'}}>
-      <Flex style={{width: '30%', alignItems: 'center'}}><Text mx="10px">{'Top Tokens'}</Text><FarmRepeatIcon /></Flex>
+      <Flex style={{width: '35%', alignItems: 'center'}}><Text mx="10px">{'Top tokens'}</Text><FarmRepeatIcon /></Flex>
           {options.map((option) => (
             <TableData
               key={option}
               style={{
                 cursor:"pointer",
-                width: '18%',
+                width: '15%',
                 display: 'flex',
                 alignItems: 'center',
                 height: '100%',
@@ -619,8 +619,10 @@ export default function Swap() {
             ><Flex style={{marginTop: '10px'}}>
                 <p
                   style={{
+                    display: 'flex',
+                    alignItems: 'center',
                     fontSize: "13px",
-                    color: !theme.darkMode ? theme.text1 : theme.meatPink,
+                    color: !theme.darkMode ? theme.whiteHalf : theme.meatPink,
                     fontWeight: 500,
                     margin: 0,
                   }}
@@ -632,9 +634,15 @@ export default function Swap() {
               ) : null}
             </TableData>
           ))}
+          <TableData style={{cursor:"pointer", width: '10%'}} />
         </tr>
         {(topTokensPrevious.length > 0 && topTokens.length > 0) && sortedTokens.map((token, index) => (
-          <TopTokensRow key={index} token={token} previousToken={topTokensPrevious.find((t) => t.token.id === token.token.id)} index={index} />
+          <TopTokensRow
+            key={index} 
+            token={token} 
+            previousToken={topTokensPrevious.find((t) => t.token.id === token.token.id)} 
+            index={index}
+            handleInput={handleInputSelect} />
         ))}
       </table>
     </Flex>

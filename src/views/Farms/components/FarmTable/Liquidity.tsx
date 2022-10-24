@@ -56,7 +56,7 @@ const DialogContainer = styled.div<{ show }>`
   font-size: 13px;
 `
 
-const AbsContainer = styled.div`
+export const AbsContainer = styled.div`
   position: sticky;
   z-index: 100;
   left: 50px;

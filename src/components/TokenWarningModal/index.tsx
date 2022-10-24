@@ -24,13 +24,12 @@ const WarningContainer = styled.div`
   width: 100%;
   padding: 1rem;
   background: rgba(242, 150, 2, 0.05);
-  border: 1px solid #f3841e;
-  border-radius: 20px;
+  border-radius: 17px;
   overflow: auto;
 `
 
 const StyledWarningIcon = styled(AlertTriangle)`
-  stroke: ${({ theme }) => theme.red2};
+  stroke: ${({ theme }) => theme.text1};
 `
 
 interface TokenWarningCardProps {
@@ -98,21 +97,21 @@ export default function TokenWarningModal({
   const handleDismiss = useCallback(() => null, [])
   return (
     <Modal isOpen={isOpen} onDismiss={handleDismiss} maxHeight={90}>
-      <WarningContainer className="token-warning-container">
+      <WarningContainer>
         <AutoColumn gap="lg">
           <AutoRow gap="6px">
             <StyledWarningIcon />
-            <TYPE.main color={'red2'}>Token imported</TYPE.main>
+            <TYPE.main color={'text1'}>Token imported</TYPE.main>
           </AutoRow>
-          <TYPE.body color={'red2'}>
+          <TYPE.body color={'text1'}>
             Anyone can create an ERC20 token on Ethereum with <em>any</em> name, including creating fake versions of
             existing tokens and tokens that claim to represent projects that do not have a token.
           </TYPE.body>
-          <TYPE.body color={'red2'}>
+          <TYPE.body color={'text1'}>
             This interface can load arbitrary tokens by token addresses. Please take extra caution and do your research
             when interacting with arbitrary ERC20 tokens.
           </TYPE.body>
-          <TYPE.body color={'red2'}>
+          <TYPE.body color={'text1'}>
             If you purchase an arbitrary token, <strong>you may be unable to sell it back.</strong>
           </TYPE.body>
           {tokens.map(token => {

@@ -148,9 +148,9 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
         >
         {index + 1}
         </Text>
-        <Flex style={{margin: '0 10px', cursor: 'pointer'}} onClick={()=> chosenTokens.includes(token.token.id) ? 
+        <Flex style={{margin: '0 10px', cursor: 'pointer'}} onClick={()=> chosenTokens?.includes(token.token.id) ? 
         removeChosenTokenFeedback(token.token.id) : addChosenTokenCallback(token.token.id)}>
-            {chosenTokens.includes(token.token.id) ? <StarFull /> : <StarEmpty />}
+            {chosenTokens?.includes(token.token.id) ? <StarFull /> : <StarEmpty />}
         </Flex>
         <CurrencyLogo
         style={{ width: "30px", height: "30px", marginRight: "10px" }}

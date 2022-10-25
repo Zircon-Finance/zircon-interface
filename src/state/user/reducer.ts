@@ -147,10 +147,10 @@ export default createReducer(initialState, builder =>
       state.userFarmsFilterAnchorFloat = userFarmsFilterAnchorFloat
     })
     .addCase(addChosenToken, (state, { payload: {id} }) => {
-      state.chosenTokens.push(id)
+      state.chosenTokens?.push(id)
     })
     .addCase(removeChosenToken, (state, { payload: {id} }) => {
-      state.chosenTokens = state.chosenTokens.filter(token => token !== id)
+      state.chosenTokens = state.chosenTokens?.filter(token => token !== id)
     })
     .addCase(updateUserDeadline, (state, action) => {
       state.userDeadline = action.payload.userDeadline

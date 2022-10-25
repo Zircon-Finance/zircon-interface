@@ -18,7 +18,7 @@ interface TokenRowProps {
     handleInput: any;
   }
 
-const IconStyler = styled.div`
+export const IconStyler = styled.div`
     &:hover {
         svg {
             path {
@@ -63,7 +63,7 @@ export const collapseAnimation = keyframes`
   }
 `
 
-const DialogContainer = styled.div<{ show }>`
+export const DialogContainer = styled.div<{ show }>`
   animation: ${({ show }) =>
   show
     ? css`

@@ -583,7 +583,8 @@ export default function Swap() {
           </Flex>
           {chosenTokens.map((token, index) => {
           return(
-            <FavTokensRow key={index} token={token} index={index} topTokens={topTokens} topTokensPrevious={topTokensPrevious} />
+            <FavTokensRow key={index} token={token} index={index} topTokens={topTokens} topTokensPrevious={topTokensPrevious}
+            handleSwap={handleInputSelect} />
           )})}
         </Flex>
       </Flex>

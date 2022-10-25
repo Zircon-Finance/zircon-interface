@@ -7,7 +7,6 @@ import { useWeb3React } from '@web3-react/core'
 import { RowType, Toggle, Text, Flex } from '@pancakeswap/uikit'
 import styled, { useTheme } from 'styled-components'
 import Page from '../../components/Layout/Page'
-import { usePriceCakeBusd } from '../../state/farms/hooks'
 import useIntersectionObserver from '../../hooks/useIntersectionObserver'
 import { useTranslation } from 'react-i18next'
 import {getBalanceNumber, getBalanceUSD} from '../../utils/formatBalance'
@@ -212,7 +211,6 @@ const Farms: React.FC = ({ children }) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const { pools, userDataLoaded } = usePools()
-  const cakePrice = usePriceCakeBusd()
   const [
     query,
     setQuery] = useState('')
@@ -370,7 +368,7 @@ const Farms: React.FC = ({ children }) => {
         lpSymbol: farm.contractAddress,
         tokenAddress,
         quoteTokenAddress,
-        cakePrice,
+        cakePrice: new BigNumber(1),
         originalValue: 1,
       },
       farm: {

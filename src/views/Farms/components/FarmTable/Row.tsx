@@ -25,7 +25,6 @@ import { useERC20, useSousChef } from '../../../../hooks/useContract'
 import useCatchTxError from '../../../../hooks/useCatchTxError'
 import { useTransactionAdder } from '../../../../state/transactions/hooks'
 import { useDispatch } from 'react-redux'
-import { fetchFarmUserDataAsync } from '../../../../state/farms'
 import { useIsDarkMode } from '../../../../state/user/hooks'
 import { usePool } from '../../../../state/pools/hooks'
 import { useCallWithGasPrice } from '../../../../hooks/useCallWithGasPrice'
@@ -249,7 +248,6 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
       )
       setPendingTx(false)
       dispatch(fetchPoolsUserDataAsync(account))
-      dispatch(fetchFarmUserDataAsync({ account, pids: [details.sousId] }))
     }
   },
   [

@@ -2,7 +2,6 @@ import { useEffect, useMemo } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { useFastRefreshEffect, useSlowRefreshEffect } from '../../hooks/useRefreshEffect'
-import { farms } from '../../constants/farms'
 import {providers} from "ethers";
 import {
   fetchPoolsPublicDataAsync,
@@ -15,7 +14,6 @@ import {
 import { DeserializedPool,
   // VaultKey
 } from '../types'
-import { fetchFarmsPublicDataAsync } from '../farms'
 import {
   poolsWithUserDataLoadingSelector,
   makePoolWithUserDataLoadingSelector,
@@ -34,8 +32,6 @@ export const useFetchPublicPoolsData = () => {
   useSlowRefreshEffect(
     (currentBlock) => {
       const fetchPoolsDataWithFarms = async () => {
-        const activeFarms = farms.filter((farm) => farm.pid !== 0)
-        await dispatch(fetchFarmsPublicDataAsync(activeFarms.map((farm) => farm.pid)))
         batch(() => {
           dispatch(fetchPoolsPublicDataAsync(currentBlock))
           dispatch(fetchPoolsStakingLimitsAsync())

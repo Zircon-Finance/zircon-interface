@@ -70,5 +70,4 @@ export const removeSerializedPair = createAction<{ chainId: number; tokenAAddres
   'user/removeSerializedPair'
 )
 export const updateGasPrice = createAction<{ gasPrice: string }>('user/updateGasPrice')
-export { fetchFarmsPublicDataAsync, fetchFarmUserDataAsync } from '../farms'
 

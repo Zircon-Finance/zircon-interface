@@ -575,13 +575,13 @@ export default function Swap() {
     </div>
 
     {/* // User chosen tokens */}
-    {chosenTokens.length > 0 && (
+    {chosenTokens?.length > 0 && (
       <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none'}}>
         <Flex style={{width: '100%', padding: '20px', flexWrap: 'wrap', gap: '5px'}}>
           <Flex style={{margin: '0 20px 0 0'}}>
             <StarFull />
           </Flex>
-          {chosenTokens.map((token, index) => {
+          {chosenTokens?.map((token, index) => {
           return(
             <FavTokensRow key={index} token={token} index={index} topTokens={topTokens} topTokensPrevious={topTokensPrevious}
             handleSwap={handleInputSelect} />

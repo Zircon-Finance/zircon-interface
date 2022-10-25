@@ -163,8 +163,18 @@ export default function AddLiquidityPro({
       () => account && pool.userData.allowance && pool.userData.allowance.isGreaterThan(0)
       , [account, pool])
 
+  const [pendingTx, setPendingTx] = useState(false)
   const {handleApprove} = useApprovePool(farm, lpContract, farm?.sousId ?? 1)
-
+  const approveFarm = useCallback(async () => {
+    setPendingTx(true)
+    try {
+      await handleApprove()
+      setPendingTx(false)
+    } catch (e) {
+      setPendingTx(false)
+      console.log(e)
+    }
+  }, [handleApprove])
 
   // modal and loading
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
@@ -1361,11 +1371,12 @@ export default function AddLiquidityPro({
                                       onClick={() =>
                                         farm ?
                                         !farmIsApproved() ?
-                                        (handleApprove()) :
+                                        (approveFarm()) :
                                         (setShowConfirm(true), setIsStaking(true)) :
                                         (setShowConfirm(true), setIsStaking(true))
                                       }
                                       disabled={
+                                        pendingTx ||
                                         !isValid ||
                                         approvalA !== ApprovalState.APPROVED ||
                                         (sync === "half" &&

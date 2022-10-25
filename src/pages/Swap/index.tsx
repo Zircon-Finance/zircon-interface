@@ -100,7 +100,6 @@ export default function Swap() {
     typedValue
   )
   const [chosenTokens] = useChosenTokens();
-  console.log('chosenTokens', chosenTokens)
   const inputCurrency = useCurrency(inputCurrencyId)
   const outputCurrency = useCurrency(outputCurrencyId)
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
@@ -285,7 +284,6 @@ export default function Swap() {
 
   //Top tokens
   const [topTokens, setTopTokens] = useState([])
-  console.log('topTokens', topTokens)
   const [topTokensPrevious, setTopTokensPrevious] = useState([])
   const options = ['Price', 'Price change 24H', 'Volume 24H', 'TVL']
   const [sortOption, setSortOption] = useState('null')

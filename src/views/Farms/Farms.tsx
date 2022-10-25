@@ -280,7 +280,10 @@ const Farms: React.FC = ({ children }) => {
               if (!pool.userData || !pool.earningTokenInfo) {
                 return 0
               }
-              return pool.userData ? pool.userData.stakedBalance : 0
+              return pool.userData ? 
+              parseFloat((new BigNumber(pool.userData.stakedBalance).div(pool.stakedBalancePool).multipliedBy(pool.staked).multipliedBy(pool.quotingPrice))
+              .toFixed(1, BigNumber.ROUND_DOWN)) 
+              : 0
             },
             'desc',
         )
@@ -578,7 +581,7 @@ const Farms: React.FC = ({ children }) => {
                     {sortOption === option.toLowerCase() ? (
                       <SelectedOptionDiv />
                     ) : null}
-                    {(option === 'Earned' && totalEarnings.toFixed(0) !== '0') && (
+                    {(option === 'Earned' && totalEarnings.toFixed(2) !== '0.00') && (
                       <Flex alignItems="center">
                         <Text fontSize="12px" color={'#5ebe7b'}>
                           ~{totalEarnings ? totalEarnings.toFixed(2) : 0} USD

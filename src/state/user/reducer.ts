@@ -91,7 +91,7 @@ export const initialState: UserState = {
   userFarmFinishedOnly: FarmFinishedOnly.FALSE,
   gasPrice: GAS_PRICE_GWEI.default,
   showMobileSearchBar: false,
-  chosenTokens: []
+  chosenTokens: ["0x4545e94974adacb82fc56bcf136b07943e152055"]
 }
 
 export default createReducer(initialState, builder =>

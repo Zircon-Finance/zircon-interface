@@ -1,16 +1,38 @@
+import { IconButton } from "@pancakeswap/uikit";
 import React from "react";
+import { Link } from "react-router-dom";
 import { Flex, Text } from "rebass";
-import styled, { useTheme } from "styled-components";
+import styled, { css, keyframes, useTheme } from "styled-components";
 import { useCurrency } from "../../hooks/Tokens";
 import { useChosenTokens } from "../../state/user/hooks";
 import { formattedNum } from "../../utils/formatBalance";
+import { AbsContainer } from "../../views/Farms/components/FarmTable/Liquidity";
+import PlusIcon from "../../views/Farms/components/PlusIcon";
 import CurrencyLogo from "../CurrencyLogo";
+import RepeatIcon from "../RepeatIcon";
 
 interface TokenRowProps {
     token: any;
     previousToken: any;
     index: number
+    handleInput: any;
   }
+
+export const IconStyler = styled.div`
+    &:hover {
+        svg {
+            path {
+                stroke: #fff !important;
+                }
+        }
+    }
+    svg {
+        path {
+        stroke: ${({ theme }) => theme.pinkGamma} !important;
+        stroke-width: 1.2;
+        }
+    }
+`
 
 const Row = styled.tr`
     display: flex;
@@ -24,11 +46,49 @@ const Row = styled.tr`
     }
 `;
 
+export const expandAnimation = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`
+export const collapseAnimation = keyframes`
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+`
+
+export const DialogContainer = styled.div<{ show }>`
+  animation: ${({ show }) =>
+  show
+    ? css`
+        ${expandAnimation} 200ms
+      `
+    : css`
+        ${collapseAnimation} 300ms linear forwards
+      `};
+  position: absolute;
+  top: 40px;
+  background: ${({ theme }) => theme.hoveredButton};
+  border-radius: 17px;
+  padding: 10px;
+  z-index: 1000;
+  right: 10px;
+  width: max-content;
+  font-size: 13px;
+`
+
 const TableData = styled.td`
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: 18%;
+    justify-content: flex-start;
+    width: 15%;
+    height: 68px;
 `
 
 export const ArrowMarket = (props) => (
@@ -50,76 +110,155 @@ export const StarFull = () => (
     </svg>
 )
 
+
 export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
-    const {token, previousToken, index} = item;
+    const [hovered, setHovered] = React.useState(false);
+    const [hoverPlus, setHoverPlus] = React.useState(false)
+    const [hoverSwap, setHoverSwap] = React.useState(false)
+    const {token, previousToken, index, handleInput} = item;
     const currency = useCurrency(token.token.id)
     const theme = useTheme();
     const [chosenTokens, addChosenTokenCallback, removeChosenTokenFeedback] = useChosenTokens();
-    const changePercent = (((parseFloat(token.priceUSD) - parseFloat(previousToken.priceUSD)) / parseFloat(previousToken.priceUSD)) * 100).toFixed(2);
+    const changePercent = (((parseFloat(token?.priceUSD) - parseFloat(previousToken?.priceUSD)) / parseFloat(previousToken?.priceUSD)) * 100).toFixed(2);
+
+    const plusContent = (
+        <DialogContainer style={{background: theme.pinkGamma}} show={hoverPlus}>
+          <Text style={{color: '#FFF'}} fontSize='13px'>
+            {('Add liquidity')}
+          </Text>
+        </DialogContainer>
+    )
+
+    const swapContent = (
+        <DialogContainer style={{right: '-10px', background: theme.pinkGamma}} show={hoverSwap}>
+          <Text style={{color: '#FFF'}} fontSize='13px'>
+            {('Swap')}
+          </Text>
+        </DialogContainer>
+    )
+
     return (
-    <Row> 
-    <TableData style={{width: '30%'}}>
+    <Row onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
+    style={{backgroundColor: hovered ? theme.cardExpanded : 'transparent', borderRadius: '17px'}}>  
+    <TableData style={{width: '35%', marginLeft: '10px'}}>
         <Text
         style={{ width: "25px", alignSelf: "center" }}
         color={theme.whiteHalf}
-        fontSize={"15px"}
+        fontSize={"16px"}
         >
         {index + 1}
         </Text>
-        <Flex style={{margin: '0 10px', cursor: 'pointer'}} onClick={()=> chosenTokens.includes(token.token.id) ? 
+        <Flex style={{margin: '0 10px', cursor: 'pointer'}} onClick={()=> chosenTokens?.includes(token.token.id) ? 
         removeChosenTokenFeedback(token.token.id) : addChosenTokenCallback(token.token.id)}>
-            {chosenTokens.includes(token.token.id) ? <StarFull /> : <StarEmpty />}
+            {chosenTokens?.includes(token.token.id) ? <StarFull /> : <StarEmpty />}
         </Flex>
         <CurrencyLogo
         style={{ width: "30px", height: "30px", marginRight: "10px" }}
         currency={currency}
         />
         <Text
-        style={{ width: "100px", alignSelf: "center" }}
-        color={theme.whiteHalf}
-        fontSize={"15px"}
+        style={{alignSelf: "center", marginRight: '10px' }}
+        color={theme.text1}
+        fontSize={"16px"}
         >
         {token.token.symbol}
+        </Text>
+        <Text
+        style={{ alignSelf: "center", textAlign: 'center'}}
+        color={theme.whiteHalf}
+        fontSize={"16px"}
+        >
+        {token.token.name}
         </Text>
     </TableData>
     <TableData>
         <Text
-        style={{ alignSelf: "center" }}
-        color={theme.whiteHalf}
-        fontSize={"15px"}
+        style={{ alignSelf: "center", width: '100%' , textAlign: 'center'}}
+        color={theme.text1}
+        fontSize={"16px"}
         >
         {formattedNum(parseFloat(token.priceUSD).toFixed(5), true)}
         </Text>
     </TableData>
     <TableData>
         <Text
-        style={{ alignSelf: "center", display: 'flex' }}
+        style={{ alignSelf: "center", display: 'flex', width: '100%', textAlign: 'center', justifyContent: 'center' }}
         color={parseFloat(changePercent) >= 0 ? '#479E34' : '#BC2929'}
-        fontSize={"15px"}
+        fontSize={"16px"}
         >
         <div style={{rotate:parseFloat(changePercent) >= 0 ? '0deg' : '180deg', height: '24px', width: '24px'}}>
             <ArrowMarket stroke={parseFloat(changePercent) >= 0 ? '#479E34' : '#BC2929'} />
         </div>
-        {changePercent}%
+        {changePercent !== 'NaN' ? `${changePercent}%` : 'No Data'}
         </Text>
     </TableData>
     <TableData>
         <Text
-        style={{ alignSelf: "center" }}
-        color={theme.whiteHalf}
-        fontSize={"15px"}
+        style={{ alignSelf: "center", width: '100%' , textAlign: 'center'}}
+        color={theme.text1}
+        fontSize={"16px"}
         >
         {formattedNum(parseFloat(token.dailyVolumeUSD).toFixed(2), true)}
         </Text>
     </TableData>
     <TableData>
         <Text
-        style={{ alignSelf: "center" }}
-        color={theme.whiteHalf}
-        fontSize={"15px"}
+        style={{ alignSelf: "center", width: '100%' , textAlign: 'center'}}
+        color={theme.text1}
+        fontSize={"16px"}
         >
         {formattedNum(parseFloat(token.totalLiquidityUSD).toFixed(2), true)}
         </Text>
+    </TableData>
+    <TableData style={{width: '10%'}}>
+    {hovered && <AbsContainer style={{display: 'flex'}} onMouseEnter={() => setHovered(true)}>
+            <Link
+              to={`/add-pro/${token.token.id}/`}
+            >
+              <IconButton
+                style={{
+                  background: hoverPlus ? theme.pinkGamma : theme.maxButtonHover,
+                  boxShadow: 'none',
+                  width: "29px",
+                  height: "29px",
+                  borderRadius: "100%",
+                  marginLeft: '10px',
+                }}
+              >
+                <Flex
+                  onMouseEnter={() => setHoverPlus(true)}
+                  onMouseLeave={() => setHoverPlus(false)}
+                >
+                  <IconStyler><PlusIcon /></IconStyler>
+                </Flex>
+              </IconButton>
+            </Link>
+            <Link
+              onClick={() => handleInput(currency)}
+              to={`#`}
+            >
+              <IconButton
+                style={{
+                  background: hoverSwap ? theme.pinkGamma : theme.maxButtonHover,
+                  width: "29px",
+                  boxShadow: 'none',
+                  height: "29px",
+                  borderRadius: "100%",
+                  marginLeft: '10px',
+                }}
+              >
+                <Flex
+                  onMouseEnter={() => setHoverSwap(true)}
+                  onMouseLeave={() => setHoverSwap(false)}
+                  style={{rotate: '90deg', transform: 'scale(0.8)'}}
+                >
+                  <IconStyler style={{paddingRight: '3px', paddingTop: '3px'}}><RepeatIcon /></IconStyler>
+                </Flex>
+              </IconButton>
+            </Link>
+            {hoverPlus && plusContent}
+            {hoverSwap && swapContent}
+          </AbsContainer> }
     </TableData>
     </Row>
 );}

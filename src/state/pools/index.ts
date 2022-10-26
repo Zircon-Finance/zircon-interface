@@ -8,9 +8,7 @@ import {
   // SerializedCakeVault,
   // SerializedLockedVaultUser,
 } from '../../state/types'
-import cakeAbi from '../../constants/abis/erc20.json'
 // import { getCakeVaultAddress } from 'utils/addressHelpers'
-import tokens from '../../constants/tokens'
 import {
   fetchPoolsBlockLimits,
   // fetchPoolsProfileRequirement,
@@ -29,7 +27,6 @@ import priceHelperLpsConfig from '../../constants/poolsHelperLps'
 
 import { resetUserState } from '../global/actions'
 import {BIG_TEN, BIG_ZERO} from '../../utils/bigNumber'
-import multicall from '../../utils/multicall'
 // import { getBalanceNumber } from '../../utils/formatBalance'
 // import { getPoolApr } from '../../utils/apr'
 import fetchPools from "./fetchPoolsInfo";
@@ -73,33 +70,6 @@ const initialState: PoolsState = {
   data: [...poolsConfig],
   userDataLoaded: false,
   // cakeVault: initialPoolVaultState,
-}
-
-export const fetchCakePoolUserDataAsync = (account: string) => async (dispatch) => {
-  const allowanceCall = {
-    address: tokens.cake.address,
-    name: 'allowance',
-    params: [account,
-      // cakeVaultAddress
-    ],
-  }
-  const balanceOfCall = {
-    address: tokens.cake.address,
-    name: 'balanceOf',
-    params: [account],
-  }
-  const cakeContractCalls = [allowanceCall, balanceOfCall]
-  const [[allowance], [stakingTokenBalance]] = await multicall(cakeAbi, cakeContractCalls)
-
-  dispatch(
-      setPoolUserData({
-        sousId: 0,
-        data: {
-          allowance: new BigNumber(allowance.toString()).toJSON(),
-          stakingTokenBalance: new BigNumber(stakingTokenBalance.toString()).toJSON(),
-        },
-      }),
-  )
 }
 
 export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (dispatch, getState) => {

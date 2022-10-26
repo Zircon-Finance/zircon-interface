@@ -91,7 +91,7 @@ export const initialState: UserState = {
   userFarmFinishedOnly: FarmFinishedOnly.FALSE,
   gasPrice: GAS_PRICE_GWEI.default,
   showMobileSearchBar: false,
-  chosenTokens: []
+  chosenTokens: ["0x4545e94974adacb82fc56bcf136b07943e152055"]
 }
 
 export default createReducer(initialState, builder =>
@@ -147,10 +147,10 @@ export default createReducer(initialState, builder =>
       state.userFarmsFilterAnchorFloat = userFarmsFilterAnchorFloat
     })
     .addCase(addChosenToken, (state, { payload: {id} }) => {
-      state.chosenTokens.push(id)
+      state.chosenTokens?.push(id)
     })
     .addCase(removeChosenToken, (state, { payload: {id} }) => {
-      state.chosenTokens = state.chosenTokens.filter(token => token !== id)
+      state.chosenTokens = state.chosenTokens?.filter(token => token !== id)
     })
     .addCase(updateUserDeadline, (state, action) => {
       state.userDeadline = action.payload.userDeadline

@@ -7,7 +7,6 @@ import { useWeb3React } from '@web3-react/core'
 import { RowType, Toggle, Text, Flex } from '@pancakeswap/uikit'
 import styled, { useTheme } from 'styled-components'
 import Page from '../../components/Layout/Page'
-import { usePriceCakeBusd } from '../../state/farms/hooks'
 import useIntersectionObserver from '../../hooks/useIntersectionObserver'
 import { useTranslation } from 'react-i18next'
 import {getBalanceNumber, getBalanceUSD} from '../../utils/formatBalance'
@@ -212,7 +211,6 @@ const Farms: React.FC = ({ children }) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const { pools, userDataLoaded } = usePools()
-  const cakePrice = usePriceCakeBusd()
   const [
     query,
     setQuery] = useState('')
@@ -280,7 +278,10 @@ const Farms: React.FC = ({ children }) => {
               if (!pool.userData || !pool.earningTokenInfo) {
                 return 0
               }
-              return pool.userData ? pool.userData.stakedBalance : 0
+              return pool.userData ? 
+              parseFloat((new BigNumber(pool.userData.stakedBalance).div(pool.stakedBalancePool).multipliedBy(pool.staked).multipliedBy(pool.quotingPrice))
+              .toFixed(1, BigNumber.ROUND_DOWN)) 
+              : 0
             },
             'desc',
         )
@@ -367,7 +368,7 @@ const Farms: React.FC = ({ children }) => {
         lpSymbol: farm.contractAddress,
         tokenAddress,
         quoteTokenAddress,
-        cakePrice,
+        cakePrice: new BigNumber(1),
         originalValue: 1,
       },
       farm: {
@@ -578,7 +579,7 @@ const Farms: React.FC = ({ children }) => {
                     {sortOption === option.toLowerCase() ? (
                       <SelectedOptionDiv />
                     ) : null}
-                    {(option === 'Earned' && totalEarnings.toFixed(0) !== '0') && (
+                    {(option === 'Earned' && totalEarnings.toFixed(2) !== '0.00') && (
                       <Flex alignItems="center">
                         <Text fontSize="12px" color={'#5ebe7b'}>
                           ~{totalEarnings ? totalEarnings.toFixed(2) : 0} USD
@@ -638,11 +639,11 @@ const Farms: React.FC = ({ children }) => {
             </tr>
           </table>
           {renderContent()}
-          {(activeFarms.length < pools.length && activeFarms.length === numberOfFarmsVisible ||
+          {((chosenPools.length < pools.length && chosenPools.length === numberOfFarmsVisible) ||
           (filterAnchorFloat === FarmFilterAnchorFloat.ANCHOR && pools.filter((pool) => stakedOnly ?
-          (pool.isAnchor && pool.userData.stakedBalance.gt(0)) : pool.isAnchor).length > activeFarms.length) ||
+          (pool.isAnchor && pool.userData.stakedBalance.gt(0)) : pool.isAnchor).length > chosenPools.length && chosenPools.length === (numberOfFarmsVisible/2)) ||
           (filterAnchorFloat === FarmFilterAnchorFloat.FLOAT && pools.filter((pool) =>  stakedOnly ?
-          (!pool.isAnchor && pool.userData.stakedBalance.gt(0)) : !pool.isAnchor).length > activeFarms.length)
+          (!pool.isAnchor && pool.userData.stakedBalance.gt(0)) : !pool.isAnchor).length > chosenPools.length && chosenPools.length === (numberOfFarmsVisible/2))
           ) && (
             <ButtonLighter
               onClick={() => showMore()}

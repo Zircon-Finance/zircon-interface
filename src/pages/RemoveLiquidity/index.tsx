@@ -1,5 +1,3 @@
-import { splitSignature } from '@ethersproject/bytes'
-import { Contract } from '@ethersproject/contracts'
 // import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, currencyEquals, DEV, Percent, WDEV } from 'zircon-sdk'
 import React, { useCallback, useMemo, useState } from 'react'
@@ -23,8 +21,6 @@ import CurrencyLogo from '../../components/CurrencyLogo'
 import { ROUTER_ADDRESS } from '../../constants'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
-import { usePairContract } from '../../hooks/useContract'
-
 // import { useTransactionAdder } from '../../state/transactions/hooks'
 import { StyledInternalLink } from '../../theme'
 // import {calculateSlippageAmount, getRouterContract} from '../../utils'
@@ -102,80 +98,12 @@ export default function RemoveLiquidity({
   const atMaxAmount = parsedAmounts[Field.LIQUIDITY_PERCENT]?.equalTo(new Percent('1'))
   const [errorTx, setErrorTx] = useState<string>('')
 
-  // pair contract
-  const pairContract: Contract | null = usePairContract(pair?.liquidityToken?.address)
-
   // allowance handling
   const [signatureData, setSignatureData] = useState<{ v: number; r: string; s: string; deadline: number } | null>(null)
   const [approval, approveCallback] = useApproveCallback(
     parsedAmounts[Field.LIQUIDITY],
     ROUTER_ADDRESS[chainId ? chainId : '']
   )
-  async function onAttemptToApprove() {
-    if (!pairContract || !pair || !library) throw new Error('missing dependencies')
-    const liquidityAmount = parsedAmounts[Field.LIQUIDITY]
-    if (!liquidityAmount) throw new Error('missing liquidity amount')
-    // try to gather a signature for permission
-    const nonce = await pairContract.nonces(account)
-
-    const deadlineForSignature: number = Math.ceil(Date.now() / 1000) + deadline
-
-    const EIP712Domain = [
-      { name: 'name', type: 'string' },
-      { name: 'version', type: 'string' },
-      { name: 'chainId', type: 'uint256' },
-      { name: 'verifyingContract', type: 'address' }
-    ]
-    const domain = {
-      name: 'Zircon Finance', //correct domain name!!!!!!!!!!!!!!!!!!!!!!!
-      version: '1',
-      chainId: chainId,
-      verifyingContract: pair.liquidityToken.address
-    }
-    const Permit = [
-      { name: 'owner', type: 'address' },
-      { name: 'spender', type: 'address' },
-      { name: 'value', type: 'uint256' },
-      { name: 'nonce', type: 'uint256' },
-      { name: 'deadline', type: 'uint256' }
-    ]
-    const message = {
-      owner: account,
-      spender: ROUTER_ADDRESS,
-      value: liquidityAmount.raw.toString(),
-      nonce: nonce.toHexString(),
-      deadline: deadlineForSignature
-    }
-    const data = JSON.stringify({
-      types: {
-        EIP712Domain,
-        Permit
-      },
-      domain,
-      primaryType: 'Permit',
-      message
-    })
-
-    library
-      .send('eth_signTypedData_v4', [account, data])
-      .then(splitSignature)
-      .then(signature => {
-        setSignatureData({
-          v: signature.v,
-          r: signature.r,
-          s: signature.s,
-          deadline: deadlineForSignature
-        })
-      })
-      .catch(error => {
-        setErrorTx(error?.data?.message);
-        // for all errors other than 4001 (EIP-1193 user rejected request), fall back to manual approve
-        if (error?.code !== 4001) {
-          approveCallback()
-        }
-      })
-  }
-
   // wrapped onUserInput to clear signatures
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
@@ -249,56 +177,7 @@ export default function RemoveLiquidity({
         ]
       }
     }
-    // we have a signataure, use permit versions of remove liquidity
-    else if (signatureData !== null) {
-      // removeLiquidityETHWithPermit
-      if (oneCurrencyIsETH) {
-        methodNames = ['removeLiquidityETHWithPermit', 'removeLiquidityETHWithPermitSupportingFeeOnTransferTokens']
-        args = [
-          currencyBIsETH ? tokenA.address : tokenB.address,
-          liquidityAmount.raw.toString(),
-          amountsMin[currencyBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(),
-          amountsMin[currencyBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(),
-          account,
-          signatureData.deadline,
-          false,
-          signatureData.v,
-          signatureData.r,
-          signatureData.s
-        ]
-      }
-      // removeLiquidityETHWithPermit
-      else {
-        methodNames = ['removeLiquidityWithPermit']
-        args = [
-          tokenA.address,
-          tokenB.address,
-          liquidityAmount.raw.toString(),
-          amountsMin[Field.CURRENCY_A].toString(),
-          amountsMin[Field.CURRENCY_B].toString(),
-          account,
-          signatureData.deadline,
-          false,
-          signatureData.v,
-          signatureData.r,
-          signatureData.s
-        ]
-      }
-    } else {
-      throw new Error('Attempting to confirm without approval or a signature. Please contact support.')
-    }
-    /*
-    const safeGasEstimates: (BigNumber | undefined)[] = await Promise.all(
-      methodNames.map(methodName =>
-        router.estimateGas[methodName](...args)
-          .then(calculateGasMargin)
-          .catch(error => {
-            console.error(`estimateGas failed`, methodName, args, error)
-            return undefined
-          })
-      )
-    )
-    */
+
     const safeGasEstimates: BigNumber[] = [BigNumber.from('5000000')]
     const indexOfSuccessfulEstimation = safeGasEstimates.findIndex(safeGasEstimate =>
       BigNumber.isBigNumber(safeGasEstimate)
@@ -586,7 +465,7 @@ export default function RemoveLiquidity({
                               currencyB === DEV ? WDEV[chainId].address : currencyIdB
                             }`}
                           >
-                            Receive WDEV
+                            Receive wMOVR
                           </StyledInternalLink>
                         ) : oneCurrencyIsWDEV ? (
                           <StyledInternalLink
@@ -594,7 +473,7 @@ export default function RemoveLiquidity({
                               currencyA && currencyEquals(currencyA, WDEV[chainId]) ? 'ETH' : currencyIdA
                             }/${currencyB && currencyEquals(currencyB, WDEV[chainId]) ? 'ETH' : currencyIdB}`}
                           >
-                            Receive DEV
+                            Receive MOVR
                           </StyledInternalLink>
                         ) : null}
                       </RowBetween>
@@ -676,16 +555,16 @@ export default function RemoveLiquidity({
               ) : (
                 <RowBetween style={{paddingBottom: '10px'}}>
                   <ButtonConfirmed
-                    onClick={onAttemptToApprove}
-                    confirmed={approval === ApprovalState.APPROVED || signatureData !== null}
-                    disabled={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
+                    onClick={() => approveCallback()}
+                    confirmed={approval === ApprovalState.APPROVED }
+                    disabled={approval !== ApprovalState.NOT_APPROVED }
                     mr="0.5rem"
                     fontWeight={400}
                     fontSize={16}
                   >
                     {approval === ApprovalState.PENDING ? (
                       <Dots>Approving</Dots>
-                    ) : approval === ApprovalState.APPROVED || signatureData !== null ? (
+                    ) : approval === ApprovalState.APPROVED? (
                       'Approved'
                     ) : (
                       'Approve'
@@ -695,7 +574,7 @@ export default function RemoveLiquidity({
                     onClick={() => {
                       setShowConfirm(true)
                     }}
-                    disabled={!isValid || (signatureData === null && approval !== ApprovalState.APPROVED)}
+                    disabled={!isValid || (approval !== ApprovalState.APPROVED)}
                     error={!isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]}
                   >
                     <Text fontSize={16} fontWeight={400}>

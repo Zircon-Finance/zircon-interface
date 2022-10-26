@@ -629,7 +629,7 @@ export default function RemoveProLiquidity({
                                           currencyB === DEV ? WDEV[chainId].address : currencyIdB
                                       }/${isFloat ? "FLOAT" : "STABLE"}`}
                                   >
-                                    Receive WDEV
+                                    Receive wMOVR
                                   </StyledInternalLink>
                               ) : oneCurrencyIsWDEV ? (
                                   <StyledInternalLink
@@ -637,7 +637,7 @@ export default function RemoveProLiquidity({
                                           currencyA && currencyEquals(currencyA, WDEV[chainId]) ? 'ETH' : currencyIdA
                                       }/${currencyB && currencyEquals(currencyB, WDEV[chainId]) ? 'ETH' : currencyIdB}/${isFloat ? "FLOAT" : "STABLE"}`}
                                   >
-                                    Receive DEV
+                                    Receive MOVR
                                   </StyledInternalLink>
                               ) : null}
                             </RowBetween>

@@ -6,7 +6,7 @@ import ReactGA from "react-ga4";
 import {RouteComponentProps} from "react-router-dom";
 import {Flex, Text} from "rebass";
 import styled, {useTheme} from "styled-components";
-import {ButtonAnchor, ButtonError, ButtonLight, ButtonPrimary,} from "../../components/Button";
+import {ButtonAnchor, ButtonError, ButtonErrorSecondary, ButtonLight, ButtonPrimary,} from "../../components/Button";
 import {BlueCard, GreyCard, LightCard} from "../../components/Card";
 import {AutoColumn, ColumnCenter} from "../../components/Column";
 import TransactionConfirmationModal, {ConfirmationModalContent,} from "../../components/TransactionConfirmationModal";
@@ -163,8 +163,18 @@ export default function AddLiquidityPro({
       () => account && pool.userData.allowance && pool.userData.allowance.isGreaterThan(0)
       , [account, pool])
 
+  const [pendingTx, setPendingTx] = useState(false)
   const {handleApprove} = useApprovePool(farm, lpContract, farm?.sousId ?? 1)
-
+  const approveFarm = useCallback(async () => {
+    setPendingTx(true)
+    try {
+      await handleApprove()
+      setPendingTx(false)
+    } catch (e) {
+      setPendingTx(false)
+      console.log(e)
+    }
+  }, [handleApprove])
 
   // modal and loading
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
@@ -1355,17 +1365,18 @@ export default function AddLiquidityPro({
                                 </Text>
                               </ButtonError>
                               {pylonState === PylonState.EXISTS && farm && (
-                                  <ButtonError
-                                      style={{ height: "60px" }}
+                                  <ButtonErrorSecondary
+                                      style={{ height: "60px", color: theme.pinkBrown, borderRadius: '17px' }}
                                       width={"48%"}
                                       onClick={() =>
                                         farm ?
                                         !farmIsApproved() ?
-                                        (handleApprove()) :
+                                        (approveFarm()) :
                                         (setShowConfirm(true), setIsStaking(true)) :
                                         (setShowConfirm(true), setIsStaking(true))
                                       }
                                       disabled={
+                                        pendingTx ||
                                         !isValid ||
                                         approvalA !== ApprovalState.APPROVED ||
                                         (sync === "half" &&
@@ -1395,7 +1406,7 @@ export default function AddLiquidityPro({
                                         {`${!pool?.apr ? "" : pool?.apr?.toFixed(2)}% APR`}
                                       </Text>)}
                                     </Flex>
-                                  </ButtonError>
+                                  </ButtonErrorSecondary>
                               )}
                             </SpaceBetween>
                           </AutoColumn>

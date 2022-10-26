@@ -234,7 +234,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const bsc = CONTRACT_ADDRESS_BASE+farm.contractAddress
   // getBscScanLink(lpAddress, 'address')
   const lpAddress = farm.stakingToken.address
-  const info = `/info/pool/${lpAddress}`
+  const info = `https://analytics.zircon.finance/`
   const theme = useTheme()
 
   const { pool } = usePool(farm.sousId)
@@ -538,7 +538,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
         <Flex justifyContent={'space-around'} my={'5px'}>
         <StyledLinkExternal
           style={{ color: theme.pinkBrown, fontWeight: 500, marginRight: '10px' }}
-          href={"Placeholder"}
+          href={"https://analytics.zircon.finance/"}
         >
           {"See Pair Info ↗"}
         </StyledLinkExternal>

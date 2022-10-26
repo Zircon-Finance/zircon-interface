@@ -53,8 +53,8 @@ import { usePair } from '../../data/Reserves'
 import { SelectedOptionDiv } from '../../views/Farms/Farms'
 import { TableData } from '../../views/Farms/components/FarmTable/Row'
 import FarmRepeatIcon from '../../components/FarmRepeatIcon'
-import { ArrowMarket, StarFull, TopTokensRow } from '../../components/TopTokensRow'
-import CurrencyLogo from '../../components/CurrencyLogo'
+import { StarFull, TopTokensRow } from '../../components/TopTokensRow'
+import FavTokensRow from '../../components/FavouriteTokensRow'
 
 export default function Swap() {
   const { t } = useTranslation()
@@ -293,7 +293,12 @@ export default function Swap() {
       case 'price':
         return orderBy(tokensToSort, (token: any) => parseFloat(token.priceUSD) ?? 0, 'desc')
       case 'price change 24h':
-        return orderBy(tokensToSort, (token: any) => parseFloat(token) ?? 0, 'desc')
+          return orderBy(tokensToSort, (token: any) => {
+          const previousToken = topTokensPrevious.find((t) => t.token.id === token.token.id)
+          const changePercent = (((parseFloat(token?.priceUSD) - parseFloat(previousToken?.priceUSD)) / 
+          parseFloat(previousToken?.priceUSD)) * 100).toFixed(2);
+          return changePercent !== 'NaN' ? parseFloat(changePercent) : parseFloat('-100')
+        }, 'desc')
       case 'volume 24h':
         return orderBy(tokensToSort, (token: any) => parseFloat(token.dailyVolumeUSD), 'desc')
       case 'tvl':
@@ -310,7 +315,7 @@ export default function Swap() {
     <div style={{width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', gap: '20px'}}>
     { width > 1000 && (
     <div style={{
-      height: '450px',
+      height: '384px',
       position: 'relative',
       maxWidth: '480px',
       width: '100%',
@@ -570,30 +575,16 @@ export default function Swap() {
     </div>
 
     {/* // User chosen tokens */}
-    {chosenTokens.length > 0 && (
+    {chosenTokens?.length > 0 && (
       <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none'}}>
-        <Flex style={{width: '100%', padding: '20px 0'}}>
-          <Flex style={{margin: '0 20px'}}>
+        <Flex style={{width: '100%', padding: '20px', flexWrap: 'wrap', gap: '5px'}}>
+          <Flex style={{margin: '0 20px 0 0'}}>
             <StarFull />
           </Flex>
-          {chosenTokens.map((token, index) => {
-          const tokenData = topTokens.find((t) => t.token.id === token)
-          const tokenDataPrevious = topTokensPrevious.find((t) => t.token.id === token)
-          const changePercent = (((parseFloat(tokenData?.priceUSD) - parseFloat(tokenDataPrevious?.priceUSD)) / 
-          parseFloat(tokenDataPrevious?.priceUSD)) * 100).toFixed(2);
+          {chosenTokens?.map((token, index) => {
           return(
-            <Flex>
-              <CurrencyLogo key={index} 
-                currency={{symbol: tokenData?.token.symbol === 'xcKSM' ? 'KSM' : tokenData?.token.symbol === 'xcRMRK' ? 'RMRK' : tokenData?.token.symbol
-                , decimals: tokenData?.token.decimals,name: tokenData?.token.name}}
-                size={'20px'} 
-                style={{marginRight: '5px'}} />  
-              <Text style={{marginRight: '5px'}}>{tokenData?.symbol}</Text>
-              <Flex style={{marginRight: '5px', rotate:parseFloat(changePercent) >= 0 ? '0deg' : '180deg'}}>
-                <ArrowMarket stroke={parseFloat(changePercent) >= 0 ? '#479E34' : '#BC2929'} />
-              </Flex>
-              <Text style={{marginRight: '10px', color: parseFloat(changePercent) >= 0 ? '#479E34' : '#BC2929'}}>{changePercent}%</Text>
-            </Flex>
+            <FavTokensRow key={index} token={token} index={index} topTokens={topTokens} topTokensPrevious={topTokensPrevious}
+            handleSwap={handleInputSelect} />
           )})}
         </Flex>
       </Flex>
@@ -607,13 +598,13 @@ export default function Swap() {
         paddingBottom: "5px",
       }}
     ><tr style={{display: 'flex', height: '40px'}}>
-      <Flex style={{width: '30%', alignItems: 'center'}}><Text mx="10px">{'Top Tokens'}</Text><FarmRepeatIcon /></Flex>
+      <Flex style={{width: '35%', alignItems: 'center'}}><Text mx="10px">{'Top tokens'}</Text><FarmRepeatIcon /></Flex>
           {options.map((option) => (
             <TableData
               key={option}
               style={{
                 cursor:"pointer",
-                width: '18%',
+                width: '15%',
                 display: 'flex',
                 alignItems: 'center',
                 height: '100%',
@@ -627,8 +618,10 @@ export default function Swap() {
             ><Flex style={{marginTop: '10px'}}>
                 <p
                   style={{
+                    display: 'flex',
+                    alignItems: 'center',
                     fontSize: "13px",
-                    color: !theme.darkMode ? theme.text1 : theme.meatPink,
+                    color: !theme.darkMode ? theme.whiteHalf : theme.meatPink,
                     fontWeight: 500,
                     margin: 0,
                   }}
@@ -640,9 +633,15 @@ export default function Swap() {
               ) : null}
             </TableData>
           ))}
+          <TableData style={{cursor:"pointer", width: '10%'}} />
         </tr>
         {(topTokensPrevious.length > 0 && topTokens.length > 0) && sortedTokens.map((token, index) => (
-          <TopTokensRow key={index} token={token} previousToken={topTokensPrevious.find((t) => t.token.id === token.token.id)} index={index} />
+          <TopTokensRow
+            key={index} 
+            token={token} 
+            previousToken={topTokensPrevious.find((t) => t.token.id === token.token.id)} 
+            index={index}
+            handleInput={handleInputSelect} />
         ))}
       </table>
     </Flex>

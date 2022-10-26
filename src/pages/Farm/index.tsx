@@ -2,15 +2,15 @@ import React, { useContext } from 'react'
 import { FarmsPageLayout, FarmsContext } from '../../views/Farms'
 import FarmCard from '../../views/Farms/components/FarmCard/FarmCard'
 import { getDisplayApr } from '../../views/Farms/Farms'
-import { usePriceCakeBusd } from '../../state/farms/hooks'
 import { useWeb3React } from '@web3-react/core'
 import Lottie from "lottie-react-web";
 import animation from "../../assets/lotties/farming_lottie.json";
+import BigNumber from 'bignumber.js'
 
 const FarmsPage = () => {
   const { account } = useWeb3React()
   const { activeFarms } = useContext(FarmsContext)
-  const cakePrice = usePriceCakeBusd()
+  const cakePrice = new BigNumber(1)
 
   return (
     <>

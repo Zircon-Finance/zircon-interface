@@ -104,7 +104,7 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
       // As of Contract calculation on initialize it is minted 1e18 Psionic tokens to the farm contract so...
       const tokensRemaining = new BigNumber(blockRemaining).times(1e18)
       const pendingRewards = new BigNumber(pool.psionicFarmBalance).minus(tokensRemaining)
-      
+
       // Price of staked Token in USD
       const stakingTokenPrice = new BigNumber(pool.staked.toString()).multipliedBy(new BigNumber(pool.quotePrice)).toNumber()
 
@@ -130,8 +130,6 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
           currentPrice: balance.dividedBy(pool.vaultTotalSupply).multipliedBy(price).toNumber(),
         }
       }) || []
-
-
 
       // Calculating Total Liquidity in USD
       let tokenLiquidity = BigNumber(pool.tokenPrice.toString()).multipliedBy(pool.tokenBalanceTotal).dividedBy(BIG_TEN.pow(pool.tokenDecimals))

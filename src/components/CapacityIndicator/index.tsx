@@ -107,7 +107,7 @@ const CapacityIndicator: React.FC<Props> = ({gamma, hoverPage, health, isFloat, 
                 <span style={{marginRight: 8, color: parseFloat(extraFee?.toFixed(2)) >= 1 ? '#E67066' : '#5CB376'}}>{extraFee?.toFixed(2)}%</span>
             </RowContainer>}
 
-            {!blocked && slashingOmega.gt(0) && <RowContainer>
+            {!blocked && slashingOmega.gt("0.01") && <RowContainer>
                 <SmallContainer>
                     {!noSpan && <span style={{marginLeft: 8}}>{'Omega'}</span>}
                     <QuestionMarkContainer

@@ -6,14 +6,7 @@ import chunk from "lodash/chunk";
 import {abi as PYLON_ABI} from "../../constants/abi/ZirconPylon.json";
 
 const fetchPoolCalls = (pool: SerializedPool) => {
-    const { token1, token2, stakingToken, lpAddress, pylonAddress} = pool
-    console.log(`We are fetching pool: ${pool.sousId}`, pool)
-    console.log(`For sousId: ${pool.sousId} tokenBalanceLP is the call of the balance of token 1 ${token1.address} and token 2 ${token2.address} in the LP contract ${lpAddress},
-    quoteTokenBalanceLp is the same thing but for token 2 ${token2.address}, pylonTokenBalanceLP is the balance of token 1 ${token1.address} in the pylon contract ${pylonAddress},
-    and pylonQuote thing is for token2, stakedTokenBalanceMC is the balance of the staking token ${stakingToken.address} in the contractAddress ${pool.contractAddress},
-    lpTotalSupply is the total supply of Lp tokens, so calling totalSupply at ${lpAddress}, token decimals are what they say, ptb is the balance of liquidityPoolTokens
-    in the pylon, staked totalSupply is the ts of the staking token ${stakingToken.address}, vaultTotalSupply is the ts of the vault token ${pool.vaultAddress},
-    psionicFarmBalance is the balance of VaultTokens inside the contractAddress`)
+    const { token1, token2, stakingToken, lpAddress} = pool
     return [
         {
             address: token1.address,

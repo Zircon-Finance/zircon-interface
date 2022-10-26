@@ -8,7 +8,6 @@ import sousChefV2 from '../../constants/abi/psionicFarmABI.json'
 import { BIG_ZERO } from '../../utils/bigNumber'
 import { getAddress } from '../../utils/addressHelpers'
 import multicall from '../../utils/multicall'
-import erc20ABI from '../../constants/abi/erc20.json'
 
 const poolsWithEnd = poolsConfig.filter((p) => p.sousId !== 0)
 
@@ -49,23 +48,6 @@ export const fetchPoolsBlockLimits = async () => {
       endBlock: endBlock.toNumber(),
     }
   })
-}
-
-const poolsBalanceOf = poolsConfig.map((poolConfig) => {
-  return {
-    address: poolConfig.stakingToken.address,
-    name: 'balanceOf',
-    params: [getAddress(poolConfig.contractAddress)],
-  }
-})
-
-export const fetchPoolsTotalStaking = async () => {
-  const poolsTotalStaked = await multicall(erc20ABI, poolsBalanceOf)
-
-  return poolsConfig.map((p, index) => ({
-    sousId: p.sousId,
-    totalStaked: new BigNumber(poolsTotalStaked[index]).toJSON(),
-  }))
 }
 
 export const fetchPoolsStakingLimits = async (

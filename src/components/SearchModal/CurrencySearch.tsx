@@ -209,12 +209,12 @@ export function CurrencySearch({
         </RowBetween>
       </PaddedColumn>
 
-      {chosenTokens.length > 0 && !searchQuery && (
+      {chosenTokens?.length > 0 && !searchQuery && (
         <Flex flexDirection="column" style={{padding: '0 20px', gap: '5px'}}>
         <Text color={theme.whiteHalf} style={{display: 'flex', alignItems: 'center'}}> 
          <Flex style={{marginRight: '5px'}}><StarFull /></Flex> {`Favourite tokens`}</Text>
           <Flex flexDirection="row" style={{display: 'flex', marginBottom: '15px', flexWrap: 'wrap'}}>
-            {chosenTokens.map((token, i) => (
+            {chosenTokens?.map((token, i) => (
               <SmallToken token={token} index={i} />
             ))}
           </Flex>

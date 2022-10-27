@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction, isAnyOf } from '@reduxjs/toolkit'
 import BigNumber from 'bignumber.js'
 import poolsConfig from '../../constants/pools'
+import axios from 'axios'
 import {
   PoolsState,
   SerializedPool,
@@ -10,7 +11,6 @@ import {
 } from '../../state/types'
 // import { getCakeVaultAddress } from 'utils/addressHelpers'
 import {
-  fetchPoolsBlockLimits,
   // fetchPoolsProfileRequirement,
   fetchPoolsStakingLimits,
   fetchPoolsTotalStaking,
@@ -23,16 +23,14 @@ import {
 } from './fetchPoolsUser'
 // import { fetchPublicVaultData, fetchVaultFees } from './fetchVaultPublic'
 // import fetchVaultUser from './fetchVaultUser'
-import priceHelperLpsConfig from '../../constants/poolsHelperLps'
 
 import { resetUserState } from '../global/actions'
-import {BIG_TEN, BIG_ZERO} from '../../utils/bigNumber'
+import {BIG_ZERO} from '../../utils/bigNumber'
 // import { getBalanceNumber } from '../../utils/formatBalance'
 // import { getPoolApr } from '../../utils/apr'
 import fetchPools from "./fetchPoolsInfo";
 import getPoolsPrices from "./getPoolsPrices";
 // import {fetchRewardsData} from "./fetchRewardsData";
-import {getPoolApr} from "../../utils/apr";
 import {fetchRewardsData} from "./fetchRewardsData";
 import {simpleRpcProvider} from "../../utils/providers";
 // import {JSBI, Pylon} from "zircon-sdk";
@@ -74,25 +72,44 @@ const initialState: PoolsState = {
 
 export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (dispatch, getState) => {
   try {
-    const [blockLimits, totalStakings, currentBlock] = await Promise.all([
-      fetchPoolsBlockLimits(),
+    const [totalStakings, currentBlock] = await Promise.all([
       fetchPoolsTotalStaking(),
       currentBlockNumber ? Promise.resolve(currentBlockNumber) : simpleRpcProvider.getBlockNumber(),
     ])
 
+    const apiData = await axios.get('https://edgeapi.zircon.finance/static/yield').then((res) => res.data)
+
+    const blockLimits = apiData?.map((pool) => {
+      return {
+        contractAddress: pool.contractAddress,
+        startBlock: parseInt(pool.startBlock),
+        endBlock: parseInt(pool.endBlock)
+    }})
+
+    const totalStakingsApi = apiData?.map((pool) => {
+      return {
+        contractAddress: pool.contractAddress,
+        totalStaking: pool.staked
+    }})
+    console.log('totalStakingsApi', totalStakingsApi)
+    console.log('Original totalstaking', totalStakings)
+    
+
+
     const rewardsData = []
     for (let i = 0; i < poolsConfig.length; i++) {
-      rewardsData[i] = await fetchRewardsData(poolsConfig[i])
+      rewardsData[i] = {contractAddress: poolsConfig[i].contractAddress, balances:  await fetchRewardsData(apiData, poolsConfig[i])}
     }
     const poolsInformation = await fetchPools(poolsConfig)
+    
     let poolsPrices = await getPoolsPrices(poolsInformation)
 
-    const priceHelperInformation = await fetchPools(priceHelperLpsConfig)
-    let priceZRGMOVR = await getPoolsPrices(priceHelperInformation)
+    const priceZRGMOVR = {zrg: apiData[0]?.zrgPrice, movr: apiData[0]?.movrPrice}
 
     const liveData = poolsPrices.map((pool, i) => {
+      const apiPool = apiData.filter((poolArray) => poolArray.contractAddress === pool.contractAddress.toLowerCase());
       // Checking for block limits and total Staking
-      const blockLimit = blockLimits.find((entry) => entry.sousId === pool.sousId)
+      const blockLimit = blockLimits.find((entry) => entry.contractAddress === pool.contractAddress.toLowerCase())
       const totalStaking = totalStakings.find((entry) => entry.sousId === pool.sousId)
 
       // Checking if pool is finished, either by the value on the files or because the block limit has been reached
@@ -103,60 +120,48 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
       // Checking Rewards already distributed
       // As of Contract calculation on initialize it is minted 1e18 Psionic tokens to the farm contract so...
       const tokensRemaining = new BigNumber(blockRemaining).times(1e18)
-      const pendingRewards = new BigNumber(pool.psionicFarmBalance).minus(tokensRemaining)
-
+      const pendingRewards = new BigNumber(apiPool[0]?.psiBalance).minus(tokensRemaining)
+      
       // Price of staked Token in USD
-      const stakingTokenPrice = new BigNumber(pool.staked.toString()).multipliedBy(new BigNumber(pool.quotePrice)).toNumber()
 
       // Earning Tokens Information (ZRG, MOVR)
+      const earningData = rewardsData?.find((entry) => entry.contractAddress.toLowerCase() === pool.contractAddress.toLowerCase())
       let earningTokenInfo: EarningTokenInfo[] = pool.earningToken.map((token,index) => {
         // Calculating remaining balance
-        const balance = new BigNumber(rewardsData[i][0][index]?.balance?.toString())
+        const balance = new BigNumber(earningData?.balances?.find((entry) => entry.symbol.toLowerCase() === 
+        (token.symbol.toLowerCase() === 'movr' ? 'wmovr' : token.symbol.toLowerCase()))?.balance)
         const balanceDivided = balance.dividedBy(new BigNumber(1e18))
 
         // Calculating rewards per block (removing the pending exceeding rewards)
-        const pending = new BigNumber(pendingRewards).multipliedBy(balanceDivided).dividedBy(pool.vaultTotalSupply)
+        const pending = new BigNumber(pendingRewards).multipliedBy(balanceDivided).dividedBy(apiPool[0]?.psiTS)
         const remaining = (balanceDivided).minus(pending)
         let blockReward = remaining.dividedBy(blockRemaining)
 
         // Obtaining Price (Normally ZRG will be Float side and MOVR Stable Side
-        let price = token.symbol === "ZRG" ? priceZRGMOVR[0]?.tokenPrice : priceZRGMOVR[0]?.quotePrice
+        let price = token.symbol === "ZRG" ? priceZRGMOVR?.zrg : priceZRGMOVR?.movr
 
         return {
           symbol: token.symbol,
           blockReward: blockReward.toNumber(),
           blockRewardPrice: new BigNumber(price).times(blockReward).toNumber(),
-          current: balance.dividedBy(pool.vaultTotalSupply).toNumber(),
-          currentPrice: balance.dividedBy(pool.vaultTotalSupply).multipliedBy(price).toNumber(),
+          current: balance.dividedBy(apiPool[0]?.psiTS).toNumber(),
+          currentPrice: balance.dividedBy(apiPool[0]?.psiTS).multipliedBy(price).toNumber(),
         }
       }) || []
-
-      // Calculating Total Liquidity in USD
-      let tokenLiquidity = BigNumber(pool.tokenPrice.toString()).multipliedBy(pool.tokenBalanceTotal).dividedBy(BIG_TEN.pow(pool.tokenDecimals))
-      let quoteLiquidity = BigNumber(pool.quotePrice.toString()).multipliedBy(pool.quoteTokenBalanceTotal).dividedBy(BIG_TEN.pow(pool.quoteTokenDecimals))
-      let liquidity = String(tokenLiquidity.plus(quoteLiquidity).toString())
-
-      // Calculating APR
-      const apr = !isPoolFinished
-          ? getPoolApr(
-              stakingTokenPrice,
-              earningTokenInfo,
-          )
-          : 0
 
 
       return {
         ...blockLimit,
         ...totalStaking,
         earningTokenInfo: earningTokenInfo || [],
-        rewardsData: rewardsData[i][0].map((reward) => reward[0].toString()),
-        vTotalSupply: pool.vaultTotalSupply,
-        liquidity: liquidity,
-        zrgPrice: priceZRGMOVR[0]?.tokenPrice,
-        movrPrice: priceZRGMOVR[0]?.quotePrice,
-        staked: new BigNumber(pool.staked).toString(),
+        rewardsData: rewardsData,
+        vTotalSupply: apiPool[0]?.psiTS,
+        liquidity: apiPool[0]?.tvl,
+        zrgPrice: priceZRGMOVR?.zrg,
+        movrPrice: priceZRGMOVR?.movr,
+        staked: new BigNumber(apiPool[0]?.staked).toString(),
         stakedBalancePool: new BigNumber(pool.stakedBalancePool).toString(),
-        apr,
+        apr: parseFloat(apiPool[0]?.apr) + parseFloat(apiPool[0]?.feesAPR),
         isFinished: isPoolFinished,
         quotingPrice: pool.quotePrice,
         tokenPrice: pool.tokenPrice,

@@ -6,7 +6,7 @@ import chunk from "lodash/chunk";
 import {abi as PYLON_ABI} from "../../constants/abi/ZirconPylon.json";
 
 const fetchPoolCalls = (pool: SerializedPool) => {
-    const { token1, token2, stakingToken, lpAddress, pylonAddress} = pool
+    const { token1, token2, stakingToken, lpAddress} = pool
     return [
         {
             address: token1.address,
@@ -19,27 +19,11 @@ const fetchPoolCalls = (pool: SerializedPool) => {
             name: 'balanceOf',
             params: [lpAddress],
         },
-        {
-            address: token1.address,
-            name: 'balanceOf',
-            params: [pylonAddress],
-        },
-        // Balance of quote token on LP contract
-        {
-            address: token2.address,
-            name: 'balanceOf',
-            params: [pylonAddress],
-        },
         // Balance of LP tokens in the master chef contract
         {
             address: stakingToken.address,
             name: 'balanceOf',
             params: [pool.contractAddress],
-        },
-        // Total supply of LP tokens
-        {
-            address: lpAddress,
-            name: 'totalSupply',
         },
         // Token decimals
         {
@@ -50,24 +34,6 @@ const fetchPoolCalls = (pool: SerializedPool) => {
         {
             address: token2.address,
             name: 'decimals',
-        },
-        {
-            address: lpAddress,
-            name: 'balanceOf',
-            params: [pylonAddress],
-        },
-        {
-            address: stakingToken.address,
-            name: 'totalSupply'
-        },
-        {
-            address: pool.vaultAddress,
-            name: "totalSupply"
-        },
-        {
-            address: pool.vaultAddress,
-            name: "balanceOf",
-            params: [pool.contractAddress],
         },
     ]
 

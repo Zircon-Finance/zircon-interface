@@ -13,7 +13,6 @@ import {
 import {
   // fetchPoolsProfileRequirement,
   fetchPoolsStakingLimits,
-  fetchPoolsTotalStaking,
 } from './fetchPools'
 import {
   fetchPoolsAllowance,
@@ -72,8 +71,7 @@ const initialState: PoolsState = {
 
 export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (dispatch, getState) => {
   try {
-    const [totalStakings, currentBlock] = await Promise.all([
-      fetchPoolsTotalStaking(),
+    const [currentBlock] = await Promise.all([
       currentBlockNumber ? Promise.resolve(currentBlockNumber) : simpleRpcProvider.getBlockNumber(),
     ])
 
@@ -85,16 +83,6 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
         startBlock: parseInt(pool.startBlock),
         endBlock: parseInt(pool.endBlock)
     }})
-
-    const totalStakingsApi = apiData?.map((pool) => {
-      return {
-        contractAddress: pool.contractAddress,
-        totalStaking: pool.staked
-    }})
-    console.log('totalStakingsApi', totalStakingsApi)
-    console.log('Original totalstaking', totalStakings)
-    
-
 
     const rewardsData = []
     for (let i = 0; i < poolsConfig.length; i++) {
@@ -110,11 +98,10 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
       const apiPool = apiData.filter((poolArray) => poolArray.contractAddress === pool.contractAddress.toLowerCase());
       // Checking for block limits and total Staking
       const blockLimit = blockLimits.find((entry) => entry.contractAddress === pool.contractAddress.toLowerCase())
-      const totalStaking = totalStakings.find((entry) => entry.sousId === pool.sousId)
 
       // Checking if pool is finished, either by the value on the files or because the block limit has been reached
       const isPoolEndBlockExceeded = currentBlock > 0 && blockLimit ? currentBlock > Number(blockLimit.endBlock) : false
-      const isPoolFinished = pool.isFinished || isPoolEndBlockExceeded
+      const isPoolFinished = pool.isFinished || isPoolEndBlockExceeded || !apiPool[0]
       const blockRemaining = blockLimit?.endBlock-currentBlock
 
       // Checking Rewards already distributed
@@ -151,8 +138,8 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
 
 
       return {
+        sousId: pool.sousId,
         ...blockLimit,
-        ...totalStaking,
         earningTokenInfo: earningTokenInfo || [],
         rewardsData: rewardsData,
         vTotalSupply: apiPool[0]?.psiTS,

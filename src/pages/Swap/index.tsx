@@ -286,7 +286,7 @@ export default function Swap() {
   const [topTokens, setTopTokens] = useState([])
   const [topTokensPrevious, setTopTokensPrevious] = useState([])
   const options = ['Price', 'Price change 24H', 'Volume 24H', 'TVL']
-  const [sortOption, setSortOption] = useState('null')
+  const [sortOption, setSortOption] = useState('volume 24h')
 
   const sortTokens = (sortOption: string, tokensToSort: any[]) => {
     switch (sortOption) {

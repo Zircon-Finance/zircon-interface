@@ -528,7 +528,7 @@ const Farms: React.FC = ({ children }) => {
           <table
             style={{
               width: "100%",
-              borderBottom: `1px solid ${theme.opacitySmall}`,
+              borderBottom: `1px solid ${theme.darkMode ? theme.opacitySmall : '#F2F0F1'}`,
               paddingBottom: "5px",
             }}
           >
@@ -567,7 +567,7 @@ const Farms: React.FC = ({ children }) => {
                       <p
                         style={{
                           fontSize: "13px",
-                          color: !darkMode ? theme.text1 : theme.meatPink,
+                          color: !darkMode ? '#874955' : theme.meatPink,
                           fontWeight: 500,
                           margin: 0,
                         }}

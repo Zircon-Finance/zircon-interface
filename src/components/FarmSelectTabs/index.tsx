@@ -48,11 +48,13 @@ const StyledNavLink = styled(NavLink).attrs({
   font-size: 13px;
   padding: 6px 10px;
   width: 50%;
+  -webkit-box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.15); 
+  box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.15);
 
   &.${activeClassName} {
     border-radius: 7px;
     color: ${({ theme }) => theme.text1};
-    background-color: ${({ theme }) => theme.darkMode ? '#7d5956' : theme.bg1};
+    background-color: ${({ theme }) => theme.darkMode ? '#7d5956' : '#E9E5E5'};
   }
 
   :hover,
@@ -162,7 +164,7 @@ export function ViewModeTabs({ active }: { active: "TABLE" | "CARD" }) {
   const theme = useTheme();
   return (
     <div style={{ width: "100%" }}>
-      <Tabs style={{ background: theme.maxButton, width: "70px", margin: "0" }}>
+      <Tabs style={{ background: theme.darkMode ? theme.maxButton : '#EEEBEC', width: "70px", margin: "0" }}>
         <StyledNavLink
           style={{ padding: "5px" }}
           id={`anchor-select-tab`}

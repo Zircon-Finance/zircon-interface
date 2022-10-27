@@ -139,7 +139,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
 
     return (
     <Row onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
-    style={{backgroundColor: hovered ? theme.cardExpanded : 'transparent', borderRadius: '17px'}}>  
+    style={{backgroundColor: hovered ? theme.darkMode ? theme.cardExpanded : '#F5F3F4' : 'transparent', borderRadius: '17px'}}>  
     <TableData style={{width: '35%', marginLeft: '10px'}}>
         <Text
         style={{ width: "25px", alignSelf: "center" }}

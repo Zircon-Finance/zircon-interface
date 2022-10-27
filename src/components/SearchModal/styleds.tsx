@@ -86,15 +86,15 @@ animation: ${({ expanded }) =>
     opacity: 0.4;
   }
   white-space: nowrap;
-  background-color: ${({ theme}) => theme.searchInput};
+  background-color: ${({ theme}) => theme.darkMode ? theme.searchInput : '#E9E5E5'};
   border: 1px solid transparent;
   outline: none;
   border-radius: 17px;
-  color: ${({ theme }) => theme.text1};
+  color: #7B7879;
   -webkit-appearance: none;
   transition: all 1s;
 
-  font-size: 16px;
+  font-size: 13px;
   transition: border 100ms;
   :focus {
     border: 1px solid ${({ theme }) => theme.pinkGamma};

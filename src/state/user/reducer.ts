@@ -109,6 +109,10 @@ export default createReducer(initialState, builder =>
         state.userDeadline = DEFAULT_DEADLINE_FROM_NOW
       }
 
+      if(!state.chosenTokens) {
+        state.chosenTokens = initialState.chosenTokens
+      }
+
       state.lastUpdateVersionTimestamp = currentTimestamp()
     })
     .addCase(updateUserDarkMode, (state, action) => {

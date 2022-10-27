@@ -101,7 +101,7 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
 
       // Checking if pool is finished, either by the value on the files or because the block limit has been reached
       const isPoolEndBlockExceeded = currentBlock > 0 && blockLimit ? currentBlock > Number(blockLimit.endBlock) : false
-      const isPoolFinished = pool.isFinished || isPoolEndBlockExceeded
+      const isPoolFinished = pool.isFinished || isPoolEndBlockExceeded || !apiPool[0]
       const blockRemaining = blockLimit?.endBlock-currentBlock
 
       // Checking Rewards already distributed

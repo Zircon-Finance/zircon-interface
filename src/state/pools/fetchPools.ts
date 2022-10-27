@@ -1,54 +1,12 @@
 import BigNumber from 'bignumber.js'
 import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber'
 import poolsConfig from '../../constants/pools'
-import psionicFarmABI from '../../constants/abi/psionicFarmABI.json'
 import chunk from 'lodash/chunk'
 import sousChefV2 from '../../constants/abi/psionicFarmABI.json'
 // import sousChefV3 from '../../config/abi/sousChefV3.json'
 import { BIG_ZERO } from '../../utils/bigNumber'
 import { getAddress } from '../../utils/addressHelpers'
 import multicall from '../../utils/multicall'
-
-const poolsWithEnd = poolsConfig.filter((p) => p.sousId !== 0)
-
-const startEndBlockCalls = poolsWithEnd.flatMap((poolConfig) => {
-  return [
-    {
-      address: getAddress(poolConfig.contractAddress),
-      name: 'startBlock',
-    },
-    {
-      address: getAddress(poolConfig.contractAddress),
-      name: 'bonusEndBlock',
-    },
-  ]
-})
-
-export const fetchPoolsBlockLimits = async () => {
-  const startEndBlockRaw = await multicall(psionicFarmABI, startEndBlockCalls)
-
-  const startEndBlockResult = startEndBlockRaw.reduce((resultArray, item, index) => {
-    const chunkIndex = Math.floor(index / 2)
-
-    if (!resultArray[chunkIndex]) {
-      // eslint-disable-next-line no-param-reassign
-      resultArray[chunkIndex] = [] // start a new chunk
-    }
-
-    resultArray[chunkIndex].push(item)
-
-    return resultArray
-  }, [])
-
-  return poolsWithEnd.map((cakePoolConfig, index) => {
-    const [[startBlock], [endBlock]] = startEndBlockResult[index]
-    return {
-      sousId: cakePoolConfig.sousId,
-      startBlock: startBlock.toNumber(),
-      endBlock: endBlock.toNumber(),
-    }
-  })
-}
 
 export const fetchPoolsStakingLimits = async (
   poolsWithStakingLimit: number[],

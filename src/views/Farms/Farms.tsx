@@ -579,14 +579,14 @@ const Farms: React.FC = ({ children }) => {
                     {sortOption === option.toLowerCase() ? (
                       <SelectedOptionDiv />
                     ) : null}
-                    {(option === 'Earned' && totalEarnings.toFixed(2) !== '0.00') && (
+                    {(option === 'Earned' && totalEarnings.toFixed(2) !== '0.00' && !isInactive) && (
                       <Flex alignItems="center">
                         <Text fontSize="12px" color={'#5ebe7b'}>
                           ~{totalEarnings ? totalEarnings.toFixed(2) : 0} USD
                         </Text>
                       </Flex>
                     )}
-                    {(option === 'Staked' && totalStaked.toFixed(0) !== '0') && (
+                    {(option === 'Staked' && totalStaked.toFixed(0) !== '0' && !isInactive) && (
                       <Flex alignItems="center">
                         <Text fontSize="12px" color={'#5ebe7b'}>
                           ~{totalStaked ? totalStaked.toFixed(2) : 0} USD

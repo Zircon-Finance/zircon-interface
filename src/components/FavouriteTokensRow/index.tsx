@@ -66,6 +66,7 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) 
           size={"20px"}
           style={{ marginRight: "10px" }}
         />
+        <Flex>
         <Flex
           style={{
             rotate: parseFloat(changePercent) >= 0 ? "0deg" : "180deg",
@@ -75,6 +76,7 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) 
           <ArrowMarket
             stroke={parseFloat(changePercent) >= 0 ? "#479E34" : "#BC2929"}
           />
+          </Flex>
           <Text
             style={{
               marginRight: "10px",

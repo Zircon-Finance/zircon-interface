@@ -91,7 +91,7 @@ const Container = styled.div<{ expanded, staked }>`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 5px;
+  padding: 10px;
   border-radius: 17px;
   margin-bottom: ${({ expanded }) => (expanded ? '0' : '5px')};
   grid-template-columns: ${({ staked }) => staked ? '25% 20% 20% auto 40px' : '25% 35% auto 40px'};
@@ -154,6 +154,7 @@ const ValueWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   margin: 4px 0px;
+  font-size: 13px !important; 
 `
 
 export const SpaceBetween = styled.div`
@@ -227,6 +228,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const { t } = useTranslation()
   const { isAnchor, token1, token2, isClassic } = farm
   const lpLabel = `${farm.token1.symbol}-${farm.token2.symbol}`
+  const [hoverLink, setHoverLink] = useState(false)
   // getLiquidityUrlPathParts({
   //   quoteTokenAddress: quoteToken.address,
   //   tokenAddress: token.address,
@@ -364,8 +366,18 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                         <Flex flexWrap='wrap'>
                           <BadgeSmall
                               style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', display: 'flex', alignItems: 'center', marginRight: '5px'}}>
-                            <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{!isClassic && isAnchor ? token2.symbol : token1.symbol} </span>{isClassic ? 'CLASSIC' :!isAnchor ? 'FLOAT' : 'STABLE'}
-                          </BadgeSmall>
+                      <span
+                      style={{
+                        color: theme.darkMode ? theme.text1 : "#080506",
+                        fontSize: "16px",
+                        marginRight: "3px",
+                        fontWeight: 400,
+                        letterSpacing: "0",
+                      }}
+                      >
+                        {!isClassic && (!isAnchor ? token1.symbol : token2.symbol)}{" "}
+                        {isClassic ? "CLASSIC" : !isAnchor ? "Float" : "Stable"}
+                      </span>                          </BadgeSmall>
                           <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{`${token1.symbol}/${token2.symbol}`}</Text>
                         </Flex>
                       </>
@@ -389,8 +401,19 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                           <Flex flexWrap='wrap'>
                             <BadgeSmall
                                 style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', display: 'flex', alignItems: 'center', marginRight: '5px'}}>
-                              <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{!isClassic && isAnchor ? token2.symbol : token1.symbol} </span>{isClassic ? 'CLASSIC' :!isAnchor ? 'FLOAT' : 'STABLE'}
-                            </BadgeSmall>
+                                <span
+                                style={{
+                                  color: theme.darkMode ? theme.text1 : "#080506",
+                                  fontSize: "16px",
+                                  marginRight: "3px",
+                                  fontWeight: 400,
+                                  letterSpacing: "0",
+                                }}
+                                >
+                                  {!isClassic && (!isAnchor ? token1.symbol : token2.symbol)}{" "}
+                                  {isClassic ? "CLASSIC" : !isAnchor ? "Float" : "Stable"}
+                                </span>                             
+                              </BadgeSmall>
                           </Flex>
                         </>
                       </div>
@@ -409,7 +432,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                     !farm.isFinished ?
                     <>
                       <Flex flexDirection={'column'} style={{width: '100%'}}>
-                        <Text color={theme.text1} style={{minWidth: 'max-content', fontSize: '14px'}} fontWeight={400}>{'Monthly rewards:'}</Text>
+                        <Text color={theme.whiteHalf} style={{minWidth: 'max-content', fontSize: '14px'}} fontWeight={400}>{'Monthly rewards'}</Text>
                         <RewardPerBlock earningRewardsBlock={pool.earningTokenInfo} />
                       </Flex>
 
@@ -428,8 +451,12 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                     }
                     </SpaceBetween>
                     <SpaceBetween>
-                      <StyledLinkExternal style={{color:theme.darkMode ? theme.meatPink : theme.poolPinkButton}} href={bsc}>{t('View contract ↗')}</StyledLinkExternal>
-                      <StyledLinkExternal style={{color:theme.darkMode ? theme.meatPink : theme.poolPinkButton}} href={info}>{t('See pair info ↗')}</StyledLinkExternal>
+                      <StyledLinkExternal style={{color:theme.darkMode ? theme.meatPink : theme.poolPinkButton, fontWeight: 400}} href={bsc}>
+                        {t('View contract ↗')}
+                      </StyledLinkExternal>
+                      <StyledLinkExternal style={{color:theme.darkMode ? theme.meatPink : theme.poolPinkButton, fontWeight: 400}} href={info}>
+                        {t('See pair info ↗')}
+                      </StyledLinkExternal>
                     </SpaceBetween>
                   </> ) : (
                   !account ?
@@ -458,7 +485,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                   </>
                   :
                   !farm.isFinished && (<SpaceBetween style={{marginBottom: '16px'}}>
-                    <Text color={theme.whiteHalf} style={{minWidth: 'max-content', fontSize: '14px'}} fontWeight={400}>{'Monthly rewards:'}</Text>
+                    <Text color={theme.whiteHalf} style={{minWidth: 'max-content', fontSize: '14px'}} fontWeight={400}>{'Monthly rewards'}</Text>
                     <Flex flexDirection={"column"}>
                      <RewardPerBlock earningRewardsBlock={pool?.earningTokenInfo}  />
                     </Flex>
@@ -500,7 +527,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                         onMouseOver={() => setHovered(true)}
                         onMouseLeave={() => setHovered(false)}
                         style={{
-                            background: hovered ? '#B05D98' : theme.pinkGamma,
+                            background: hovered ? theme.pinkGamma : '#B05D98',
                             border: 'none', 
                             color: '#FFF', 
                             height: '42px', 
@@ -509,38 +536,41 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                             width: 'auto'
                           }}
                                         m="auto" width="150px" disabled={pendingTx || farm.isFinished} onClick={account ? handleApproval : toggleWalletModal}>
-                          {account ? 'Enable Contract' : 'Connect Wallet'}
+                          {account ? 'Enable contract' : 'Connect wallet'}
                         </ButtonPinkGamma>
                     )}
               </QuarterContainer>
           )}
 
 
-          <QuarterContainer style={{padding: width < 992 ? '0 10px' : '0 0 0 10px'}}>
+          <QuarterContainer style={{padding: width < 992 ? '0 10px' : '0 0 0 10px', justifyContent: 'center'}}>
             <ValueContainer>
               {account && width <= 800 &&
               !farm.isFinished && (<ValueWrapper>
-                <Text fontSize='13px' fontWeight={300} color={theme.text1}>{`${!isAnchor ? 'Divergence' : 'Health Factor'}`}</Text>
+                <Text fontSize='13px' fontWeight={400} color={theme.text1}>{`${!isAnchor ? 'Divergence' : 'Health Factor'}`}</Text>
                 <CapacityIndicatorSmall gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true} hoverPage={'farmAction'}/>
               </ValueWrapper>)
               }
               <ValueWrapper>
-                <Text fontSize='13px' fontWeight={300} color={theme.text1}>{t('APR')}</Text>
+                <Text fontSize='13px' fontWeight={400} color={theme.text1}>{t('APR')}</Text>
                 <Apr white={true} left={true} {...apr} />
               </ValueWrapper>
               <ValueWrapper>
-                <Text color={theme.text1} fontSize='13px' fontWeight={300}>{t('Liquidity')}</Text>
-                <Liquidity {...liquidity} />
+                <Text color={theme.text1} fontSize='13px' fontWeight={400}>{t('Liquidity')}</Text>
+                <Liquidity small={true} {...liquidity} />
               </ValueWrapper>
               <Link to={farm.isClassic ?
                   `/add/${farm.token1.address}/${farm.token2.address}` :
                   `/add-pro/${farm.token1.address}/${farm.token2.address}/${farm.isAnchor ? 'stable' : 'float'}`}>
-                <ButtonOutlined style={{
+                <ButtonOutlined 
+                onMouseOver={() => setHoverLink(true)}
+                onMouseLeave={() => setHoverLink(false)}
+                style={{
                   margin: '10px 0',
                   padding: '10px',
                   fontSize: '13px',
                   color: theme.pinkGamma,
-                  background: theme.darkMode ? 'rgba(202, 144, 187, 0.07)' : theme.contrastLightButton,
+                  background: theme.darkMode ? hoverLink ? 'rgba(202, 144, 187, 0.17)' : ' rgba(202, 144, 187, 0.07)' : theme.contrastLightButton,
                   border: 'none',
                   borderRadius: '12px',
                   fontWeight: 500 }}>

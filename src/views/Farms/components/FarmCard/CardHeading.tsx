@@ -121,6 +121,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
                       color: theme.text1,
                       fontSize: "16px",
                       marginRight: "3px",
+                      letterSpacing: "0",
                     }}
                   >
                     {!isAnchor ? token.symbol : quoteToken.symbol}{" "}
@@ -199,7 +200,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
         ) : (
             !isFinished && <Flex flexDirection={'row'} style={{marginBottom: width <= 500 ? '20px' : earningToken.length === 1 && '17px'}}>
               <Text fontSize='13px' fontWeight={500} color={4e7455} style={{width: '45%'}}>
-                {'Monthly Rewards:'}
+                {'Monthly rewards'}
               </Text>
               <Flex flexDirection={width >= 700 ? 'column' : 'row'} style={{textAlign: 'right', width: '60%',
               display: width <= 700 && 'flex',

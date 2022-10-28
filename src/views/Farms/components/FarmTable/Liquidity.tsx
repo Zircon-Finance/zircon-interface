@@ -17,6 +17,7 @@ export interface LiquidityProps {
   hovered: boolean
   setHovered: Dispatch<SetStateAction<boolean>>
   farm: any
+  small?: boolean
 }
 
 const LiquidityWrapper = styled.div`
@@ -65,7 +66,7 @@ export const AbsContainer = styled.div`
   }
 `
 
-const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered, setHovered, farm }) => {
+const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered, setHovered, farm, small}) => {
   // const displayLiquidity = liquidity && liquidity.gt(0) ? (
   //     `$${Number(liquidity).toLocaleString(undefined, { maximumFractionDigits: 0 })}`
   //   ) : (
@@ -88,7 +89,7 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
   return (
     <Container>
       <LiquidityWrapper>
-        <Text fontSize="16px" color={theme.text1}>
+        <Text fontSize={small ? '13px' : "16px"} color={theme.text1}>
           {farm.isClassic
             ? pairLiquidity !== 'NaN' ? formattedNum(pairLiquidity, true) : <Skeleton width={60} />
             : pylonLiquidity !== 'NaN' ? formattedNum(pylonLiquidity, true) : <Skeleton width={60} />}

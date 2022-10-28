@@ -263,6 +263,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     sousChefContract.address,
     callWithGasPrice,
   ])
+  const [hoverEnable, setHoverEnable] = useState(false)
   const mobileVer = width <= 992
   const { isDesktop } = useMatchBreakpoints()
   const isSmallerScreen = !isDesktop
@@ -355,8 +356,8 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                         {
                         !props.farm.isFinished &&
                         <Flex flexDirection={'column'}>
-                          <Text fontSize='13px' fontWeight={400} color={theme.whiteHalf} marginBottom={2}>
-                            {'Monthly Rewards:'}
+                          <Text fontSize='13px' fontWeight={400} color={theme.whiteHalf}>
+                            {'Monthly rewards'}
                           </Text>
                             <RewardPerBlock earningRewardsBlock={details?.earningTokenInfo}  />
                         </Flex>
@@ -393,13 +394,16 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                         )
                       ) : (
                         <ButtonPinkGamma
+                        onMouseOver={() => setHoverEnable(true)}
+                        onMouseOut={() => setHoverEnable(false)}
                           style={{
                             width: "80%",
                             fontSize: "13px",
-                            padding: "9px 15px",
+                            padding: "0px 12px",
                             borderRadius: "12px",
                             height: "34px",
                             fontWeight: 500,
+                            background: theme.darkMode && hoverEnable ? 'rgba(202, 144, 187, 0.17)' : 'rgba(202, 144, 187, 0.07)'
                           }}
                           disabled={pendingTx || props.farm.isFinished}
                           onClick={handleApproval}

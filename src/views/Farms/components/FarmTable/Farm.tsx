@@ -97,6 +97,7 @@ const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pi
                     fontSize: "16px",
                     marginRight: "3px",
                     fontWeight: 400,
+                    letterSpacing: "0",
                   }}
                 >
                   {!isClassic && (!isAnchor ? token.symbol : quoteToken.symbol)}{" "}

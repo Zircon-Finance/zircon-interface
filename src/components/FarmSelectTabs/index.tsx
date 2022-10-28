@@ -52,7 +52,7 @@ const StyledNavLink = styled(NavLink).attrs({
   &.${activeClassName} {
     border-radius: 7px;
     color: ${({ theme }) => theme.text1};
-    background-color: ${({ theme }) => theme.darkMode ? 'rgba(213, 174, 175, 0.3)' : '#E9E5E5'};
+    background-color: ${({ theme }) => theme.darkMode ? 'rgba(213, 174, 175, 0.3)' : '#FCFBFC'};
     box-shadow: ${({ theme }) => theme.darkMode ? '0px 1px 1px rgba(58, 28, 41, 0.25), inset 0px 1px 1px rgba(213, 174, 175, 0.25)' : 
     '0px 1px 2px 0px rgba(0,0,0,0.15)'};
     svg {

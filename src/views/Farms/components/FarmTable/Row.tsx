@@ -272,12 +272,12 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const stakedAmount = usePool(details.sousId).pool.userData.stakedBalance.toNumber()
   const toggleWalletModal = useWalletModalToggle()
   const darkMode = useIsDarkMode()
-  const [rewardTokens, setRewardTokens] = useState("")
-  useEffect(() => {
-    let r = ''
-    props.farm?.earningToken.forEach((token) => r += ` ${token.symbol === 'MOVR' ? 'wMOVR' : token.symbol} &`)
-    setRewardTokens(r.slice(0, -1))
-  }, [])
+  // const [rewardTokens, setRewardTokens] = useState("")
+  // useEffect(() => {
+  //   let r = ''
+  //   props.farm?.earningToken.forEach((token) => r += ` ${token.symbol === 'MOVR' ? 'wMOVR' : token.symbol} &`)
+  //   setRewardTokens(r.slice(0, -1))
+  // }, [])
   const [hoverRisk, setHoverRisk] = useState(false)
   const gammaAdjusted = new BigNumberJs(gamma).div(new BigNumberJs(10).pow(18))
 
@@ -352,11 +352,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                     ) : (
                       <Flex style={{alignItems: 'center'}}>
                         <>
-                        {!account ? (
-                        <Text style={{width: '70%'}} color={'#4e7455'}>
-                          {`Earn${rewardTokens.slice(0, -1)}`}
-                        </Text>
-                        ) : (
+                        {
                         !props.farm.isFinished &&
                         <Flex flexDirection={'column'}>
                           <Text fontSize='13px' fontWeight={400} color={theme.whiteHalf} marginBottom={2}>
@@ -364,7 +360,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                           </Text>
                             <RewardPerBlock earningRewardsBlock={details?.earningTokenInfo}  />
                         </Flex>
-                        )}
+                        }
                         </>
                       </Flex>
                   )}

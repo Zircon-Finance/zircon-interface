@@ -405,7 +405,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
               {width >= 800 ? (
                   <>
                     <SpaceBetween>
-                    {!account ? <Text color={theme.text1}>{`Earn${rewardTokens}`}</Text> :
+                    {
                     !farm.isFinished ?
                     <>
                       <Flex flexDirection={'column'} style={{width: '100%'}}>

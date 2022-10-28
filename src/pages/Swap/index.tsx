@@ -31,6 +31,7 @@ import useToggledVersion, { Version } from '../../hooks/useToggledVersion'
 import useWrapCallback, { WrapType } from '../../hooks/useWrapCallback'
 import { useToggleSettingsMenu, useWalletModalToggle } from '../../state/application/hooks'
 import { Field } from '../../state/swap/actions'
+import animation2 from '../../assets/lotties/z9rH3jsFYe.json'
 import {
   useDefaultsFromURLSearch,
   useDerivedSwapInfo,
@@ -55,6 +56,7 @@ import { TableData } from '../../views/Farms/components/FarmTable/Row'
 import FarmRepeatIcon from '../../components/FarmRepeatIcon'
 import { StarFull, TopTokensRow } from '../../components/TopTokensRow'
 import FavTokensRow from '../../components/FavouriteTokensRow'
+import Lottie from 'lottie-react-web'
 
 export default function Swap() {
   const { t } = useTranslation()
@@ -591,6 +593,19 @@ export default function Swap() {
       )}
 
     <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none'}}>
+    {topTokens.length === 0 ? (
+      <Flex style={{width: '20%', margin: 'auto'}} flexDirection='column'>
+        <Text style={{textAlign: 'center', fontSize: '20px', fontWeight: 500, color: theme.text1}} my='20px'>
+          {'Loading top tokens..'}
+        </Text>
+        <Lottie
+        options={{
+            loop: true,
+            autoplay: true,
+            animationData: animation2,
+        }}/>
+      </Flex>
+    ) : (
     <table
       style={{
         width: "100%",
@@ -644,6 +659,7 @@ export default function Swap() {
             handleInput={handleInputSelect} />
         ))}
       </table>
+    )}
     </Flex>
     <LearnIcon />
     </>

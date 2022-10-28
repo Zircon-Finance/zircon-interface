@@ -47,7 +47,7 @@ const DialogContainer = styled.div<{ show }>`
       `};
   position: absolute;
   top: 40px;
-  background: ${({ theme }) => theme.hoveredButton};
+  background: #B05D98;
   border-radius: 17px;
   padding: 10px;
   z-index: 1000;
@@ -105,7 +105,7 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
             >
               <IconButton
                 style={{
-                  background: theme.hoveredButton,
+                  background: '#B05D98',
                   width: "29px",
                   height: "28px",
                   borderRadius: "100%",

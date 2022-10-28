@@ -18,22 +18,6 @@ interface TokenRowProps {
     handleInput: any;
   }
 
-export const IconStyler = styled.div`
-    &:hover {
-        svg {
-            path {
-                stroke: #fff !important;
-                }
-        }
-    }
-    svg {
-        path {
-        stroke: ${({ theme }) => theme.pinkGamma} !important;
-        stroke-width: 1.2;
-        }
-    }
-`
-
 const Row = styled.tr`
     display: flex;
     flex-direction: row;
@@ -211,13 +195,13 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
         </Text>
     </TableData>
     <TableData style={{width: '10%'}}>
-    {hovered && <AbsContainer style={{display: 'flex'}} onMouseEnter={() => setHovered(true)}>
+    {hovered && <AbsContainer style={{display: 'flex', position: 'sticky'}} onMouseEnter={() => setHovered(true)}>
             <Link
               to={`/add-pro/${token.token.id}/`}
             >
               <IconButton
                 style={{
-                  background: hoverPlus ? theme.pinkGamma : theme.maxButtonHover,
+                  background: hoverPlus ? '#B05D98' : theme.pinkGamma,
                   boxShadow: 'none',
                   width: "29px",
                   height: "29px",
@@ -229,7 +213,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
                   onMouseEnter={() => setHoverPlus(true)}
                   onMouseLeave={() => setHoverPlus(false)}
                 >
-                  <IconStyler><PlusIcon /></IconStyler>
+                  <PlusIcon />
                 </Flex>
               </IconButton>
             </Link>
@@ -239,7 +223,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
             >
               <IconButton
                 style={{
-                  background: hoverSwap ? theme.pinkGamma : theme.maxButtonHover,
+                  background: hoverSwap ? '#B05D98' : theme.pinkGamma,
                   width: "29px",
                   boxShadow: 'none',
                   height: "29px",
@@ -252,7 +236,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
                   onMouseLeave={() => setHoverSwap(false)}
                   style={{rotate: '90deg', transform: 'scale(0.8)'}}
                 >
-                  <IconStyler style={{paddingRight: '3px', paddingTop: '3px'}}><RepeatIcon /></IconStyler>
+                  <RepeatIcon />
                 </Flex>
               </IconButton>
             </Link>

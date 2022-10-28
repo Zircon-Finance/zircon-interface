@@ -40,7 +40,7 @@ const DialogContainer = styled.div<{ show }>`
       `};
   position: absolute;
   top: 40px;
-  background: ${({ theme }) => theme.hoveredButton};
+  background: #B05D98;
   border-radius: 17px;
   padding: 10px;
   z-index: 1000;

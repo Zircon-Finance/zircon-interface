@@ -9,7 +9,7 @@ import { AbsContainer } from '../../views/Farms/components/FarmTable/Liquidity';
 import PlusIcon from '../../views/Farms/components/PlusIcon';
 import CurrencyLogo from '../CurrencyLogo';
 import RepeatIcon from '../RepeatIcon';
-import { ArrowMarket, DialogContainer, IconStyler, StarFull } from '../TopTokensRow';
+import { ArrowMarket, DialogContainer, StarFull } from '../TopTokensRow';
 
 const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) => {
     const currency = useCurrency(token)
@@ -88,15 +88,13 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) 
         </Flex>
         {
           <AbsContainer
-            style={{ display: "flex" }}
+            style={{ display: "flex", position: 'sticky' }}
             onMouseEnter={() => setHovered(true)}
           >
             <Link to={`/add-pro/${tokenData?.token.id}/`}>
               <IconButton
                 style={{
-                  background: hoverPlus
-                    ? theme.pinkGamma
-                    : theme.maxButtonHover,
+                  background: hoverPlus ? '#B05D98' : theme.pinkGamma,
                   boxShadow: "none",
                   width: "29px",
                   height: "29px",
@@ -108,18 +106,14 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) 
                   onMouseEnter={() => setHoverPlus(true)}
                   onMouseLeave={() => setHoverPlus(false)}
                 >
-                  <IconStyler>
                     <PlusIcon />
-                  </IconStyler>
                 </Flex>
               </IconButton>
             </Link>
             <Link onClick={() => handleSwap(currency)} to={`#`}>
               <IconButton
                 style={{
-                  background: hoverSwap
-                    ? theme.pinkGamma
-                    : theme.maxButtonHover,
+                  background: hoverPlus ? '#B05D98' : theme.pinkGamma,
                   width: "29px",
                   boxShadow: "none",
                   height: "29px",
@@ -132,11 +126,7 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) 
                   onMouseLeave={() => setHoverSwap(false)}
                   style={{ rotate: "90deg", transform: "scale(0.8)" }}
                 >
-                  <IconStyler
-                    style={{ paddingRight: "3px", paddingTop: "3px" }}
-                  >
                     <RepeatIcon />
-                  </IconStyler>
                 </Flex>
               </IconButton>
             </Link>

@@ -57,9 +57,9 @@ const DialogContainer = styled.div<{ show }>`
 `
 
 export const AbsContainer = styled.div`
-  position: sticky;
+  position: absolute;
   z-index: 100;
-  left: 50px;
+  left: 120px;
   svg {
     pointer-events: none;
   }
@@ -88,7 +88,7 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
   return (
     <Container>
       <LiquidityWrapper>
-        <Text fontSize="13px" color={theme.text1}>
+        <Text fontSize="16px" color={theme.text1}>
           {farm.isClassic
             ? pairLiquidity !== 'NaN' ? formattedNum(pairLiquidity, true) : <Skeleton width={60} />
             : pylonLiquidity !== 'NaN' ? formattedNum(pylonLiquidity, true) : <Skeleton width={60} />}

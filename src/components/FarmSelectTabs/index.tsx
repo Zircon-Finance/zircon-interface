@@ -26,7 +26,7 @@ const Tabs = styled.div`
   justify-content: space-evenly;
   padding: 5px;
   margin: auto;
-  background: ${({ theme }) => theme.farmTabsBg};
+  background: ${({ theme }) => theme.darkMode ? 'rgba(213, 174, 175, 0.07)' : theme.farmTabsBg};
 `;
 
 const activeClassName = "ACTIVE";
@@ -48,13 +48,19 @@ const StyledNavLink = styled(NavLink).attrs({
   font-size: 13px;
   padding: 6px 10px;
   width: 50%;
-  -webkit-box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.15); 
-  box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.15);
 
   &.${activeClassName} {
     border-radius: 7px;
     color: ${({ theme }) => theme.text1};
-    background-color: ${({ theme }) => theme.darkMode ? '#7d5956' : '#E9E5E5'};
+    background-color: ${({ theme }) => theme.darkMode ? 'rgba(213, 174, 175, 0.3)' : '#E9E5E5'};
+    box-shadow: ${({ theme }) => theme.darkMode ? '0px 1px 1px rgba(58, 28, 41, 0.25), inset 0px 1px 1px rgba(213, 174, 175, 0.25)' : 
+    '0px 1px 2px 0px rgba(0,0,0,0.15)'};
+    svg {
+      path {
+        stroke: ${({ theme }) => theme.darkMode && '#fff'};
+        stroke-opacity: 1;
+      }
+    }
   }
 
   :hover,
@@ -164,9 +170,9 @@ export function ViewModeTabs({ active }: { active: "TABLE" | "CARD" }) {
   const theme = useTheme();
   return (
     <div style={{ width: "100%" }}>
-      <Tabs style={{ background: theme.darkMode ? theme.maxButton : '#EEEBEC', width: "70px", margin: "0" }}>
+      <Tabs style={{ background: theme.darkMode ? '#452632' : '#EEEBEC', width: "70px", margin: "0" }}>
         <StyledNavLink
-          style={{ padding: "5px" }}
+          style={{ padding: "5px", background: (theme.darkMode && viewMode === ViewMode.TABLE) && '#704F57'}}
           id={`anchor-select-tab`}
           to={"#"}
           onClick={() => {
@@ -177,7 +183,7 @@ export function ViewModeTabs({ active }: { active: "TABLE" | "CARD" }) {
           <TableIcon />
         </StyledNavLink>
         <StyledNavLink
-          style={{ padding: "5px" }}
+          style={{ padding: "5px", background: (theme.darkMode && viewMode === ViewMode.CARD) && '#704F57'}}
           id={`all-select-tab`}
           to={"#"}
           onClick={() => {

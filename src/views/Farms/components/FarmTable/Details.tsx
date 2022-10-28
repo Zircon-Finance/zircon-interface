@@ -18,7 +18,7 @@ const Container = styled.div`
 
 export const ArrowIcon = styled(DropDown)<{ toggled: boolean }>`
   transform: ${({ toggled }) => (toggled ? 'rotate(180deg)' : 'rotate(0)')};
-  height: 20px;
+  height: 24px;
 `
 
 const Details: React.FC<DetailsProps> = ({ actionPanelToggled }) => {

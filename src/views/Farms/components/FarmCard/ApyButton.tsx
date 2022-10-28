@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { usePool } from '../../../../state/pools/hooks'
 
 const ApyLabelContainer = styled(Flex)<{ white: boolean }>`
-  font-size: 13px;
+  font-size: 16px;
   color: ${({ theme, white }) => white ? theme.text1 : theme.whiteHalf};
   margin-left: 3px;
   @media (min-width: 992px) {

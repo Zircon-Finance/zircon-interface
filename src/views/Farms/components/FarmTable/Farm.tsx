@@ -60,25 +60,61 @@ const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pi
     <Container>
       <TokenWrapper>
         {isClassic ? (
-        <DoubleCurrencyLogo currency0={token} currency1={quoteToken} margin={false} size={width >= 500 ? 25 : 30} />
+          <DoubleCurrencyLogo
+            currency0={token}
+            currency1={quoteToken}
+            margin={false}
+            size={width >= 500 ? 25 : 30}
+          />
         ) : (
-        <DoubleCurrencyLogo currency0={!isAnchor ? token : quoteToken} currency1={null} margin={false} size={30} />
+          <DoubleCurrencyLogo
+            currency0={!isAnchor ? token : quoteToken}
+            currency1={null}
+            margin={false}
+            size={30}
+          />
         )}
-        </TokenWrapper>
-        <>
-          <div>
-            <>
-            <Flex flexDirection={'column'} style={{rowGap: "5px"}}>
-              <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', marginRight: '5px',  display: 'flex', alignItems: 'center'}}>
-              <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{!isClassic && (!isAnchor ? token.symbol : quoteToken.symbol)} </span>{isClassic ? 'CLASSIC' :!isAnchor ? 'FLOAT' : 'STABLE'}
+      </TokenWrapper>
+      <>
+        <div>
+          <>
+            <Flex flexDirection={"column"} style={{ rowGap: "5px" }}>
+              <BadgeSmall
+                style={{
+                  fontSize: "13px",
+                  height: "23px",
+                  alignSelf: "center",
+                  marginLeft: "0px",
+                  marginRight: "5px",
+                  display: "flex",
+                  alignItems: "center",
+                  background: !theme.darkMode && ' rgba(135, 73, 85, 0.07)'
+                }}
+              >
+                <span
+                  style={{
+                    color: theme.darkMode ? theme.text1 : "#080506",
+                    fontSize: "16px",
+                    marginRight: "3px",
+                    fontWeight: 400,
+                  }}
+                >
+                  {!isClassic && (!isAnchor ? token.symbol : quoteToken.symbol)}{" "}
+                  {isClassic ? "CLASSIC" : !isAnchor ? "Float" : "Stable"}
+                </span>
               </BadgeSmall>
-              <Text color={theme.whiteHalf} style={{minWidth: 'max-content'}} fontWeight={400} fontSize={'13px'}>{`${token.symbol}/${quoteToken.symbol}`}</Text>
+              <Text
+                color={theme.whiteHalf}
+                style={{ minWidth: "max-content" }}
+                fontWeight={400}
+                fontSize={"13px"}
+              >{`${token.symbol}/${quoteToken.symbol}`}</Text>
             </Flex>
-            </>
-          </div>
-        </>
+          </>
+        </div>
+      </>
     </Container>
-  )
+  );
 }
 
 export default Farm

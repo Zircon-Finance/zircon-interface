@@ -287,7 +287,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
         !actionPanelExpanded && (
         <StyledTr expanded={isVisible} onClick={toggleActionPanel} onMouseOver={() => setHovered(true)}
         onMouseOut={() => setHovered(false)}
-        style={{backgroundColor: hovered ? theme.cardExpanded : null, borderBottom: !darkMode ? `1px solid ${theme.cardExpanded}` : null}} >
+        style={{backgroundColor: hovered ? theme.darkMode ? '#452632' : '#F5F3F4' : null, borderBottom: !darkMode ? `1px solid ${theme.cardExpanded}` : null}} >
           {Object.keys(props).map((key) => {
             const columnIndex = columnNames.indexOf(key)
             if (columnIndex === -1) {
@@ -359,7 +359,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                         ) : (
                         !props.farm.isFinished &&
                         <Flex flexDirection={'column'}>
-                          <Text fontSize='13px' fontWeight={500} color={4e7455} marginBottom={2}>
+                          <Text fontSize='13px' fontWeight={400} color={theme.whiteHalf} marginBottom={2}>
                             {'Monthly Rewards:'}
                           </Text>
                             <RewardPerBlock earningRewardsBlock={details?.earningTokenInfo}  />
@@ -374,21 +374,59 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                 return (
                   <TableData key={key}>
                     {account ? (
-                    isApproved ?
-                    props.staked.staked.gt(0) ? (
-                      <CellInner>
-                        <CellLayout hovered={hovered} label={t('Staked')}>
-                          {createElement(cells[key], { ...props[key], hovered, setHovered })}
-                        </CellLayout>
-                      </CellInner>) : (
-                      <StakeAdd row={true} margin={true} width={'60%'} height={'34px'} isFinished={props.farm.isFinished} />)
-                    : (
-                      <ButtonPinkGamma style={{width: '80%', fontSize: '13px', padding: '0 15px', borderRadius: '12px', height: '34px'}} disabled={pendingTx || props.farm.isFinished}
-                      onClick={handleApproval}>{pendingTx ? 'Enabling...' : 'Enable contract'}</ButtonPinkGamma>)) : (
-                        <ButtonPinkGamma style={{width: '80%', fontSize: '13px', padding: '0 15px', borderRadius: '12px', height: '34px'}}
-                    onClick={toggleWalletModal}>{'Connect wallet'}</ButtonPinkGamma>)}
+                      isApproved ? (
+                        props.staked.staked.gt(0) ? (
+                          <CellInner>
+                            <CellLayout hovered={hovered} label={t("Staked")}>
+                              {createElement(cells[key], {
+                                ...props[key],
+                                hovered,
+                                setHovered,
+                              })}
+                            </CellLayout>
+                          </CellInner>
+                        ) : (
+                          <StakeAdd
+                            pink={true}
+                            row={true}
+                            margin={true}
+                            width={"86px"}
+                            height={"35px"}
+                            isFinished={props.farm.isFinished}
+                          />
+                        )
+                      ) : (
+                        <ButtonPinkGamma
+                          style={{
+                            width: "80%",
+                            fontSize: "13px",
+                            padding: "9px 15px",
+                            borderRadius: "12px",
+                            height: "34px",
+                            fontWeight: 500,
+                          }}
+                          disabled={pendingTx || props.farm.isFinished}
+                          onClick={handleApproval}
+                        >
+                          {pendingTx ? "Enabling..." : "Enable contract"}
+                        </ButtonPinkGamma>
+                      )
+                    ) : (
+                      <ButtonPinkGamma
+                        style={{
+                          width: "80%",
+                          fontSize: "13px",
+                          padding: "0 15px",
+                          borderRadius: "12px",
+                          height: "34px",
+                        }}
+                        onClick={toggleWalletModal}
+                      >
+                        {"Connect wallet"}
+                      </ButtonPinkGamma>
+                    )}
                   </TableData>
-                )
+                );
 
               default:
                 return (

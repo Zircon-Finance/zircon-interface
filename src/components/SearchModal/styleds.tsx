@@ -83,10 +83,10 @@ animation: ${({ expanded }) =>
   ::placeholder {
     color: ${({ theme }) => theme.text1};
     font-weight: 400;
-    opacity: 0.4;
+    opacity: 0.5;
   }
   white-space: nowrap;
-  background-color: ${({ theme}) => theme.darkMode ? theme.searchInput : '#E9E5E5'};
+  background-color: ${({ theme}) => theme.darkMode ? ' rgba(213, 174, 175, 0.1)' : '#E9E5E5'};
   border: 1px solid transparent;
   outline: none;
   border-radius: 17px;

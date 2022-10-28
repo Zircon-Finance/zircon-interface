@@ -193,16 +193,17 @@ export const getDisplayApr = (cakeRewardsApr?: number, lpRewardsApr?: number) =>
 }
 
 export const RewardPerBlock: React.FC<Props> = ({ earningRewardsBlock }) => {
+  const theme = useTheme()
   return(
     <>
     {earningRewardsBlock ? earningRewardsBlock.map((reward, index) => (
-      <Text fontSize='13px' fontWeight={500} color={'#4e7455'} key={index}>
+      <Text fontSize='13px' fontWeight={500} color={theme.darkMode ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0,0,0,0.9)'} key={index}>
         {(reward.blockReward.toFixed(0) !== 'NaN' && reward.blockReward.toFixed(0) !== 'Infinity') ?
           `~ ${(reward.blockReward*6800*30).toFixed(0)}  ${reward.symbol === 'MOVR' ? 'wMOVR' : reward.symbol}` :
           'Loading...'
         }
       </Text>
-    )):<Text fontSize='13px' fontWeight={500} color={'#4e7455'}>Loading...</Text>}
+    )):<Text fontSize='13px' fontWeight={500} color={theme.darkMode ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0,0,0,0.9)'}>Loading...</Text>}
     </>
   )
 }

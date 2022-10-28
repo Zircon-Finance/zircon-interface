@@ -100,7 +100,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
 
     anchorFloatBadge: darkMode ? '#442734' : '#eee6e8',
 
-    questionMarkBg: darkMode ? '#653047' : '#FCFCFD',
+    questionMarkBg: darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(8, 5, 6, 0.1)',
 
     farmTabsBg: darkMode ? '#5f3c37' : '#eae7ed',
 

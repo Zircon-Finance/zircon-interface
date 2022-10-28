@@ -1,15 +1,10 @@
 import React from 'react'
-import { useIsDarkMode } from '../../../../state/user/hooks'
 
 const PlusIcon = () => {
-  const darkMode = useIsDarkMode()
   return (
-    <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="0.5" y="0.5" width="28" height="28" rx="14" fill="none" fillOpacity="1"/>
-<path d="M14.5 7.5V21.5" stroke={!darkMode ? "#FFF" : "#FFF"} strokeLinecap="round" strokeLinejoin="round"/>
-<path d="M7.5 14.5H21.5" stroke={!darkMode ? "#FFF" : "#FFF"} strokeLinecap="round" strokeLinejoin="round"/>
-</svg>
-
+    <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M12 11V4H11V11H4V12H11V19H12V12H19V11H12Z" fill="white"/>
+    </svg>
   )
 }
 

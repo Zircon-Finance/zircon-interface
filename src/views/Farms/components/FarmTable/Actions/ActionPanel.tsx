@@ -14,7 +14,7 @@ import Liquidity, { LiquidityProps } from '../Liquidity'
 import { StakedProps } from '../Staked'
 import DoubleCurrencyLogo from '../../../../../components/DoubleLogo'
 import { BadgeSmall } from '../../../../../components/Header'
-import { ButtonOutlined } from '../../../../../components/Button'
+import { ButtonOutlined, ButtonPinkGamma } from '../../../../../components/Button'
 import { ArrowIcon } from '../Details'
 import StakeAdd from '../../FarmCard/StakeAdd'
 import DepositModal from '../../DepositModal'
@@ -87,7 +87,7 @@ const Container = styled.div<{ expanded, staked }>`
             ${collapseAnimation} 300ms linear forwards
           `};
   overflow: hidden;
-  background: ${({ theme }) => theme.card.background};
+  background: ${({ theme }) => theme.darkMode ? '#452632' : '#F5F3F4'};
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -331,6 +331,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
     farm.earningToken.forEach((token) => r += ` ${token.symbol} &`)
     setRewardTokens(r.slice(0, -1))
   }, [])
+  const [hovered, setHovered] = useState(false)
 
 
   return (
@@ -427,8 +428,8 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                     }
                     </SpaceBetween>
                     <SpaceBetween>
-                      <StyledLinkExternal color={theme.meatPink} href={bsc}>{t('View Contract ↗')}</StyledLinkExternal>
-                      <StyledLinkExternal color={theme.meatPink} href={info}>{t('See Pair Info ↗')}</StyledLinkExternal>
+                      <StyledLinkExternal style={{color:theme.darkMode ? theme.meatPink : theme.poolPinkButton}} href={bsc}>{t('View contract ↗')}</StyledLinkExternal>
+                      <StyledLinkExternal style={{color:theme.darkMode ? theme.meatPink : theme.poolPinkButton}} href={info}>{t('See pair info ↗')}</StyledLinkExternal>
                     </SpaceBetween>
                   </> ) : (
                   !account ?
@@ -488,12 +489,28 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           ) : (
               <QuarterContainer >
                 {isApproved ? (
-                        <StakeAdd pink={true} clickAction={() => {!farm.isFinished && setShowModal(true)}} row={true} margin={false} width={width > 992 ? '30%' : '60%'} isFinished={farm.isFinished} />)
+                        <StakeAdd 
+                          pink={true} clickAction={() => {!farm.isFinished && setShowModal(true)}} 
+                          row={true} margin={false} 
+                          width={'100px'} 
+                          height='42px' 
+                          isFinished={farm.isFinished} />)
                     : (
-                        <ButtonOutlined style={{background: theme.hoveredButton, border: 'none', color: '#FFF'}}
-                                        m="auto" width="50%" disabled={pendingTx || farm.isFinished} onClick={account ? handleApproval : toggleWalletModal}>
+                        <ButtonPinkGamma 
+                        onMouseOver={() => setHovered(true)}
+                        onMouseLeave={() => setHovered(false)}
+                        style={{
+                            background: hovered ? '#B05D98' : theme.pinkGamma,
+                            border: 'none', 
+                            color: '#FFF', 
+                            height: '42px', 
+                            padding: '0 15px', 
+                            borderRadius: '12px', 
+                            width: 'auto'
+                          }}
+                                        m="auto" width="150px" disabled={pendingTx || farm.isFinished} onClick={account ? handleApproval : toggleWalletModal}>
                           {account ? 'Enable Contract' : 'Connect Wallet'}
-                        </ButtonOutlined>
+                        </ButtonPinkGamma>
                     )}
               </QuarterContainer>
           )}
@@ -523,11 +540,11 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                   padding: '10px',
                   fontSize: '13px',
                   color: theme.pinkGamma,
-                  background: theme.contrastLightButton,
+                  background: theme.darkMode ? 'rgba(202, 144, 187, 0.07)' : theme.contrastLightButton,
                   border: 'none',
                   borderRadius: '12px',
                   fontWeight: 500 }}>
-                  {`Get ${token1.name} - ${token2.name} ${isClassic ? 'Classic' : isAnchor ? 'Stable' : 'Float'} LP`}</ButtonOutlined>
+                  {`Get ${token1.symbol} - ${token2.symbol} ${isClassic ? 'Classic' : isAnchor ? 'Stable' : 'Float'} LP`}</ButtonOutlined>
               </Link>
             </ValueContainer>
           </QuarterContainer>

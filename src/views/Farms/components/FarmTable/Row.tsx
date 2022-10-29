@@ -356,7 +356,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                         {
                         !props.farm.isFinished &&
                         <Flex flexDirection={'column'}>
-                          <Text fontSize='13px' fontWeight={400} color={theme.whiteHalf}>
+                          <Text fontSize='13px' fontWeight={400} color={theme.whiteHalf} mb='10px'>
                             {'Monthly rewards'}
                           </Text>
                             <RewardPerBlock earningRewardsBlock={details?.earningTokenInfo}  />

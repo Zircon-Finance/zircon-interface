@@ -90,7 +90,7 @@ const StarEmpty = () => (
 
 export const StarFull = () => (
     <svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M9.00008 0.666016L11.5751 5.88268L17.3334 6.72435L13.1667 10.7827L14.1501 16.516L9.00008 13.8077L3.85008 16.516L4.83342 10.7827L0.666748 6.72435L6.42508 5.88268L9.00008 0.666016Z" fill="#B591CF"/>
+    <path d="M9.00008 0.666016L11.5751 5.88268L17.3334 6.72435L13.1667 10.7827L14.1501 16.516L9.00008 13.8077L3.85008 16.516L4.83342 10.7827L0.666748 6.72435L6.42508 5.88268L9.00008 0.666016Z" fill="#968A90"/>
     </svg>
 )
 
@@ -106,7 +106,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
     const changePercent = (((parseFloat(token?.priceUSD) - parseFloat(previousToken?.priceUSD)) / parseFloat(previousToken?.priceUSD)) * 100).toFixed(2);
 
     const plusContent = (
-        <DialogContainer style={{background: theme.pinkGamma}} show={hoverPlus}>
+        <DialogContainer style={{background: theme.slippageActive}} show={hoverPlus}>
           <Text style={{color: '#FFF'}} fontSize='13px'>
             {('Add liquidity')}
           </Text>
@@ -114,7 +114,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
     )
 
     const swapContent = (
-        <DialogContainer style={{right: '-10px', background: theme.pinkGamma}} show={hoverSwap}>
+        <DialogContainer style={{right: '-10px', background: theme.slippageActive}} show={hoverSwap}>
           <Text style={{color: '#FFF'}} fontSize='13px'>
             {('Swap')}
           </Text>
@@ -123,7 +123,12 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
 
     return (
     <Row onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
-    style={{backgroundColor: hovered ? theme.darkMode ? theme.cardExpanded : '#F5F3F4' : 'transparent', borderRadius: '17px'}}>  
+    style={{
+      backgroundColor: hovered ? theme.darkMode ? theme.cardExpanded : '#F5F3F4' : 'transparent', 
+      borderRadius: '17px',
+      borderBottomLeftRadius: hovered ? '17px' : '0px' ,
+      borderBottomRightRadius: hovered ? '17px' : '0px' ,
+      }}>  
     <TableData style={{width: '35%', marginLeft: '10px'}}>
         <Text
         style={{ width: "25px", alignSelf: "center" }}
@@ -132,12 +137,12 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
         >
         {index + 1}
         </Text>
-        <Flex style={{margin: '0 10px', cursor: 'pointer'}} onClick={()=> chosenTokens?.includes(token.token.id) ? 
+        <Flex style={{margin: '0 5px', cursor: 'pointer'}} onClick={()=> chosenTokens?.includes(token.token.id) ? 
         removeChosenTokenFeedback(token.token.id) : addChosenTokenCallback(token.token.id)}>
             {chosenTokens?.includes(token.token.id) ? <StarFull /> : <StarEmpty />}
         </Flex>
         <CurrencyLogo
-        style={{ width: "30px", height: "30px", marginRight: "10px" }}
+        style={{ width: "30px", height: "30px", marginRight: "5px" }}
         currency={currency}
         />
         <Text
@@ -157,7 +162,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
     </TableData>
     <TableData>
         <Text
-        style={{ alignSelf: "center", width: '100%' , textAlign: 'center'}}
+        style={{ alignSelf: "center", width: '100%' , textAlign: 'left', marginLeft: '20px'}}
         color={theme.text1}
         fontSize={"16px"}
         >
@@ -167,11 +172,11 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
     <TableData>
         <Text
         style={{ alignSelf: "center", display: 'flex', width: '100%', textAlign: 'center', justifyContent: 'center' }}
-        color={parseFloat(changePercent) >= 0 ? '#479E34' : '#BC2929'}
+        color={parseFloat(changePercent) >= 0 ? '#2E8540' : '#BC2929'}
         fontSize={"16px"}
         >
         <div style={{rotate:parseFloat(changePercent) >= 0 ? '0deg' : '180deg', height: '24px', width: '24px'}}>
-            <ArrowMarket stroke={parseFloat(changePercent) >= 0 ? '#479E34' : '#BC2929'} />
+            <ArrowMarket stroke={parseFloat(changePercent) >= 0 ? '#2E8540' : '#BC2929'} />
         </div>
         {changePercent !== 'NaN' ? `${changePercent}%` : 'No Data'}
         </Text>
@@ -201,7 +206,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
             >
               <IconButton
                 style={{
-                  background: hoverPlus ? '#B05D98' : theme.pinkGamma,
+                  background: hoverPlus ? '#B05D98' : theme.slippageActive,
                   boxShadow: 'none',
                   width: "29px",
                   height: "29px",
@@ -223,7 +228,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
             >
               <IconButton
                 style={{
-                  background: hoverSwap ? '#B05D98' : theme.pinkGamma,
+                  background: hoverSwap ? '#B05D98' : theme.slippageActive,
                   width: "29px",
                   boxShadow: 'none',
                   height: "29px",
@@ -234,7 +239,6 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
                 <Flex
                   onMouseEnter={() => setHoverSwap(true)}
                   onMouseLeave={() => setHoverSwap(false)}
-                  style={{rotate: '90deg', transform: 'scale(0.8)'}}
                 >
                   <RepeatIcon />
                 </Flex>

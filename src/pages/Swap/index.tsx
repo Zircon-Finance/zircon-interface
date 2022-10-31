@@ -57,6 +57,7 @@ import FarmRepeatIcon from '../../components/FarmRepeatIcon'
 import { StarFull, TopTokensRow } from '../../components/TopTokensRow'
 import FavTokensRow from '../../components/FavouriteTokensRow'
 import Lottie from 'lottie-react-web'
+import { Separator } from '../../components/SearchModal/styleds'
 
 export default function Swap() {
   const { t } = useTranslation()
@@ -579,10 +580,10 @@ export default function Swap() {
     {/* // User chosen tokens */}
     {chosenTokens?.length > 0 && (
       <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none'}}>
-        <Flex style={{width: '100%', padding: '20px', flexWrap: 'wrap', gap: '5px'}}>
-          <Flex style={{margin: '0 20px 0 0'}}>
+        <Flex mt='20px' ml='20px'>
             <StarFull />
           </Flex>
+        <Flex style={{width: '100%', padding: '20px', flexWrap: 'wrap', gap: '25px 5px'}}>
           {chosenTokens?.map((token, index) => {
           return(
             <FavTokensRow key={index} token={token} index={index} topTokens={topTokens} topTokensPrevious={topTokensPrevious}
@@ -610,7 +611,7 @@ export default function Swap() {
       style={{
         width: "100%",
         borderBottom: `1px solid ${theme.opacitySmall}`,
-        paddingBottom: "5px",
+        padding: '5px',
       }}
     ><tr style={{display: 'flex', height: '40px'}}>
       <Flex style={{width: '35%', alignItems: 'center'}}><Text mx="10px">{'Top tokens'}</Text><FarmRepeatIcon /></Flex>
@@ -636,7 +637,7 @@ export default function Swap() {
                     display: 'flex',
                     alignItems: 'center',
                     fontSize: "13px",
-                    color: !theme.darkMode ? theme.whiteHalf : theme.meatPink,
+                    color: !theme.darkMode ? theme.poolPinkButton : theme.meatPink,
                     fontWeight: 500,
                     margin: 0,
                   }}
@@ -644,12 +645,13 @@ export default function Swap() {
                   {option}
                 </p><FarmRepeatIcon /></Flex>
               {sortOption === option.toLowerCase() ? (
-                <SelectedOptionDiv style={{position: 'relative', top: '6px', width: '80%', left: '0px'}} />
+                <SelectedOptionDiv style={{position: 'relative', top: '4px', width: '80%', left: '0px'}} />
               ) : null}
             </TableData>
           ))}
           <TableData style={{cursor:"pointer", width: '10%'}} />
         </tr>
+        <Separator />
         {(topTokensPrevious.length > 0 && topTokens.length > 0) && sortedTokens.map((token, index) => (
           <TopTokensRow
             key={index} 

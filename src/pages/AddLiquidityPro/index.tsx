@@ -72,15 +72,11 @@ const IconContainer = styled.div`
   cursor: pointer;
   &:hover {
     background: ${({ theme }) => theme.maxButtonHover};
-    svg {
-      transform: rotate(90deg);
-    }
   }
   svg {
     path {
       stroke: ${({ theme }) => theme.pinkGamma} !important;
     }
-    transform: rotate(90deg);
   }
 `
 

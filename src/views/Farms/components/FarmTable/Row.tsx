@@ -121,7 +121,9 @@ animation: ${({ expanded }) =>
   display: flex;
   flex-direction: column;
   width: 100%;
+  border-bottom: 1px solid ${({ theme }) => theme.opacitySmall};
   @media (min-width: 992px) {
+    border-bottom: none;
     display: table;
     height: 80px;
 `

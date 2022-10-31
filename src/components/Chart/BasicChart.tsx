@@ -83,7 +83,7 @@ const BasicChart = ({
   const valueToDisplay = hoverValue || pairPrices[pairPrices.length - 1]?.value
   const { changePercentage, changeValue } = getTimeWindowChange(pairPrices)
   const isChangePositive = changeValue >= 0
-  const chartHeight = isChartExpanded ? 'calc(100% - 120px)' : '255px'
+  const chartHeight = isChartExpanded ? 'calc(100% - 120px)' : '293px'
   const currentDate = new Date().toLocaleString([], {
     year: 'numeric',
     month: 'short',

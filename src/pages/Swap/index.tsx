@@ -317,7 +317,7 @@ export default function Swap() {
     <div style={{width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', gap: '20px'}}>
     { width > 1000 && (
     <div style={{
-      height: '384px',
+      height: '423px',
       position: 'relative',
       maxWidth: '480px',
       width: '100%',
@@ -451,7 +451,7 @@ export default function Swap() {
               </>
             )}
 
-            {!showWrap && currencies[Field.OUTPUT] !== undefined && formattedAmounts[Field.INPUT] && formattedAmounts[Field.OUTPUT] &&  (
+            {!showWrap && currencies[Field.OUTPUT] !== undefined && formattedAmounts[Field.INPUT] && formattedAmounts[Field.OUTPUT] ?  (
               <Card padding={'.25rem .75rem 0 .75rem'} borderRadius={'20px'}>
                 <AutoColumn gap="4px">
                   {Boolean(trade) && (
@@ -478,7 +478,7 @@ export default function Swap() {
                   )}
                 </AutoColumn>
               </Card>
-            )}
+            ) : <div style={{height: '26px'}}></div>}
           </AutoColumn>
           <BottomGrouping style={{marginTop: '0'}}>
             {!account ? (

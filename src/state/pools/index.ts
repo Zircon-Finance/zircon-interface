@@ -89,7 +89,7 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
       rewardsData[i] = {contractAddress: poolsConfig[i].contractAddress, balances:  await fetchRewardsData(apiData, poolsConfig[i])}
     }
     const poolsInformation = await fetchPools(poolsConfig)
-    
+
     let poolsPrices = await getPoolsPrices(poolsInformation)
 
     const priceZRGMOVR = {zrg: apiData[0]?.zrgPrice, movr: apiData[0]?.movrPrice}
@@ -108,14 +108,14 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
       // As of Contract calculation on initialize it is minted 1e18 Psionic tokens to the farm contract so...
       const tokensRemaining = new BigNumber(blockRemaining).times(1e18)
       const pendingRewards = new BigNumber(apiPool[0]?.psiBalance).minus(tokensRemaining)
-      
+
       // Price of staked Token in USD
 
       // Earning Tokens Information (ZRG, MOVR)
       const earningData = rewardsData?.find((entry) => entry.contractAddress.toLowerCase() === pool.contractAddress.toLowerCase())
       let earningTokenInfo: EarningTokenInfo[] = pool.earningToken.map((token,index) => {
         // Calculating remaining balance
-        const balance = new BigNumber(earningData?.balances?.find((entry) => entry.symbol.toLowerCase() === 
+        const balance = new BigNumber(earningData?.balances?.find((entry) => entry.symbol.toLowerCase() ===
         (token.symbol.toLowerCase() === 'movr' ? 'wmovr' : token.symbol.toLowerCase()))?.balance)
         const balanceDivided = balance.dividedBy(new BigNumber(1e18))
 
@@ -126,6 +126,7 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
 
         // Obtaining Price (Normally ZRG will be Float side and MOVR Stable Side
         let price = token.symbol === "ZRG" ? priceZRGMOVR?.zrg : priceZRGMOVR?.movr
+
 
         return {
           symbol: token.symbol,

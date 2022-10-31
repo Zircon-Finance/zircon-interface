@@ -24,10 +24,6 @@ const Row = styled.tr`
     align-items: center;
     justify-content: space-between;
     padding: 0.5rem 0;
-    border-bottom: 1px solid ${({ theme }) => theme.opacitySmall};
-    :last-child {
-        border-bottom: none;
-    }
 `;
 
 export const expandAnimation = keyframes`
@@ -81,18 +77,21 @@ export const ArrowMarket = (props) => (
     <path d="M5 12L12 5L19 12" stroke={props.stroke} stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
 )
-
-const StarEmpty = () => (
+const StarEmpty = () => {
+  const theme = useTheme()
+  return (
     <svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M9.00008 1.79564L11.1267 6.10399C11.1995 6.25142 11.3401 6.35365 11.5028 6.37742L16.2592 7.07265L12.8179 10.4245C12.6999 10.5394 12.6461 10.7049 12.6739 10.8672L13.486 15.6019L9.23281 13.3651C9.08712 13.2885 8.91305 13.2885 8.76736 13.3651L4.51417 15.6019L5.32622 10.8672C5.35405 10.7049 5.30022 10.5394 5.18228 10.4245L1.74095 7.07265L6.4974 6.37742C6.66007 6.35365 6.80067 6.25142 6.87344 6.10399L9.00008 1.79564Z" stroke="#B591CF" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M9.00008 1.79564L11.1267 6.10399C11.1995 6.25142 11.3401 6.35365 11.5028 6.37742L16.2592 7.07265L12.8179 10.4245C12.6999 10.5394 12.6461 10.7049 12.6739 10.8672L13.486 15.6019L9.23281 13.3651C9.08712 13.2885 8.91305 13.2885 8.76736 13.3651L4.51417 15.6019L5.32622 10.8672C5.35405 10.7049 5.30022 10.5394 5.18228 10.4245L1.74095 7.07265L6.4974 6.37742C6.66007 6.35365 6.80067 6.25142 6.87344 6.10399L9.00008 1.79564Z" stroke={theme.darkMode ? theme.meatPink : "#968A90"} stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
-)
+)}
 
-export const StarFull = () => (
+export const StarFull = () => {
+  const theme = useTheme()
+  return (
     <svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M9.00008 0.666016L11.5751 5.88268L17.3334 6.72435L13.1667 10.7827L14.1501 16.516L9.00008 13.8077L3.85008 16.516L4.83342 10.7827L0.666748 6.72435L6.42508 5.88268L9.00008 0.666016Z" fill="#968A90"/>
+    <path d="M9.00008 0.666016L11.5751 5.88268L17.3334 6.72435L13.1667 10.7827L14.1501 16.516L9.00008 13.8077L3.85008 16.516L4.83342 10.7827L0.666748 6.72435L6.42508 5.88268L9.00008 0.666016Z" fill={theme.darkMode ? theme.meatPink : "#968A90"}/>
     </svg>
-)
+)}
 
 
 export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
@@ -126,8 +125,6 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
     style={{
       backgroundColor: hovered ? theme.darkMode ? theme.cardExpanded : '#F5F3F4' : 'transparent', 
       borderRadius: '17px',
-      borderBottomLeftRadius: hovered ? '17px' : '0px' ,
-      borderBottomRightRadius: hovered ? '17px' : '0px' ,
       }}>  
     <TableData style={{width: '35%', marginLeft: '10px'}}>
         <Text
@@ -172,11 +169,11 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
     <TableData>
         <Text
         style={{ alignSelf: "center", display: 'flex', width: '100%', textAlign: 'center', justifyContent: 'center' }}
-        color={parseFloat(changePercent) >= 0 ? '#2E8540' : '#BC2929'}
+        color={parseFloat(changePercent) >= 0 ? theme.darkMode ? '#5CB376' : '#2E8540' : '#E67066'}
         fontSize={"16px"}
         >
         <div style={{rotate:parseFloat(changePercent) >= 0 ? '0deg' : '180deg', height: '24px', width: '24px'}}>
-            <ArrowMarket stroke={parseFloat(changePercent) >= 0 ? '#2E8540' : '#BC2929'} />
+            <ArrowMarket stroke={parseFloat(changePercent) >= 0 ? theme.darkMode ? '#5CB376' : '#2E8540' : '#E67066'} />
         </div>
         {changePercent !== 'NaN' ? `${changePercent}%` : 'No Data'}
         </Text>

@@ -74,12 +74,12 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) 
           }}
         >
           <ArrowMarket
-            stroke={parseFloat(changePercent) >= 0 ? "#2E8540" : "#BC2929"}
+            stroke={parseFloat(changePercent) >= 0 ? theme.darkMode ? '#5CB376' : "#2E8540" : "#E67066"}
           />
           </Flex>
           <Text
             style={{
-              color: parseFloat(changePercent) >= 0 ? "#2E8540" : "#BC2929",
+              color: parseFloat(changePercent) >= 0 ? theme.darkMode ? '#5CB376' : "#2E8540" : "#E67066",
               alignSelf: "center",
             }}
           >
@@ -145,9 +145,9 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) 
         style={{marginRight: '5px'}} />  
       <Text style={{marginRight: '5px', alignSelf: 'center'}}>{currency?.symbol}</Text>
       <Flex style={{rotate:parseFloat(changePercent) >= 0 ? '0deg' : '180deg', display: changePercent === 'NaN' ? 'none' : 'flex'}}>
-        <ArrowMarket stroke={parseFloat(changePercent) >= 0 ? '#2E8540' : '#BC2929'} />
+        <ArrowMarket stroke={parseFloat(changePercent) >= 0 ? theme.darkMode ? '#5CB376' : '#2E8540' : '#E67066'} />
       </Flex>
-      <Text style={{marginRight: '10px', color: parseFloat(changePercent) >= 0 ? '#2E8540' : '#BC2929'}}>
+      <Text style={{marginRight: '10px', color: parseFloat(changePercent) >= 0 ? theme.darkMode ? '#5CB376' : '#2E8540' : '#E67066'}}>
         {changePercent !== 'NaN' ? `${changePercent}%` : 'No Data (24H)'}
       </Text>
     </Flex>

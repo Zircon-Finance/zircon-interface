@@ -147,11 +147,11 @@ export const PinkArrows = styled.div`
 
 export const SelectedOptionDiv = styled.div`
   position: absolute;
-  top: 44px;
+  top: 49px;
   left: -10px;
   width: 50%;
-  background: ${({ theme }) => theme.meatPink};
-  height: 5px;
+  background: ${({ theme }) => theme.darkMode ? theme.meatPink : '#874955'};
+  height: 1px;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
 `

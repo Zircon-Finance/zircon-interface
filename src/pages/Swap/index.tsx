@@ -645,7 +645,7 @@ export default function Swap() {
                   {option}
                 </p><FarmRepeatIcon /></Flex>
               {sortOption === option.toLowerCase() ? (
-                <SelectedOptionDiv style={{position: 'relative', top: '4px', width: '80%', left: '0px'}} />
+                <SelectedOptionDiv style={{position: 'relative', top: '9px', width: '80%', left: '0px'}} />
               ) : null}
             </TableData>
           ))}

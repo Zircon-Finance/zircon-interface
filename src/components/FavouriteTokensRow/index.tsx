@@ -42,7 +42,7 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) 
     const hoverContent = (
       <DialogContainer
         style={{
-          background: theme.cardExpanded,
+          background: theme.darkMode ? theme.cardExpanded : '#F5F3F4',
           display: "flex",
           top: "auto",
           right: "auto",
@@ -80,6 +80,7 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) 
           <Text
             style={{
               color: parseFloat(changePercent) >= 0 ? "#2E8540" : "#BC2929",
+              alignSelf: "center",
             }}
           >
             {changePercent !== "NaN" ? `${changePercent}%` : "No Data (24H)"}

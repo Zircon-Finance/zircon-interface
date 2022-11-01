@@ -138,7 +138,7 @@ export function useDerivedBurnInfo(
 export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pylonPoolBalance: TokenAmount,
                                    totalSupply: TokenAmount, ptTotalSupply: TokenAmount, pylonInfo: any[],
                                    pylonConstants: PylonFactory, blockNumber: number,
-                                   lastK: string, isSync: boolean, isFloat: boolean): {
+                                   lastK: string, isSync: boolean, isFloat: boolean, energyPT: TokenAmount, energyAnchor: TokenAmount): {
   amount?: TokenAmount;
   amountA?: TokenAmount;
   amountB?: TokenAmount;
@@ -170,7 +170,7 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
                   pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK)) :
               pylon.burnAnchor(totalSupply, ptTotalSupply, userLiquidity,
                   pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-                  pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK));
+                  pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK), energyPT, energyAnchor);
           return {...burnInfo, liquidity: isFloat ? [burnInfo.amount, new TokenAmount(pylon.token1, BigInt(0))] : [new TokenAmount(pylon.token0, BigInt(0)), burnInfo.amount]}
         }else{
           return undefined
@@ -179,10 +179,11 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
         let burnInfo = isFloat ?
             pylon.burnAsyncFloat(totalSupply, ptTotalSupply, userLiquidity,
                 pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK)) :
+                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK))
+            :
             pylon.burnAsyncAnchor(totalSupply, ptTotalSupply, userLiquidity,
                 pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK))
+                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK), energyPT, energyAnchor);
 
         return {...burnInfo, liquidity: [burnInfo.amountA, burnInfo.amountB]}
 
@@ -257,14 +258,17 @@ export function useDerivedPylonBurnInfo(
   const totalSupply = useTotalSupply(pylon?.pair.liquidityToken)
   const lastK = useLastK(pylon ? Pair.getAddress(pylon.token0, pylon.token1) : "");
   // const pylonSupply = useTotalSupply(pylon?.pair.liquidityToken)
-  const energyAddress = Pylon.getEnergyAddress(pylon?.token0, pylon?.token1) //useEnergyAddress(pylonPair?.token0, pylonPair?.token1)
+  const energyAddress = Pylon.getEnergyAddress(pylon?.token0, pylon?.token1)
 
   const ptbEnergy = useTokenBalance(energyAddress, pylon?.pair.liquidityToken)
   const reserveAnchor = useTokenBalance(energyAddress, pylon?.anchorLiquidityToken)
 
   let burnInfo = useMemo(() => {
-    return getLiquidityValues(pylon, userLiquidity, pylonPoolBalance,
-        totalSupply, ptTotalSupply, pylonInfo, pylonConstants, blockNumber, lastK, isSync, isFloat)
+    return getLiquidityValues(
+        pylon, userLiquidity, pylonPoolBalance,
+        totalSupply, ptTotalSupply, pylonInfo,
+        pylonConstants, blockNumber, lastK,
+        isSync, isFloat, ptbEnergy, reserveAnchor)
   }, [pylon, userLiquidity, pylonPoolBalance,
     totalSupply, ptTotalSupply, pylonInfo, pylonConstants, blockNumber, lastK, isSync, isFloat] )
 
@@ -416,9 +420,13 @@ export function useDerivedPylonBurnInfoFixedPercentage(
   const totalSupply = useTotalSupply(pylon?.pair.liquidityToken)
   const lastK = useLastK(pylon ? Pair.getAddress(pylon.token0, pylon.token1) : "");
   // const pylonSupply = useTotalSupply(pylon?.pair.liquidityToken)
+
   let burnInfo = useMemo(() => {
-    return getLiquidityValues(pylon, userLiquidity, pylonPoolBalance,
-        totalSupply, ptTotalSupply, pylonInfo, pylonConstants, blockNumber, lastK, isSync, isFloat)
+    return getLiquidityValues(
+        pylon, userLiquidity, pylonPoolBalance,
+        totalSupply, ptTotalSupply, pylonInfo,
+        pylonConstants, blockNumber, lastK,
+        isSync, isFloat, ptbEnergy, reserveAnchor)
   }, [pylon, userLiquidity, pylonPoolBalance,
     totalSupply, ptTotalSupply, pylonInfo, pylonConstants, blockNumber, lastK, isSync, isFloat] )
 

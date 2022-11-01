@@ -89,7 +89,7 @@ export function ConfirmAddModalBottom({
       {shouldBlock && (
         <RowBetween mt={10}>
           <StyledWarningIcon style={{stroke: '#a68305'}} />
-          <span style={{ color: '#a68305', width: '100%', fontSize: '13px' }}>{'Use a smaller amount or wait until the reserves are refilled.'}</span>
+          <span style={{ color: '#a68305', width: '100%', fontSize: '13px' }}>{'Turn On Swap & Add or try using a smaller amount.'}</span>
         </RowBetween>
       )}
 

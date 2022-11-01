@@ -52,6 +52,7 @@ export function useDerivedPylonMintInfo(
     extraFeeTreshold?: JSBI;
     shouldBlock?: boolean;
     feePercentage: JSBI;
+    isDerivedVFB?: boolean;
   }
   poolTokenPercentage?: Percent
   error?: string,
@@ -181,18 +182,17 @@ export function useDerivedPylonMintInfo(
           let extraFeeTreshold = ZERO;
           let shouldBlock = false;
           if (isFloat) {
-
             syncMintInfo = pylonPair.getFloatSyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA,
                 pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
                 pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK))
             // console.log("syncMintInfo", syncMintInfo)
-
             if (JSBI.greaterThan(syncMintInfo?.amountsToInvest?.sync, ZERO) && JSBI.greaterThan(syncMintInfo?.amountsToInvest?.async, ZERO)) {
               extraFeeTreshold = syncMintInfo?.amountsToInvest?.sync
             }
-          if (JSBI.greaterThan(syncMintInfo?.amountsToInvest?.async, ZERO)) {
-            shouldBlock = true
-          }
+            if (JSBI.greaterThan(syncMintInfo?.amountsToInvest?.async, ZERO)) {
+              shouldBlock = true
+            }
+
           }else{
             syncMintInfo = pylonPair.getAnchorSyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountB,
                 pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
@@ -206,9 +206,6 @@ export function useDerivedPylonMintInfo(
             }
 
           }
-
-
-          //{new BigNumberJs(syncMintInfo?.amountsToInvest.async.toString()).div(mintInfo?.amountsToInvest.sync.toString()).multipliedBy()}
 
           return {...syncMintInfo, extraFeeTreshold: extraFeeTreshold, shouldBlock}
         }else {
@@ -228,10 +225,13 @@ export function useDerivedPylonMintInfo(
         return undefined
       }
     }catch (e) {
-      console.log(pylonPair.pair.reserve0.raw.toString(), pylonPair.pair.reserve0.raw.toString(), pylonPair.reserve0.raw.toString(), pylonPair.reserve1.raw.toString(), totalSupply.raw.toString(), ptTotalSupply.raw.toString(), tokenAmountA.raw.toString(),
-          pylonInfo[0].toString(), pylonInfo[1].toString(), pylonInfo[2].toString(), pylonPoolBalance.raw.toString(), pylonInfo[3].toString(), BigInt(blockNumber), pylonConstants,
-          pylonInfo[4].toString(), pylonInfo[5].toString(), pylonInfo[6].toString(), pylonInfo[7].toString(), pylonInfo[8].toString(), pylonInfo[9].toString(), BigInt(lastK).toString())
-      console.error(e)
+      console.log("INTERFACE:: pairRes, pylonRes", pylonPair.pair.reserve0.raw.toString(), pylonPair.pair.reserve1.raw.toString(), pylonPair.reserve0.raw.toString(), pylonPair.reserve1.raw.toString() )
+      console.log("INTERFACE:: totalSupply, ptTotalSupply, blockNumber", totalSupply.raw.toString(), ptTotalSupply.raw.toString(), tokenAmountA.raw.toString())
+      console.log("INTERFACE:: ptb, lastk, amount", totalSupply.raw.toString(),  BigInt(lastK).toString(), BigInt(blockNumber))
+      console.log("INTERFACE:: virtualAnchorBalance, muMulDecimals, gammaMulDecimals", pylonInfo[0].toString(), pylonInfo[1].toString(), pylonInfo[2].toString())
+      console.log("INTERFACE:: strikeBlock, EMABlockNumber, gammaEMA", pylonInfo[3].toString(), pylonInfo[4].toString(), pylonInfo[5].toString())
+      console.log("INTERFACE:: thisBlockEMA, lastRootKTranslated, anchorKFactor, formulaSwitch", pylonInfo[6].toString(), pylonInfo[7].toString(), pylonInfo[8].toString(), pylonInfo[9].toString())
+
       return undefined
     }
 
@@ -269,6 +269,9 @@ export function useDerivedPylonMintInfo(
     error = 'Insufficient ' + currencies[Field.CURRENCY_B]?.symbol + ' balance'
   }
 
+  if (!mintInfo || mintInfo?.isDerivedVFB) {
+    error = !mintInfo ? 'Enter an amount' : 'Try a higher input amount'
+  }
 
   return {
     dependentField,

@@ -9,7 +9,7 @@ import { AbsContainer } from '../../views/Farms/components/FarmTable/Liquidity';
 import PlusIcon from '../../views/Farms/components/PlusIcon';
 import CurrencyLogo from '../CurrencyLogo';
 import RepeatIcon from '../RepeatIcon';
-import { ArrowMarket, DialogContainer, IconStyler, StarFull } from '../TopTokensRow';
+import { ArrowMarket, DialogContainer, StarFull } from '../TopTokensRow';
 
 const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) => {
     const currency = useCurrency(token)
@@ -24,7 +24,7 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) 
     const theme = useTheme();
 
     const plusContent = (
-      <DialogContainer style={{background: theme.pinkGamma}} show={hoverPlus}>
+      <DialogContainer style={{background: theme.slippageActive}} show={hoverPlus}>
         <Text style={{color: '#FFF'}} fontSize='13px'>
           {('Add liquidity')}
         </Text>
@@ -32,7 +32,7 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) 
   )
 
   const swapContent = (
-      <DialogContainer style={{right: '-10px', background: theme.pinkGamma}} show={hoverSwap}>
+      <DialogContainer style={{right: '-10px', background: theme.slippageActive}} show={hoverSwap}>
         <Text style={{color: '#FFF'}} fontSize='13px'>
           {('Swap')}
         </Text>
@@ -42,7 +42,7 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) 
     const hoverContent = (
       <DialogContainer
         style={{
-          background: theme.cardExpanded,
+          background: theme.darkMode ? '#452632' : '#F5F3F4',
           display: "flex",
           top: "auto",
           right: "auto",
@@ -59,13 +59,13 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) 
         >
           <StarFull />
         </Flex>
-        <Text mr="10px">{`${currency?.symbol}`}</Text>
         <CurrencyLogo
           key={index}
           currency={currency}
           size={"20px"}
           style={{ marginRight: "10px" }}
         />
+        <Text mr="5px">{`${currency?.symbol}`}</Text>
         <Flex>
         <Flex
           style={{
@@ -74,13 +74,13 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) 
           }}
         >
           <ArrowMarket
-            stroke={parseFloat(changePercent) >= 0 ? "#479E34" : "#BC2929"}
+            stroke={parseFloat(changePercent) >= 0 ? theme.darkMode ? '#5CB376' : "#2E8540" : "#E67066"}
           />
           </Flex>
           <Text
             style={{
-              marginRight: "10px",
-              color: parseFloat(changePercent) >= 0 ? "#479E34" : "#BC2929",
+              color: parseFloat(changePercent) >= 0 ? theme.darkMode ? '#5CB376' : "#2E8540" : "#E67066",
+              alignSelf: "center",
             }}
           >
             {changePercent !== "NaN" ? `${changePercent}%` : "No Data (24H)"}
@@ -88,15 +88,13 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) 
         </Flex>
         {
           <AbsContainer
-            style={{ display: "flex" }}
+            style={{ display: "flex", position: 'sticky' }}
             onMouseEnter={() => setHovered(true)}
           >
             <Link to={`/add-pro/${tokenData?.token.id}/`}>
               <IconButton
                 style={{
-                  background: hoverPlus
-                    ? theme.pinkGamma
-                    : theme.maxButtonHover,
+                  background: hoverPlus ? '#B05D98' : theme.slippageActive,
                   boxShadow: "none",
                   width: "29px",
                   height: "29px",
@@ -108,18 +106,14 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) 
                   onMouseEnter={() => setHoverPlus(true)}
                   onMouseLeave={() => setHoverPlus(false)}
                 >
-                  <IconStyler>
                     <PlusIcon />
-                  </IconStyler>
                 </Flex>
               </IconButton>
             </Link>
             <Link onClick={() => handleSwap(currency)} to={`#`}>
               <IconButton
                 style={{
-                  background: hoverSwap
-                    ? theme.pinkGamma
-                    : theme.maxButtonHover,
+                  background: hoverPlus ? '#B05D98' : theme.slippageActive,
                   width: "29px",
                   boxShadow: "none",
                   height: "29px",
@@ -130,13 +124,8 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) 
                 <Flex
                   onMouseEnter={() => setHoverSwap(true)}
                   onMouseLeave={() => setHoverSwap(false)}
-                  style={{ rotate: "90deg", transform: "scale(0.8)" }}
                 >
-                  <IconStyler
-                    style={{ paddingRight: "3px", paddingTop: "3px" }}
-                  >
                     <RepeatIcon />
-                  </IconStyler>
                 </Flex>
               </IconButton>
             </Link>
@@ -148,17 +137,17 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) 
     );
 
   return (
-    <Flex onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
+    <Flex onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} alignItems='center'>
       {hovered && hoverContent}
       <CurrencyLogo key={index} 
         currency={currency}
         size={'24px'} 
         style={{marginRight: '5px'}} />  
-      <Text style={{marginRight: '5px'}}>{tokenData?.symbol}</Text>
-      <Flex style={{marginRight: '5px', rotate:parseFloat(changePercent) >= 0 ? '0deg' : '180deg', display: changePercent === 'NaN' ? 'none' : 'flex'}}>
-        <ArrowMarket stroke={parseFloat(changePercent) >= 0 ? '#479E34' : '#BC2929'} />
+      <Text style={{marginRight: '5px', alignSelf: 'center'}}>{currency?.symbol}</Text>
+      <Flex style={{rotate:parseFloat(changePercent) >= 0 ? '0deg' : '180deg', display: changePercent === 'NaN' ? 'none' : 'flex'}}>
+        <ArrowMarket stroke={parseFloat(changePercent) >= 0 ? theme.darkMode ? '#5CB376' : '#2E8540' : '#E67066'} />
       </Flex>
-      <Text style={{marginRight: '10px', color: parseFloat(changePercent) >= 0 ? '#479E34' : '#BC2929'}}>
+      <Text style={{marginRight: '10px', color: parseFloat(changePercent) >= 0 ? theme.darkMode ? '#5CB376' : '#2E8540' : '#E67066'}}>
         {changePercent !== 'NaN' ? `${changePercent}%` : 'No Data (24H)'}
       </Text>
     </Flex>

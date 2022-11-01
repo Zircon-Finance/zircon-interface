@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import { useWeb3React } from '@web3-react/core'
-import styled, { useTheme } from 'styled-components'
+import styled from 'styled-components'
 import { Flex, IconButton } from '@pancakeswap/uikit'
 import useCatchTxError from '../../../../hooks/useCatchTxError'
 
@@ -112,7 +112,6 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
             dispatch(fetchPoolsUserDataAsync(account))
         }
     }
-    const theme = useTheme()
     const staked = parseFloat(getBalanceAmount(stakedBalance).toFixed(6))
     const maxStake = parseFloat(getBalanceAmount(tokenBalance).toFixed(6))
     const percentage = (staked*100/(staked + maxStake)).toString()
@@ -132,12 +131,12 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
         ) : (
             <IconButtonWrapper>
                 <IconButton
-                    style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
+                    style={{background: '#B05D98', width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
                     variant="tertiary" onClick={()=>setShowModalWithdraw(true)} mr="6px">
                     <MinusIcon />
                 </IconButton>
                 <IconButton
-                    style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
+                    style={{background: '#B05D98', width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
                     variant="tertiary"
                     onClick={()=>setShowModalDeposit(true)}
                     disabled={pool.isFinished}

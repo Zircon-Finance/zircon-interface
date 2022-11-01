@@ -30,7 +30,6 @@ import {BIG_ZERO} from '../../utils/bigNumber'
 import fetchPools from "./fetchPoolsInfo";
 import getPoolsPrices from "./getPoolsPrices";
 // import {fetchRewardsData} from "./fetchRewardsData";
-import {fetchRewardsData} from "./fetchRewardsData";
 import {simpleRpcProvider} from "../../utils/providers";
 // import {JSBI, Pylon} from "zircon-sdk";
 // import {getPoolApr} from "../../utils/apr";
@@ -77,26 +76,41 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
 
     const apiData = await axios.get('https://edgeapi.zircon.finance/static/yield').then((res) => res.data)
 
+    // Get start-end block for each pool
     const blockLimits = apiData?.map((pool) => {
       return {
         contractAddress: pool.contractAddress,
         startBlock: parseInt(pool.startBlock),
         endBlock: parseInt(pool.endBlock)
-    }})
+      }
+    })
 
+    // Earning token info
     const rewardsData = []
     for (let i = 0; i < poolsConfig.length; i++) {
-      rewardsData[i] = {contractAddress: poolsConfig[i].contractAddress, balances:  await fetchRewardsData(apiData, poolsConfig[i])}
+      rewardsData[i] = {
+        contractAddress: poolsConfig[i].contractAddress,
+        balances: apiData.filter((poolArray) =>
+              poolArray.contractAddress ===
+              poolsConfig[i].contractAddress.toLowerCase()
+          )[0]
+          ?.earningTokenInfo.map((token) => {
+            return {
+              balance: token.balance,
+              symbol: token.tokenSymbol,
+            };
+          }),
+      };
     }
+    //Token lp balance and decimals call
     const poolsInformation = await fetchPools(poolsConfig)
-
+    // Binance API call for prices
     let poolsPrices = await getPoolsPrices(poolsInformation)
 
     const priceZRGMOVR = {zrg: apiData[0]?.zrgPrice, movr: apiData[0]?.movrPrice}
 
     const liveData = poolsPrices.map((pool, i) => {
       const apiPool = apiData.filter((poolArray) => poolArray.contractAddress === pool.contractAddress.toLowerCase());
-      // Checking for block limits and total Staking
       const blockLimit = blockLimits.find((entry) => entry.contractAddress === pool.contractAddress.toLowerCase())
 
       // Checking if pool is finished, either by the value on the files or because the block limit has been reached
@@ -104,18 +118,15 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
       const isPoolFinished = pool.isFinished || isPoolEndBlockExceeded || !apiPool[0]
       const blockRemaining = blockLimit?.endBlock-currentBlock
 
-      // Checking Rewards already distributed
       // As of Contract calculation on initialize it is minted 1e18 Psionic tokens to the farm contract so...
       const tokensRemaining = new BigNumber(blockRemaining).times(1e18)
       const pendingRewards = new BigNumber(apiPool[0]?.psiBalance).minus(tokensRemaining)
-
-      // Price of staked Token in USD
-
+      
       // Earning Tokens Information (ZRG, MOVR)
       const earningData = rewardsData?.find((entry) => entry.contractAddress.toLowerCase() === pool.contractAddress.toLowerCase())
       let earningTokenInfo: EarningTokenInfo[] = pool.earningToken.map((token,index) => {
         // Calculating remaining balance
-        const balance = new BigNumber(earningData?.balances?.find((entry) => entry.symbol.toLowerCase() ===
+        const balance = new BigNumber(earningData?.balances?.find((entry) => entry.symbol.toLowerCase() === 
         (token.symbol.toLowerCase() === 'movr' ? 'wmovr' : token.symbol.toLowerCase()))?.balance)
         const balanceDivided = balance.dividedBy(new BigNumber(1e18))
 
@@ -126,7 +137,6 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
 
         // Obtaining Price (Normally ZRG will be Float side and MOVR Stable Side
         let price = token.symbol === "ZRG" ? priceZRGMOVR?.zrg : priceZRGMOVR?.movr
-
 
         return {
           symbol: token.symbol,

@@ -18,32 +18,12 @@ interface TokenRowProps {
     handleInput: any;
   }
 
-export const IconStyler = styled.div`
-    &:hover {
-        svg {
-            path {
-                stroke: #fff !important;
-                }
-        }
-    }
-    svg {
-        path {
-        stroke: ${({ theme }) => theme.pinkGamma} !important;
-        stroke-width: 1.2;
-        }
-    }
-`
-
 const Row = styled.tr`
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     padding: 0.5rem 0;
-    border-bottom: 1px solid ${({ theme }) => theme.opacitySmall};
-    :last-child {
-        border-bottom: none;
-    }
 `;
 
 export const expandAnimation = keyframes`
@@ -97,18 +77,21 @@ export const ArrowMarket = (props) => (
     <path d="M5 12L12 5L19 12" stroke={props.stroke} stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
 )
-
-const StarEmpty = () => (
+const StarEmpty = () => {
+  const theme = useTheme()
+  return (
     <svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M9.00008 1.79564L11.1267 6.10399C11.1995 6.25142 11.3401 6.35365 11.5028 6.37742L16.2592 7.07265L12.8179 10.4245C12.6999 10.5394 12.6461 10.7049 12.6739 10.8672L13.486 15.6019L9.23281 13.3651C9.08712 13.2885 8.91305 13.2885 8.76736 13.3651L4.51417 15.6019L5.32622 10.8672C5.35405 10.7049 5.30022 10.5394 5.18228 10.4245L1.74095 7.07265L6.4974 6.37742C6.66007 6.35365 6.80067 6.25142 6.87344 6.10399L9.00008 1.79564Z" stroke="#B591CF" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M9.00008 1.79564L11.1267 6.10399C11.1995 6.25142 11.3401 6.35365 11.5028 6.37742L16.2592 7.07265L12.8179 10.4245C12.6999 10.5394 12.6461 10.7049 12.6739 10.8672L13.486 15.6019L9.23281 13.3651C9.08712 13.2885 8.91305 13.2885 8.76736 13.3651L4.51417 15.6019L5.32622 10.8672C5.35405 10.7049 5.30022 10.5394 5.18228 10.4245L1.74095 7.07265L6.4974 6.37742C6.66007 6.35365 6.80067 6.25142 6.87344 6.10399L9.00008 1.79564Z" stroke={theme.darkMode ? theme.meatPink : "#968A90"} stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
-)
+)}
 
-export const StarFull = () => (
+export const StarFull = () => {
+  const theme = useTheme()
+  return (
     <svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M9.00008 0.666016L11.5751 5.88268L17.3334 6.72435L13.1667 10.7827L14.1501 16.516L9.00008 13.8077L3.85008 16.516L4.83342 10.7827L0.666748 6.72435L6.42508 5.88268L9.00008 0.666016Z" fill="#B591CF"/>
+    <path d="M9.00008 0.666016L11.5751 5.88268L17.3334 6.72435L13.1667 10.7827L14.1501 16.516L9.00008 13.8077L3.85008 16.516L4.83342 10.7827L0.666748 6.72435L6.42508 5.88268L9.00008 0.666016Z" fill={theme.darkMode ? theme.meatPink : "#968A90"}/>
     </svg>
-)
+)}
 
 
 export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
@@ -122,7 +105,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
     const changePercent = (((parseFloat(token?.priceUSD) - parseFloat(previousToken?.priceUSD)) / parseFloat(previousToken?.priceUSD)) * 100).toFixed(2);
 
     const plusContent = (
-        <DialogContainer style={{background: theme.pinkGamma}} show={hoverPlus}>
+        <DialogContainer style={{background: theme.slippageActive}} show={hoverPlus}>
           <Text style={{color: '#FFF'}} fontSize='13px'>
             {('Add liquidity')}
           </Text>
@@ -130,7 +113,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
     )
 
     const swapContent = (
-        <DialogContainer style={{right: '-10px', background: theme.pinkGamma}} show={hoverSwap}>
+        <DialogContainer style={{right: '-10px', background: theme.slippageActive}} show={hoverSwap}>
           <Text style={{color: '#FFF'}} fontSize='13px'>
             {('Swap')}
           </Text>
@@ -139,7 +122,10 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
 
     return (
     <Row onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
-    style={{backgroundColor: hovered ? theme.cardExpanded : 'transparent', borderRadius: '17px'}}>  
+    style={{
+      backgroundColor: hovered ? theme.darkMode ? '#452632' : '#F5F3F4' : 'transparent', 
+      borderRadius: '17px',
+      }}>  
     <TableData style={{width: '35%', marginLeft: '10px'}}>
         <Text
         style={{ width: "25px", alignSelf: "center" }}
@@ -148,12 +134,12 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
         >
         {index + 1}
         </Text>
-        <Flex style={{margin: '0 10px', cursor: 'pointer'}} onClick={()=> chosenTokens?.includes(token.token.id) ? 
+        <Flex style={{margin: '0 5px', cursor: 'pointer'}} onClick={()=> chosenTokens?.includes(token.token.id) ? 
         removeChosenTokenFeedback(token.token.id) : addChosenTokenCallback(token.token.id)}>
             {chosenTokens?.includes(token.token.id) ? <StarFull /> : <StarEmpty />}
         </Flex>
         <CurrencyLogo
-        style={{ width: "30px", height: "30px", marginRight: "10px" }}
+        style={{ width: "30px", height: "30px", marginRight: "5px" }}
         currency={currency}
         />
         <Text
@@ -173,7 +159,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
     </TableData>
     <TableData>
         <Text
-        style={{ alignSelf: "center", width: '100%' , textAlign: 'center'}}
+        style={{ alignSelf: "center", width: '100%' , textAlign: 'left', marginLeft: '20px'}}
         color={theme.text1}
         fontSize={"16px"}
         >
@@ -183,11 +169,11 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
     <TableData>
         <Text
         style={{ alignSelf: "center", display: 'flex', width: '100%', textAlign: 'center', justifyContent: 'center' }}
-        color={parseFloat(changePercent) >= 0 ? '#479E34' : '#BC2929'}
+        color={parseFloat(changePercent) >= 0 ? theme.darkMode ? '#5CB376' : '#2E8540' : '#E67066'}
         fontSize={"16px"}
         >
         <div style={{rotate:parseFloat(changePercent) >= 0 ? '0deg' : '180deg', height: '24px', width: '24px'}}>
-            <ArrowMarket stroke={parseFloat(changePercent) >= 0 ? '#479E34' : '#BC2929'} />
+            <ArrowMarket stroke={parseFloat(changePercent) >= 0 ? theme.darkMode ? '#5CB376' : '#2E8540' : '#E67066'} />
         </div>
         {changePercent !== 'NaN' ? `${changePercent}%` : 'No Data'}
         </Text>
@@ -211,13 +197,13 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
         </Text>
     </TableData>
     <TableData style={{width: '10%'}}>
-    {hovered && <AbsContainer style={{display: 'flex'}} onMouseEnter={() => setHovered(true)}>
+    {hovered && <AbsContainer style={{display: 'flex', position: 'sticky'}} onMouseEnter={() => setHovered(true)}>
             <Link
               to={`/add-pro/${token.token.id}/`}
             >
               <IconButton
                 style={{
-                  background: hoverPlus ? theme.pinkGamma : theme.maxButtonHover,
+                  background: hoverPlus ? '#B05D98' : theme.slippageActive,
                   boxShadow: 'none',
                   width: "29px",
                   height: "29px",
@@ -229,7 +215,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
                   onMouseEnter={() => setHoverPlus(true)}
                   onMouseLeave={() => setHoverPlus(false)}
                 >
-                  <IconStyler><PlusIcon /></IconStyler>
+                  <PlusIcon />
                 </Flex>
               </IconButton>
             </Link>
@@ -239,7 +225,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
             >
               <IconButton
                 style={{
-                  background: hoverSwap ? theme.pinkGamma : theme.maxButtonHover,
+                  background: hoverSwap ? '#B05D98' : theme.slippageActive,
                   width: "29px",
                   boxShadow: 'none',
                   height: "29px",
@@ -250,9 +236,8 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
                 <Flex
                   onMouseEnter={() => setHoverSwap(true)}
                   onMouseLeave={() => setHoverSwap(false)}
-                  style={{rotate: '90deg', transform: 'scale(0.8)'}}
                 >
-                  <IconStyler style={{paddingRight: '3px', paddingTop: '3px'}}><RepeatIcon /></IconStyler>
+                  <RepeatIcon />
                 </Flex>
               </IconButton>
             </Link>

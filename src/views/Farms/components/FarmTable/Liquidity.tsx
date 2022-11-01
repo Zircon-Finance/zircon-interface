@@ -17,6 +17,7 @@ export interface LiquidityProps {
   hovered: boolean
   setHovered: Dispatch<SetStateAction<boolean>>
   farm: any
+  small?: boolean
 }
 
 const LiquidityWrapper = styled.div`
@@ -47,7 +48,7 @@ const DialogContainer = styled.div<{ show }>`
       `};
   position: absolute;
   top: 40px;
-  background: ${({ theme }) => theme.hoveredButton};
+  background: #B05D98;
   border-radius: 17px;
   padding: 10px;
   z-index: 1000;
@@ -57,15 +58,15 @@ const DialogContainer = styled.div<{ show }>`
 `
 
 export const AbsContainer = styled.div`
-  position: sticky;
+  position: absolute;
   z-index: 100;
-  left: 50px;
+  left: 120px;
   svg {
     pointer-events: none;
   }
 `
 
-const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered, setHovered, farm }) => {
+const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered, setHovered, farm, small}) => {
   // const displayLiquidity = liquidity && liquidity.gt(0) ? (
   //     `$${Number(liquidity).toLocaleString(undefined, { maximumFractionDigits: 0 })}`
   //   ) : (
@@ -88,7 +89,7 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
   return (
     <Container>
       <LiquidityWrapper>
-        <Text fontSize="13px" color={theme.text1}>
+        <Text fontSize={small ? '13px' : "16px"} color={theme.text1}>
           {farm.isClassic
             ? pairLiquidity !== 'NaN' ? formattedNum(pairLiquidity, true) : <Skeleton width={60} />
             : pylonLiquidity !== 'NaN' ? formattedNum(pylonLiquidity, true) : <Skeleton width={60} />}
@@ -105,7 +106,7 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
             >
               <IconButton
                 style={{
-                  background: theme.hoveredButton,
+                  background: '#B05D98',
                   width: "29px",
                   height: "28px",
                   borderRadius: "100%",

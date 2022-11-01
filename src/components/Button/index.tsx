@@ -189,16 +189,10 @@ export const ButtonOutlined = styled(Base)`
   border: 1px solid rgba(89, 73, 110, 0.4);
   background-color: transparent;
   color: ${({ theme }) => theme.text1};
-
-  &:focus {
-    box-shadow: 0 0 0 1px ${({ theme }) => theme.bg4};
-  }
+  
   &:hover {
     background-color: ${({ theme }) => theme.outlinedHover};
     color: ${({ theme }) => theme.text1} !important;
-  }
-  &:active {
-    box-shadow: 0 0 0 1px ${({ theme }) => theme.bg4};
   }
   &:disabled {
     opacity: 50%;

@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import React, { useCallback, useMemo, useState } from 'react'
 import styled, { useTheme } from 'styled-components'
-import { Flex, Text, Modal, Skeleton } from '@pancakeswap/uikit'
+import { Flex, Text, Modal } from '@pancakeswap/uikit'
 import { ModalActions, ModalInput } from '../../../components/ModalFarm'
 import RoiCalculatorModal from '../../../components/RoiCalculatorModal'
 import { useTranslation } from 'react-i18next'
@@ -182,7 +182,7 @@ const DepositModal: React.FC<DepositModalProps> = ({
                         <AnnualRoiDisplay color={theme.text1}>${formattedAnnualRoi}</AnnualRoiDisplay>
                     </AnnualRoiContainer>
                 ) : (
-                    <Skeleton width={60} />
+                    <Text color={theme.text1} fontSize='13px' fontWeight={400}>0$</Text>
                 )}
             </Flex>
             <ModalActions>

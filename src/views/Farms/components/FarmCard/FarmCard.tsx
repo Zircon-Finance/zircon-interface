@@ -204,7 +204,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
             {farm.isClassic ? pairLiquidity : new BigNumber(farm?.liquidity).toFixed(2)} USD
           </Text>
         </Flex>
-        {account && !farm.isFinished && (
+        {!farm.isFinished && (
             <Flex justifyContent="space-between" alignItems="center" mt="10px">
               <Text color={theme.whiteHalf} fontSize="14px">
                 {`Health Factor`}:

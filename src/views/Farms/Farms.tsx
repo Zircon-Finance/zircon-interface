@@ -9,7 +9,7 @@ import styled, { useTheme } from 'styled-components'
 import Page from '../../components/Layout/Page'
 import useIntersectionObserver from '../../hooks/useIntersectionObserver'
 import { useTranslation } from 'react-i18next'
-import {getBalanceNumber, getBalanceUSD} from '../../utils/formatBalance'
+import {formattedNum, getBalanceNumber, getBalanceUSD} from '../../utils/formatBalance'
 import { useIsDarkMode, useShowMobileSearchBarManager, useUserFarmsFilterAnchorFloat, useUserFarmsFilterPylonClassic, useUserFarmsFinishedOnly, useUserFarmStakedOnly, useUserFarmsViewMode } from '../../state/user/hooks'
 import {
   FarmFilter,
@@ -584,14 +584,14 @@ const Farms: React.FC = ({ children }) => {
                     {(option === 'Earned' && totalEarnings.toFixed(2) !== '0.00' && !isInactive) && (
                       <Flex alignItems="center">
                         <Text fontSize="12px" color={'#5ebe7b'}>
-                          ~{totalEarnings ? totalEarnings.toFixed(2) : 0} USD
+                          ~{totalEarnings ? formattedNum(totalEarnings.toFixed(2)) : 0} USD
                         </Text>
                       </Flex>
                     )}
                     {(option === 'Staked' && totalStaked.toFixed(0) !== '0' && !isInactive) && (
                       <Flex alignItems="center">
                         <Text fontSize="12px" color={'#5ebe7b'}>
-                          ~{totalStaked ? totalStaked.toFixed(2) : 0} USD
+                          ~{totalStaked ? formattedNum(totalStaked.toFixed(2)) : 0} USD
                         </Text>
                       </Flex>
                     )}

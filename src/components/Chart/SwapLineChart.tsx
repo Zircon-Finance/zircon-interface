@@ -67,9 +67,9 @@ const LineChart = ({ data, setHoverValue, setHoverDate, isChangePositive, timeWi
       <AreaChart
         data={data}
         margin={{
-          top: 0,
-          right: 5,
-          left: 5,
+          top: 5,
+          right: 0,
+          left: 0,
           bottom: 0,
         }}
         onMouseLeave={() => {
@@ -89,6 +89,7 @@ const LineChart = ({ data, setHoverValue, setHoverDate, isChangePositive, timeWi
           tickLine={false}
           tickFormatter={(time) => time.toLocaleString('EN', dateFormatting)}
           minTickGap={15}
+          interval={4}
         />
         <YAxis dataKey="value" axisLine={false} tickLine={false} domain={['auto', 'auto']} hide />
         <Tooltip

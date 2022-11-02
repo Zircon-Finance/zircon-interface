@@ -6700,7 +6700,7 @@ dayjs@^1.10.4:
   resolved "https://registry.npmjs.org/dayjs/-/dayjs-1.10.8.tgz"
   integrity sha512-wbNwDfBHHur9UOzNUjeKUOJ0fCb0a52Wx0xInmQ7Y8FstyajiV1NmK1e00cxsr9YrE9r7yAChE0VvpuY5Rnlow==
 
-dayjs@^1.11.5:
+dayjs@^1.11.6:
   version "1.11.6"
   resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.6.tgz#2e79a226314ec3ec904e3ee1dd5a4f5e5b1c7afb"
   integrity sha512-zZbY5giJAinCG+7AGaw0wIhNZ6J8AhWuSXKvuc1KAyMiRsvGQWqh4L+MomvhdAYjN+lqvVCMq1I41e3YHvXkyQ==
@@ -17793,10 +17793,10 @@ yauzl@^2.10.0:
     buffer-crc32 "~0.2.3"
     fd-slicer "~1.1.0"
 
-zircon-sdk@1.0.10-rc-34b:
-  version "1.0.10-rc-34b"
-  resolved "https://registry.yarnpkg.com/zircon-sdk/-/zircon-sdk-1.0.10-rc-34b.tgz#0ff67270901c37486dfcc6f3f51cbd076894339e"
-  integrity sha512-OD65QqVYtIxI6ED72K2y9dcQOr/txw7DXvwy/B2lV9fBn3+PC+Ol7Sks+riQOHcDciyv0NW4dUy2L4fuIwcRdw==
+zircon-sdk@1.0.10-rc-34c:
+  version "1.0.10-rc-34c"
+  resolved "https://registry.yarnpkg.com/zircon-sdk/-/zircon-sdk-1.0.10-rc-34c.tgz#81becd0898c776b6dbf55d27cb3847456cc068d6"
+  integrity sha512-BEAY9nADbXyhV5QDpDKQ9sKbLH7M6zuJBPYhv1CAiktGBTOa1v3IzUyMM/62fKKBkJRI772AO0z0f0kKpi2r9Q==
   dependencies:
     "@uniswap/v2-core" "^1.0.0"
     big.js "^5.2.2"

@@ -246,7 +246,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
         <Flex justifyContent={'space-around'} mb={width <= 500 && '10px'}>
           <StyledLinkExternal
             style={{ color: theme.pinkBrown, fontWeight: 500, marginRight: '10px' }}
-            href={"https://analytics.zircon.finance"}
+            href={CONTRACT_ADDRESS_BASE+farm.lpAddress}
           >
             {"See Pair Info ↗"}
           </StyledLinkExternal>

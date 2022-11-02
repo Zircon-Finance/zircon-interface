@@ -21,6 +21,7 @@ export interface StakedProps {
     stakedBalancePool: number,
     stakedBalance: BigNumber,
     price: string
+    stakedRatio: number
 }
 
 const LiquidityWrapper = styled.div`
@@ -77,7 +78,7 @@ const DialogContainer = styled.div<{ show }>`
   font-size: 13px;
 `
 
-const Staked: React.FunctionComponent<StakedProps> = ({ staked, hovered, setHovered, stakedBalance, stakedBalancePool, price }) => {
+const Staked: React.FunctionComponent<StakedProps> = ({ staked, hovered, setHovered, stakedBalance, stakedBalancePool, price, stakedRatio }) => {
     const [hoverMinus, setHoverMinus] = React.useState(false)
     const [hoverPlus, setHoverPlus] = React.useState(false)
     const { width } = useWindowDimensions()
@@ -99,7 +100,7 @@ const Staked: React.FunctionComponent<StakedProps> = ({ staked, hovered, setHove
     )
     const displayBalance =
         staked && staked.gt(0) ? (
-            `${(new BigNumber(staked).div(stakedBalancePool).multipliedBy(stakedBalance).multipliedBy(price)).toFixed(1, BigNumber.ROUND_DOWN)}`
+            `${(new BigNumber(staked).multipliedBy(stakedRatio).div(stakedBalancePool).multipliedBy(stakedBalance).multipliedBy(price)).toFixed(1, BigNumber.ROUND_DOWN)}`
         ) : (
             <Skeleton width={60} />
         )

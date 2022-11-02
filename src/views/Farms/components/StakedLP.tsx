@@ -22,13 +22,13 @@ interface StackedLPProps {
   quoteTokenSymbol: string
   lpTotalSupply: BigNumber
   tokenAmountTotal: BigNumber
-  quoteTokenAmountTotal: BigNumber
   percentage: string,
   field: Field,
   stakingToken: Token,
   stakedBalancePool: number,
   price?: string
   staked: BigNumber
+  stakedRatio: number
 }
 
 const StakedLP: React.FunctionComponent<StackedLPProps> = ({
@@ -45,7 +45,8 @@ const StakedLP: React.FunctionComponent<StackedLPProps> = ({
                                                              field,
                                                              staked,
                                                              stakedBalancePool,
-                                                             price
+                                                             price,
+                                                             stakedRatio
                                                            }) => {
   // const lpPrice = useLpTokenPrice(lpSymbol)
   const displayBalance = useCallback(() => {
@@ -70,7 +71,7 @@ const StakedLP: React.FunctionComponent<StackedLPProps> = ({
                   fontSize="12px"
                   color={theme.whiteHalf}
                   decimals={2}
-                  value={new BigNumber(stakedBalance).div(stakedBalancePool).multipliedBy(staked).multipliedBy(price)}
+                  value={new BigNumber(stakedBalance).multipliedBy(stakedRatio).div(stakedBalancePool).multipliedBy(staked).multipliedBy(price)}
                   unit=" USD"
                   prefix="~ "
               />

@@ -32,7 +32,6 @@ export interface ExpandableSectionProps {
     healthFactor: string;
     sousId: number;
     vaultAddress: string;
-    rewardsData: string[];
 }
 
 interface ToolTipProps {
@@ -56,7 +55,6 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
                                                            healthFactor,
                                                            sousId,
                                                            vaultAddress,
-                                                           rewardsData,
                                                            earningTokenBlock
                                                        }) => {
     const theme = useTheme();

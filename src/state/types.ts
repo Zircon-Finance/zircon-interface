@@ -37,10 +37,8 @@ export interface SerializedFarm extends SerializedFarmConfig {
   tokenPriceBusd?: string
   quoteTokenPriceBusd?: string
   tokenAmountTotal?: SerializedBigNumber
-  quoteTokenAmountTotal?: SerializedBigNumber
   lpTotalInQuoteToken?: SerializedBigNumber
   lpTotalSupply?: SerializedBigNumber
-  tokenPriceVsQuote?: SerializedBigNumber
   poolWeight?: SerializedBigNumber
   userData?: SerializedFarmUserData
 }
@@ -49,10 +47,8 @@ export interface DeserializedFarm extends DeserializedFarmConfig {
   tokenPriceBusd?: string
   quoteTokenPriceBusd?: string
   tokenAmountTotal?: BigNumber
-  quoteTokenAmountTotal?: BigNumber
   lpTotalInQuoteToken?: BigNumber
   lpTotalSupply?: BigNumber
-  tokenPriceVsQuote?: BigNumber
   poolWeight?: BigNumber
   userData?: DeserializedFarmUserData
 }
@@ -81,13 +77,13 @@ interface CorePoolProps {
   // earningTokenPrice?: number[]
   earningTokenInfo?: EarningTokenInfo[]
   vaultKey?: VaultKey
-  rewardsData?: string[],
   vTotalSupply?: number,
 }
 
 export interface DeserializedPool extends DeserializedPoolConfig, CorePoolProps {
   totalStaked?: BigNumber
   staked: BigNumber
+  stakedRatio: number
   stakedBalancePool: number
   quotingPrice?: string
   tokenPrice?: string
@@ -103,7 +99,6 @@ export interface DeserializedPool extends DeserializedPoolConfig, CorePoolProps 
     stakedBalance: BigNumber
     pendingReward: BigNumber
   }
-  tokenPriceVsQuote?: SerializedBigNumber
 }
 
 export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
@@ -121,7 +116,6 @@ export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
     stakedBalance: SerializedBigNumber
     pendingReward: SerializedBigNumber
   }
-  tokenPriceVsQuote?: SerializedBigNumber
   gamma?: SerializedBigNumber
   ptb?: SerializedBigNumber
   quoteTokenBalanceTotal?: SerializedBigNumber
@@ -130,12 +124,11 @@ export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
   quotePrice?: SerializedBigNumber
   tokenPrice?: SerializedBigNumber
   lpTotalInQuoteToken?: SerializedBigNumber
-  quoteTokenDecimals?: SerializedBigNumber
-  tokenDecimals?: SerializedBigNumber
   vaultTotalSupply?: SerializedBigNumber
   psionicFarmBalance?: SerializedBigNumber
   staked?: SerializedBigNumber
   stakedBalancePool?: SerializedBigNumber
+  stakedRatio?: SerializedBigNumber
 }
 
 // Slices states

@@ -198,7 +198,7 @@ export const RewardPerBlock: React.FC<Props> = ({ earningRewardsBlock }) => {
     <>
     {earningRewardsBlock ? earningRewardsBlock.map((reward, index) => (
       <Text fontSize='13px' fontWeight={400} color={theme.darkMode ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0,0,0,0.9)'} key={index}>
-        {(reward.blockReward.toFixed(0) !== 'NaN' && reward.blockReward.toFixed(0) !== 'Infinity') ?
+        {(reward.blockReward !== 0) ?
           `~ ${(reward.blockReward*6800*30).toFixed(0)}  ${reward.symbol === 'MOVR' ? 'wMOVR' : reward.symbol}` :
           'Loading...'
         }
@@ -350,7 +350,7 @@ const Farms: React.FC = ({ children }) => {
       if (!pool.userData || !pool.earningTokenInfo) {
         return accum
       }
-      return accum.plus(new BigNumber(pool.userData.stakedBalance).div(pool.stakedBalancePool).multipliedBy(pool.staked).multipliedBy(pool.quotingPrice))
+      return accum.plus(new BigNumber(pool.userData.stakedBalance).multipliedBy(pool.stakedRatio).div(pool.stakedBalancePool).multipliedBy(pool.staked).multipliedBy(pool.quotingPrice))
     }, new BigNumber(0))
   }, [stakedOnlyFarms])
 
@@ -397,6 +397,7 @@ const Farms: React.FC = ({ children }) => {
         farm: farm,
       },
       staked: {
+        stakedRatio: farm.stakedRatio,
         stakedBalance: farm.staked,
         staked: farm.userData.stakedBalance ,
         stakedBalancePool: farm.stakedBalancePool,

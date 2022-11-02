@@ -175,6 +175,7 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
             }
             <Flex justifyContent="space-between" alignItems="center">
                 <StakedLP
+                    stakedRatio={pool.stakedRatio}
                     staked={pool.staked}
                     price={pool.quotingPrice}
                     stakedBalancePool={pool.stakedBalancePool}
@@ -192,7 +193,6 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
                     tokenSymbol={`${rewardTokens}`}
                     lpTotalSupply={1 as unknown as BigNumber}
                     tokenAmountTotal={1 as unknown as BigNumber}
-                    quoteTokenAmountTotal={1 as unknown as BigNumber}
                 />
                 {renderStakingButtons()}
             </Flex>

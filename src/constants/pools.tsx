@@ -445,7 +445,7 @@ const pools: SerializedPoolConfig[] = [
     isFinished: false,
   },
   {
-    sousId: 44,
+    sousId: 45,
     token1: new Token(ChainId.MOONRIVER, '0x98878B06940aE243284CA214f92Bb71a2b032B8A', 18, 'MOVR', 'Moonriver'),
     token2: new Token(ChainId.MOONRIVER, '0xFfFFfFff1FcaCBd218EDc0EbA20Fc2308C778080', 12, 'KSM', 'Kusama'),
     isClassic: false,
@@ -463,9 +463,9 @@ const pools: SerializedPoolConfig[] = [
     isFinished: false,
   },
   {
-    sousId: 45,
+    sousId: 46,
     token1: new Token(ChainId.MOONRIVER, '0x98878B06940aE243284CA214f92Bb71a2b032B8A', 18, 'MOVR', 'Moonriver'),
-    token2: new Token(ChainId.MOONRIVER, '0xFfFFfFff1FcaCBd218EDc0EbA20Fc2308C778080', 18, 'KSM', 'Kusama'),
+    token2: new Token(ChainId.MOONRIVER, '0xFfFFfFff1FcaCBd218EDc0EbA20Fc2308C778080', 12, 'KSM', 'Kusama'),
     isClassic: false,
     isAnchor: true,
     earningToken: [new Token(MOONRIVER, '0x98878B06940aE243284CA214f92Bb71a2b032B8A', 18, 'MOVR', 'MoonRiver'),

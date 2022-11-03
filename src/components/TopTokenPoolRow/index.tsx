@@ -1,9 +1,12 @@
+import Lottie from 'lottie-react-web';
 import React from 'react'
 import { NavLink } from 'react-router-dom';
 import { Flex, Text } from 'rebass';
 import { useTheme } from 'styled-components';
 import { useCurrency } from '../../hooks/Tokens';
 import DoubleCurrencyLogo from '../DoubleLogo';
+import animationLight from '../../assets/lotties/circle_light.json';
+import animationDark from '../../assets/lotties/circle_dark.json';
 
 interface TokenRowProps {
     token1: any;
@@ -34,7 +37,14 @@ export const PoolRowSmall:React.FC<TokenRowProps> = ({token1, token2, pool}) => 
     <Text color={theme.pinkBrown} fontWeight={500} fontSize={'16px'}> 
       {token1?.token?.symbol} - {token2?.token?.symbol}
     </Text>
-    {pool && <Flex style={{width: 'auto'}} ml='auto'><Text fontSize={'10px'} ml='10px' color={theme.darkMode ? '#5CB376' : '#287438'}>ACTIVE FARM</Text></Flex>}
+    {pool && <Flex style={{width: 'auto'}} ml='auto'>
+      <Lottie
+        style={{width: "12px", height: "12px", borderWidth: 2, marginLeft: '15px'}}
+        options={{
+            animationData: theme.darkMode ? animationDark : animationLight,
+        }}
+      />
+      <Text fontSize={'10px'} color={theme.darkMode ? '#5CB376' : '#287438'}>ACTIVE FARM</Text></Flex>}
   </Flex>
   </NavLink>
   ) 

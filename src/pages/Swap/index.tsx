@@ -582,7 +582,7 @@ export default function Swap() {
     {/* // User chosen tokens */}
     {chosenTokens?.length > 0 && (
       <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none'}}>
-        <Flex mt='20px' ml='20px'>
+        <Flex mt='23px' ml='20px'>
             <StarFull />
           </Flex>
         <Flex style={{width: '100%', padding: '20px', flexWrap: 'wrap', gap: '25px 5px'}}>

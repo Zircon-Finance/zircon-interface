@@ -653,21 +653,18 @@ const Farms: React.FC = ({ children }) => {
               onMouseLeave={() => setHoverButton(false)}
               style={{
                 background: theme.darkMode ? hoverButton ? "transparent" : '#3E212D' : hoverButton ? "transparent" : '#EDEAEA',
-                borderRadius: "0px",
                 margin: "auto",
                 marginTop: "20px",
+                height: "43px",
                 fontSize: "16px",
                 border: 'none',
-                width: 'calc(100% + 10px)',
                 position: "relative",
-                right: '5px',
-                marginBottom: '-5px',
-                borderBottomLeftRadius: '17px',
-                borderBottomRightRadius: '17px',
+                borderRadius: "17px",
+                fontWeight: 500,
                 color: theme.pinkBrown
               }}
             >
-              {t("Show More")}
+              {t("Show more farms")}
             </ButtonLighter>
           )}
         </MainContainer>

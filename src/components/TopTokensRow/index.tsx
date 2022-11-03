@@ -10,12 +10,15 @@ import { AbsContainer } from "../../views/Farms/components/FarmTable/Liquidity";
 import PlusIcon from "../../views/Farms/components/PlusIcon";
 import CurrencyLogo from "../CurrencyLogo";
 import RepeatIcon from "../RepeatIcon";
+import { PoolsContainer } from "../TopTokenPoolRow/containerPools";
 
 interface TokenRowProps {
     token: any;
     previousToken: any;
     index: number
     handleInput: any;
+    tokens: any[];
+    pools: any;
   }
 
 const Row = styled.tr`
@@ -98,11 +101,15 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
     const [hovered, setHovered] = React.useState(false);
     const [hoverPlus, setHoverPlus] = React.useState(false)
     const [hoverSwap, setHoverSwap] = React.useState(false)
-    const {token, previousToken, index, handleInput} = item;
+    const [liquidityClick, setLiquidityClick] = React.useState(false)
+    const {token, previousToken, index, handleInput, tokens, pools} = item;
     const currency = useCurrency(token.token.id)
     const theme = useTheme();
     const [chosenTokens, addChosenTokenCallback, removeChosenTokenFeedback] = useChosenTokens();
     const changePercent = (((parseFloat(token?.priceUSD) - parseFloat(previousToken?.priceUSD)) / parseFloat(previousToken?.priceUSD)) * 100).toFixed(2);
+    const toggleLiquidityClick = () => {
+      setLiquidityClick(!liquidityClick)
+    }
 
     const plusContent = (
         <DialogContainer style={{background: theme.slippageActive}} show={hoverPlus}>
@@ -112,7 +119,21 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
         </DialogContainer>
     )
 
-    const swapContent = (
+    const addLiquidityContent = (
+      <DialogContainer style={{
+          background: theme.darkMode ? '#583141' : '#FCFBFC', 
+          boxShadow: !theme.darkMode && '0px 0px 25px rgba(40, 20, 29, 0.1)',
+          right: '80px',
+          top: '-290px'}} 
+        show={liquidityClick}>
+        <Text style={{color: theme.text1}} fontSize='16px' textAlign={'center'} my='10px'>
+          {('Select liquidity pool')}
+        </Text>
+        <PoolsContainer mainToken={token} pools={pools} tokens={tokens} />
+      </DialogContainer>
+  )
+
+    const swapContent = ( 
         <DialogContainer style={{right: '-10px', background: theme.slippageActive}} show={hoverSwap}>
           <Text style={{color: '#FFF'}} fontSize='13px'>
             {('Swap')}
@@ -121,7 +142,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
     )
 
     return (
-    <Row onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
+    <Row onMouseEnter={() => setHovered(true)} onMouseLeave={() => (setHovered(false), setLiquidityClick(false))}
     style={{
       backgroundColor: hovered ? theme.darkMode ? '#452632' : '#F5F3F4' : 'transparent', 
       borderRadius: '17px',
@@ -172,7 +193,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
         color={parseFloat(changePercent) >= 0 ? theme.darkMode ? '#5CB376' : '#2E8540' : '#E67066'}
         fontSize={"16px"}
         >
-        <div style={{rotate:parseFloat(changePercent) >= 0 ? '0deg' : '180deg', height: '24px', width: '24px'}}>
+        <div style={{rotate:parseFloat(changePercent) >= 0 ? '180deg' : '0deg', height: '24px', width: '24px'}}>
             <ArrowMarket stroke={parseFloat(changePercent) >= 0 ? theme.darkMode ? '#5CB376' : '#2E8540' : '#E67066'} />
         </div>
         {changePercent !== 'NaN' ? `${changePercent}%` : 'No Data'}
@@ -199,7 +220,8 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
     <TableData style={{width: '10%'}}>
     {hovered && <AbsContainer style={{display: 'flex', position: 'sticky'}} onMouseEnter={() => setHovered(true)}>
             <Link
-              to={`/add-pro/${token.token.id}/`}
+              to={`#`}
+              onClick={() => toggleLiquidityClick()}
             >
               <IconButton
                 style={{
@@ -209,6 +231,8 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
                   height: "29px",
                   borderRadius: "100%",
                   marginLeft: '10px',
+                  transform: liquidityClick ? 'rotate(45deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.3s ease-in-out',
                 }}
               >
                 <Flex
@@ -243,6 +267,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
             </Link>
             {hoverPlus && plusContent}
             {hoverSwap && swapContent}
+            {liquidityClick && addLiquidityContent}
           </AbsContainer> }
     </TableData>
     </Row>

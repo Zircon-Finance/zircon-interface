@@ -69,7 +69,7 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) 
         <Flex>
         <Flex
           style={{
-            rotate: parseFloat(changePercent) >= 0 ? "0deg" : "180deg",
+            rotate: parseFloat(changePercent) >= 0 ? "180deg" : "0deg",
             display: changePercent === "NaN" ? "none" : "flex",
           }}
         >
@@ -144,7 +144,7 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) 
         size={'24px'} 
         style={{marginRight: '5px'}} />  
       <Text style={{marginRight: '5px', alignSelf: 'center'}}>{currency?.symbol}</Text>
-      <Flex style={{rotate:parseFloat(changePercent) >= 0 ? '0deg' : '180deg', display: changePercent === 'NaN' ? 'none' : 'flex'}}>
+      <Flex style={{rotate:parseFloat(changePercent) >= 0 ? '180deg' : '0deg', display: changePercent === 'NaN' ? 'none' : 'flex'}}>
         <ArrowMarket stroke={parseFloat(changePercent) >= 0 ? theme.darkMode ? '#5CB376' : '#2E8540' : '#E67066'} />
       </Flex>
       <Text style={{marginRight: '10px', color: parseFloat(changePercent) >= 0 ? theme.darkMode ? '#5CB376' : '#2E8540' : '#E67066'}}>

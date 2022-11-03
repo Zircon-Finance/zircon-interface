@@ -58,8 +58,10 @@ import { StarFull, TopTokensRow } from '../../components/TopTokensRow'
 import FavTokensRow from '../../components/FavouriteTokensRow'
 import Lottie from 'lottie-react-web'
 import { Separator } from '../../components/SearchModal/styleds'
+import { usePools } from '../../state/pools/hooks'
 
 export default function Swap() {
+  const {pools} = usePools()
   const { t } = useTranslation()
   const loadedUrlParams = useDefaultsFromURLSearch()
 
@@ -658,7 +660,9 @@ export default function Swap() {
             token={token} 
             previousToken={topTokensPrevious.find((t) => t.token.id === token.token.id)} 
             index={index}
-            handleInput={handleInputSelect} />
+            handleInput={handleInputSelect}
+            tokens={topTokens}
+            pools={pools} />
         ))}
       </table>
     )}

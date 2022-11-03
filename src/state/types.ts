@@ -69,7 +69,7 @@ interface CorePoolProps {
   startBlock?: number
   endBlock?: number
   apr?: number
-  liquidity?: number
+  liquidity?: {pair:number, pylon:number}
   zrgPrice?: number
   movrPrice?: number
   rawApr?: number

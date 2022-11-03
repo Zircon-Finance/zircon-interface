@@ -109,7 +109,7 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
         ...blockLimit,
         earningTokenInfo: earningTokenInfo || [],
         vTotalSupply: apiPool[0]?.psiTS,
-        liquidity: parseFloat(apiPool[0]?.tvl.tvlPylon) + parseFloat(apiPool[0]?.tvl.tvlPair),
+        liquidity: {pylon: parseFloat(apiPool[0]?.tvl.tvlPylon), pair: parseFloat(apiPool[0]?.tvl.tvlPair)},
         zrgPrice: priceZRGMOVR?.zrg,
         movrPrice: priceZRGMOVR?.movr,
         staked: new BigNumber(apiPool[0]?.staked).toString(),

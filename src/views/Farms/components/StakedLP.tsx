@@ -2,7 +2,7 @@ import { Heading, Flex } from '@pancakeswap/uikit'
 import { BigNumber } from 'bignumber.js'
 import Balance from '../../../components/Balance'
 import React, { useCallback } from 'react'
-import { getBalanceAmount, getFullDisplayBalance } from '../../../utils/formatBalance'
+import { getBalanceAmount } from '../../../utils/formatBalance'
 import { useTheme } from 'styled-components'
 import { Token } from 'zircon-sdk'
 // import { useToken } from '../../../hooks/Tokens'
@@ -52,12 +52,9 @@ const StakedLP: React.FunctionComponent<StackedLPProps> = ({
   const displayBalance = useCallback(() => {
     const stakedBalanceBigNumber = getBalanceAmount(stakedBalance)
     if (stakedBalanceBigNumber.gt(0) && stakedBalanceBigNumber.lt(0.0000001)) {
-      return stakedBalanceBigNumber.toFixed(10, BigNumber.ROUND_DOWN)
+      return stakedBalanceBigNumber.toFixed(8, BigNumber.ROUND_DOWN)
     }
-    if (stakedBalanceBigNumber.gt(0) && stakedBalanceBigNumber.lt(0.0001)) {
-      return getFullDisplayBalance(stakedBalance).toLocaleString()
-    }
-    return stakedBalanceBigNumber.toFixed(3, BigNumber.ROUND_DOWN)
+    return stakedBalanceBigNumber.toFixed(8, BigNumber.ROUND_DOWN)
   }, [stakedBalance])
 
   const theme = useTheme()

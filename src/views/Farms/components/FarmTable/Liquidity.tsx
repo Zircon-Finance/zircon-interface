@@ -1,7 +1,6 @@
 import React, { Dispatch, SetStateAction } from 'react'
 import styled, { css, useTheme } from 'styled-components'
 import { IconButton, Skeleton, Text } from '@pancakeswap/uikit'
-import BigNumber from 'bignumber.js'
 import { expandAnimation, collapseAnimation } from './Staked'
 import PlusIcon from '../PlusIcon'
 import { Link } from 'react-router-dom'
@@ -13,7 +12,7 @@ import { formattedNum } from '../../../../utils/formatBalance'
 
 
 export interface LiquidityProps {
-  liquidity: BigNumber
+  liquidity: number
   hovered: boolean
   setHovered: Dispatch<SetStateAction<boolean>>
   farm: any
@@ -66,6 +65,16 @@ export const AbsContainer = styled.div`
   }
 `
 
+const LiqContainer = styled.div`
+  position: absolute;
+  z-index: 80;
+  left: -30px;
+  top: 30px;
+  background: ${({ theme }) => theme.darkMode ? '#452632' : '#F5F3F4'};
+  padding: 10px;
+  border-radius: 17px;
+`
+
 const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered, setHovered, farm, small}) => {
   // const displayLiquidity = liquidity && liquidity.gt(0) ? (
   //     `$${Number(liquidity).toLocaleString(undefined, { maximumFractionDigits: 0 })}`
@@ -75,7 +84,7 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
   const theme = useTheme()
   const { width } = useWindowDimensions()
   const [hoverPlus, setHoverPlus] = React.useState(false)
-  const pylonLiquidity = new BigNumberJs(farm.liquidity).toFixed(2)
+  const pylonLiquidity = new BigNumberJs(farm?.liquidity?.pair + farm?.liquidity?.pylon).toFixed(2)
     // console.log("chapo", farm.liquidity)
   const pairLiquidity = usePairLiquidity(farm.token1, farm.token2)
   const plusContent = (
@@ -96,6 +105,7 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
         </Text>
         {// liquidity.gt(0) &&
         hovered && width >= 1100 && (
+          <>
           <AbsContainer onMouseEnter={() => setHovered(true)}>
             <Link
               to={
@@ -123,6 +133,28 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
             </Link>
             {hoverPlus && plusContent}
           </AbsContainer>
+          <LiqContainer>
+            <Flex alignItems={'center'}>
+              <Flex flexDirection='column' px='10px'>
+                <Text style={{color: theme.whiteHalf}} fontSize='12px'>
+                  {('From pair')}
+                </Text>
+                <Text style={{color: theme.text1}} fontSize='13px'>
+                  {formattedNum(farm.liquidity?.pair, true)}
+                </Text>
+              </Flex>
+              <Flex style={{width: '16px', height: '16px'}}><PlusIcon /></Flex>
+              <Flex flexDirection='column' px='10px'>
+                <Text style={{color: theme.whiteHalf}} fontSize='12px'>
+                  {('From pylon')}
+                </Text>
+                <Text style={{color: theme.text1}} fontSize='13px'>
+                  {formattedNum(farm.liquidity?.pylon, true)}
+                </Text>
+              </Flex>
+            </Flex>
+          </LiqContainer>
+          </>
         )}
       </LiquidityWrapper>
     </Container>

@@ -288,7 +288,7 @@ const Farms: React.FC = ({ children }) => {
         )
       }
       case 'liquidity':
-        return orderBy(poolsToSort, (pool: DeserializedPool) => Math.floor(pool.liquidity) ?? 0, 'desc')
+        return orderBy(poolsToSort, (pool: DeserializedPool) => Math.floor(pool.liquidity.pair + pool.liquidity.pylon) ?? 0, 'desc')
       case 'apr':
         return orderBy(poolsToSort, (pool: DeserializedPool) => Math.floor(pool.apr) ?? 0, 'desc')
       case 'latest':
@@ -391,7 +391,7 @@ const Farms: React.FC = ({ children }) => {
         setHovered: () => {},
       },
       liquidity: {
-        liquidity: BigNumber(farm.liquidity),
+        liquidity: (farm?.liquidity?.pair + farm?.liquidity?.pylon),
         hovered: false,
         setHovered: () => {},
         farm: farm,

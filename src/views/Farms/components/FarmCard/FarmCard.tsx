@@ -27,6 +27,7 @@ import { StyledLinkExternal } from '../FarmTable/Actions/ActionPanel'
 import CapacityIndicatorSmall from '../../../../components/CapacityIndicatorSmall'
 import { useWindowDimensions } from '../../../../hooks'
 import { CONTRACT_ADDRESS_BASE } from '../../../../constants/lists'
+import { formattedNum } from '../../../../utils/formatBalance'
 
 const StyledCard = styled(Card)`
   align-self: baseline;
@@ -201,7 +202,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
             {t("Liquidity")}:
           </Text>
           <Text color={theme.text1} fontSize="14px">
-            {farm.isClassic ? pairLiquidity : new BigNumber(farm?.liquidity).toFixed(2)} USD
+            {formattedNum(farm.isClassic ? pairLiquidity : new BigNumber(farm?.liquidity?.pair + farm?.liquidity?.pylon).toFixed(2))} USD
           </Text>
         </Flex>
         {!farm.isFinished && (

@@ -134,8 +134,8 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
       <DialogContainer style={{
           background: theme.darkMode ? '#583141' : '#FCFBFC', 
           boxShadow: !theme.darkMode && '0px 0px 25px rgba(40, 20, 29, 0.1)',
-          right: '80px',
-          top: '-250px'}} 
+          right: '-90px',
+          top: '-290px'}} 
         show={liquidityClick}>
         <Text style={{color: theme.text1}} fontSize='16px' textAlign={'center'} my='10px'>
           {('Select liquidity pool')}

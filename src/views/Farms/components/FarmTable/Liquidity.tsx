@@ -65,7 +65,15 @@ export const AbsContainer = styled.div`
   }
 `
 
-const LiqContainer = styled.div`
+const LiqContainer = styled.div<{ show }>`
+animation: ${({ show }) =>
+  show
+    ? css`
+      ${expandAnimation} 200ms
+    `
+    : css`
+      ${collapseAnimation} 300ms linear forwards
+    `};
   position: absolute;
   z-index: 80;
   left: -30px;
@@ -82,6 +90,7 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
   //     <Skeleton width={60} />
   //   )
   const theme = useTheme()
+  const [hoverLiq, setHoverLiq] = React.useState(false)
   const { width } = useWindowDimensions()
   const [hoverPlus, setHoverPlus] = React.useState(false)
   const pylonLiquidity = new BigNumberJs(farm?.liquidity?.pair + farm?.liquidity?.pylon).toFixed(2)
@@ -96,7 +105,7 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
   )
 
   return (
-    <Container>
+    <Container onMouseEnter={() => setHoverLiq(true)} onMouseLeave={() => setHoverLiq(false)}>
       <LiquidityWrapper>
         <Text fontSize={small ? '13px' : "16px"} color={theme.text1}>
           {farm.isClassic
@@ -133,7 +142,7 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
             </Link>
             {hoverPlus && plusContent}
           </AbsContainer>
-          <LiqContainer>
+          {hoverLiq && <LiqContainer show={hoverLiq}>
             <Flex alignItems={'center'}>
               <Flex flexDirection='column' px='10px'>
                 <Text style={{color: theme.whiteHalf}} fontSize='12px'>
@@ -153,7 +162,7 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
                 </Text>
               </Flex>
             </Flex>
-          </LiqContainer>
+          </LiqContainer>}
           </>
         )}
       </LiquidityWrapper>

@@ -110,6 +110,11 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
     const toggleLiquidityClick = () => {
       setLiquidityClick(!liquidityClick)
     }
+    const scrollOptions = {
+      top: 0, 
+      left: 0, 
+      behaviour: 'smooth' 
+     }
 
     const plusContent = (
         <DialogContainer style={{background: theme.slippageActive}} show={hoverPlus}>
@@ -244,7 +249,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
               </IconButton>
             </Link>
             <Link
-              onClick={() => handleInput(currency)}
+              onClick={() => (handleInput(currency), window.scroll(scrollOptions))}
               to={`#`}
             >
               <IconButton

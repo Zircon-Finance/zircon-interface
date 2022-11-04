@@ -365,7 +365,7 @@ export default function Swap() {
         <Settings />
         </div>
 
-        <Wrapper id="swap-page">
+        <Wrapper id="swap-page" style={{marginTop: !account && (outputCurrency === undefined ? '42px' : '52px')}}>
           <ConfirmSwapModal
             isOpen={showConfirm}
             trade={trade}
@@ -481,7 +481,7 @@ export default function Swap() {
                   )}
                 </AutoColumn>
               </Card>
-            ) : <div style={{height: '26px'}}></div>}
+            ) : <div style={{height: (!account && outputCurrency !== undefined) ? '46px' : '26px'}}></div>}
           </AutoColumn>
           <BottomGrouping style={{marginTop: '0'}}>
             {!account ? (

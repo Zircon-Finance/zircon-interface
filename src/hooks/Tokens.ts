@@ -121,7 +121,7 @@ export async function getTopTokens() {
       first: 20
       orderBy: id
       orderDirection: desc
-      where: {dailyVolumeUSD_gt: "0", date: ${dayjs().tz('GMT').startOf('day').unix()}}
+      where: {dailyVolumeUSD_gt: "100", date: ${dayjs().tz('GMT').startOf('day').unix()}}
     ) {
       token {
         id
@@ -140,7 +140,7 @@ export async function getTopTokens() {
       first: 20
       orderBy: id
       orderDirection: desc
-      where: {dailyVolumeUSD_gt: "0", date: ${unix}}
+      where: {dailyVolumeUSD_gt: "100", date: ${unix}}
     ) {
       token {
         id

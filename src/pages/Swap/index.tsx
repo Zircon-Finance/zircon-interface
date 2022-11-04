@@ -31,7 +31,6 @@ import useToggledVersion, { Version } from '../../hooks/useToggledVersion'
 import useWrapCallback, { WrapType } from '../../hooks/useWrapCallback'
 import { useToggleSettingsMenu, useWalletModalToggle } from '../../state/application/hooks'
 import { Field } from '../../state/swap/actions'
-import animation2 from '../../assets/lotties/z9rH3jsFYe.json'
 import {
   useDefaultsFromURLSearch,
   useDerivedSwapInfo,
@@ -54,11 +53,11 @@ import { usePair } from '../../data/Reserves'
 import { SelectedOptionDiv } from '../../views/Farms/Farms'
 import { TableData } from '../../views/Farms/components/FarmTable/Row'
 import FarmRepeatIcon from '../../components/FarmRepeatIcon'
-import { StarFull, TopTokensRow } from '../../components/TopTokensRow'
+import { Row, SkeletonTable, StarFull, TopTokensRow } from '../../components/TopTokensRow'
 import FavTokensRow from '../../components/FavouriteTokensRow'
-import Lottie from 'lottie-react-web'
 import { Separator } from '../../components/SearchModal/styleds'
 import { usePools } from '../../state/pools/hooks'
+import { Skeleton } from '@pancakeswap/uikit'
 
 export default function Swap() {
   const {pools} = usePools()
@@ -79,6 +78,7 @@ export default function Swap() {
     setDismissTokenWarning(true)
   }, [])
 
+  const skeletons = 5;
   const { account } = useActiveWeb3React()
   const theme = useTheme()
 
@@ -596,19 +596,6 @@ export default function Swap() {
       )}
 
     <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none'}}>
-    {topTokens.length === 0 ? (
-      <Flex style={{width: '20%', margin: 'auto'}} flexDirection='column'>
-        <Text style={{textAlign: 'center', fontSize: '20px', fontWeight: 500, color: theme.text1}} my='20px'>
-          {'Loading top tokens..'}
-        </Text>
-        <Lottie
-        options={{
-            loop: true,
-            autoplay: true,
-            animationData: animation2,
-        }}/>
-      </Flex>
-    ) : (
     <table
       style={{
         width: "100%",
@@ -654,7 +641,19 @@ export default function Swap() {
           <TableData style={{cursor:"pointer", width: '10%'}} />
         </tr>
         <Separator />
-        {(topTokensPrevious.length > 0 && topTokens.length > 0) && sortedTokens.map((token, index) => (
+        {topTokens.length === 0 ? [...Array(skeletons)].map(() => ( 
+          <Flex style={{width: '100%', margin: 'auto'}} flexDirection='column'>
+            <Row>
+              <SkeletonTable style={{width: '35%', marginLeft: '30px'}}><Skeleton width={'80%'} /></SkeletonTable>
+              <SkeletonTable style={{width: '15%'}}><Skeleton width={'90%'} /></SkeletonTable>
+              <SkeletonTable style={{width: '15%'}}><Skeleton width={'90%'} /></SkeletonTable>
+              <SkeletonTable style={{width: '15%'}}><Skeleton width={'90%'} /></SkeletonTable>
+              <SkeletonTable style={{width: '15%'}}><Skeleton width={'90%'} /></SkeletonTable>
+              <SkeletonTable style={{width: '10%'}}></SkeletonTable>
+            </Row>
+          </Flex>
+        )) : (
+        (topTokensPrevious.length > 0 && topTokens.length > 0) && sortedTokens.map((token, index) => (
           <TopTokensRow
             key={index} 
             token={token} 
@@ -663,9 +662,8 @@ export default function Swap() {
             handleInput={handleInputSelect}
             tokens={topTokens}
             pools={pools} />
-        ))}
+        )))}
       </table>
-    )}
     </Flex>
     <LearnIcon />
     </>

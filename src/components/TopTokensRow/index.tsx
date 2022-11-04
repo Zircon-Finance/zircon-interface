@@ -21,13 +21,19 @@ interface TokenRowProps {
     pools: any;
   }
 
-const Row = styled.tr`
+export const Row = styled.tr`
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     padding: 0.5rem 0;
 `;
+
+export const SkeletonTable = styled.td`
+  display: flex;
+  align-items: center;
+  height: 68px;
+`
 
 export const expandAnimation = keyframes`
   from {

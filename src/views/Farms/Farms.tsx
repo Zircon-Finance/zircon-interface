@@ -348,9 +348,6 @@ const Farms: React.FC = ({ children }) => {
   }, [stakedOnlyFarms])
 
   const rowData = chosenPools.map((farm) => {
-    const { token1, token2 } = farm
-    const tokenAddress = token1.address
-    const quoteTokenAddress = token2.address
     const lpLabel = `${farm.token1.symbol}-${farm.token2.symbol}`
 
     const row: RowProps = {
@@ -358,10 +355,10 @@ const Farms: React.FC = ({ children }) => {
         value: Math.floor(farm.apr).toString(),
         // getDisplayApr(farm.apr, farm.lpRewardsApr),
         pid: farm.sousId,
+        baseApr: farm.baseApr,
+        feesApr: farm.feesApr,
         lpLabel,
         lpSymbol: farm.contractAddress,
-        tokenAddress,
-        quoteTokenAddress,
         cakePrice: new BigNumber(1),
         originalValue: 1,
       },

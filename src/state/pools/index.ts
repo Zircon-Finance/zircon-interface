@@ -114,6 +114,8 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
         movrPrice: priceZRGMOVR?.movr,
         staked: new BigNumber(apiPool[0]?.staked).toString(),
         apr: parseFloat(apiPool[0]?.apr) + parseFloat(apiPool[0]?.feesAPR),
+        baseApr: parseFloat(apiPool[0]?.apr),
+        feesApr: parseFloat(apiPool[0]?.feesAPR),
         isFinished: isPoolFinished,
         quotingPrice: apiPool[0]?.stablePrice,
         tokenPrice: apiPool[0]?.tokenPrice,

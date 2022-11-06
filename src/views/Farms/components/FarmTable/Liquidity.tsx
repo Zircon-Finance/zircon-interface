@@ -66,7 +66,7 @@ export const AbsContainer = styled.div`
   }
 `
 
-const LiqContainer = styled.div<{ show }>`
+export const LiqContainer = styled.div<{ show }>`
 animation: ${({ show }) =>
   show
     ? css`
@@ -134,7 +134,7 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
                 }}
               >
                 <Flex
-                  onMouseEnter={() => setHoverPlus(true)}
+                  onMouseEnter={() => (setHoverPlus(true), setHoverLiq(false))}
                   onMouseLeave={() => setHoverPlus(false)}
                 >
                   <PlusIcon />

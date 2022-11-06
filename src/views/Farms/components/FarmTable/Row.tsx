@@ -167,6 +167,7 @@ const collapseAnimation = keyframes`
 
 const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const [isVisible, setIsVisible] = useState(false)
+  console.log('props', props.apr)
   const {
     details,
      userDataReady,

@@ -1,19 +1,22 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import ApyButton from '../FarmCard/ApyButton'
 import BigNumber from 'bignumber.js'
 import { Skeleton } from '@pancakeswap/uikit'
+import { LiqContainer } from './Liquidity'
+import { Flex, Text } from 'rebass'
+import PlusIconMini from '../PlusIconMini'
 // import { BASE_ADD_LIQUIDITY_URL } from 'config'
 // import getLiquidityUrlPathParts from 'utils/getLiquidityUrlPathParts'
 // import { Skeleton } from '@pancakeswap/uikit'
 
 export interface AprProps {
   value: string
+  baseApr?: number
+  feesApr?: number
   pid: number
   lpLabel: string
   lpSymbol: string
-  tokenAddress?: string
-  quoteTokenAddress?: string
   cakePrice: BigNumber
   originalValue: number
   hideButton?: boolean
@@ -40,21 +43,21 @@ const Container = styled.div`
 
 const Apr: React.FC<AprProps> = ({
   value,
-  left,
   pid,
   lpLabel,
   lpSymbol,
-  tokenAddress,
-  quoteTokenAddress,
   cakePrice,
   originalValue,
   hideButton = false,
+  baseApr,
+  feesApr,
   white,
 }) => {
-  // const liquidityUrlPathParts = getLiquidityUrlPathParts({ quoteTokenAddress, tokenAddress })
   const addLiquidityUrl = `placeholder`
+  const [hoverApr, setHoverApr] = React.useState(false)
+  const theme = useTheme()
   return value !== 'NaN' ? (
-    <Container>
+    <Container onMouseEnter={() => setHoverApr(true)} onMouseLeave={() => setHoverApr(false)}>
         <ApyButton
           variant={hideButton ? 'text' : 'text-and-button'}
           pid={pid}
@@ -66,6 +69,27 @@ const Apr: React.FC<AprProps> = ({
           addLiquidityUrl={addLiquidityUrl}
           white={white}
         />
+        {hoverApr && <LiqContainer style={{top: '50px'}} show={hoverApr}>
+            <Flex alignItems={'center'}>
+              <Flex flexDirection='column' pl='15px' pb='10px' pr='5px'>
+                <Text style={{color: theme.whiteHalf}} fontSize='12px'>
+                  {('Base APR')}
+                </Text>
+                <Text style={{color: theme.text1}} fontSize='13px'>
+                  {`${baseApr.toFixed(0)}%`}
+                </Text>
+              </Flex>
+              <Flex><PlusIconMini /></Flex>
+              <Flex flexDirection='column' pl='5px' pb='10px' pr='15px'>
+                <Text style={{color: theme.whiteHalf}} fontSize='12px'>
+                  {('Fees APR')}
+                </Text>
+                <Text style={{color: theme.text1}} fontSize='13px'>
+                {`${feesApr.toFixed(0)}%`}
+                </Text>
+              </Flex>
+            </Flex>
+          </LiqContainer>}
     </Container>
   ) : (
     <Container>

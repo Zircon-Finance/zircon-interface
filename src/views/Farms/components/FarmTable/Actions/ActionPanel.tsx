@@ -14,7 +14,7 @@ import Liquidity, { LiquidityProps } from '../Liquidity'
 import { StakedProps } from '../Staked'
 import DoubleCurrencyLogo from '../../../../../components/DoubleLogo'
 import { BadgeSmall } from '../../../../../components/Header'
-import { ButtonOutlined, ButtonPinkGamma } from '../../../../../components/Button'
+import { ButtonLinkGet, ButtonPinkGamma } from '../../../../../components/Button'
 import { ArrowIcon } from '../Details'
 import StakeAdd from '../../FarmCard/StakeAdd'
 import DepositModal from '../../DepositModal'
@@ -228,7 +228,6 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const { t } = useTranslation()
   const { isAnchor, token1, token2, isClassic } = farm
   const lpLabel = `${farm.token1.symbol}-${farm.token2.symbol}`
-  const [hoverLink, setHoverLink] = useState(false)
   // getLiquidityUrlPathParts({
   //   quoteTokenAddress: quoteToken.address,
   //   tokenAddress: token.address,
@@ -432,7 +431,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                     !farm.isFinished ?
                     <>
                       <Flex flexDirection={'column'} style={{width: '100%', marginBottom: '5px'}}>
-                        <Text color={theme.whiteHalf} style={{minWidth: 'max-content', fontSize: '14px'}} fontWeight={400} mb='10px'>{'Monthly rewards'}</Text>
+                        <Text color={theme.whiteHalf} style={{minWidth: 'max-content', fontSize: '14px'}} fontWeight={400} mt='5px'>{'Monthly rewards'}</Text>
                         <RewardPerBlock earningRewardsBlock={pool.earningTokenInfo} />
                       </Flex>
 
@@ -562,19 +561,15 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
               <Link to={farm.isClassic ?
                   `/add/${farm.token1.address}/${farm.token2.address}` :
                   `/add-pro/${farm.token1.address}/${farm.token2.address}/${farm.isAnchor ? 'stable' : 'float'}`}>
-                <ButtonOutlined 
-                onMouseOver={() => setHoverLink(true)}
-                onMouseLeave={() => setHoverLink(false)}
+                <ButtonLinkGet
                 style={{
                   margin: '10px 0',
                   padding: '10px',
                   fontSize: '13px',
-                  color: theme.pinkGamma,
-                  background: theme.darkMode ? hoverLink ? 'rgba(202, 144, 187, 0.17)' : ' rgba(202, 144, 187, 0.07)' : theme.contrastLightButton,
                   border: 'none',
                   borderRadius: '12px',
                   fontWeight: 500 }}>
-                  {`Get ${token1.symbol} - ${token2.symbol} ${isClassic ? 'Classic' : isAnchor ? 'Stable' : 'Float'} LP`}</ButtonOutlined>
+                  {`Get ${token1.symbol} - ${token2.symbol} ${isClassic ? 'Classic' : isAnchor ? 'Stable' : 'Float'} LP`}</ButtonLinkGet>
               </Link>
             </ValueContainer>
           </QuarterContainer>

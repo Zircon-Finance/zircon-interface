@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 // import getLiquidityUrlPathParts from 'utils/getLiquidityUrlPathParts'
 import CardHeading from './CardHeading'
 import CardActionsContainer from './CardActionsContainer'
-import { ButtonOutlined } from '../../../../components/Button'
+import { ButtonLinkGet } from '../../../../components/Button'
 import StakeAdd from './StakeAdd'
 import { ModalContainer } from '../../Farms'
 import DepositModal from '../DepositModal'
@@ -229,20 +229,18 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
                 }`
           }
         >
-          <ButtonOutlined
+          <ButtonLinkGet
             mt="15px"
             style={{
               margin: "10px 0",
               padding: "10px",
               fontSize: "13px",
-              color: theme.pinkGamma,
-              background: theme.tableButton,
               border: "none",
               fontWeight: 500,
             }}
           >
             {`Get ${farm.token1.name} - ${farm.token2.name} LP tokens`}
-          </ButtonOutlined>
+          </ButtonLinkGet>
         </Link>
         <Flex justifyContent={'space-around'} mb={width <= 500 && '10px'}>
           <StyledLinkExternal

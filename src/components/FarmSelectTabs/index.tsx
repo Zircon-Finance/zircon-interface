@@ -26,7 +26,7 @@ const Tabs = styled.div`
   justify-content: space-evenly;
   padding: 5px;
   margin: auto;
-  background: ${({ theme }) => theme.darkMode ? 'rgba(213, 174, 175, 0.07)' : theme.farmTabsBg};
+  background: ${({ theme }) => theme.darkMode ? 'rgba(213, 174, 175, 0.07)' : '#E9E5E5'};
 `;
 
 const activeClassName = "ACTIVE";

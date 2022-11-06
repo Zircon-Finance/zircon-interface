@@ -138,13 +138,6 @@ const TableData = styled.td`
   position: relative;
 `
 
-export const PinkArrows = styled.div`
-  svg {
-    fill: ${({ theme }) => theme.bg8};
-    stroke: ${({ theme }) => theme.bg8};
-  }
-`
-
 export const SelectedOptionDiv = styled.div`
   position: absolute;
   top: 49px;
@@ -562,10 +555,7 @@ const Farms: React.FC = ({ children }) => {
                           ? setSortOption("hot")
                           : setSortOption(option.toLowerCase());
                     }}
-                  >
-                    <PinkArrows
-                      style={{ display: "flex", alignItems: "center" }}
-                    >
+                  ><Flex alignItems={'center'}>
                       <p
                         style={{
                           fontSize: "13px",
@@ -577,7 +567,7 @@ const Farms: React.FC = ({ children }) => {
                         {option}
                       </p>
                         <FarmRepeatIcon />
-                    </PinkArrows>
+                    </Flex>
                     {sortOption === option.toLowerCase() ? (
                       <SelectedOptionDiv />
                     ) : null}
@@ -652,7 +642,7 @@ const Farms: React.FC = ({ children }) => {
               onMouseEnter={() => setHoverButton(true)}
               onMouseLeave={() => setHoverButton(false)}
               style={{
-                background: theme.darkMode ? hoverButton ? "transparent" : '#3E212D' : hoverButton ? "transparent" : '#EDEAEA',
+                background: theme.darkMode ? hoverButton ? "#492B36" : '#422330' : hoverButton ? "#F6F2F4" : '#F0E9EB',
                 margin: "auto",
                 marginTop: "20px",
                 height: "43px",

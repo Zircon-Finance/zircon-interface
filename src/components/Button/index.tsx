@@ -192,7 +192,21 @@ export const ButtonOutlined = styled(Base)`
   
   &:hover {
     background-color: ${({ theme }) => theme.outlinedHover};
-    color: ${({ theme }) => theme.text1} !important;
+    color: ${({ theme }) => theme.text1};
+  }
+  &:disabled {
+    opacity: 50%;
+    cursor: auto;
+  }
+`
+
+export const ButtonLinkGet = styled(Base)`
+  border: 1px solid rgba(89, 73, 110, 0.4);
+  background-color: ${({ theme }) => theme.darkMode ? 'rgba(202, 144, 187, 0.07)' : 'rgba(158, 77, 134, 0.07)'};
+  color: ${({ theme }) => theme.darkMode ? theme.pinkGamma : '#9E4D86'};
+  
+  &:hover {
+    background-color: ${({ theme }) => theme.darkMode ? 'rgba(202, 144, 187, 0.17)' : 'rgba(158, 77, 134, 0.17)'};
   }
   &:disabled {
     opacity: 50%;

@@ -63,6 +63,6 @@ export const HarvestButton = styled.button`
   border: none;
   height: 27px;
 
-  background: ${({ theme }) => theme.hoveredButton};
+  background: #9e4d86;
   border-radius: 12px;
 `

@@ -73,7 +73,7 @@ animation: ${({ expanded }) =>
         `};
   position: relative;
   display: flex;
-  padding: 18px 40px 18px 20px;
+  padding: 18px 40px 18px 15px;
   align-items: center;
   width: 100%;
   background: url(${SearchIcon});
@@ -86,7 +86,7 @@ animation: ${({ expanded }) =>
     opacity: 0.5;
   }
   white-space: nowrap;
-  background-color: ${({ theme}) => theme.darkMode ? ' rgba(213, 174, 175, 0.1)' : '#E9E5E5'};
+  background-color: ${({ theme}) => theme.darkMode ? ' rgba(213, 174, 175, 0.1) !important' : '#E9E5E5 !important'};
   border: 1px solid transparent;
   outline: none;
   border-radius: 17px;

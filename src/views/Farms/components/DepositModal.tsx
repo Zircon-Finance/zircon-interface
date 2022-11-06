@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 
 import { getFullDisplayBalance, formatNumber } from '../../../utils/formatBalance'
 // import { getInterestBreakdown } from '../../../utils/compoundApyHelpers'
-import { ButtonLight, ButtonOutlined, ButtonPrimary } from '../../../components/Button'
+import { ButtonLight, ButtonLinkGet, ButtonPrimary } from '../../../components/Button'
 import { Link } from 'rebass'
 import { StyledErrorMessage } from '../../../components/ModalFarm/ModalInput'
 import {Token} from 'zircon-sdk'
@@ -155,13 +155,12 @@ const DepositModal: React.FC<DepositModalProps> = ({
                     {'No tokens to stake'}
                 </StyledErrorMessage>
             )}
-            <ButtonOutlined
+            <ButtonLinkGet
                 mt="15px"
                 style={{
                     margin: "10px auto",
                     padding: "10px",
                     fontSize: "13px",
-                    color: theme.pinkGamma,
                     background: isBalanceZero ? '#C16BAD' : theme.tableButton,
                     border: "none",
                     fontWeight: 500,
@@ -170,7 +169,7 @@ const DepositModal: React.FC<DepositModalProps> = ({
             >
                 <Link style={{textDecoration: 'none', color: isBalanceZero ? '#fff' : theme.pinkGamma, fontWeight: 500, fontSize: '13px'}}
                       href={addLiquidityUrl}>{'Get ' + lpLabel}</Link>
-            </ButtonOutlined>
+            </ButtonLinkGet>
             <Flex mb="15px" alignItems="center" justifyContent="space-around">
                 <Text mr="8px" color={theme.text1} fontSize='13px' fontWeight={400}>
                     {t('Annual ROI')}:

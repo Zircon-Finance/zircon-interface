@@ -89,7 +89,6 @@ const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pi
                   display: "flex",
                   alignItems: "center",
                   width: 'max-content',
-                  background: !theme.darkMode && ' rgba(135, 73, 85, 0.07)'
                 }}
               >
                 <span

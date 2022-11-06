@@ -25,7 +25,6 @@ import { useERC20, useSousChef } from '../../../../hooks/useContract'
 import useCatchTxError from '../../../../hooks/useCatchTxError'
 import { useTransactionAdder } from '../../../../state/transactions/hooks'
 import { useDispatch } from 'react-redux'
-import { useIsDarkMode } from '../../../../state/user/hooks'
 import { usePool } from '../../../../state/pools/hooks'
 import { useCallWithGasPrice } from '../../../../hooks/useCallWithGasPrice'
 import { useCurrency } from '../../../../hooks/Tokens'
@@ -273,7 +272,6 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const isApproved = account && details.userData.allowance && details.userData.allowance.isGreaterThan(0)
   const stakedAmount = usePool(details.sousId).pool.userData.stakedBalance.toNumber()
   const toggleWalletModal = useWalletModalToggle()
-  const darkMode = useIsDarkMode()
   // const [rewardTokens, setRewardTokens] = useState("")
   // useEffect(() => {
   //   let r = ''
@@ -289,7 +287,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
         !actionPanelExpanded && (
         <StyledTr expanded={isVisible} onClick={toggleActionPanel} onMouseOver={() => setHovered(true)}
         onMouseOut={() => setHovered(false)}
-        style={{backgroundColor: hovered ? theme.darkMode ? '#452632' : '#F5F3F4' : null, borderBottom: !darkMode ? `1px solid ${theme.cardExpanded}` : null}} >
+        style={{backgroundColor: hovered ? theme.darkMode ? '#452632' : '#F5F3F4' : null}} >
           {Object.keys(props).map((key) => {
             const columnIndex = columnNames.indexOf(key)
             if (columnIndex === -1) {
@@ -357,7 +355,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                         {
                         !props.farm.isFinished &&
                         <Flex flexDirection={'column'}>
-                          <Text fontSize='13px' fontWeight={400} color={theme.whiteHalf} mb='10px'>
+                          <Text fontSize='13px' fontWeight={400} color={theme.whiteHalf}>
                             {'Monthly rewards'}
                           </Text>
                             <RewardPerBlock earningRewardsBlock={details?.earningTokenInfo}  />

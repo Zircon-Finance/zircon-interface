@@ -9,6 +9,7 @@ import { useWindowDimensions } from '../../../../hooks'
 import { usePairLiquidity } from '../../../../state/pools/hooks'
 import BigNumberJs from "bignumber.js";
 import { formattedNum } from '../../../../utils/formatBalance'
+import PlusIconMini from '../PlusIconMini'
 
 
 export interface LiquidityProps {
@@ -76,10 +77,9 @@ animation: ${({ show }) =>
     `};
   position: absolute;
   z-index: 80;
-  left: -30px;
+  left: -15px;
   top: 30px;
   background: ${({ theme }) => theme.darkMode ? '#452632' : '#F5F3F4'};
-  padding: 10px;
   border-radius: 17px;
 `
 
@@ -129,7 +129,8 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
                   width: "29px",
                   height: "28px",
                   borderRadius: "100%",
-                  marginLeft: '10px',
+                  marginLeft: '5px',
+                  boxShadow: 'none',
                 }}
               >
                 <Flex
@@ -144,7 +145,7 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
           </AbsContainer>
           {hoverLiq && <LiqContainer show={hoverLiq}>
             <Flex alignItems={'center'}>
-              <Flex flexDirection='column' px='10px'>
+              <Flex flexDirection='column' pl='15px' pb='10px' pr='5px'>
                 <Text style={{color: theme.whiteHalf}} fontSize='12px'>
                   {('From pair')}
                 </Text>
@@ -152,8 +153,8 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
                   {formattedNum(farm.liquidity?.pair, true)}
                 </Text>
               </Flex>
-              <Flex style={{width: '16px', height: '16px'}}><PlusIcon /></Flex>
-              <Flex flexDirection='column' px='10px'>
+              <Flex><PlusIconMini /></Flex>
+              <Flex flexDirection='column' pl='5px' pb='10px' pr='15px'>
                 <Text style={{color: theme.whiteHalf}} fontSize='12px'>
                   {('From pylon')}
                 </Text>

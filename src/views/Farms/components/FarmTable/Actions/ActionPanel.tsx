@@ -14,7 +14,7 @@ import Liquidity, { LiquidityProps } from '../Liquidity'
 import { StakedProps } from '../Staked'
 import DoubleCurrencyLogo from '../../../../../components/DoubleLogo'
 import { BadgeSmall } from '../../../../../components/Header'
-import { ButtonOutlined } from '../../../../../components/Button'
+import { ButtonLinkGet, ButtonPinkGamma } from '../../../../../components/Button'
 import { ArrowIcon } from '../Details'
 import StakeAdd from '../../FarmCard/StakeAdd'
 import DepositModal from '../../DepositModal'
@@ -87,11 +87,11 @@ const Container = styled.div<{ expanded, staked }>`
             ${collapseAnimation} 300ms linear forwards
           `};
   overflow: hidden;
-  background: ${({ theme }) => theme.card.background};
+  background: ${({ theme }) => theme.darkMode ? '#452632' : '#F5F3F4'};
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 5px;
+  padding: 10px;
   border-radius: 17px;
   margin-bottom: ${({ expanded }) => (expanded ? '0' : '5px')};
   grid-template-columns: ${({ staked }) => staked ? '25% 20% 20% auto 40px' : '25% 35% auto 40px'};
@@ -154,6 +154,7 @@ const ValueWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   margin: 4px 0px;
+  font-size: 13px !important; 
 `
 
 export const SpaceBetween = styled.div`
@@ -234,7 +235,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const bsc = CONTRACT_ADDRESS_BASE+farm.contractAddress
   // getBscScanLink(lpAddress, 'address')
   const lpAddress = farm.stakingToken.address
-  const info = `/info/pool/${lpAddress}`
+  const info = CONTRACT_ADDRESS_BASE+farm.lpAddress
   const theme = useTheme()
 
   const { pool } = usePool(farm.sousId)
@@ -331,6 +332,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
     farm.earningToken.forEach((token) => r += ` ${token.symbol} &`)
     setRewardTokens(r.slice(0, -1))
   }, [])
+  const [hovered, setHovered] = useState(false)
 
 
   return (
@@ -363,8 +365,18 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                         <Flex flexWrap='wrap'>
                           <BadgeSmall
                               style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', display: 'flex', alignItems: 'center', marginRight: '5px'}}>
-                            <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{!isClassic && isAnchor ? token2.symbol : token1.symbol} </span>{isClassic ? 'CLASSIC' :!isAnchor ? 'FLOAT' : 'STABLE'}
-                          </BadgeSmall>
+                      <span
+                      style={{
+                        color: theme.darkMode ? theme.text1 : "#080506",
+                        fontSize: "16px",
+                        marginRight: "3px",
+                        fontWeight: 400,
+                        letterSpacing: "0",
+                      }}
+                      >
+                        {!isClassic && (!isAnchor ? token1.symbol : token2.symbol)}{" "}
+                        {isClassic ? "CLASSIC" : !isAnchor ? "Float" : "Stable"}
+                      </span>                          </BadgeSmall>
                           <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{`${token1.symbol}/${token2.symbol}`}</Text>
                         </Flex>
                       </>
@@ -388,8 +400,19 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                           <Flex flexWrap='wrap'>
                             <BadgeSmall
                                 style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', display: 'flex', alignItems: 'center', marginRight: '5px'}}>
-                              <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{!isClassic && isAnchor ? token2.symbol : token1.symbol} </span>{isClassic ? 'CLASSIC' :!isAnchor ? 'FLOAT' : 'STABLE'}
-                            </BadgeSmall>
+                                <span
+                                style={{
+                                  color: theme.darkMode ? theme.text1 : "#080506",
+                                  fontSize: "16px",
+                                  marginRight: "3px",
+                                  fontWeight: 400,
+                                  letterSpacing: "0",
+                                }}
+                                >
+                                  {!isClassic && (!isAnchor ? token1.symbol : token2.symbol)}{" "}
+                                  {isClassic ? "CLASSIC" : !isAnchor ? "Float" : "Stable"}
+                                </span>                             
+                              </BadgeSmall>
                           </Flex>
                         </>
                       </div>
@@ -404,12 +427,12 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
               {width >= 800 ? (
                   <>
                     <SpaceBetween>
-                    {!account ? <Text color={theme.text1}>{`Earn${rewardTokens}`}</Text> :
+                    {
                     !farm.isFinished ?
                     <>
-                      <Flex flexDirection={'column'} style={{width: '100%'}}>
-                        <Text color={theme.text1} style={{minWidth: 'max-content', fontSize: '14px'}} fontWeight={400}>{'Monthly rewards:'}</Text>
-                        <RewardPerBlock earningRewardsBlock={pool.earningTokenPerBlock} />
+                      <Flex flexDirection={'column'} style={{width: '100%', marginBottom: '5px'}}>
+                        <Text color={theme.whiteHalf} style={{minWidth: 'max-content', fontSize: '14px'}} fontWeight={400} mt='5px'>{'Monthly rewards'}</Text>
+                        <RewardPerBlock earningRewardsBlock={pool.earningTokenInfo} />
                       </Flex>
 
                       <div style={{width: '50%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
@@ -427,8 +450,12 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                     }
                     </SpaceBetween>
                     <SpaceBetween>
-                      <StyledLinkExternal color={theme.meatPink} href={bsc}>{t('View Contract ↗')}</StyledLinkExternal>
-                      <StyledLinkExternal color={theme.meatPink} href={info}>{t('See Pair Info ↗')}</StyledLinkExternal>
+                      <StyledLinkExternal style={{color:theme.darkMode ? theme.meatPink : theme.poolPinkButton, fontWeight: 400}} href={bsc}>
+                        {t('View contract ↗')}
+                      </StyledLinkExternal>
+                      <StyledLinkExternal style={{color:theme.darkMode ? theme.meatPink : theme.poolPinkButton, fontWeight: 400}} href={info}>
+                        {t('See pair info ↗')}
+                      </StyledLinkExternal>
                     </SpaceBetween>
                   </> ) : (
                   !account ?
@@ -457,9 +484,9 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                   </>
                   :
                   !farm.isFinished && (<SpaceBetween style={{marginBottom: '16px'}}>
-                    <Text color={theme.whiteHalf} style={{minWidth: 'max-content', fontSize: '14px'}} fontWeight={400}>{'Monthly rewards:'}</Text>
+                    <Text color={theme.whiteHalf} style={{minWidth: 'max-content', fontSize: '14px'}} fontWeight={400} mb='10px'>{'Monthly rewards'}</Text>
                     <Flex flexDirection={"column"}>
-                     <RewardPerBlock earningRewardsBlock={pool?.earningTokenPerBlock}  />
+                     <RewardPerBlock earningRewardsBlock={pool?.earningTokenInfo}  />
                     </Flex>
                   </SpaceBetween>)
               )}
@@ -488,46 +515,61 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           ) : (
               <QuarterContainer >
                 {isApproved ? (
-                        <StakeAdd pink={true} clickAction={() => {!farm.isFinished && setShowModal(true)}} row={true} margin={false} width={width > 992 ? '30%' : '60%'} isFinished={farm.isFinished} />)
+                        <StakeAdd 
+                          pink={true} clickAction={() => {!farm.isFinished && setShowModal(true)}} 
+                          row={true} margin={false} 
+                          width={'100px'} 
+                          height='42px' 
+                          isFinished={farm.isFinished} />)
                     : (
-                        <ButtonOutlined style={{background: theme.hoveredButton, border: 'none', color: '#FFF'}}
-                                        m="auto" width="50%" disabled={pendingTx || farm.isFinished} onClick={account ? handleApproval : toggleWalletModal}>
-                          {account ? 'Enable Contract' : 'Connect Wallet'}
-                        </ButtonOutlined>
+                        <ButtonPinkGamma 
+                        onMouseOver={() => setHovered(true)}
+                        onMouseLeave={() => setHovered(false)}
+                        style={{
+                            background: hovered ? theme.pinkGamma : '#B05D98',
+                            border: 'none', 
+                            color: '#FFF', 
+                            height: '42px', 
+                            padding: '0 15px', 
+                            borderRadius: '12px', 
+                            width: 'auto'
+                          }}
+                                        m="auto" width="150px" disabled={pendingTx || farm.isFinished} onClick={account ? handleApproval : toggleWalletModal}>
+                          {account ? 'Enable contract' : 'Connect wallet'}
+                        </ButtonPinkGamma>
                     )}
               </QuarterContainer>
           )}
 
 
-          <QuarterContainer style={{padding: width < 992 ? '0 10px' : '0 0 0 10px'}}>
+          <QuarterContainer style={{padding: width < 992 ? '0 10px' : '0 0 0 10px', justifyContent: 'center'}}>
             <ValueContainer>
               {account && width <= 800 &&
               !farm.isFinished && (<ValueWrapper>
-                <Text fontSize='13px' fontWeight={300} color={theme.text1}>{`${!isAnchor ? 'Divergence' : 'Health Factor'}`}</Text>
+                <Text fontSize='13px' fontWeight={400} color={theme.text1}>{`${!isAnchor ? 'Divergence' : 'Health Factor'}`}</Text>
                 <CapacityIndicatorSmall gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true} hoverPage={'farmAction'}/>
               </ValueWrapper>)
               }
               <ValueWrapper>
-                <Text fontSize='13px' fontWeight={300} color={theme.text1}>{t('APR')}</Text>
+                <Text fontSize='13px' fontWeight={400} color={theme.text1}>{t('APR')}</Text>
                 <Apr white={true} left={true} {...apr} />
               </ValueWrapper>
               <ValueWrapper>
-                <Text color={theme.text1} fontSize='13px' fontWeight={300}>{t('Liquidity')}</Text>
-                <Liquidity {...liquidity} />
+                <Text color={theme.text1} fontSize='13px' fontWeight={400}>{t('Liquidity')}</Text>
+                <Liquidity small={true} {...liquidity} />
               </ValueWrapper>
               <Link to={farm.isClassic ?
                   `/add/${farm.token1.address}/${farm.token2.address}` :
                   `/add-pro/${farm.token1.address}/${farm.token2.address}/${farm.isAnchor ? 'stable' : 'float'}`}>
-                <ButtonOutlined style={{
+                <ButtonLinkGet
+                style={{
                   margin: '10px 0',
                   padding: '10px',
                   fontSize: '13px',
-                  color: theme.pinkGamma,
-                  background: theme.contrastLightButton,
                   border: 'none',
                   borderRadius: '12px',
                   fontWeight: 500 }}>
-                  {`Get ${token1.name} - ${token2.name} ${isClassic ? 'Classic' : isAnchor ? 'Stable' : 'Float'} LP`}</ButtonOutlined>
+                  {`Get ${token1.symbol} - ${token2.symbol} ${isClassic ? 'Classic' : isAnchor ? 'Stable' : 'Float'} LP`}</ButtonLinkGet>
               </Link>
             </ValueContainer>
           </QuarterContainer>
@@ -538,7 +580,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
         <Flex justifyContent={'space-around'} my={'5px'}>
         <StyledLinkExternal
           style={{ color: theme.pinkBrown, fontWeight: 500, marginRight: '10px' }}
-          href={"Placeholder"}
+          href={CONTRACT_ADDRESS_BASE+farm.lpAddress}
         >
           {"See Pair Info ↗"}
         </StyledLinkExternal>

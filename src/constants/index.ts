@@ -101,6 +101,14 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
       new Token(ChainId.MOONBASE, '0xcdf746c5c86df2c2772d2d36e227b4c0203cba25', 18, 'VEN', 'Venus'),
       new Token(ChainId.MOONBASE, '0xd9224c102a73e5941abfcd645e08623dc4d182bc', 18, 'UNS', 'Uranus'),
       new Token(ChainId.MOONBASE, '0xe75f9ae61926ff1d27d16403c938b4cd15c756d5', 18, 'SAT', 'Saturn')
+  ],
+  [ChainId.MOONRIVER]: [
+      new Token(ChainId.MOONRIVER, '0x4545E94974AdACb82FC56BCf136B07943e152055', 18, 'ZRG', 'Zircon Gamma'),
+      new Token(ChainId.MOONRIVER, '0x98878b06940ae243284ca214f92bb71a2b032b8a', 18, 'MOVR', 'MoonRiver'),
+      new Token(ChainId.MOONRIVER, '0xE3F5a90F9cb311505cd691a46596599aA1A0AD7D', 6, 'USDC', 'USDC'),
+      new Token(ChainId.MOONRIVER, '0x639A647fbe20b6c8ac19E48E2de44ea792c62c5C', 18, 'ETH', 'Ethereum'),
+      new Token(ChainId.MOONRIVER, '0xFfFFfFff1FcaCBd218EDc0EbA20Fc2308C778080', 18, 'KSM', 'Kusama'),
+      new Token(ChainId.MOONRIVER, '0x6Ccf12B480A99C54b23647c995f4525D544A7E72', 18, 'LDO', 'Lido')
   ]
 }
 

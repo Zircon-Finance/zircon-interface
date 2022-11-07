@@ -27,7 +27,9 @@ import {
   updateuserFarmsFilterAnchorFloat,
   updateShowMobileSearchBar,
   FarmFinishedOnly,
-  updateUserFarmFinishedOnly
+  updateUserFarmFinishedOnly,
+  addChosenToken,
+  removeChosenToken
 } from './actions'
 
 export function serializeToken(token: Token): SerializedToken {
@@ -120,6 +122,29 @@ export function useUserFarmsFinishedOnly(): [FarmFinishedOnly, (finishedOnly: Fa
   )
 
   return [userFarmsFinishedOnly, setUserFarmsFinishedOnly]
+}
+
+export function useChosenTokens(): [string[], (id: string) => void, (id: string) => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const chosenTokens = useSelector<AppState, AppState['user']['chosenTokens']>((state) => {
+    return state.user.chosenTokens
+  })
+
+  const addChosenTokenCallback = useCallback(
+    (id: string) => {
+      dispatch(addChosenToken({id}))
+    },
+    [dispatch],
+  )
+
+  const removeChosenTokenCallback = useCallback(
+    (id: string) => {
+      dispatch(removeChosenToken({ id }))
+    },
+    [dispatch],
+  )
+
+  return [chosenTokens, addChosenTokenCallback, removeChosenTokenCallback]
 }
 
 export function useUserFarmsFilterPylonClassic(): [FarmFilter, (filter: FarmFilter) => void] {

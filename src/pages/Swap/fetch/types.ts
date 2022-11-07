@@ -42,13 +42,12 @@ export type PairDayDatasResponse = {
     reserve0: string
     reserve1: string
     reserveUSD: string
-    pairAddress: {
-      token0: {
-        id: string
-      }
-      token1: {
-        id: string
-      }
+    pairAddress: string
+    token0: {
+      id: string
+    }
+    token1: {
+      id: string
     }
   }[]
 }

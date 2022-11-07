@@ -259,6 +259,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
               </ActionTitles>
               <ActionContent>
                 <StakedLP
+                    stakedRatio={pool.stakedRatio}
                     staked={pool.staked}
                     price={pool.quotingPrice}
                     stakedBalancePool={pool.stakedBalancePool}
@@ -276,7 +277,6 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
                     tokenSymbol={pool.token1.symbol}
                     lpTotalSupply={1 as unknown as BigNumber}
                     tokenAmountTotal={1 as unknown as BigNumber}
-                    quoteTokenAmountTotal={1 as unknown as BigNumber}
                 />
 
               </ActionContent>

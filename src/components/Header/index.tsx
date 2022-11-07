@@ -124,7 +124,7 @@ const UniIcon = styled.div`
 `
 
 export const BadgeSmall = styled.span`
-  background-color: ${({ theme }) => theme.anchorFloatBadge};
+  background-color: ${({ theme }) => theme.darkMode ?' rgba(213, 174, 175, 0.07)' : ' rgba(135, 73, 85, 0.07)'};
   padding: 3px 5px;
   border-radius: 5px;
   color: ${({ theme }) => theme.whiteHalf};

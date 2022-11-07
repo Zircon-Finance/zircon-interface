@@ -157,7 +157,7 @@ export const ButtonSecondary = styled(Base)`
     background-color: ${({ theme }) => theme.darkMode ? theme.bg12 : theme.navigationBorder};
   }
   &:disabled {
-    background-color: ${({ theme }) => theme.primary5};
+    background-color: ${({ theme }) => theme.opacitySmall};
     opacity: 50%;
     cursor: auto;
   }
@@ -189,16 +189,24 @@ export const ButtonOutlined = styled(Base)`
   border: 1px solid rgba(89, 73, 110, 0.4);
   background-color: transparent;
   color: ${({ theme }) => theme.text1};
-
-  &:focus {
-    box-shadow: 0 0 0 1px ${({ theme }) => theme.bg4};
-  }
+  
   &:hover {
     background-color: ${({ theme }) => theme.outlinedHover};
-    color: ${({ theme }) => theme.text1} !important;
+    color: ${({ theme }) => theme.text1};
   }
-  &:active {
-    box-shadow: 0 0 0 1px ${({ theme }) => theme.bg4};
+  &:disabled {
+    opacity: 50%;
+    cursor: auto;
+  }
+`
+
+export const ButtonLinkGet = styled(Base)`
+  border: 1px solid rgba(89, 73, 110, 0.4);
+  background-color: ${({ theme }) => theme.darkMode ? 'rgba(202, 144, 187, 0.07)' : 'rgba(158, 77, 134, 0.07)'};
+  color: ${({ theme }) => theme.darkMode ? theme.pinkGamma : '#9E4D86'};
+  
+  &:hover {
+    background-color: ${({ theme }) => theme.darkMode ? 'rgba(202, 144, 187, 0.17)' : 'rgba(158, 77, 134, 0.17)'};
   }
   &:disabled {
     opacity: 50%;
@@ -338,6 +346,14 @@ export function ButtonError({ error, ...rest }: { error?: boolean } & ButtonProp
     return <ButtonErrorStyle {...rest} />
   } else {
     return <ButtonPrimary {...rest} />
+  }
+}
+
+export function ButtonErrorSecondary({ error, ...rest }: { error?: boolean } & ButtonProps) {
+  if (error) {
+    return <ButtonSecondary {...rest} />
+  } else {
+    return <ButtonSecondary {...rest} />
   }
 }
 

@@ -247,7 +247,7 @@ export default function RemoveProLiquidity({
           args = [
             currencyBIsETH ? tokenA.address : tokenB.address,
             liquidityAmount.raw.toString(),
-            '1', //amountsMin[currencyBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(),
+            amountsMin[currencyBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(),
             !currencyBIsETH,
             !isFloat,
             account,
@@ -261,7 +261,7 @@ export default function RemoveProLiquidity({
             tokenA.address,
             tokenB.address,
             liquidityAmount.raw.toString(),
-            "1", //amountsMin[Field.CURRENCY_A].toString(),
+            amountsMin[Field.CURRENCY_A].toString(),
             !isFloat,
             account,
             deadlineFromNow
@@ -276,8 +276,8 @@ export default function RemoveProLiquidity({
           args = [
             currencyBIsETH ? tokenA.address : tokenB.address,
             liquidityAmount.raw.toString(),
-            '1',//amountsMin[currencyBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(),
-            '1',//amountsMin[currencyBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(),
+            amountsMin[currencyBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(),
+            amountsMin[currencyBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(),
             !currencyBIsETH,
             !isFloat,
             account,
@@ -437,7 +437,19 @@ export default function RemoveProLiquidity({
             <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{errorTx}</span>
           </RowBetween>
           )}
-          <ButtonPrimary disabled={!(approval === ApprovalState.APPROVED || signatureData !== null)} onClick={onRemove}>
+          {(burnInfo.blocked || burnInfo.asyncBlocked) && (
+          <RowBetween mt={10}>
+            <StyledWarningIcon />
+            <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{"Transaction is likely to fail so is currently blocked. Try in a few minutes"}</span>
+          </RowBetween>
+          )}
+          {(burnInfo.deltaApplied) && (
+          <RowBetween mt={10}>
+            <StyledWarningIcon />
+            <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{"We estimate a high fee for this transaction. Try in a few minutes"}</span>
+          </RowBetween>
+          )}
+          <ButtonPrimary disabled={!(approval === ApprovalState.APPROVED || signatureData !== null) || burnInfo.blocked || burnInfo.asyncBlocked || burnInfo.deltaApplied} onClick={onRemove}>
             <Text fontWeight={400} fontSize={18}>
               Confirm
             </Text>
@@ -629,7 +641,7 @@ export default function RemoveProLiquidity({
                                           currencyB === DEV ? WDEV[chainId].address : currencyIdB
                                       }/${isFloat ? "FLOAT" : "STABLE"}`}
                                   >
-                                    Receive WDEV
+                                    Receive wMOVR
                                   </StyledInternalLink>
                               ) : oneCurrencyIsWDEV ? (
                                   <StyledInternalLink
@@ -637,7 +649,7 @@ export default function RemoveProLiquidity({
                                           currencyA && currencyEquals(currencyA, WDEV[chainId]) ? 'ETH' : currencyIdA
                                       }/${currencyB && currencyEquals(currencyB, WDEV[chainId]) ? 'ETH' : currencyIdB}/${isFloat ? "FLOAT" : "STABLE"}`}
                                   >
-                                    Receive DEV
+                                    Receive MOVR
                                   </StyledInternalLink>
                               ) : null}
                             </RowBetween>

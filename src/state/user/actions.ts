@@ -60,6 +60,8 @@ export const updateUserFarmStakedOnly = createAction<{ userFarmStakedOnly: FarmS
 export const updateUserFarmFinishedOnly = createAction<{ userFarmFinishedOnly: FarmFinishedOnly }>(
   'user/updateUserFarmFinishedOnly'
 )
+export const addChosenToken = createAction<{ id: string }>('user/addChosenToken')
+export const removeChosenToken = createAction<{ id: string }>('user/removeChosenToken')
 export const updateUserDeadline = createAction<{ userDeadline: number }>('user/updateUserDeadline')
 export const addSerializedToken = createAction<{ serializedToken: SerializedToken }>('user/addSerializedToken')
 export const removeSerializedToken = createAction<{ chainId: number; address: string }>('user/removeSerializedToken')
@@ -68,5 +70,4 @@ export const removeSerializedPair = createAction<{ chainId: number; tokenAAddres
   'user/removeSerializedPair'
 )
 export const updateGasPrice = createAction<{ gasPrice: string }>('user/updateGasPrice')
-export { fetchFarmsPublicDataAsync, fetchFarmUserDataAsync } from '../farms'
 

@@ -24,7 +24,9 @@ import {
   updateGasPrice,
   updateShowMobileSearchBar,
   updateUserFarmFinishedOnly,
-  FarmFinishedOnly
+  FarmFinishedOnly,
+  addChosenToken,
+  removeChosenToken
 } from './actions'
 import { GAS_PRICE_GWEI } from '../../utils/getGasPrice'
 
@@ -66,6 +68,7 @@ export interface UserState {
   userFarmsFilterAnchorFloat: FarmFilterAnchorFloat
   userFarmFinishedOnly: FarmFinishedOnly
   gasPrice: string
+  chosenTokens: string[]
 }
 
 function pairKey(token0Address: string, token1Address: string) {
@@ -87,7 +90,8 @@ export const initialState: UserState = {
   userFarmsFilterAnchorFloat: FarmFilterAnchorFloat.ALL,
   userFarmFinishedOnly: FarmFinishedOnly.FALSE,
   gasPrice: GAS_PRICE_GWEI.default,
-  showMobileSearchBar: false
+  showMobileSearchBar: false,
+  chosenTokens: ["0x4545e94974adacb82fc56bcf136b07943e152055"]
 }
 
 export default createReducer(initialState, builder =>
@@ -103,6 +107,10 @@ export default createReducer(initialState, builder =>
       // noinspection SuspiciousTypeOfGuard
       if (typeof state.userDeadline !== 'number') {
         state.userDeadline = DEFAULT_DEADLINE_FROM_NOW
+      }
+
+      if(!state.chosenTokens) {
+        state.chosenTokens = initialState.chosenTokens
       }
 
       state.lastUpdateVersionTimestamp = currentTimestamp()
@@ -141,6 +149,12 @@ export default createReducer(initialState, builder =>
     })
     .addCase(updateuserFarmsFilterAnchorFloat, (state, { payload: { userFarmsFilterAnchorFloat } }) => {
       state.userFarmsFilterAnchorFloat = userFarmsFilterAnchorFloat
+    })
+    .addCase(addChosenToken, (state, { payload: {id} }) => {
+      state.chosenTokens?.push(id)
+    })
+    .addCase(removeChosenToken, (state, { payload: {id} }) => {
+      state.chosenTokens = state.chosenTokens?.filter(token => token !== id)
     })
     .addCase(updateUserDeadline, (state, action) => {
       state.userDeadline = action.payload.userDeadline

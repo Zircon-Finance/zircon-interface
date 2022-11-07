@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 // import getLiquidityUrlPathParts from 'utils/getLiquidityUrlPathParts'
 import CardHeading from './CardHeading'
 import CardActionsContainer from './CardActionsContainer'
-import { ButtonOutlined } from '../../../../components/Button'
+import { ButtonLinkGet } from '../../../../components/Button'
 import StakeAdd from './StakeAdd'
 import { ModalContainer } from '../../Farms'
 import DepositModal from '../DepositModal'
@@ -27,6 +27,7 @@ import { StyledLinkExternal } from '../FarmTable/Actions/ActionPanel'
 import CapacityIndicatorSmall from '../../../../components/CapacityIndicatorSmall'
 import { useWindowDimensions } from '../../../../hooks'
 import { CONTRACT_ADDRESS_BASE } from '../../../../constants/lists'
+import { formattedNum } from '../../../../utils/formatBalance'
 
 const StyledCard = styled(Card)`
   align-self: baseline;
@@ -125,7 +126,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
       <FarmCardInnerContainer>
         <CardHeading
           earningToken={farm.earningToken}
-          earningTokenBlock={farm.earningTokenPerBlock}
+          earningTokenBlock={farm.earningTokenInfo}
           isClassic={farm.isClassic}
           isAnchor={farm.isAnchor}
           lpLabel={lpLabel}
@@ -135,7 +136,6 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
           healthFactor={healthFactor}
           sousId={farm.sousId}
           vaultAddress={farm.vaultAddress}
-          rewardsData={farm.rewardsData}
           isFinished={farm.isFinished}
         />
         {farm.userData.stakedBalance.gt(0) || !isApproved ? (
@@ -202,10 +202,10 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
             {t("Liquidity")}:
           </Text>
           <Text color={theme.text1} fontSize="14px">
-            {farm.isClassic ? pairLiquidity : new BigNumber(farm?.liquidity).toFixed(2)} USD
+            {formattedNum(farm.isClassic ? pairLiquidity : new BigNumber(farm?.liquidity?.pair + farm?.liquidity?.pylon).toFixed(2))} USD
           </Text>
         </Flex>
-        {account && !farm.isFinished && (
+        {!farm.isFinished && (
             <Flex justifyContent="space-between" alignItems="center" mt="10px">
               <Text color={theme.whiteHalf} fontSize="14px">
                 {`Health Factor`}:
@@ -215,7 +215,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
                 health={healthFactor}
                 isFloat={!farm.isAnchor}
                 noSpan={false}
-                hoverPage={"tableCard"}
+                hoverPage={"tableCardBottom"}
                 font={'14px'}
               />
             </Flex>
@@ -229,25 +229,23 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
                 }`
           }
         >
-          <ButtonOutlined
+          <ButtonLinkGet
             mt="15px"
             style={{
               margin: "10px 0",
               padding: "10px",
               fontSize: "13px",
-              color: theme.pinkGamma,
-              background: theme.tableButton,
               border: "none",
               fontWeight: 500,
             }}
           >
             {`Get ${farm.token1.name} - ${farm.token2.name} LP tokens`}
-          </ButtonOutlined>
+          </ButtonLinkGet>
         </Link>
         <Flex justifyContent={'space-around'} mb={width <= 500 && '10px'}>
           <StyledLinkExternal
             style={{ color: theme.pinkBrown, fontWeight: 500, marginRight: '10px' }}
-            href={"Placeholder"}
+            href={CONTRACT_ADDRESS_BASE+farm.lpAddress}
           >
             {"See Pair Info ↗"}
           </StyledLinkExternal>

@@ -25,8 +25,6 @@ import { useERC20, useSousChef } from '../../../../hooks/useContract'
 import useCatchTxError from '../../../../hooks/useCatchTxError'
 import { useTransactionAdder } from '../../../../state/transactions/hooks'
 import { useDispatch } from 'react-redux'
-import { fetchFarmUserDataAsync } from '../../../../state/farms'
-import { useIsDarkMode } from '../../../../state/user/hooks'
 import { usePool } from '../../../../state/pools/hooks'
 import { useCallWithGasPrice } from '../../../../hooks/useCallWithGasPrice'
 import { useCurrency } from '../../../../hooks/Tokens'
@@ -124,6 +122,7 @@ animation: ${({ expanded }) =>
   width: 100%;
   border-bottom: 1px solid ${({ theme }) => theme.opacitySmall};
   @media (min-width: 992px) {
+    border-bottom: none;
     display: table;
     height: 80px;
 `
@@ -168,6 +167,7 @@ const collapseAnimation = keyframes`
 
 const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const [isVisible, setIsVisible] = useState(false)
+  console.log('props', props.apr)
   const {
     details,
      userDataReady,
@@ -249,7 +249,6 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
       )
       setPendingTx(false)
       dispatch(fetchPoolsUserDataAsync(account))
-      dispatch(fetchFarmUserDataAsync({ account, pids: [details.sousId] }))
     }
   },
   [
@@ -265,6 +264,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     sousChefContract.address,
     callWithGasPrice,
   ])
+  const [hoverEnable, setHoverEnable] = useState(false)
   const mobileVer = width <= 992
   const { isDesktop } = useMatchBreakpoints()
   const isSmallerScreen = !isDesktop
@@ -273,13 +273,12 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const isApproved = account && details.userData.allowance && details.userData.allowance.isGreaterThan(0)
   const stakedAmount = usePool(details.sousId).pool.userData.stakedBalance.toNumber()
   const toggleWalletModal = useWalletModalToggle()
-  const darkMode = useIsDarkMode()
-  const [rewardTokens, setRewardTokens] = useState("")
-  useEffect(() => {
-    let r = ''
-    props.farm?.earningToken.forEach((token) => r += ` ${token.symbol === 'MOVR' ? 'wMOVR' : token.symbol} &`)
-    setRewardTokens(r.slice(0, -1))
-  }, [])
+  // const [rewardTokens, setRewardTokens] = useState("")
+  // useEffect(() => {
+  //   let r = ''
+  //   props.farm?.earningToken.forEach((token) => r += ` ${token.symbol === 'MOVR' ? 'wMOVR' : token.symbol} &`)
+  //   setRewardTokens(r.slice(0, -1))
+  // }, [])
   const [hoverRisk, setHoverRisk] = useState(false)
   const gammaAdjusted = new BigNumberJs(gamma).div(new BigNumberJs(10).pow(18))
 
@@ -289,7 +288,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
         !actionPanelExpanded && (
         <StyledTr expanded={isVisible} onClick={toggleActionPanel} onMouseOver={() => setHovered(true)}
         onMouseOut={() => setHovered(false)}
-        style={{backgroundColor: hovered ? theme.cardExpanded : null, borderBottom: !darkMode ? `1px solid ${theme.cardExpanded}` : null}} >
+        style={{backgroundColor: hovered ? theme.darkMode ? '#452632' : '#F5F3F4' : null}} >
           {Object.keys(props).map((key) => {
             const columnIndex = columnNames.indexOf(key)
             if (columnIndex === -1) {
@@ -354,19 +353,15 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                     ) : (
                       <Flex style={{alignItems: 'center'}}>
                         <>
-                        {!account ? (
-                        <Text style={{width: '70%'}} color={'#4e7455'}>
-                          {`Earn${rewardTokens.slice(0, -1)}`}
-                        </Text>
-                        ) : (
+                        {
                         !props.farm.isFinished &&
                         <Flex flexDirection={'column'}>
-                          <Text fontSize='13px' fontWeight={500} color={4e7455} marginBottom={2}>
-                            {'Monthly Rewards:'}
+                          <Text fontSize='13px' fontWeight={400} color={theme.whiteHalf}>
+                            {'Monthly rewards'}
                           </Text>
-                            <RewardPerBlock earningRewardsBlock={details?.earningTokenPerBlock}  />
+                            <RewardPerBlock earningRewardsBlock={details?.earningTokenInfo}  />
                         </Flex>
-                        )}
+                        }
                         </>
                       </Flex>
                   )}
@@ -376,21 +371,62 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                 return (
                   <TableData key={key}>
                     {account ? (
-                    isApproved ?
-                    props.staked.staked.gt(0) ? (
-                      <CellInner>
-                        <CellLayout hovered={hovered} label={t('Staked')}>
-                          {createElement(cells[key], { ...props[key], hovered, setHovered })}
-                        </CellLayout>
-                      </CellInner>) : (
-                      <StakeAdd row={true} margin={true} width={'60%'} height={'34px'} isFinished={props.farm.isFinished} />)
-                    : (
-                      <ButtonPinkGamma style={{width: '80%', fontSize: '13px', padding: '0 15px', borderRadius: '12px', height: '34px'}} disabled={pendingTx || props.farm.isFinished}
-                      onClick={handleApproval}>{pendingTx ? 'Enabling...' : 'Enable contract'}</ButtonPinkGamma>)) : (
-                        <ButtonPinkGamma style={{width: '80%', fontSize: '13px', padding: '0 15px', borderRadius: '12px', height: '34px'}}
-                    onClick={toggleWalletModal}>{'Connect wallet'}</ButtonPinkGamma>)}
+                      isApproved ? (
+                        props.staked.staked.gt(0) ? (
+                          <CellInner>
+                            <CellLayout hovered={hovered} label={t("Staked")}>
+                              {createElement(cells[key], {
+                                ...props[key],
+                                hovered,
+                                setHovered,
+                              })}
+                            </CellLayout>
+                          </CellInner>
+                        ) : (
+                          <StakeAdd
+                            pink={true}
+                            row={true}
+                            margin={true}
+                            width={"86px"}
+                            height={"35px"}
+                            isFinished={props.farm.isFinished}
+                          />
+                        )
+                      ) : (
+                        <ButtonPinkGamma
+                        onMouseOver={() => setHoverEnable(true)}
+                        onMouseOut={() => setHoverEnable(false)}
+                          style={{
+                            width: "80%",
+                            fontSize: "13px",
+                            padding: "0px 12px",
+                            borderRadius: "12px",
+                            height: "34px",
+                            fontWeight: 500,
+                            background: theme.darkMode && hoverEnable ? 'rgba(202, 144, 187, 0.17)' : 'rgba(202, 144, 187, 0.07)'
+                          }}
+                          disabled={pendingTx || props.farm.isFinished}
+                          onClick={handleApproval}
+                        >
+                          {pendingTx ? "Enabling..." : "Enable contract"}
+                        </ButtonPinkGamma>
+                      )
+                    ) : (
+                      <ButtonPinkGamma
+                        style={{
+                          width: "80%",
+                          fontSize: "13px",
+                          padding: "0 15px",
+                          borderRadius: "12px",
+                          height: "34px",
+                        }}
+                        onClick={toggleWalletModal}
+                      >
+                        {"Connect wallet"}
+                      </ButtonPinkGamma>
+                    )}
                   </TableData>
-                )
+                );
 
               default:
                 return (

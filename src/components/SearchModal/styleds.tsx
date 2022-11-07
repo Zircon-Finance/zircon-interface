@@ -73,7 +73,7 @@ animation: ${({ expanded }) =>
         `};
   position: relative;
   display: flex;
-  padding: 18px 40px 18px 20px;
+  padding: 18px 40px 18px 15px;
   align-items: center;
   width: 100%;
   background: url(${SearchIcon});
@@ -83,18 +83,18 @@ animation: ${({ expanded }) =>
   ::placeholder {
     color: ${({ theme }) => theme.text1};
     font-weight: 400;
-    opacity: 0.4;
+    opacity: 0.5;
   }
   white-space: nowrap;
-  background-color: ${({ theme}) => theme.searchInput};
+  background-color: ${({ theme}) => theme.darkMode ? ' rgba(213, 174, 175, 0.1) !important' : '#E9E5E5 !important'};
   border: 1px solid transparent;
   outline: none;
   border-radius: 17px;
-  color: ${({ theme }) => theme.text1};
+  color: #7B7879;
   -webkit-appearance: none;
   transition: all 1s;
 
-  font-size: 16px;
+  font-size: 13px;
   transition: border 100ms;
   :focus {
     border: 1px solid ${({ theme }) => theme.pinkGamma};

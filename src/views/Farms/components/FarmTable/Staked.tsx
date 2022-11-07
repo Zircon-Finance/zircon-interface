@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react'
-import styled, { css, keyframes, useTheme } from 'styled-components'
+import styled, { css, keyframes } from 'styled-components'
 import {
     // HelpIcon,
     Text, Skeleton, IconButton } from '@pancakeswap/uikit'
@@ -21,6 +21,7 @@ export interface StakedProps {
     stakedBalancePool: number,
     stakedBalance: BigNumber,
     price: string
+    stakedRatio: number
 }
 
 const LiquidityWrapper = styled.div`
@@ -70,17 +71,16 @@ const DialogContainer = styled.div<{ show }>`
                   `};
   position: absolute;
   top: 40px;
-  background: ${({ theme }) => theme.hoveredButton};
+  background: #B05D98;
   border-radius: 17px;
   padding: 10px;
   z-index: 1000;
   font-size: 13px;
 `
 
-const Staked: React.FunctionComponent<StakedProps> = ({ staked, hovered, setHovered, stakedBalance, stakedBalancePool, price }) => {
+const Staked: React.FunctionComponent<StakedProps> = ({ staked, hovered, setHovered, stakedBalance, stakedBalancePool, price, stakedRatio }) => {
     const [hoverMinus, setHoverMinus] = React.useState(false)
     const [hoverPlus, setHoverPlus] = React.useState(false)
-    const theme = useTheme()
     const { width } = useWindowDimensions()
     const plusContent = (
         <DialogContainer style={{left: '20px'}} show={hoverPlus}>
@@ -100,7 +100,7 @@ const Staked: React.FunctionComponent<StakedProps> = ({ staked, hovered, setHove
     )
     const displayBalance =
         staked && staked.gt(0) ? (
-            `${(new BigNumber(staked).div(stakedBalancePool).multipliedBy(stakedBalance).multipliedBy(price)).toFixed(1, BigNumber.ROUND_DOWN)}`
+            `${(new BigNumber(staked).multipliedBy(stakedRatio).div(stakedBalancePool).multipliedBy(stakedBalance).multipliedBy(price)).toFixed(1, BigNumber.ROUND_DOWN)}`
         ) : (
             <Skeleton width={60} />
         )
@@ -114,7 +114,7 @@ const Staked: React.FunctionComponent<StakedProps> = ({ staked, hovered, setHove
                 <div style={{display: 'flex', position: 'sticky', marginLeft: '5px', alignItems: 'center'}}
                      onMouseEnter={()=>setHovered(true)}>
                     <IconButton
-                        style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
+                        style={{background: '#B05D98', width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
                         variant="tertiary"
                     >
                         <Flex
@@ -125,7 +125,7 @@ const Staked: React.FunctionComponent<StakedProps> = ({ staked, hovered, setHove
                     </IconButton>
                     {hoverMinus && minusContent}
                     <IconButton
-                        style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%'}}
+                        style={{background: '#B05D98', width: '29px', height: '28px', borderRadius: '100%'}}
                         variant="tertiary"
                     >
                         <Flex

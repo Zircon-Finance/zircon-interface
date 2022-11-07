@@ -6,7 +6,6 @@ import useCatchTxError from '../../../../hooks/useCatchTxError'
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { MaxUint256 } from '@ethersproject/constants'
-import { fetchFarmUserDataAsync } from '../../../../state/farms'
 import styled, {useTheme} from 'styled-components'
 import HarvestAction from './HarvestAction'
 import StakeAction from './StakeAction'
@@ -95,7 +94,6 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
         receipt.transactionHash
       )
       dispatch(fetchPoolsUserDataAsync(account))
-      dispatch(fetchFarmUserDataAsync({ account, pids: [sousId] }))
       dispatch(updateUserAllowance({ sousId, account }))
     }
   }, [ 

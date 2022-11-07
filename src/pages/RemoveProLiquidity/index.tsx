@@ -336,7 +336,7 @@ export default function RemoveProLiquidity({
 
             addTransaction(response, {
               summary:
-                  sync ? 'Remove Sync' : 'Remove Async' +
+                  sync ? 'Remove Sync ' : 'Remove Async ' +
                       parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
                       ' ' +
                       currencyA?.symbol +

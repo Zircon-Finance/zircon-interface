@@ -3,7 +3,6 @@ describe('Add Liquidity with Pylon mode', () => {
     cy.select_moons()
   })
 
-
   it('Loads the two correct tokens', () => {
     cy.visit('#/add-pro/ETH/0x4545E94974AdACb82FC56BCf136B07943e152055/')
     cy.get('#add-liquidity-input-tokena .token-symbol-container').should('contain.text', 'MOVRFLOAT')

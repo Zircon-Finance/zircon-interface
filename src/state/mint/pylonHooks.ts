@@ -387,7 +387,7 @@ export function usePairPrices(token0: Currency, token1: Currency, pair: Pair, pa
   const [prices, setPrices] = useState([0,0])
   // console.log('reserves', pair?.reserve0?.toFixed(2), pair?.reserve1?.toFixed(2))
   useEffect(() => {
-    getPrices().then((res) => setPrices(res))
+    getPrices().then((res) => setPrices(res)).catch((e) => console.log(e))
     // console.log('Prices: ', prices)
   }, [token0, token1, pairState])
   return prices

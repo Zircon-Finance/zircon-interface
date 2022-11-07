@@ -1047,7 +1047,7 @@ export default function AddLiquidityPro({
                               margin={"0 10px 0 20px"}
                               justifyContent={"space-between"}
                           >
-                      <span style={{ alignSelf: "center" }}>
+                      <span id='swap-and-add' style={{ alignSelf: "center" }}>
                         {"SWAP AND ADD"}
                       </span>
                             <Toggle
@@ -1075,6 +1075,7 @@ export default function AddLiquidityPro({
                           >
                             <>
                             <span
+                            id='swap-and-add'
                                 style={{
                                   display: "inline",
                                   alignSelf: "center",

@@ -6,6 +6,7 @@ import { Skeleton } from '@pancakeswap/uikit'
 import { LiqContainer } from './Liquidity'
 import { Flex, Text } from 'rebass'
 import PlusIconMini from '../PlusIconMini'
+import { useWindowDimensions } from '../../../../hooks'
 // import { BASE_ADD_LIQUIDITY_URL } from 'config'
 // import getLiquidityUrlPathParts from 'utils/getLiquidityUrlPathParts'
 // import { Skeleton } from '@pancakeswap/uikit'
@@ -56,6 +57,7 @@ const Apr: React.FC<AprProps> = ({
   const addLiquidityUrl = `placeholder`
   const [hoverApr, setHoverApr] = React.useState(false)
   const theme = useTheme()
+  const {width} = useWindowDimensions()
   return value !== 'NaN' ? (
     <Container onMouseEnter={() => setHoverApr(true)} onMouseLeave={() => setHoverApr(false)}>
         <ApyButton
@@ -69,7 +71,7 @@ const Apr: React.FC<AprProps> = ({
           addLiquidityUrl={addLiquidityUrl}
           white={white}
         />
-        {hoverApr && <LiqContainer style={{top: '50px'}} show={hoverApr}>
+        {(hoverApr && width >= 1000) && <LiqContainer style={{top: '50px'}} show={hoverApr}>
             <Flex alignItems={'center'}>
               <Flex flexDirection='column' pl='15px' pb='10px' pr='5px'>
                 <Text style={{color: theme.whiteHalf}} fontSize='12px'>

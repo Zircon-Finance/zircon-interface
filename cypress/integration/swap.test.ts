@@ -21,17 +21,17 @@ describe('Swap', () => {
   
     it('can enter an amount into input', () => {
       cy.get('#swap-currency-input .token-amount-input', { timeout: 10000 }).should('be.visible')
-        .clear()
+        .clear( { force: true } )
         .type('0.001', { delay: 200 })
         .should('have.value', '0.001')
     })
   
     it('Zero swap amount', () => {
-      cy.get('#swap-currency-input .token-amount-input', { timeout: 10000 }).clear().type('0.0', { force: true,delay: 200 }).should('have.value', '0.0')
+      cy.get('#swap-currency-input .token-amount-input', { timeout: 10000 }).clear( { force: true } ).type('0.0', { force: true,delay: 200 }).should('have.value', '0.0')
     })
   
     it('Invalid swap amount', () => {
-      cy.get('#swap-currency-input .token-amount-input', { timeout: 10000 }).clear().type('\\', { force: true,delay: 200 }).should('have.value', '')
+      cy.get('#swap-currency-input .token-amount-input', { timeout: 10000 }).clear( { force: true } ).type('\\', { force: true,delay: 200 }).should('have.value', '')
     })
   
     it('Can enter an amount into output', () => {

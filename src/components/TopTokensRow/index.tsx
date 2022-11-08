@@ -166,7 +166,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
         >
         {index + 1}
         </Text>
-        <Flex style={{margin: '0 5px', cursor: 'pointer'}} onClick={()=> chosenTokens?.includes(token.token.id) ? 
+        <Flex id={`favorite-token-${token.token.id}`} style={{margin: '0 5px', cursor: 'pointer'}} onClick={()=> chosenTokens?.includes(token.token.id) ? 
         removeChosenTokenFeedback(token.token.id) : addChosenTokenCallback(token.token.id)}>
             {chosenTokens?.includes(token.token.id) ? <StarFull /> : <StarEmpty />}
         </Flex>

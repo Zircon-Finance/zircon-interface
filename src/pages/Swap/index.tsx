@@ -585,7 +585,7 @@ export default function Swap() {
         <Flex mt='23px' ml='20px'>
             <StarFull />
           </Flex>
-        <Flex style={{width: '100%', padding: '20px', flexWrap: 'wrap', gap: '25px 5px'}}>
+        <Flex id='user-chosen-tokens' style={{width: '100%', padding: '20px', flexWrap: 'wrap', gap: '25px 5px'}}>
           {chosenTokens?.map((token, index) => {
           return(
             <FavTokensRow key={index} token={token} index={index} topTokens={topTokens} topTokensPrevious={topTokensPrevious}

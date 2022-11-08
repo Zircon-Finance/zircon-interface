@@ -48,30 +48,48 @@ describe('Swap', () => {
     it('Add a recipient does not exist unless in expert mode', () => {
       cy.get('#add-recipient-button').should('not.exist')
     })
-  
-    describe('Expert mode', () => {
-  
-      it('Add a recipient is visible', () => {
-        cy.visit('/swap')
-        cy.window().then((win) => {
-            cy.stub(win, 'prompt').returns('confirm')
-          })
-        cy.get('#open-settings-dialog-button', { timeout: 10000 }).should('be.visible').click()
-        cy.get('#toggle-expert-mode-button', { timeout: 10000 }).should('be.visible').click()
-        cy.get('#confirm-expert-mode', { timeout: 10000 }).should('be.visible').click()
-        cy.get('#add-recipient-button', { timeout: 10000 }).should('be.visible')
+    
+    describe('Chosen tokens works correctly', () => {
+      it('Can add chosen token correctly', () => {
+        cy.get('#favorite-token-0xe3f5a90f9cb311505cd691a46596599aa1a0ad7d', { timeout: 10000 }).should('be.visible').click()
+        cy.get('#user-chosen-tokens', { timeout: 10000 }).should('be.visible').should('contain.text', 'USDC')
       })
-  
-      it('Add a recipient', () => {
-        cy.get('#add-recipient-button', { timeout: 10000 }).click()
-        cy.get('#recipient').should('exist')
+      it('Can remove chosen token correctly', () => {
+        cy.get('#favorite-token-0x4545e94974adacb82fc56bcf136b07943e152055', { timeout: 10000 }).should('be.visible').click()
+        cy.get('#user-chosen-tokens', { timeout: 10000 }).should('not.exist')
       })
-  
-      it('Remove recipient', () => {
-        cy.get('#add-recipient-button', { timeout: 10000 }).should('be.visible').click()
-        cy.get('#remove-recipient-button').click()
-        cy.get('#recipient').should('not.exist')
+      it('Multiple tokens displayed correctly', () => {
+        cy.get('#favorite-token-0xe3f5a90f9cb311505cd691a46596599aa1a0ad7d', { timeout: 10000 }).should('be.visible').click()
+        cy.get('#favorite-token-0x98878b06940ae243284ca214f92bb71a2b032b8a', { timeout: 10000 }).should('be.visible').click()
+        cy.get('#user-chosen-tokens', { timeout: 10000 }).should('be.visible').should('contain.text', 'WMOVR')
+        cy.get('#user-chosen-tokens', { timeout: 10000 }).should('be.visible').should('contain.text', 'USDC')
       })
     })
+
+  
+    // describe('Expert mode', () => {
+  
+    //   it('Add a recipient is visible', () => {
+    //     cy.visit('/swap')
+    //     cy.window().then((win) => {
+    //         cy.stub(win, 'prompt').returns('confirm')
+    //       })
+    //     cy.get('#open-settings-dialog-button', { timeout: 10000 }).should('be.visible').click()
+    //     cy.get('#toggle-expert-mode-button', { timeout: 10000 }).should('be.visible').click()
+    //     cy.get('#confirm-expert-mode', { timeout: 10000 }).should('be.visible').click()
+    //     cy.get('#add-recipient-button', { timeout: 10000 }).should('be.visible')
+    //   })
+  
+    //   it('Add a recipient', () => {
+    //     cy.get('#add-recipient-button', { timeout: 10000 }).click()
+    //     cy.get('#recipient').should('exist')
+    //   })
+  
+    //   it('Remove recipient', () => {
+    //     cy.get('#add-recipient-button', { timeout: 10000 }).should('be.visible').click()
+    //     cy.get('#remove-recipient-button').click()
+    //     cy.get('#recipient').should('not.exist')
+    //   })
+    // })
   })
   

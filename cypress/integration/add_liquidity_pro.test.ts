@@ -5,8 +5,8 @@ describe('Add Liquidity with Pylon mode', () => {
 
   it('Loads the two correct tokens', () => {
     cy.visit('#/add-pro/ETH/0x4545E94974AdACb82FC56BCf136B07943e152055/')
-    cy.get('#add-liquidity-input-tokena .token-symbol-container').should('contain.text', 'MOVRFLOAT')
-    cy.get('#add-liquidity-input-tokenb_bal .token-symbol-container').should('contain.text', 'ZRGSTABLE')
+    cy.get('#add-liquidity-input-tokena .token-symbol-container').should('contain.text', 'FLOAT')
+    cy.get('#add-liquidity-input-tokenb_bal .token-symbol-container').should('contain.text', 'STABLE')
   })
 
   it('Does not crash if ETH is duplicated', () => {
@@ -17,9 +17,9 @@ describe('Add Liquidity with Pylon mode', () => {
 
   it('Single token can be selected', () => {
     cy.visit('#/add-pro/ETH/0x4545E94974AdACb82FC56BCf136B07943e152055/')
-    cy.get('#add-liquidity-input-tokena .token-symbol-container').should('contain.text', 'MOVRFLOAT')
+    cy.get('#add-liquidity-input-tokena .token-symbol-container').should('contain.text', 'FLOAT')
     cy.visit('/add-pro/0x4545E94974AdACb82FC56BCf136B07943e152055')
-    cy.get('#add-liquidity-input-tokena .token-symbol-container').should('contain.text', 'ZRGFLOAT')
+    cy.get('#add-liquidity-input-tokena .token-symbol-container').should('contain.text', 'FLOAT')
   })
 
   it('Pylon status renders correctly', () => {

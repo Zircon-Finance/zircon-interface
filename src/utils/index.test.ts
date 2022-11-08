@@ -14,22 +14,16 @@ import {
 describe('utils', () => {
   describe('#getEtherscanLink', () => {
     it('correct for tx', () => {
-      expect(getEtherscanLink(1, 'abc', 'transaction')).toEqual('https://etherscan.io/tx/abc')
+      expect(getEtherscanLink(1, 'abc', 'transaction')).toEqual('https://moonriver.moonscan.io/tx/abc')
     })
     it('correct for token', () => {
-      expect(getEtherscanLink(1, 'abc', 'token')).toEqual('https://etherscan.io/token/abc')
+      expect(getEtherscanLink(1, 'abc', 'token')).toEqual('https://moonriver.moonscan.io/token/abc')
     })
     it('correct for address', () => {
-      expect(getEtherscanLink(1, 'abc', 'address')).toEqual('https://etherscan.io/address/abc')
-    })
-    it('unrecognized chain id defaults to mainnet', () => {
-      expect(getEtherscanLink(2, 'abc', 'address')).toEqual('https://etherscan.io/address/abc')
-    })
-    it('ropsten', () => {
-      expect(getEtherscanLink(3, 'abc', 'address')).toEqual('https://ropsten.etherscan.io/address/abc')
+      expect(getEtherscanLink(1, 'abc', 'address')).toEqual('https://moonriver.moonscan.io/address/abc')
     })
     it('enum', () => {
-      expect(getEtherscanLink(ChainId.RINKEBY, 'abc', 'address')).toEqual('https://rinkeby.etherscan.io/address/abc')
+      expect(getEtherscanLink(ChainId.MOONRIVER, 'abc', 'address')).toEqual('https://moonriver.moonscan.io/address/abc')
     })
   })
 

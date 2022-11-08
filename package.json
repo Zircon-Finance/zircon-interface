@@ -85,6 +85,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "reducertest": "react-scripts test",
     "test": "cypress open",
     "eject": "react-scripts eject",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'"

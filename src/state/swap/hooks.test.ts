@@ -17,7 +17,9 @@ describe('hooks', () => {
         [Field.INPUT]: { currencyId: 'ETH' },
         typedValue: '20.5',
         independentField: Field.OUTPUT,
-        recipient: null
+        recipient: null,
+        derivedPairDataById: {},
+        pairDataById: {},
       })
     })
 
@@ -29,7 +31,9 @@ describe('hooks', () => {
         [Field.OUTPUT]: { currencyId: 'ETH' },
         typedValue: '',
         independentField: Field.INPUT,
-        recipient: null
+        recipient: null,
+        derivedPairDataById: {},
+        pairDataById: {},
       })
     })
 
@@ -43,7 +47,9 @@ describe('hooks', () => {
         [Field.INPUT]: { currencyId: '' },
         typedValue: '20.5',
         independentField: Field.INPUT,
-        recipient: null
+        recipient: null,
+        derivedPairDataById: {},
+        pairDataById: {},
       })
     })
 
@@ -57,7 +63,9 @@ describe('hooks', () => {
         [Field.INPUT]: { currencyId: '' },
         typedValue: '20.5',
         independentField: Field.INPUT,
-        recipient: null
+        recipient: null,
+        derivedPairDataById: {},
+        pairDataById: {},
       })
     })
 
@@ -74,7 +82,9 @@ describe('hooks', () => {
         [Field.INPUT]: { currencyId: '' },
         typedValue: '20.5',
         independentField: Field.INPUT,
-        recipient: '0x0fF2D1eFd7A57B7562b2bf27F3f37899dB27F4a5'
+        recipient: '0x0fF2D1eFd7A57B7562b2bf27F3f37899dB27F4a5',
+        derivedPairDataById: {},
+        pairDataById: {},
       })
     })
     test('accepts any recipient', () => {
@@ -90,7 +100,9 @@ describe('hooks', () => {
         [Field.INPUT]: { currencyId: '' },
         typedValue: '20.5',
         independentField: Field.INPUT,
-        recipient: 'bob.argent.xyz'
+        recipient: 'bob.argent.xyz',
+        derivedPairDataById: {},
+        pairDataById: {},
       })
     })
   })

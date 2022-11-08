@@ -19,8 +19,15 @@ describe('Swap', () => {
       cy.get('#swap-currency-output .token-amount-input').should('not.equal', '')
     })
   
-    it('can enter an amount into input', () => {
+    it('Can enter an amount into input', () => {
       cy.get('#swap-currency-input .token-amount-input', { timeout: 10000 }).should('be.visible')
+        .clear( { force: true } )
+        .type('0.001', { delay: 200 })
+        .should('have.value', '0.001')
+    })
+
+    it('Can enter an amount into input', () => {
+      cy.get('#swap-currency-output .token-amount-input', { timeout: 10000 }).should('be.visible')
         .clear( { force: true } )
         .type('0.001', { delay: 200 })
         .should('have.value', '0.001')
@@ -29,17 +36,13 @@ describe('Swap', () => {
     it('Zero swap amount', () => {
       cy.get('#swap-currency-input .token-amount-input', { timeout: 10000 }).clear( { force: true } ).type('0.0', { force: true,delay: 200 }).should('have.value', '0.0')
     })
+
+    it('Zero output amount', () => {
+      cy.get('#swap-currency-output .token-amount-input', { timeout: 10000 }).clear( { force: true } ).type('0.0', { force: true,delay: 200 }).should('have.value', '0.0')
+    })
   
     it('Invalid swap amount', () => {
       cy.get('#swap-currency-input .token-amount-input', { timeout: 10000 }).clear( { force: true } ).type('\\', { force: true,delay: 200 }).should('have.value', '')
-    })
-  
-    it('Can enter an amount into output', () => {
-      cy.get('#swap-currency-output .token-amount-input', { timeout: 10000 }).type('0.001', { force: true,delay: 200 }).should('have.value', '0.001')
-    })
-  
-    it('Zero output amount', () => {
-      cy.get('#swap-currency-output .token-amount-input', { timeout: 10000 }).type('0.0', { force: true,delay: 200 }).should('have.value', '0.0')
     })
   
     it('Add a recipient does not exist unless in expert mode', () => {
@@ -68,7 +71,7 @@ describe('Swap', () => {
       })
   
       it('Remove recipient', () => {
-        cy.get('#add-recipient-button', { timeout: 10000 }).click()
+        cy.get('#add-recipient-button', { timeout: 10000 }).should('be.visible').click()
         cy.get('#remove-recipient-button').click()
         cy.get('#recipient').should('not.exist')
       })

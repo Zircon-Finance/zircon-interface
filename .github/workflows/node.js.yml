@@ -26,6 +26,7 @@ jobs:
         uses: cypress-io/github-action@v4
         with:
           start: yarn start
+          wait-on: 'http://localhost:3000'
       - name: report to slack
         if: ${{ failure() }}
         uses: rtCamp/action-slack-notify@v2

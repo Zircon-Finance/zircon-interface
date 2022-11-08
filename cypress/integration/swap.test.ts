@@ -22,14 +22,14 @@ describe('Swap', () => {
     it('Can enter an amount into input', () => {
       cy.get('#swap-currency-input .token-amount-input', { timeout: 10000 }).should('be.visible')
         .clear( { force: true } )
-        .type('0.001', { delay: 200 })
+        .type('0.001', { delay: 300, force: true })
         .should('have.value', '0.001')
     })
 
-    it('Can enter an amount into input', () => {
+    it('Can enter an amount into output', () => {
       cy.get('#swap-currency-output .token-amount-input', { timeout: 10000 }).should('be.visible')
         .clear( { force: true } )
-        .type('0.001', { delay: 200 })
+        .type('0.001', { delay: 300, force: true })
         .should('have.value', '0.001')
     })
   

@@ -4,6 +4,9 @@ import { Flex, Text } from 'rebass'
 import { useTheme } from 'styled-components'
 import { useWindowDimensions } from '../../hooks'
 import { ToolTip } from '../../views/Farms/components/FarmTable/Row'
+import CapacityIndicatorDivergenceGreen from '../CapacityIndicatorDivergenceGreen'
+import CapacityIndicatorDivergenceRed from '../CapacityIndicatorDivergenceRed'
+import CapacityIndicatorDivergenceYellow from '../CapacityIndicatorDivergenceYellow'
 
 // const Battery = styled.div`
 //   height: 15px;
@@ -56,28 +59,12 @@ const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan
         {hoverIndicator && (gamma !== undefined || health !== undefined) && (
           <TooltipContentRisk gamma={gamma} health={health} isFloat={isFloat}/>
         )}
-        {(!gamma || !health) ? <Skeleton width={60} /> : isFloat ? <div style={{display: "flex", flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-          {!noSpan && <span style={{marginRight: 8, color: theme.text1, fontSize: font && font}}>{`${gamma >= 0.7 ? 'High' : gamma <= 0.4 ? 'Negative' : 'Low'}`}</span>}
-
-              {gamma < 0.4 && <svg width="22" height="16" viewBox="0 0 22 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="0.5" y="0.5" width="21" height="15" rx="4.5" stroke="#DEC54E" strokeOpacity="0.9"/>
-                <rect x="3" y="3" width="4" height="10" rx="2" fill="#DEC54E" fillOpacity="0.9"/>
-              </svg>
-              }
-
-              {gamma < 0.7 && gamma >= 0.4 && <svg width="22" height="16" viewBox="0 0 22 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="0.5" y="0.5" width="21" height="15" rx="4.5" stroke="#449133" strokeOpacity="0.9"/>
-              </svg>}
-
-          {gamma >= 0.7 && <svg width="22" height="16" viewBox="0 0 22 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="0.5" y="0.5" width="21" height="15" rx="4.5" stroke="#DE4337" strokeOpacity="0.9"/>
-            <rect x="3" y="3" width="4" height="10" rx="2" fill="#DE4337" fillOpacity="0.9"/>
-            <rect x="9" y="3" width="4" height="10" rx="2" fill="#DE4337" fillOpacity="0.9"/>
-            <rect x="15" y="3" width="4" height="10" rx="2" fill="#DE4337" fillOpacity="0.9"/>
-          </svg>
-          }
-
-            </div>
+        {(!gamma || !health) ? <Skeleton width={60} /> : isFloat ? <div style={{display: "flex", flexDirection: 'row', justifyContent: 'center', alignItems: 'center', pointerEvents: 'none'}}>
+          {gamma < 0.4 && <CapacityIndicatorDivergenceYellow />}
+          {gamma < 0.7 && gamma >= 0.4 && <CapacityIndicatorDivergenceGreen />}
+          {gamma >= 0.7 && <CapacityIndicatorDivergenceRed />}
+          {!noSpan && <span style={{marginRight: 4,marginLeft: 8, color: theme.text1, fontSize: font && font}}>{`${parseFloat(gamma).toFixed(1)}`}</span>}
+          </div>
             :
             <div style={{display: "flex", flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
               {!noSpan && <span style={{marginRight: 8, color: theme.text1, fontSize: font && font}}>{`${health === 'low' ? 'Low' : health === 'medium' ? 'Medium' : 'High'}`}</span>}

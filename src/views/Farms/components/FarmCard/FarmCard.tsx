@@ -208,7 +208,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
         {!farm.isFinished && (
             <Flex justifyContent="space-between" alignItems="center" mt="10px">
               <Text color={theme.whiteHalf} fontSize="14px">
-                {`Health Factor`}:
+                {!farm.isAnchor ? 'Divergence' : `Health Factor`}:
               </Text>
               <CapacityIndicatorSmall
                 gamma={gamma}

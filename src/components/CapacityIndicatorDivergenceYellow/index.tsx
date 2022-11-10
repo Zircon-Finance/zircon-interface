@@ -1,75 +1,19 @@
 import React from 'react'
+import { useTheme } from 'styled-components'
 
 const CapacityIndicatorDivergenceYellow = () => {
+  const theme = useTheme()
   return (
     <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <g clip-path="url(#clip0_5849_17687)">
-    <rect x="11" width="1" height="11" fill="url(#paint0_linear_5849_17687)"/>
-    <rect x="11" y="12" width="1" height="11" fill="url(#paint1_linear_5849_17687)"/>
-    <rect x="5.31641" y="1.79102" width="1" height="11" transform="rotate(-30 5.31641 1.79102)" fill="url(#paint2_linear_5849_17687)"/>
-    <rect x="11.3164" y="12.1836" width="1" height="11" transform="rotate(-30 11.3164 12.1836)" fill="url(#paint3_linear_5849_17687)"/>
-    <rect x="1.28906" y="6.18359" width="1" height="11" transform="rotate(-60 1.28906 6.18359)" fill="url(#paint4_linear_5849_17687)"/>
-    <rect x="11.6797" y="12.1836" width="1" height="11" transform="rotate(-60 11.6797 12.1836)" fill="url(#paint5_linear_5849_17687)"/>
-    <rect y="12.001" width="1" height="11" transform="rotate(-90 0 12.001)" fill="url(#paint6_linear_5849_17687)"/>
-    <rect x="12" y="12.001" width="1" height="11" transform="rotate(-90 12 12.001)" fill="url(#paint7_linear_5849_17687)"/>
-    <rect x="1.78906" y="17.6836" width="1" height="11" transform="rotate(-120 1.78906 17.6836)" fill="url(#paint8_linear_5849_17687)"/>
-    <rect x="12.1797" y="11.6836" width="1" height="11" transform="rotate(-120 12.1797 11.6836)" fill="url(#paint9_linear_5849_17687)"/>
-    <rect x="6.17969" y="21.71" width="1" height="11" transform="rotate(-150 6.17969 21.71)" fill="url(#paint10_linear_5849_17687)"/>
-    <rect x="12.1797" y="11.3174" width="1" height="11" transform="rotate(-150 12.1797 11.3174)" fill="url(#paint11_linear_5849_17687)"/>
-    </g>
-    <defs>
-    <linearGradient id="paint0_linear_5849_17687" x1="11.5" y1="0" x2="11.5" y2="11" gradientUnits="userSpaceOnUse">
-    <stop stop-color="#A99120"/>
-    <stop offset="1" stop-color="#A99120" stop-opacity="0"/>
-    </linearGradient>
-    <linearGradient id="paint1_linear_5849_17687" x1="11.5" y1="12" x2="11.5" y2="23" gradientUnits="userSpaceOnUse">
-    <stop stop-color="#A99120" stop-opacity="0"/>
-    <stop offset="1" stop-color="#A99120"/>
-    </linearGradient>
-    <linearGradient id="paint2_linear_5849_17687" x1="5.81641" y1="1.79102" x2="5.81641" y2="12.791" gradientUnits="userSpaceOnUse">
-    <stop stop-color="#A99120"/>
-    <stop offset="1" stop-color="#A99120" stop-opacity="0"/>
-    </linearGradient>
-    <linearGradient id="paint3_linear_5849_17687" x1="11.8164" y1="12.1836" x2="11.8164" y2="23.1836" gradientUnits="userSpaceOnUse">
-    <stop stop-color="#A99120" stop-opacity="0"/>
-    <stop offset="1" stop-color="#A99120"/>
-    </linearGradient>
-    <linearGradient id="paint4_linear_5849_17687" x1="1.78906" y1="6.18359" x2="1.78906" y2="17.1836" gradientUnits="userSpaceOnUse">
-    <stop stop-color="#A99120"/>
-    <stop offset="1" stop-color="#A99120" stop-opacity="0"/>
-    </linearGradient>
-    <linearGradient id="paint5_linear_5849_17687" x1="12.1797" y1="12.1836" x2="12.1797" y2="23.1836" gradientUnits="userSpaceOnUse">
-    <stop stop-color="#A99120" stop-opacity="0"/>
-    <stop offset="1" stop-color="#A99120"/>
-    </linearGradient>
-    <linearGradient id="paint6_linear_5849_17687" x1="0.5" y1="12.001" x2="0.5" y2="23.001" gradientUnits="userSpaceOnUse">
-    <stop stop-color="#A99120"/>
-    <stop offset="1" stop-color="#A99120" stop-opacity="0"/>
-    </linearGradient>
-    <linearGradient id="paint7_linear_5849_17687" x1="12.5" y1="12.001" x2="12.5" y2="23.001" gradientUnits="userSpaceOnUse">
-    <stop stop-color="#A99120" stop-opacity="0"/>
-    <stop offset="1" stop-color="#A99120"/>
-    </linearGradient>
-    <linearGradient id="paint8_linear_5849_17687" x1="2.28906" y1="17.6836" x2="2.28906" y2="28.6836" gradientUnits="userSpaceOnUse">
-    <stop stop-color="#A99120"/>
-    <stop offset="1" stop-color="#A99120" stop-opacity="0"/>
-    </linearGradient>
-    <linearGradient id="paint9_linear_5849_17687" x1="12.6797" y1="11.6836" x2="12.6797" y2="22.6836" gradientUnits="userSpaceOnUse">
-    <stop stop-color="#A99120" stop-opacity="0"/>
-    <stop offset="1" stop-color="#A99120"/>
-    </linearGradient>
-    <linearGradient id="paint10_linear_5849_17687" x1="6.67969" y1="21.71" x2="6.67969" y2="32.71" gradientUnits="userSpaceOnUse">
-    <stop stop-color="#A99120"/>
-    <stop offset="1" stop-color="#A99120" stop-opacity="0"/>
-    </linearGradient>
-    <linearGradient id="paint11_linear_5849_17687" x1="12.6797" y1="11.3174" x2="12.6797" y2="22.3174" gradientUnits="userSpaceOnUse">
-    <stop stop-color="#A99120" stop-opacity="0"/>
-    <stop offset="1" stop-color="#A99120"/>
-    </linearGradient>
-    <clipPath id="clip0_5849_17687">
-    <rect width="23" height="23" fill="white"/>
-    </clipPath>
-    </defs>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M11.5 22C17.299 22 22 17.299 22 11.5C22 5.70101 17.299 1 11.5 1C5.70101 1 1 5.70101 1 11.5C1 17.299 5.70101 22 11.5 22ZM11.5 21C16.7467 21 21 16.7467 21 11.5C21 6.25329 16.7467 2 11.5 2C6.25329 2 2 6.25329 2 11.5C2 16.7467 6.25329 21 11.5 21Z" fill={theme.darkMode ? ' #C1A624' : ' #C1A624'} fill-opacity="0.5"/>
+    <circle cx="11.5" cy="11.5" r="1.5" fill={theme.darkMode ? ' #C1A624' : ' #C1A624'} fill-opacity="0.5"/>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M11.5 19C15.6421 19 19 15.6421 19 11.5C19 7.35786 15.6421 4 11.5 4C7.35786 4 4 7.35786 4 11.5C4 15.6421 7.35786 19 11.5 19ZM11.5 16C13.9853 16 16 13.9853 16 11.5C16 9.01472 13.9853 7 11.5 7C9.01472 7 7 9.01472 7 11.5C7 13.9853 9.01472 16 11.5 16Z" fill={theme.darkMode ? ' #C1A624' : ' #C1A624'} fill-opacity="0.25"/>
+    <circle cx="11.5" cy="5.5" r="1.5" fill={theme.darkMode ? ' #C1A624' : ' #C1A624'}/>
+    <circle cx="11.5" cy="17.5" r="1.5" fill={theme.darkMode ? ' #C1A624' : ' #C1A624'}/>
+    <circle cx="6.30294" cy="8.49979" r="1.5" transform="rotate(-60 6.30294 8.49979)" fill={theme.darkMode ? ' #C1A624' : ' #C1A624'}/>
+    <circle cx="16.6975" cy="14.4998" r="1.5" transform="rotate(-60 16.6975 14.4998)" fill={theme.darkMode ? ' #C1A624' : ' #C1A624'}/>
+    <circle cx="6.30294" cy="14.5008" r="1.5" transform="rotate(-120 6.30294 14.5008)" fill={theme.darkMode ? ' #C1A624' : ' #C1A624'}/>
+    <circle cx="16.6975" cy="8.49881" r="1.5" transform="rotate(-120 16.6975 8.49881)" fill={theme.darkMode ? ' #C1A624' : ' #C1A624'}/>
     </svg>
   )
 }

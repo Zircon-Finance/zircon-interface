@@ -63,7 +63,7 @@ const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan
           {gamma < 0.4 && <CapacityIndicatorDivergenceYellow />}
           {gamma < 0.7 && gamma >= 0.4 && <CapacityIndicatorDivergenceGreen />}
           {gamma >= 0.7 && <CapacityIndicatorDivergenceRed />}
-          {!noSpan && <span style={{marginRight: 4,marginLeft: 8, color: theme.text1, fontSize: font && font}}>{`${parseFloat(gamma).toFixed(1)}`}</span>}
+          {!noSpan && <span style={{marginRight: 4,marginLeft: 8, color: theme.text1, fontSize: font && font}}>{`${(parseFloat(gamma)*10-5).toFixed(0)}`}</span>}
           </div>
             :
             <div style={{display: "flex", flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>

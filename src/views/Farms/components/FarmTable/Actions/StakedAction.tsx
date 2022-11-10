@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { useERC20, useSousChef } from '../../../../../hooks/useContract'
 import useCatchTxError from '../../../../../hooks/useCatchTxError'
 // import { useRouter } from 'next/router'
+import ReactGA from 'react-ga4'
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import styled, { useTheme } from 'styled-components'
@@ -97,6 +98,11 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
       })
     })
     if (receipt?.status) {
+      ReactGA.event({
+        category: 'Stake LP tokens',
+        action: 'Stake LP tokens from card view',
+        label: 'Stake '+amount+' '+pool.token1.symbol+"-"+pool.token2.symbol+' LP to farm'
+      });
       addPopup(
           {
             txn: {
@@ -121,6 +127,11 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
       })
     })
     if (receipt?.status) {
+      ReactGA.event({
+        category: 'Unstake LP tokens',
+        action: 'Unstake LP tokens from card view',
+        label: 'Unstake '+amount+' '+pool.token1.symbol+"-"+pool.token2.symbol+' LP from farm'
+      });
       addPopup(
           {
             txn: {

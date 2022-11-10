@@ -528,7 +528,7 @@ export default function AddLiquidityPro({
 
               ReactGA.event({
                 category: "Liquidity",
-                action: "Add",
+                action: `Add ${sync === "off" ? "sync" : "async"} liquidity`,
                 label: [
                   currencies[Field.CURRENCY_A]?.symbol,
                   currencies[Field.CURRENCY_B]?.symbol,

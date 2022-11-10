@@ -350,7 +350,7 @@ export default function RemoveProLiquidity({
 
             ReactGA.event({
               category: 'Liquidity',
-              action: 'Remove Sync',
+              action: `Remove ${sync ? 'Sync' : 'Async'} liquidity`,
               label: [currencyA?.symbol, currencyB?.symbol].join('/')
             })
           })

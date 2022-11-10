@@ -3,7 +3,7 @@ import { useWeb3React } from '@web3-react/core'
 import styled from 'styled-components'
 import { Flex, IconButton } from '@pancakeswap/uikit'
 import useCatchTxError from '../../../../hooks/useCatchTxError'
-
+import ReactGA from 'react-ga4'
 import { useDispatch } from 'react-redux'
 import DepositModal from '../DepositModal'
 import WithdrawModal from '../WithdrawModal'
@@ -75,6 +75,11 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
         })
 
         if (receipt?.status) {
+            ReactGA.event({
+                category: 'Stake LP tokens',
+                action: 'Stake LP tokens from table view',
+                label: 'Stake '+amount+' '+pool.token1.symbol+"-"+pool.token2.symbol+' LP to farm'
+            });
             addPopup(
                 {
                     txn: {
@@ -99,6 +104,11 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
             })
         })
         if (receipt?.status) {
+            ReactGA.event({
+                category: 'Unstake LP tokens',
+                action: 'Unstake LP tokens from table view',
+                label: 'Unstake '+amount+' '+pool.token1.symbol+"-"+pool.token2.symbol+' LP from farm'
+            });
             addPopup(
                 {
                     txn: {

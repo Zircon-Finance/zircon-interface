@@ -240,7 +240,7 @@ export default function WalletModal({
     // log selected wallet
     ReactGA.event({
       category: 'Wallet',
-      action: 'Change Wallet',
+      action: `Set ${name} wallet`,
       label: name
     })
     setPendingWallet(connector) // set wallet for pending view

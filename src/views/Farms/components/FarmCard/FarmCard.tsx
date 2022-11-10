@@ -66,12 +66,6 @@ interface FarmCardProps {
 const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePrice, account }) => {
   const { t } = useTranslation()
   const theme = useTheme()
-
-  // const totalValueFormatted =
-  //   farm.liquidity && farm.liquidity.gt(0)
-  //     ? `$${farm.liquidity.toNumber().toLocaleString(undefined, { maximumFractionDigits: 0 })}`
-  //     : ''
-
   const lpLabel = `${farm.token1.symbol}-${farm.token2.symbol}`
   const addLiquidityUrl = '#/add-pro/' + farm.token1.address+'/' + farm.token2.address + '/' + farm.isAnchor ? "stable":"float"
   const isPromotedFarm = farm.token1.symbol === 'CAKE'

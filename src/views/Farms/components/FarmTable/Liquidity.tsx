@@ -10,6 +10,7 @@ import { usePairLiquidity } from '../../../../state/pools/hooks'
 import BigNumberJs from "bignumber.js";
 import { formattedNum } from '../../../../utils/formatBalance'
 import PlusIconMini from '../PlusIconMini'
+import { Separator } from '../../../../components/SearchModal/styleds'
 
 
 export interface LiquidityProps {
@@ -144,25 +145,42 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
             {hoverPlus && plusContent}
           </AbsContainer>
           {hoverLiq && <LiqContainer show={hoverLiq}>
+            <Flex flexDirection='column'>
+            <Separator style={{marginBottom: '10px'}} />
             <Flex alignItems={'center'}>
               <Flex flexDirection='column' pl='15px' pb='10px' pr='5px'>
                 <Text style={{color: theme.whiteHalf}} fontSize='12px'>
-                  {('From pair')}
+                  {('Pair liquidity')}
                 </Text>
-                <Text style={{color: theme.text1}} fontSize='13px'>
+                <Text style={{color: theme.text1}} fontSize='13px' fontWeight={500}>
                   {formattedNum(farm.liquidity?.pair, true)}
                 </Text>
               </Flex>
               <Flex><PlusIconMini /></Flex>
               <Flex flexDirection='column' pl='5px' pb='10px' pr='15px'>
                 <Text style={{color: theme.whiteHalf}} fontSize='12px'>
-                  {('From pylon')}
+                  {('Pylon liquidity')}
                 </Text>
-                <Text style={{color: theme.text1}} fontSize='13px'>
+                <Text style={{color: theme.text1}} fontSize='13px' fontWeight={500}>
                   {formattedNum(farm.liquidity?.pylon, true)}
                 </Text>
               </Flex>
             </Flex>
+            <Separator />
+            <Flex justifyContent={'center'} pt='10px' pb='10px' flexDirection={'column'} alignItems='center'>
+              <Text style={{color: theme.whiteHalf}} fontSize='13px'>
+                {('Reserves')}
+              </Text>
+              <Flex flexDirection={'column'} alignItems='center'>
+                <Text style={{color: theme.text1}} fontSize='13px' fontWeight={500}>
+                  {`${farm.reserves?.reserve0.toFixed(0)} ${farm.token1.symbol}` }
+                </Text>
+                <Text style={{color: theme.text1}} fontSize='13px' fontWeight={500}>
+                {`${farm.reserves?.reserve1.toFixed(0)} ${farm.token2.symbol}` }
+                </Text>
+              </Flex>
+            </Flex>
+          </Flex>
           </LiqContainer>}
           </>
         )}

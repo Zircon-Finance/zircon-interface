@@ -84,7 +84,7 @@ export const initialState: UserState = {
   tokens: {},
   pairs: {},
   timestamp: currentTimestamp(),
-  userFarmStakedOnly: FarmStakedOnly.ON_FINISHED,
+  userFarmStakedOnly: FarmStakedOnly.FALSE,
   userFarmsViewMode: ViewMode.TABLE,
   userFarmsFilterPylonClassic: FarmFilter.PYLON,
   userFarmsFilterAnchorFloat: FarmFilterAnchorFloat.ALL,

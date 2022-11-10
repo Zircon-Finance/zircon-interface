@@ -18,7 +18,7 @@ import { useTransactionAdder } from '../../../../../state/transactions/hooks'
 import { fetchPoolsUserDataAsync } from '../../../../../state/pools'
 import { Pagination, FreeMode } from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react'
-
+import ReactGA from 'react-ga4'
 import 'swiper/swiper.min.css'
 import 'swiper/modules/pagination/pagination.min.css'
 import { Flex } from 'rebass'
@@ -131,6 +131,11 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
                                 })
                             })
                             if (receipt?.status) {
+                                ReactGA.event({
+                                    category: 'Harvest Rewards',
+                                    action: 'Harvested from card view',
+                                    label: 'Harvested from card view'
+                                });
                                 addPopup(
                                     {
                                         txn: {

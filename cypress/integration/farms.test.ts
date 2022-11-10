@@ -14,14 +14,14 @@ describe('Farms', () => {
 
     it('Filters should work correctly', () => {
         cy.get('#all-select-tab').should('have.class', 'ACTIVE')
-        cy.get('#anchor-select-tab', { timeout: 20000 }).should('be.visible').click().should('have.class', 'ACTIVE')
+        cy.get('#anchor-select-tab', { timeout: 20000 }).should('be.visible').click({ force: true }).should('have.class', 'ACTIVE')
         cy.get('#all-select-tab', { timeout: 20000 }).should('not.have.class', 'ACTIVE')
-        cy.get('#float-select-tab', { timeout: 20000 }).should('be.visible').click().should('have.class', 'ACTIVE')
+        cy.get('#float-select-tab', { timeout: 20000 }).should('be.visible').click({ force: true }).should('have.class', 'ACTIVE')
         cy.get('#anchor-select-tab', { timeout: 20000 }).should('not.have.class', 'ACTIVE')
     })
 
     it('Staked only filter works', () => {
-        cy.get('#staked-only-farms', { timeout: 20000 }).click();
+        cy.get('#staked-only-farms', { timeout: 20000 }).click({ force: true });
         cy.get('#staked-only-farms', { timeout: 20000 }).should('be.checked');
     })
 

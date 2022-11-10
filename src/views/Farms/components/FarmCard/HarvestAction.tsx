@@ -24,6 +24,7 @@ import CurrencyLogo from '../../../../components/CurrencyLogo'
 import { DeserializedPool } from '../../../../state/types'
 import { Text } from 'rebass'
 import styled from 'styled-components'
+import ReactGA from 'react-ga4'
 
 interface FarmCardActionsProps extends DeserializedPool {
     userDataReady: boolean
@@ -122,6 +123,11 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, u
                                 })
                             })
                             if (receipt?.status) {
+                                ReactGA.event({
+                                    category: 'Harvest Rewards',
+                                    action: 'Harvested from table view',
+                                    label: 'Harvested from table view'
+                                });
                                 addPopup(
                                     {
                                         txn: {

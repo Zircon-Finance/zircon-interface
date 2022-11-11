@@ -30,6 +30,7 @@ const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan
   const [hoverIndicator, setHoverIndicator] = React.useState(false);
   const theme = useTheme()
   const {width} = useWindowDimensions()
+
   const TooltipContentRisk: React.FC<Props> = ({gamma, health, isFloat}) => {return (
     <ToolTip style={
       hoverPage === 'addLiq' ? {bottom: '140px', left: '260px'} :
@@ -47,7 +48,7 @@ const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan
             gamma >= 0.7 && 'The vault is suffering heavy impermanent loss, you will gain less than expected.' :
             health === "high" ? 'The vault is in normal operating conditions, all good.' :
             health === "medium" ? 'The vault is under stress, the risks of joining it are high.' :
-            health === "low" && 'The vault is temporarily limiting withdrawal claims. Joining it is dangerous and might result in loss of funds.' 
+            health === "low" && 'The vault is temporarily limiting withdrawal claims. Joining it is dangerous and might result in loss of funds.'
             }
         </Text>
     </ToolTip>
@@ -60,15 +61,15 @@ const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan
           <TooltipContentRisk gamma={gamma} health={health} isFloat={isFloat}/>
         )}
         {(!gamma || !health) ? <Skeleton width={60} /> : isFloat ? <div style={{display: "flex", flexDirection: 'row', justifyContent: 'center', alignItems: 'center', pointerEvents: 'none'}}>
-          {gamma < 0.4 && <CapacityIndicatorDivergenceYellow />}
-          {gamma < 0.7 && gamma >= 0.4 && <CapacityIndicatorDivergenceGreen />}
-          {gamma >= 0.7 && <CapacityIndicatorDivergenceRed />}
+          {gamma < 0.4 && <CapacityIndicatorDivergenceYellow hover={hoverIndicator}/>}
+          {gamma < 0.7 && gamma >= 0.4 && <CapacityIndicatorDivergenceGreen hover={hoverIndicator}/>}
+          {gamma >= 0.7 && <CapacityIndicatorDivergenceRed hover={hoverIndicator}/>}
           {!noSpan && <span style={{marginRight: 4,marginLeft: 8, color: theme.text1, fontSize: font && font}}>{`${(parseFloat(gamma)*10-5).toFixed(0)}`}</span>}
           </div>
             :
             <div style={{display: "flex", flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
               {!noSpan && <span style={{marginRight: 8, color: theme.text1, fontSize: font && font}}>{`${health === 'low' ? 'Low' : health === 'medium' ? 'Medium' : 'High'}`}</span>}
-              {health === "high" && <svg width="22" height="16" viewBox="0 0 22 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {health === "high" && <svg  width="22" height="16" viewBox="0 0 22 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect y="10" width="6" height="6" rx="3" fill="#449133" fillOpacity="0.9"/>
                 <rect x="16" width="6" height="16" rx="3" fill="#449133" fillOpacity="0.9"/>
                 <rect x="8" y="5" width="6" height="11" rx="3" fill="#449133" fillOpacity="0.9"/>

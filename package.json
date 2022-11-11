@@ -108,6 +108,7 @@
   "license": "GPL-3.0-or-later",
   "dependencies": {
     "@pancakeswap/uikit": "^0.64.0",
+    "@react-spring/web": "^9.5.5",
     "@sentry/react": "^6.19.7",
     "@visx/gradient": "^2.1.0",
     "@visx/group": "^2.1.0",

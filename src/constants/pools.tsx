@@ -16,7 +16,7 @@ const pools: SerializedPoolConfig[] = [
     token2: new Token(ChainId.MOONRIVER, '0x98878b06940ae243284ca214f92bb71a2b032b8a', 18, 'MOVR', 'Moonriver'),
     isClassic: false,
     isAnchor: false,
-    earningToken: [new Token(MOONRIVER, '0x98878B06940aE243284CA214f92Bb71a2b032B8A', 18, 'MOVR', 'MoonRiver'),
+    earningToken: [
       new Token(MOONRIVER, '0x4545E94974AdACb82FC56BCf136B07943e152055', 18, 'ZRG', 'Zircon Gamma')],
     stakingToken: new Token(MOONRIVER, '0x770AA7074297E465E823bf2F45194e926aF0D05d', 18, 'fZPT', 'Zircon Float Token'),
     contractAddress: '0x83cF5fBDA5FEf907D12286bc0F513F78B219D9ad',
@@ -34,7 +34,7 @@ const pools: SerializedPoolConfig[] = [
     token2: new Token(ChainId.MOONRIVER, '0x98878b06940ae243284ca214f92bb71a2b032b8a', 18, 'MOVR', 'Moonriver'),
     isClassic: false,
     isAnchor: true,
-    earningToken: [new Token(MOONRIVER, '0x98878B06940aE243284CA214f92Bb71a2b032B8A', 18, 'MOVR', 'MoonRiver'),
+    earningToken: [
       new Token(MOONRIVER, '0x4545E94974AdACb82FC56BCf136B07943e152055', 18, 'ZRG', 'Zircon Gamma')],
     stakingToken: new Token(MOONRIVER, '0xBB57187c7883d25a64a08640905376f4CeF6C1ef', 18, 'sZPT', 'Zircon Stable Token'),
     contractAddress: '0xc4AE2c70a0E671E494bdf46B162960cC155dB7cE',

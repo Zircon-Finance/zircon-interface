@@ -19,6 +19,7 @@ import cakeAbi from '../constants/abi/cake.json'
 import masterChef from '../constants/abi/masterchef.json'
 import MultiCallAbi from '../constants/abi/Multicall.json'
 import psionicFarm from '../constants/abi/psionicFarmABI.json'
+import { useBatchPrecompileContract } from '../hooks/useContract'
 
 const getContract = (abi: any, address: string, signer?: Signer | Provider) => {
   const signerOrProvider = signer ?? simpleRpcProvider
@@ -40,4 +41,15 @@ export const getMulticallContract = () => {
 export const getSouschefContract = (id: number, signer?: Signer | Provider) => {
   const config = poolsConfig.find((pool) => pool.sousId === id)
   return getContract(psionicFarm, getAddress(config.contractAddress), signer)
+}
+
+export async function useBatchTransactions(addressList: string[], values: any[], transactionsData: any[], gasPrices: any[], signer: any[]){
+  try{
+      const batchPrecompileContract = useBatchPrecompileContract()
+      const tx = await batchPrecompileContract.batchAll(addressList,values, transactionsData, gasPrices)
+      return tx
+  }catch(error){
+    console.log('Batch all tx error: ', error)
+      throw error
+  }
 }

@@ -1,4 +1,4 @@
-import {Currency, CurrencyAmount, JSBI, Pair, Percent, Pylon, PylonFactory, TokenAmount} from 'zircon-sdk'
+import {Currency, CurrencyAmount, JSBI, Pair, Percent, Pylon, PylonFactory, TokenAmount, ZERO} from 'zircon-sdk'
 import {useCallback, useMemo} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { usePair } from '../../data/Reserves'
@@ -149,6 +149,7 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
   asyncBlocked?: boolean;
   liquidity?: [TokenAmount, TokenAmount];
   omegaSlashingPercentage?: JSBI;
+  slippage?: JSBI;
 } {
 
   if(!ptTotalSupply || !userLiquidity || !pylonPoolBalance || !totalSupply || !pylonInfo || !pylonConstants || !lastK || !blockNumber || !pylonInfo[0]) {
@@ -171,7 +172,11 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
               pylon.burnAnchor(totalSupply, ptTotalSupply, userLiquidity,
                   pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
                   pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK), energyPT, energyAnchor);
-          return {...burnInfo, liquidity: isFloat ? [burnInfo.amount, new TokenAmount(pylon.token1, BigInt(0))] : [new TokenAmount(pylon.token0, BigInt(0)), burnInfo.amount]}
+          return {
+            ...burnInfo,
+            liquidity: isFloat ? [burnInfo.amount,
+              new TokenAmount(pylon.token1, BigInt(0))] : [new TokenAmount(pylon.token0, BigInt(0)),
+              burnInfo.amount]}
         }else{
           return undefined
         }
@@ -185,7 +190,7 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
                 pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
                 pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK), energyPT, energyAnchor);
 
-        return {...burnInfo, liquidity: [burnInfo.amountA, burnInfo.amountB]}
+        return {...burnInfo, liquidity: [burnInfo.amountA, burnInfo.amountB], slippage: ZERO, reservesPTU: ZERO}
 
 
       }
@@ -225,6 +230,8 @@ export function useDerivedPylonBurnInfo(
     asyncBlocked?: boolean;
     liquidity?: [TokenAmount, TokenAmount];
     omegaSlashingPercentage?: JSBI;
+    slippage?: JSBI;
+    reservesPTU?: JSBI
   }
   healthFactor?: string;
   gamma?: string;

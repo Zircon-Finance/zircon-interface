@@ -28,7 +28,7 @@ import { ModalContainer, RewardPerBlock } from '../../../Farms'
 import { useAddPopup, useWalletModalToggle } from '../../../../../state/application/hooks'
 import { Link } from 'react-router-dom'
 import { useTransactionAdder } from '../../../../../state/transactions/hooks'
-import { useWindowDimensions } from '../../../../../hooks'
+import { useActiveWeb3React, useWindowDimensions } from '../../../../../hooks'
 import { Flex } from 'rebass'
 import { Token } from 'zircon-sdk'
 import { DeserializedPool } from '../../../../../state/types'
@@ -243,7 +243,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const stakedBalance = pool.userData.stakedBalance
   const [showModal, setShowModal] = useState(false)
   const [rewardTokens, setRewardTokens] = useState("")
-  const { onStake } = useStakeFarms(farm.sousId)
+  const { onStake } = useStakeFarms(farm.sousId, farm.stakingToken.address)
   const { account } = useWeb3React()
   const dispatch = useDispatch()
   const allowance = farm.userData?.allowance ? new BigNumber(farm.userData.allowance) : BIG_ZERO
@@ -333,7 +333,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
     setRewardTokens(r.slice(0, -1))
   }, [])
   const [hovered, setHovered] = useState(false)
-
+  const {chainId} = useActiveWeb3React()
 
   return (
       <>
@@ -514,7 +514,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
               </>
           ) : (
               <QuarterContainer >
-                {isApproved ? (
+                {(isApproved || chainId === 1285) ? (
                         <StakeAdd 
                           pink={true} clickAction={() => {!farm.isFinished && setShowModal(true)}} 
                           row={true} margin={false} 

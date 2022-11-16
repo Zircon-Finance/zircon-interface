@@ -3,45 +3,49 @@ import { DEFAULT_GAS_LIMIT,
   //  stakeFarm
    } from '../../../utils/calls'
 import {
+  useBatchPrecompileContract,
+  useERC20,
   // useMasterchef,
   useSousChef } from '../../../hooks/useContract'
 import BigNumber from 'bignumber.js'
 import getGasPrice from '../../../utils/getGasPrice'
 import { BIG_TEN } from '../../../utils/bigNumber'
-
-const DEFAULT_TOKEN_DECIMAL = BIG_TEN.pow(18)
+import { useActiveWeb3React } from '../../../hooks'
+import { MaxUint256 } from '@ethersproject/constants'
 
 const options = {
   gasLimit: DEFAULT_GAS_LIMIT,
 }
 
-const sousStake = async (sousChefContract, amount, decimals = 18) => {
+const sousStake = async (sousChefContract, amount, decimals = 18, stakingTokenContract, batchContract, chainId) => {
+  
   const gasPrice = getGasPrice()
-  return sousChefContract.deposit(new BigNumber(amount).times(BIG_TEN.pow(decimals)).toString(10), {
+  const callData = sousChefContract.interface.encodeFunctionData('deposit', [new BigNumber(amount).times(BIG_TEN.pow(decimals)).toString(10)])
+  const approvalCallData = stakingTokenContract.interface.encodeFunctionData('approve', [sousChefContract.address, MaxUint256])
+
+  return chainId === 1285 ?
+  batchContract.batchAll(
+    [stakingTokenContract.address, sousChefContract.address], 
+    ["000000000000000000", "000000000000000000"],
+    [approvalCallData, callData],
+    []
+  )
+  : sousChefContract.deposit(new BigNumber(amount).times(BIG_TEN.pow(decimals)).toString(10), {
     ...options,
     gasPrice,
   })
 }
 
-const sousStakeBnb = async (sousChefContract, amount) => {
-  const gasPrice = getGasPrice()
-  return sousChefContract.deposit(new BigNumber(amount).times(DEFAULT_TOKEN_DECIMAL).toString(), {
-    ...options,
-    gasPrice,
-  })
-}
-
-const useStakePool = (sousId: number, isUsingBnb = false) => {
+const useStakePool = (sousId: number, stakingTokenAddress) => {
   const sousChefContract = useSousChef(sousId)
-
+  const batchContract = useBatchPrecompileContract()
+  const approvalContract = useERC20(stakingTokenAddress)
+  const {chainId} = useActiveWeb3React()
   const handleStake = useCallback(
     async (amount: string, decimals: number) => {
-      if (isUsingBnb) {
-        return sousStakeBnb(sousChefContract, amount)
-      }
-      return sousStake(sousChefContract, amount, decimals)
+      return sousStake(sousChefContract, amount, decimals, approvalContract, batchContract, chainId)
     },
-    [isUsingBnb, sousChefContract],
+    [sousChefContract],
   )
 
   return { onStake: handleStake }

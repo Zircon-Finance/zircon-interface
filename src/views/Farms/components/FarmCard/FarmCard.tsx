@@ -71,7 +71,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
   const isPromotedFarm = farm.token1.symbol === 'CAKE'
   const isApproved = account && farm.userData.allowance && farm.userData.allowance.isGreaterThan(0)
   const [showModalDeposit, setShowModalDeposit] = useState(false)
-  const { onStake } = useStakeFarms(farm.sousId)
+  const { onStake } = useStakeFarms(farm.sousId, farm.stakingToken.address)
   const addPopup = useAddPopup()
   const dispatch = useDispatch()
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()

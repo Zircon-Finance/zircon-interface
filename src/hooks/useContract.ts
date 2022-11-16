@@ -128,7 +128,7 @@ export function useMulticallContract(): Contract | null {
 
 export function useBatchPrecompileContract(): Contract | null {
   const { chainId } = useActiveWeb3React()
-  return useContract(chainId && '0x0000000000000000000000000000000000000808', BatchPrecompileABI, false)
+  return useContract(chainId && '0x0000000000000000000000000000000000000808', BatchPrecompileABI, true)
 }
 
 export function useSocksController(): Contract | null {

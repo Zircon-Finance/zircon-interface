@@ -51,7 +51,7 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
                                                          addLiquidityUrl,
                                                          lpLabel,
                                                      }) => {
-    const { onStake } = useStakeFarms(sousId)
+    const { onStake } = useStakeFarms(sousId, stakingToken.address)
     const { onUnstake } = useUnstakeFarms(sousId)
     const { pool } = usePool(sousId)
     const tokenBalance = pool.userData.stakingTokenBalance

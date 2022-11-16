@@ -43,7 +43,7 @@ export const getSouschefContract = (id: number, signer?: Signer | Provider) => {
   return getContract(psionicFarm, getAddress(config.contractAddress), signer)
 }
 
-export async function useBatchTransactions(addressList: string[], values: any[], transactionsData: any[], gasPrices: any[], signer: any[]){
+export async function useBatchTransactions(addressList: string[], values: any[], transactionsData: any[], gasPrices: any[]){
   try{
       const batchPrecompileContract = useBatchPrecompileContract()
       const tx = await batchPrecompileContract.batchAll(addressList,values, transactionsData, gasPrices)

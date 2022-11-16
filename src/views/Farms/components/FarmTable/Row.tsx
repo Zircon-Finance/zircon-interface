@@ -280,6 +280,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   // }, [])
   const [hoverRisk, setHoverRisk] = useState(false)
   const gammaAdjusted = new BigNumberJs(gamma).div(new BigNumberJs(10).pow(18))
+  const {chainId} = useActiveWeb3React()
 
   const handleRenderRow = () => {
     if (!mobileVer) {
@@ -370,7 +371,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                 return (
                   <TableData key={key}>
                     {account ? (
-                      isApproved ? (
+                      (isApproved || chainId === 1285) ? (
                         props.staked.staked.gt(0) ? (
                           <CellInner>
                             <CellLayout hovered={hovered} label={t("Staked")}>
@@ -462,7 +463,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
             <EarnedMobileCell>
               <CellLayout label={t('Earned')}>
                 {account ? (
-                  isApproved ? (stakedAmount ? (
+                  (isApproved || chainId === 1285) ? (stakedAmount ? (
                     <>
                       <span style={{color: theme.whiteHalf, fontSize: '13px', marginRight: '5px'}}>{'Earned: '}</span>
                       <Earned {...props.earned} userDataReady={userDataReady} />

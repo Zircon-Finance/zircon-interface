@@ -14,6 +14,7 @@ import DoubleCurrencyLogo from '../../components/DoubleLogo'
 import {AddRemoveTabs} from '../../components/NavigationTabs'
 import {MinimalPositionPylonCard} from '../../components/PositionCard'
 import Row, {RowBetween, RowFixed} from '../../components/Row'
+import { MaxUint256 } from '@ethersproject/constants'
 
 import Slider from '../../components/Slider'
 import CurrencyLogo from '../../components/CurrencyLogo'
@@ -44,6 +45,7 @@ import styled from 'styled-components'
 import BigNumberJs from "bignumber.js";
 import CapacityIndicator from "../../components/CapacityIndicator";
 import { StyledWarningIcon } from '../AddLiquidity/ConfirmAddModalBottom'
+import { useBatchPrecompileContract, useTokenContract } from '../../hooks/useContract'
 
 export const PercButton = styled.button<{ width: string }>`
   padding: 0.5rem 1rem;
@@ -101,6 +103,9 @@ export default function RemoveProLiquidity({
   const [deadline] = useUserDeadline()
   const [allowedSlippage] = useUserSlippageTolerance()
 
+  const batchContract = useBatchPrecompileContract()
+  const tokenContract = useTokenContract(parsedAmounts[Field.LIQUIDITY]?.token?.address)
+
   const formattedAmounts = {
     [Field.LIQUIDITY_PERCENT]: parsedAmounts[Field.LIQUIDITY_PERCENT].equalTo('0')
         ? '0'
@@ -128,69 +133,6 @@ export default function RemoveProLiquidity({
   )
   const pylonConstants = usePylonConstants()
   const blockNumber = useBlockNumber()
-  // async function onAttemptToApprove() {
-  //   if (!pairContract || !pylon?.pair || !library) throw new Error('missing dependencies')
-  //   const liquidityAmount = parsedAmounts[Field.LIQUIDITY]
-  //   if (!liquidityAmount) throw new Error('missing liquidity amount')
-  //   // try to gather a signature for permission
-  //   const nonce = await pairContract.nonces(account)
-  //
-  //   const deadlineForSignature: number = Math.ceil(Date.now() / 1000) + deadline
-  //
-  //   const EIP712Domain = [
-  //     { name: 'name', type: 'string' },
-  //     { name: 'version', type: 'string' },
-  //     { name: 'chainId', type: 'uint256' },
-  //     { name: 'verifyingContract', type: 'address' }
-  //   ]
-  //   const domain = {
-  //     name: 'Uniswap V2', //correct domain name!!!!!!!!!!!!!!!!!!!!!!!
-  //     version: '1',
-  //     chainId: chainId,
-  //     verifyingContract: pylon.pair.liquidityToken.address
-  //   }
-  //   const Permit = [
-  //     { name: 'owner', type: 'address' },
-  //     { name: 'spender', type: 'address' },
-  //     { name: 'value', type: 'uint256' },
-  //     { name: 'nonce', type: 'uint256' },
-  //     { name: 'deadline', type: 'uint256' }
-  //   ]
-  //   const message = {
-  //     owner: account,
-  //     spender: ROUTER_ADDRESS,
-  //     value: liquidityAmount.raw.toString(),
-  //     nonce: nonce.toHexString(),
-  //     deadline: deadlineForSignature
-  //   }
-  //   const data = JSON.stringify({
-  //     types: {
-  //       EIP712Domain,
-  //       Permit
-  //     },
-  //     domain,
-  //     primaryType: 'Permit',
-  //     message
-  //   })
-  //
-  //   library
-  //       .send('eth_signTypedData_v4', [account, data])
-  //       .then(splitSignature)
-  //       .then(signature => {
-  //         setSignatureData({
-  //           v: signature.v,
-  //           r: signature.r,
-  //           s: signature.s,
-  //           deadline: deadlineForSignature
-  //         })
-  //       })
-  //       .catch(error => {
-  //         // for all errors other than 4001 (EIP-1193 user rejected request), fall back to manual approve
-  //         if (error?.code !== 4001) {
-  //           approveCallback()
-  //         }
-  //       })
-  // }
 
   // wrapped onUserInput to clear signatures
   const onUserInput = useCallback(
@@ -239,7 +181,7 @@ export default function RemoveProLiquidity({
 
     let methodNames: string[], args: (string  | boolean | number)[]
     // we have approval, use normal remove liquidity
-    if (approval === ApprovalState.APPROVED) {
+    if (approval === ApprovalState.APPROVED || chainId === 1285) {
       // removeLiquidityETH
       if(sync) {
         if (oneCurrencyIsETH) {
@@ -320,6 +262,11 @@ export default function RemoveProLiquidity({
         BigNumber.isBigNumber(safeGasEstimate)
     )
 
+    const approvalCallData = tokenContract.interface.encodeFunctionData('approve', [router.address, MaxUint256])
+    const callData = router.interface.encodeFunctionData((
+      sync ? oneCurrencyIsETH ? 'removeLiquiditySyncETH' : 'removeLiquiditySync' : 
+      oneCurrencyIsETH ? 'removeLiquidityAsyncETH' : 'removeLiquidityAsync'), args)
+
     // all estimations failed...
     if (indexOfSuccessfulEstimation === -1) {
       console.error('This transaction would fail. Please contact support.')
@@ -328,9 +275,17 @@ export default function RemoveProLiquidity({
       const safeGasEstimate = safeGasEstimates[indexOfSuccessfulEstimation]
 
       setAttemptingTxn(true)
-      await router[methodName](...args, {
+      await (chainId === 1285 ?
+        batchContract.batchAll(
+          [tokenContract.address, router.address], 
+          ["000000000000000000", "000000000000000000"],
+          [approvalCallData, callData],
+          []
+        )
+        :
+        router[methodName](...args, {
         gasLimit: safeGasEstimate
-      })
+      }))
           .then((response: TransactionResponse) => {
             setAttemptingTxn(false)
 
@@ -449,7 +404,7 @@ export default function RemoveProLiquidity({
             <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{"We estimate a high fee for this transaction. Try in a few minutes"}</span>
           </RowBetween>
           )}
-          <ButtonPrimary disabled={!(approval === ApprovalState.APPROVED || signatureData !== null) || burnInfo.blocked || burnInfo.asyncBlocked || burnInfo.deltaApplied} onClick={onRemove}>
+          <ButtonPrimary disabled={chainId !== 1285 && (!(approval === ApprovalState.APPROVED || signatureData !== null) || burnInfo.blocked || burnInfo.asyncBlocked || burnInfo.deltaApplied)} onClick={onRemove}>
             <Text fontWeight={400} fontSize={18}>
               Confirm
             </Text>
@@ -742,7 +697,7 @@ export default function RemoveProLiquidity({
                     <ButtonLight onClick={toggleWalletModal}>Connect Wallet</ButtonLight>
                 ) : (
                     <RowBetween style={{paddingBottom: '10px'}}>
-                      <ButtonConfirmed
+                      {chainId !== 1285 && (<ButtonConfirmed
                           onClick={() => approveCallback()}
                           confirmed={approval === ApprovalState.APPROVED || signatureData !== null}
                           disabled={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
@@ -757,12 +712,12 @@ export default function RemoveProLiquidity({
                         ) : (
                             'Approve'
                         )}
-                      </ButtonConfirmed>
+                      </ButtonConfirmed>)}
                       <ButtonError
                           onClick={() => {
                             setShowConfirm(true)
                           }}
-                          disabled={!isValid || (signatureData === null && approval !== ApprovalState.APPROVED)}
+                          disabled={chainId !== 1285 ? (!isValid || (signatureData === null && approval !== ApprovalState.APPROVED)) : !isValid}
                           error={!isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]}
                       >
                         <Text fontSize={16} fontWeight={400}>

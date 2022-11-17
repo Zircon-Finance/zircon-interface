@@ -15,6 +15,7 @@ import DoubleCurrencyLogo from '../../components/DoubleLogo'
 import { AddRemoveTabs } from '../../components/NavigationTabs'
 import { MinimalPositionCard } from '../../components/PositionCard'
 import Row, { RowBetween, RowFixed } from '../../components/Row'
+import { MaxUint256 } from '@ethersproject/constants'
 
 import Slider from '../../components/Slider'
 import CurrencyLogo from '../../components/CurrencyLogo'
@@ -45,6 +46,7 @@ import {useTransactionAdder} from "../../state/transactions/hooks";
 import {calculateSlippageAmount, getRouterContract} from "../../utils";
 import {TransactionResponse} from "@ethersproject/providers";
 import ReactGA from "react-ga4";
+import { useBatchPrecompileContract, useTokenContract } from '../../hooks/useContract'
 
 export default function RemoveLiquidity({
   history,
@@ -61,7 +63,6 @@ export default function RemoveLiquidity({
   ])
 
   const theme = useTheme()
-
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle()
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false);
@@ -80,6 +81,9 @@ export default function RemoveLiquidity({
   const [txHash, setTxHash] = useState<string>('')
   const [deadline] = useUserDeadline()
   const [allowedSlippage] = useUserSlippageTolerance()
+
+  const batchContract = useBatchPrecompileContract()
+  const tokenContract = useTokenContract(parsedAmounts[Field.LIQUIDITY]?.token?.address)
 
   const formattedAmounts = {
     [Field.LIQUIDITY_PERCENT]: parsedAmounts[Field.LIQUIDITY_PERCENT].equalTo('0')
@@ -150,7 +154,7 @@ export default function RemoveLiquidity({
 
     let methodNames: string[], args: Array<string | string[] | number | boolean>
     // we have approval, use normal remove liquidity
-    if (approval === ApprovalState.APPROVED) {
+    if (approval === ApprovalState.APPROVED || chainId === 1285) {
       // removeLiquidityETH
       if (oneCurrencyIsETH) {
         methodNames = ['removeLiquidityETH', 'removeLiquidityETHSupportingFeeOnTransferTokens']
@@ -178,6 +182,8 @@ export default function RemoveLiquidity({
       }
     }
 
+    const approvalCallData = tokenContract.interface.encodeFunctionData('approve', [router.address, MaxUint256])
+    const callData = router.interface.encodeFunctionData((oneCurrencyIsETH ? 'removeLiquidityETH' : 'removeLiquidity'), args)
     const safeGasEstimates: BigNumber[] = [BigNumber.from('5000000')]
     const indexOfSuccessfulEstimation = safeGasEstimates.findIndex(safeGasEstimate =>
       BigNumber.isBigNumber(safeGasEstimate)
@@ -191,9 +197,17 @@ export default function RemoveLiquidity({
       const safeGasEstimate = safeGasEstimates[indexOfSuccessfulEstimation]
 
       setAttemptingTxn(true)
-      await router[methodName](...args, {
+      await (chainId === 1285 ?
+        batchContract.batchAll(
+          [tokenContract.address, router.address], 
+          ["000000000000000000", "000000000000000000"],
+          [approvalCallData, callData],
+          []
+        )
+         :
+        router[methodName](...args, {
         gasLimit: safeGasEstimate
-      })
+      }))
         .then((response: TransactionResponse) => {
           setAttemptingTxn(false)
 
@@ -300,7 +314,7 @@ export default function RemoveLiquidity({
           <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{errorTx}</span>
         </RowBetween>
         )}
-        <ButtonPrimary disabled={!(approval === ApprovalState.APPROVED || signatureData !== null)} onClick={ ()=> onRemove()}>
+        <ButtonPrimary disabled={chainId !== 1285 && (!(approval === ApprovalState.APPROVED || signatureData !== null))} onClick={ ()=> onRemove()}>
           <Text fontWeight={400} fontSize={18}>
             Confirm
           </Text>
@@ -554,7 +568,7 @@ export default function RemoveLiquidity({
                 <ButtonLight onClick={toggleWalletModal}>Connect Wallet</ButtonLight>
               ) : (
                 <RowBetween style={{paddingBottom: '10px'}}>
-                  <ButtonConfirmed
+                  {chainId !== 1285 && (<ButtonConfirmed
                     onClick={() => approveCallback()}
                     confirmed={approval === ApprovalState.APPROVED }
                     disabled={approval !== ApprovalState.NOT_APPROVED }
@@ -569,12 +583,12 @@ export default function RemoveLiquidity({
                     ) : (
                       'Approve'
                     )}
-                  </ButtonConfirmed>
+                  </ButtonConfirmed>)}
                   <ButtonError
                     onClick={() => {
                       setShowConfirm(true)
                     }}
-                    disabled={!isValid || (approval !== ApprovalState.APPROVED)}
+                    disabled={chainId !== 1285 ? (!isValid || (approval !== ApprovalState.APPROVED)) : !isValid}
                     error={!isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]}
                   >
                     <Text fontSize={16} fontWeight={400}>

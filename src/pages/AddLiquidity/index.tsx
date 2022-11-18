@@ -16,6 +16,7 @@ import DoubleCurrencyLogo from '../../components/DoubleLogo'
 import { AddRemoveTabsClassic } from '../../components/NavigationTabs'
 import { MinimalPositionCard } from '../../components/PositionCard'
 import { RowBetween, RowFlat } from '../../components/Row'
+import { MaxUint256 } from '@ethersproject/constants'
 
 import { ROUTER_ADDRESS } from '../../constants'
 import { PairState } from '../../data/Reserves'
@@ -39,6 +40,7 @@ import { currencyId } from '../../utils/currencyId'
 import { PoolPriceBar } from './PoolPriceBar'
 import LearnIcon from '../../components/LearnIcon'
 import InfoCircle from '../../components/InfoCircle'
+import { useBatchPrecompileContract, useTokenContract } from '../../hooks/useContract'
 
 export default function AddLiquidity({
   match: {
@@ -89,6 +91,10 @@ export default function AddLiquidity({
   const [deadline] = useUserDeadline() // custom from users settings
   const [allowedSlippage] = useUserSlippageTolerance() // custom from users
   const [txHash, setTxHash] = useState<string>('')
+
+  const batchContract = useBatchPrecompileContract()
+  const token0Contract = useTokenContract(wrappedCurrency(currencyA, chainId)?.address)
+  const token1Contract = useTokenContract(wrappedCurrency(currencyA, chainId)?.address)
 
   // get formatted amounts
   const formattedAmounts = {
@@ -146,6 +152,9 @@ export default function AddLiquidity({
 
     const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline
 
+    const approvalCallData0 = token0Contract.interface.encodeFunctionData('approve', [router.address, MaxUint256])
+    const approvalCallData1 = token1Contract.interface.encodeFunctionData('approve', [router.address, MaxUint256])
+
     let estimate,
       method: (...args: any) => Promise<TransactionResponse>,
       args: Array<string | string[] | number>,
@@ -178,13 +187,24 @@ export default function AddLiquidity({
       ]
       value = null
     }
+
+    const callData = router.interface.encodeFunctionData((currencyA === DEV || currencyB === DEV ? 'addLiquidityETH' : 'addLiquidity'), args)
+
     setAttemptingTxn(true)
     await estimate(...args, value ? { value } : {})
-      .then(estimatedGasLimit =>
+      .then(estimatedGasLimit =>(
+        chainId === 1285 ?
+          batchContract.batchAll(
+            [token0Contract.address, token1Contract.address, router.address], 
+            ["000000000000000000", "000000000000000000", "000000000000000000"],
+            [approvalCallData0,approvalCallData1, callData],
+            []
+          )
+          :
         method(...args, {
           ...(value ? { value } : {}),
           gasLimit: calculateGasMargin(estimatedGasLimit)
-        }).then(response => {
+        })).then(response => {
           setAttemptingTxn(false)
 
           addTransaction(response, {
@@ -405,11 +425,11 @@ export default function AddLiquidity({
                     <ButtonLight onClick={toggleWalletModal}>Connect Wallet</ButtonLight>
                     ) : (
                     <AutoColumn gap={'md'}>
-                      {(approvalA === ApprovalState.NOT_APPROVED ||
+                      {chainId !== 1285 && ((approvalA === ApprovalState.NOT_APPROVED ||
                         approvalA === ApprovalState.PENDING ||
                         approvalB === ApprovalState.NOT_APPROVED ||
                         approvalB === ApprovalState.PENDING) &&
-                        isValid && (
+                        isValid) && (
                           <RowBetween>
                             {approvalA !== ApprovalState.APPROVED && (
                               <ButtonPrimary

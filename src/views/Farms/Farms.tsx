@@ -26,12 +26,18 @@ import { AnchorFloatTab, FarmTabButtons, PylonClassicTab, ViewModeTabs } from '.
 import FarmRepeatIcon from '../../components/FarmRepeatIcon'
 import FarmsPage from '../../pages/Farm/'
 import Select from '../../components/Select/Select'
-import { useWindowDimensions } from '../../hooks'
+import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
 import {usePools, usePoolsPageFetch } from '../../state/pools/hooks'
 import { fetchPoolsUserDataAsync } from '../../state/pools'
 import {DeserializedPool, EarningTokenInfo} from '../../state/types'
 import orderBy from 'lodash/orderBy'
 import { ButtonLighter } from '../../components/Button'
+import { useBatchPrecompileContract } from '../../hooks/useContract'
+import { getSouschefContract } from '../../utils/contractHelpers'
+import useCatchTxError from '../../hooks/useCatchTxError'
+import { useAddPopup } from '../../state/application/hooks'
+import { useTransactionAdder } from '../../state/transactions/hooks'
+import { useDispatch } from 'react-redux'
 
 interface Props {
   earningRewardsBlock:  EarningTokenInfo[]
@@ -214,6 +220,7 @@ const Farms: React.FC = ({ children }) => {
   const [filtedFinishedOnly] = useUserFarmsFinishedOnly()
   const { account } = useWeb3React()
   const [sortOption, setSortOption] = useState('hot')
+  const [pendingTx, setPendingTx] = useState(false)
   const { observerRef,
     // isIntersecting
   } = useIntersectionObserver()
@@ -247,7 +254,46 @@ const Farms: React.FC = ({ children }) => {
     event.persist()
     setQuery(event.target.value)
   }
+  const { library } = useActiveWeb3React()
+  const batchContract = useBatchPrecompileContract()
+  const { fetchWithCatchTxError } = useCatchTxError()
+  const addPopup = useAddPopup()
+  const addTransaction = useTransactionAdder()
+  const dispatch = useDispatch()
 
+  const harvestAllPools = async() => {
+    setPendingTx(true)
+    const contracts = stakedOnlyFarms.map((pool) => getSouschefContract(pool.sousId, library.getSigner()))
+    const zeroValues = contracts.map(() => '000000000000000000')
+    const callData = stakedOnlyFarms.map((pool, index) => contracts[index].interface.encodeFunctionData('deposit', ['0']))
+    const receipt = await fetchWithCatchTxError(() => 
+        batchContract.batchAll(
+        contracts.map((contract) => contract.address), 
+        zeroValues,
+        callData,
+        []
+      ).then((response) => {
+        addTransaction(response, {
+          summary: `Harvest rewards from all pools`
+        })
+        return response
+      })
+    )
+    if (receipt?.status) {
+      setPendingTx(false)
+      addPopup(
+        {
+          txn: {
+            hash: receipt.transactionHash,
+            success: receipt.status === 1,
+            summary: `Harvest rewards from all pools`,
+          }
+        },
+        receipt.transactionHash
+      )
+      dispatch(fetchPoolsUserDataAsync(account))
+    }
+  }
 
   const options = ['Earned', 'Staked', 'APR', 'Liquidity']
   const [showMobileSearchBar] = useShowMobileSearchBarManager()
@@ -536,9 +582,15 @@ const Farms: React.FC = ({ children }) => {
                   : null
               }
             >
-              <TableData style={{ minWidth: width >= 600 ? "275px" : "auto" }}>
+              <TableData style={{ maxWidth: width >= 600 ? account ? '185px' : "285px" : "auto", minWidth: !account && '285px' }}>
                 <ViewModeTabs active={viewMode} />
               </TableData>
+              {width >= 992 && account && <TableData style={{ width: "9%"}}>
+                <ButtonLighter disabled={pendingTx || stakedOnlyFarms.length === 0} 
+                  onClick={()=>harvestAllPools()} style={{padding: '5px 10px', height: '38px', width: 'auto'}} >
+                  {pendingTx ? 'Harvesting...' :'Harvest all'}
+                </ButtonLighter>
+              </TableData>}
               {viewMode === ViewMode.TABLE && width > 992 ? (
                 options.map((option) => (
                   <TableData

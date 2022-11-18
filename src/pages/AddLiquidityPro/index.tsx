@@ -11,6 +11,7 @@ import {BlueCard, GreyCard, LightCard} from "../../components/Card";
 import {AutoColumn, ColumnCenter} from "../../components/Column";
 import TransactionConfirmationModal, {ConfirmationModalContent,} from "../../components/TransactionConfirmationModal";
 import BigNumberJs from 'bignumber.js';
+import { MaxUint256 } from '@ethersproject/constants'
 
 import CurrencyInputPanelInputOnly from "../../components/CurrencyInputPanelInputOnly";
 import CurrencyInputPanelPicOnly from "../../components/CurrencyInputPanelPicOnly";
@@ -47,7 +48,7 @@ import {Toggle} from "@pancakeswap/uikit";
 import {SpaceBetween} from "../../views/Farms/components/FarmTable/Actions/ActionPanel";
 import RepeatIcon from "../../components/RepeatIcon";
 import {usePool, usePools} from "../../state/pools/hooks";
-import {useERC20} from "../../hooks/useContract";
+import {useERC20, useSousChef} from "../../hooks/useContract";
 import useApprovePool from "../../views/Farms/hooks/useApproveFarm";
 import {fetchPoolsUserDataAsync} from "../../state/pools";
 import {useDispatch} from "react-redux";
@@ -59,6 +60,7 @@ import animation from '../../assets/lotties/0uCdcx9Hn5.json'
 import CapacityIndicator from "../../components/CapacityIndicator";
 import { usePair } from "../../data/Reserves";
 import { Separator } from "../../components/SearchModal/styleds";
+import { useBatchPrecompileContract, useTokenContract } from '../../hooks/useContract'
 
 const IconContainer = styled.div`
   display: flex;
@@ -161,6 +163,7 @@ export default function AddLiquidityPro({
 
   const [pendingTx, setPendingTx] = useState(false)
   const {handleApprove} = useApprovePool(farm, lpContract, farm?.sousId ?? 1)
+  const sousChefContract = useSousChef(farm?.sousId ?? 1)
   const approveFarm = useCallback(async () => {
     setPendingTx(true)
     try {
@@ -181,6 +184,10 @@ export default function AddLiquidityPro({
   const [deadline] = useUserDeadline(); // custom from users settings
   const [allowedSlippage] = useUserSlippageTolerance(); // custom from users
   const [txHash, setTxHash] = useState<string>("");
+
+  const batchContract = useBatchPrecompileContract()
+  const token0Contract = useTokenContract(wrappedCurrency(currencyA, chainId)?.address)
+  const token1Contract = useTokenContract(wrappedCurrency(currencyA, chainId)?.address)
 
   const getField = (shouldSendFloat) => {
     if (isFloat) {
@@ -372,6 +379,10 @@ export default function AddLiquidityPro({
     if (!chainId || !library || !account) return;
     const router = getPylonRouterContract(chainId, library, account);
 
+    const approvalCallData0 = token0Contract.interface.encodeFunctionData('approve', [router.address, MaxUint256])
+    const approvalCallData1 = token1Contract.interface.encodeFunctionData('approve', [router.address, MaxUint256])
+    const farmApprovalCallData = lpContract.interface.encodeFunctionData('approve', [sousChefContract.address, MaxUint256])
+
     const {
       [Field.CURRENCY_A]: parsedAmountA,
       [Field.CURRENCY_B]: parsedAmountB,
@@ -493,14 +504,27 @@ export default function AddLiquidityPro({
         value = null;
       }
     }
+
+    const callData = router.interface.encodeFunctionData(((sync === "off" ? ((getCurrency(true) === DEV) ? 'addSyncLiquidityETH' : 'addSyncLiquidity') :
+    ((getCurrency(true) === DEV || getCurrency(false) === DEV) ? 'addAsyncLiquidityETH' : 'addAsyncLiquidity'))), args)
+
     console.log('args', args)
+    console.log('calldata', (value !== undefined && value !== null) ? value : "000000000000000000")
     setAttemptingTxn(true);
-    await estimate(...args, value ? { value } : {})
-        .then((estimatedGasLimit) =>
+    await estimate(...args, (value !== undefined && value !== null) ? { value } : {})
+        .then((estimatedGasLimit) =>(
+          chainId === 1285 ?
+            batchContract.batchAll(
+              [lpContract.address, token0Contract.address, token1Contract.address,  router.address], 
+              ["000000000000000000", "000000000000000000", "000000000000000000", (value !== undefined && value !== null) ? value : "000000000000000000"],
+              [farmApprovalCallData, approvalCallData0, approvalCallData1, callData],
+              []
+            )
+            :
             method(...args, {
               ...(value ? { value } : {}),
               gasLimit: calculateGasMargin(estimatedGasLimit),
-            }).then((response) => {
+            })).then((response) => {
               setAttemptingTxn(false);
               if (sync === "half") {
                 addTransaction(response, {
@@ -835,6 +859,12 @@ export default function AddLiquidityPro({
 
   const [pairState,pair] = usePair(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B])
   const prices = usePairPrices(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B], pair, pairState)
+
+  const showApproveCondition = (approvalA === ApprovalState.NOT_APPROVED ||
+    approvalA === ApprovalState.PENDING ||
+    approvalB === ApprovalState.NOT_APPROVED ||
+    approvalB === ApprovalState.PENDING) &&
+isValid
 
   // console.log("currencyA", float.currency_a )
   // console.log("curremciesA", currencies[Field.CURRENCY_A])
@@ -1270,11 +1300,7 @@ export default function AddLiquidityPro({
                           </ButtonLight>
                       ) : (
                           <AutoColumn gap={"md"}>
-                            {(approvalA === ApprovalState.NOT_APPROVED ||
-                                approvalA === ApprovalState.PENDING ||
-                                approvalB === ApprovalState.NOT_APPROVED ||
-                                approvalB === ApprovalState.PENDING) &&
-                            isValid && (
+                            {chainId !== 1285 && showApproveCondition && (
                                 <RowBetween>
                                   {/* Currency A isn't approved or pylon doesn't exist and A isn't approved */}
                                   {(pylonState === PylonState.NOT_EXISTS ? (approvalAPair !== ApprovalState.APPROVED ? true : false) : (approvalA !== ApprovalState.APPROVED ? true : false))
@@ -1335,7 +1361,8 @@ export default function AddLiquidityPro({
                                     !!parsedAmounts[Field.CURRENCY_A] &&
                                     !!parsedAmounts[Field.CURRENCY_B]
                                   }
-                                  disabled={
+                                  disabled={chainId === 1285 ? (error !== undefined ? true :
+                                    !isValid) :
                                     error !== undefined ? true :
                                     !isValid ||
                                     pylonState === PylonState.EXISTS ?
@@ -1367,17 +1394,17 @@ export default function AddLiquidityPro({
                                       width={"48%"}
                                       onClick={() =>
                                         farm ?
-                                        !farmIsApproved() ?
+                                        (!farmIsApproved() && chainId !== 1285) ?
                                         (approveFarm()) :
                                         (setShowConfirm(true), setIsStaking(true)) :
                                         (setShowConfirm(true), setIsStaking(true))
                                       }
                                       disabled={
                                         pendingTx ||
-                                        !isValid ||
+                                        !isValid || (chainId !== 1285 && (
                                         approvalA !== ApprovalState.APPROVED ||
                                         (sync === "half" &&
-                                            approvalB !== ApprovalState.APPROVED)
+                                            approvalB !== ApprovalState.APPROVED)))
                                       }
                                       error={
                                         sync === "half" &&
@@ -1392,10 +1419,10 @@ export default function AddLiquidityPro({
                                           fontWeight={400}
                                       >
                                         {error ? 'Add & Farm' :
-                                            (farmIsApproved() ?
+                                            (farmIsApproved() || chainId === 1285 ?
                                                 "Add & Farm" : "Enable farm contract")}
                                       </Text>
-                                      {farmIsApproved() && pool?.apr && (
+                                      {(farmIsApproved() || (chainId === 1285 && pool?.apr)) && (
                                       <Text
                                           fontSize={width > 700 ? 14 : 13}
                                           fontWeight={400}

@@ -60,7 +60,7 @@ import animation from '../../assets/lotties/0uCdcx9Hn5.json'
 import CapacityIndicator from "../../components/CapacityIndicator";
 import { usePair } from "../../data/Reserves";
 import { Separator } from "../../components/SearchModal/styleds";
-import { useBatchPrecompileContract, useTokenContract } from '../../hooks/useContract'
+import { useBatchPrecompileContract } from '../../hooks/useContract'
 
 const IconContainer = styled.div`
   display: flex;
@@ -153,7 +153,6 @@ export default function AddLiquidityPro({
           f.isAnchor === !isFloat &&
           f.apr !== 0
   );
-  console.log('farm', farm)
   const { pool } = usePool(useMemo(() => farm ? farm?.sousId : 1, [farm]));
   const addTransaction = useTransactionAdder()
   const lpContract = useERC20(pool?.stakingToken.address)
@@ -186,8 +185,8 @@ export default function AddLiquidityPro({
   const [txHash, setTxHash] = useState<string>("");
 
   const batchContract = useBatchPrecompileContract()
-  const token0Contract = useTokenContract(wrappedCurrency(currencyA, chainId)?.address)
-  const token1Contract = useTokenContract(wrappedCurrency(currencyA, chainId)?.address)
+  const token0Contract = useERC20(wrappedCurrency(currencyA, chainId)?.address, true)
+  const token1Contract = useERC20(wrappedCurrency(currencyB, chainId)?.address, true)
 
   const getField = (shouldSendFloat) => {
     if (isFloat) {
@@ -379,10 +378,6 @@ export default function AddLiquidityPro({
     if (!chainId || !library || !account) return;
     const router = getPylonRouterContract(chainId, library, account);
 
-    const approvalCallData0 = token0Contract.interface.encodeFunctionData('approve', [router.address, MaxUint256])
-    const approvalCallData1 = token1Contract.interface.encodeFunctionData('approve', [router.address, MaxUint256])
-    const farmApprovalCallData = lpContract.interface.encodeFunctionData('approve', [sousChefContract.address, MaxUint256])
-
     const {
       [Field.CURRENCY_A]: parsedAmountA,
       [Field.CURRENCY_B]: parsedAmountB,
@@ -405,6 +400,8 @@ export default function AddLiquidityPro({
         method: (...args: any) => Promise<TransactionResponse>,
         args: Array<string | string[] | number | boolean>,
         value: BigNumber | null;
+
+        console.log('estimateGas.addLiquidityETH', estimate)
 
     const tokenBIsETH = getCurrency(false) === DEV;
 
@@ -505,14 +502,16 @@ export default function AddLiquidityPro({
       }
     }
 
+    const approvalCallData0 = token0Contract.interface.encodeFunctionData('approve', [router.address, parsedAmounts[getField(true)].raw.toString()])
+    const approvalCallData1 = token1Contract.interface.encodeFunctionData('approve', [router.address, parsedAmounts[getField(false)].raw.toString()])
+    const farmApprovalCallData = lpContract.interface.encodeFunctionData('approve', [sousChefContract.address, MaxUint256])
+
     const callData = router.interface.encodeFunctionData(((sync === "off" ? ((getCurrency(true) === DEV) ? 'addSyncLiquidityETH' : 'addSyncLiquidity') :
     ((getCurrency(true) === DEV || getCurrency(false) === DEV) ? 'addAsyncLiquidityETH' : 'addAsyncLiquidity'))), args)
 
     console.log('args', args)
-    console.log('calldata', (value !== undefined && value !== null) ? value : "000000000000000000")
     setAttemptingTxn(true);
-    await estimate(...args, (value !== undefined && value !== null) ? { value } : {})
-        .then((estimatedGasLimit) =>(
+    await (
           chainId === 1285 ?
             batchContract.batchAll(
               [lpContract.address, token0Contract.address, token1Contract.address,  router.address], 
@@ -522,8 +521,7 @@ export default function AddLiquidityPro({
             )
             :
             method(...args, {
-              ...(value ? { value } : {}),
-              gasLimit: calculateGasMargin(estimatedGasLimit),
+              ...(value ? { value } : {})
             })).then((response) => {
               setAttemptingTxn(false);
               if (sync === "half") {
@@ -559,7 +557,6 @@ export default function AddLiquidityPro({
                 ].join("/"),
               });
             })
-        )
         .catch((error) => {
           setAttemptingTxn(false);
           setErrorTx(error?.data?.message);

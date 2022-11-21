@@ -30,7 +30,7 @@ import { useDerivedMintInfo, useMintActionHandlers, useMintState } from '../../s
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { useIsExpertMode, useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
 import { TYPE } from '../../theme'
-import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from '../../utils'
+import { calculateSlippageAmount, getRouterContract } from '../../utils'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import AppBody from '../AppBody'
@@ -94,7 +94,7 @@ export default function AddLiquidity({
 
   const batchContract = useBatchPrecompileContract()
   const token0Contract = useTokenContract(wrappedCurrency(currencyA, chainId)?.address)
-  const token1Contract = useTokenContract(wrappedCurrency(currencyA, chainId)?.address)
+  const token1Contract = useTokenContract(wrappedCurrency(currencyB, chainId)?.address)
 
   // get formatted amounts
   const formattedAmounts = {
@@ -187,12 +187,12 @@ export default function AddLiquidity({
       ]
       value = null
     }
+    console.log('estimate', estimate)
 
     const callData = router.interface.encodeFunctionData((currencyA === DEV || currencyB === DEV ? 'addLiquidityETH' : 'addLiquidity'), args)
 
     setAttemptingTxn(true)
-    await estimate(...args, value ? { value } : {})
-      .then(estimatedGasLimit =>(
+    await (
         chainId === 1285 ?
           batchContract.batchAll(
             [token0Contract.address, token1Contract.address, router.address], 
@@ -202,8 +202,7 @@ export default function AddLiquidity({
           )
           :
         method(...args, {
-          ...(value ? { value } : {}),
-          gasLimit: calculateGasMargin(estimatedGasLimit)
+          ...(value ? { value } : {})
         })).then(response => {
           setAttemptingTxn(false)
 
@@ -227,7 +226,6 @@ export default function AddLiquidity({
             label: [currencies[Field.CURRENCY_A]?.symbol, currencies[Field.CURRENCY_B]?.symbol].join('/')
           })
         })
-      )
       .catch(error => {
         setAttemptingTxn(false)
         setErrorTx(error.message)

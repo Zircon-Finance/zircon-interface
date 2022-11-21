@@ -25,6 +25,7 @@ import { Flex } from 'rebass'
 import { useWindowDimensions } from '../../../../../hooks'
 import { Token } from 'zircon-sdk'
 import CurrencyLogo from '../../../../../components/CurrencyLogo'
+import { usePool } from '../../../../../state/pools/hooks'
 
 export const Shader = styled.div`
   position: absolute;
@@ -52,7 +53,8 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
         earnings = getBalanceAmount(earningsBigNumber)
     }
 
-    const { onReward } = useHarvestFarm(sousId)
+    const {pool} = usePool(sousId)
+    const { onReward, onCompound } = useHarvestFarm(sousId, userData.pendingReward.toFixed(0))
     const { t } = useTranslation()
     const dispatch = useDispatch()
     const { account } = useWeb3React()
@@ -150,8 +152,42 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
                             }
                         }}
                     >
-                        {pendingTx ? t('Harvesting') : t('Harvest all')}
+                        {pendingTx ? t('Harvesting...') : t('Harvest all')}
                     </HarvestButton>
+                    {((pool.token1.symbol === 'ZRG' || pool.token2.symbol === 'ZRG') && pool.earningTokenInfo.find(t => t.symbol === 'KSM')?.currentPrice > 0) && (
+                     <HarvestButton
+                        disabled={earnings.eq(0) || pendingTx || !userDataReady}
+                        onClick={async () => {
+                            const receipt = await fetchWithCatchTxError(() => {
+                                return onCompound().then((response) => {
+                                    addTransaction(response, {
+                                        summary: `Compound ${rewardTokens.slice(0, -1)} tokens`
+                                    })
+                                    return response
+                                })
+                            })
+                            if (receipt?.status) {
+                                ReactGA.event({
+                                    category: 'Compound Rewards',
+                                    action: 'Compounded from card view',
+                                    label: 'Compounded from card view'
+                                });
+                                addPopup(
+                                    {
+                                        txn: {
+                                            hash: receipt.transactionHash,
+                                            success: receipt.status === 1,
+                                            summary: 'Compound tokens',
+                                        }
+                                    },
+                                    receipt.transactionHash
+                                )
+                                dispatch(fetchPoolsUserDataAsync(account))
+                            }
+                        }}
+                    >
+                        {pendingTx ? t('Compounding...') : t('Compound')}
+                    </HarvestButton>)}
                 </div>
                 {width >= 992 ? (
                     <Swiper

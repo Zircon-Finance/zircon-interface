@@ -186,7 +186,7 @@ export default function AddLiquidityPro({
 
   const batchContract = useBatchPrecompileContract()
   const token0Contract = useERC20(wrappedCurrency(currencyA, chainId)?.address, true)
-  const token1Contract = useERC20(wrappedCurrency(currencyB, chainId)?.address, true)
+  const token1Contract = useERC20(wrappedCurrency(currencyB ?? currencyA, chainId)?.address, true)
 
   const getField = (shouldSendFloat) => {
     if (isFloat) {
@@ -396,12 +396,10 @@ export default function AddLiquidityPro({
 
     const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline;
 
-    let estimate,
-        method: (...args: any) => Promise<TransactionResponse>,
+    let method: (...args: any) => Promise<TransactionResponse>,
         args: Array<string | string[] | number | boolean>,
         value: BigNumber | null;
 
-        console.log('estimateGas.addLiquidityETH', estimate)
 
     const tokenBIsETH = getCurrency(false) === DEV;
 
@@ -417,8 +415,6 @@ export default function AddLiquidityPro({
     ])
     if (sync === "off") {
       if (getCurrency(true) === DEV) {
-
-        estimate = router.estimateGas.addSyncLiquidityETH;
         method = router.addSyncLiquidityETH;
         args = [
           wrappedCurrency(
@@ -440,7 +436,6 @@ export default function AddLiquidityPro({
             )
             : BigNumber.from("0");
       } else {
-        estimate = router.estimateGas.addSyncLiquidity;
         method = router.addSyncLiquidity;
         args = [
           wrappedCurrency(currencies[Field.CURRENCY_A], chainId)?.address ?? "",
@@ -460,7 +455,6 @@ export default function AddLiquidityPro({
       }
     } else {
       if (getCurrency(true) === DEV || getCurrency(false) === DEV) {
-        estimate = router.estimateGas.addAsyncLiquidityETH;
         method = router.addAsyncLiquidityETH;
         console.error([
             tokenBIsETH ? getCurrency(true)?.name : getCurrency(false)?.name,
@@ -485,7 +479,6 @@ export default function AddLiquidityPro({
             (currencies[Field.CURRENCY_A] === DEV ? parsedAmountA : parsedAmountB).raw.toString()
         );
       } else {
-        estimate = router.estimateGas.addAsyncLiquidity;
         method = router.addAsyncLiquidity;
         args = [
           wrappedCurrency(currencies[Field.CURRENCY_A], chainId)?.address ?? "",

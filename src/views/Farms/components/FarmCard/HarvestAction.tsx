@@ -53,7 +53,7 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, u
     }
     const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
     const { t } = useTranslation()
-    const { onReward } = useHarvestFarm(sousId)
+    const { onReward } = useHarvestFarm(sousId, userData.pendingReward.toString())
     const dispatch = useDispatch()
     const theme = useTheme()
     const addPopup = useAddPopup()

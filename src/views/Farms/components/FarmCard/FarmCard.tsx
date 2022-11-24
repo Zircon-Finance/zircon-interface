@@ -133,8 +133,8 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
           vaultAddress={farm.vaultAddress}
           isFinished={farm.isFinished}
           endBlock={farm.endBlock}
+          startBlock={farm.startBlock}
           currentBlock={currentBlock === 0 ? null : currentBlock}
-
         />
         {farm.userData.stakedBalance.gt(0) || !isApproved ? (
           <CardActionsContainer

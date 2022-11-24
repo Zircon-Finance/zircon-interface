@@ -24,6 +24,7 @@ export interface FarmProps {
   earningToken: SerializedToken[]
   isFinished: boolean
   endBlock: number
+  startBlock: number
   currentBlock: any
 }
 
@@ -40,8 +41,7 @@ const TokenWrapper = styled.div`
   padding-right: 8px;
 `
 
-const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pid, isAnchor, isClassic, endBlock, currentBlock }) => {
-  const daysLeft = parseInt(((endBlock - currentBlock) / 6500).toFixed(0))
+const Farm: React.FunctionComponent<FarmProps> = ({ token, isFinished, quoteToken, isAnchor, isClassic, endBlock, currentBlock, startBlock }) => {
   const {width} = useWindowDimensions()
   const theme = useTheme()
   return (
@@ -99,7 +99,7 @@ const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pi
                 fontSize={"13px"}
               >{`${token.symbol}/${quoteToken.symbol}`}</Text>
             </Flex>
-            <DaysLeftBar viewMode='card' daysLeft={daysLeft} />
+            {!isFinished && <DaysLeftBar viewMode='card' startBlock={startBlock} endBlock={endBlock} currentBlock={currentBlock} />}
           </Flex>
         </div>
       </>

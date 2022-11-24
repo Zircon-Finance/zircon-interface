@@ -426,6 +426,7 @@ const Farms: React.FC = ({ children }) => {
         isClassic: farm.isClassic,
         isFinished: farm.isFinished,
         endBlock: farm.endBlock,
+        startBlock: farm.startBlock,
         currentBlock: currentBlock === 0 ? null : currentBlock,
         // This will be the function to get the health of the farm
       },

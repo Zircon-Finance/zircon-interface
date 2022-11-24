@@ -28,6 +28,7 @@ export interface ExpandableSectionProps {
     sousId: number;
     vaultAddress: string;
     endBlock: number;
+    startBlock: number;
     currentBlock: any;
 }
 
@@ -50,11 +51,11 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
   vaultAddress,
   earningTokenBlock,
   endBlock,
+  startBlock,
   currentBlock
   }) => {
     const theme = useTheme();
     const {width} = useWindowDimensions()
-    const daysLeft = parseInt(((endBlock - currentBlock) / 6500).toFixed(0))
     return (
       <div
         style={{ padding: "10px", color: theme.text1 }}
@@ -121,7 +122,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
             <Skeleton ml="4px" width={42} height={28} />
           )}
         </Flex> */}
-        <DaysLeftBar daysLeft={daysLeft} />
+        {!isFinished && <DaysLeftBar currentBlock={currentBlock} endBlock={endBlock} startBlock={startBlock} />}
           </Flex>
         </Wrapper>
         {(

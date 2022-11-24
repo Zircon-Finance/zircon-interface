@@ -47,7 +47,7 @@ const FarmCardInnerContainer = styled(Flex)`
   background: ${({ theme }) => theme.liquidityBg};
   justify-content: space-around;
   padding: 10px;
-  height: 550px;
+  height: 590px;
   a {
     text-decoration: none;
   }
@@ -61,9 +61,10 @@ interface FarmCardProps {
   removed: boolean
   cakePrice?: BigNumber
   account?: string
+  currentBlock: any
 }
 
-const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePrice, account }) => {
+const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePrice, account, currentBlock }) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const lpLabel = `${farm.token1.symbol}-${farm.token2.symbol}`
@@ -131,6 +132,9 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
           sousId={farm.sousId}
           vaultAddress={farm.vaultAddress}
           isFinished={farm.isFinished}
+          endBlock={farm.endBlock}
+          currentBlock={currentBlock === 0 ? null : currentBlock}
+
         />
         {farm.userData.stakedBalance.gt(0) || !isApproved ? (
           <CardActionsContainer

@@ -122,6 +122,10 @@ export function colors(chainId: any, darkMode: boolean): Colors {
 
     meatPink: '#D5AEAF',
 
+    percentageRed: darkMode ? '#E67066' : '#BC2929',
+
+    percentageGreen: darkMode ? '#5CB376' : '#287438',
+
     pinkBrown : darkMode ? '#D5AEAF' : '#874955',
 
     farmPoolCardsBg: darkMode ? '#39202b' : '#eeecf0',

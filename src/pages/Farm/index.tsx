@@ -7,7 +7,7 @@ import Lottie from "lottie-react-web";
 import animation from "../../assets/lotties/farming_lottie.json";
 import BigNumber from 'bignumber.js'
 
-const FarmsPage = () => {
+const FarmsPage = ({currentBlock}) => {
   const { account } = useWeb3React()
   const { activeFarms } = useContext(FarmsContext)
   const cakePrice = new BigNumber(1)
@@ -22,6 +22,7 @@ const FarmsPage = () => {
           cakePrice={cakePrice}
           account={account}
           removed={false}
+          currentBlock={currentBlock}
         />
       )) :
           <div style={{display: 'flex', alignItems: 'center', width: '100%', flexDirection: 'column'}}>

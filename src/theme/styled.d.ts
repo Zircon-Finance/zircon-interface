@@ -63,6 +63,10 @@ export interface Colors {
 
   questionMarks : Color
 
+  percentageRed: Color
+
+  percentageGreen: Color
+
   slippageActive: Color
 
   walletActive: Color

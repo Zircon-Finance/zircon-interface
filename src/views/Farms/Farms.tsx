@@ -1,6 +1,6 @@
 import React, {
   // useEffect, useCallback,
-  useState, useRef, createContext, useMemo,
+  useState, useRef, createContext, useMemo, useEffect,
 } from 'react'
 import BigNumber from 'bignumber.js'
 import { useWeb3React } from '@web3-react/core'
@@ -38,6 +38,7 @@ import useCatchTxError from '../../hooks/useCatchTxError'
 import { useAddPopup } from '../../state/application/hooks'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { useDispatch } from 'react-redux'
+import { simpleRpcProvider } from '../../utils/providers'
 
 interface Props {
   earningRewardsBlock:  EarningTokenInfo[]
@@ -336,8 +337,15 @@ const Farms: React.FC = ({ children }) => {
         return poolsToSort
     }
   }
+  const [currentBlock, setCurrentBlock] = useState(0)
 
   let chosenPools = activeFarms
+  
+  useEffect(() => {
+    simpleRpcProvider.getBlockNumber().then((block) => {
+      setCurrentBlock(block)
+    })
+  }, [])
 
   chosenPools = useMemo(() => {
     let sortedPools = sortPools(sortOption, chosenPools).slice(0, numberOfFarmsVisible)
@@ -417,6 +425,8 @@ const Farms: React.FC = ({ children }) => {
         isAnchor: farm.isAnchor,
         isClassic: farm.isClassic,
         isFinished: farm.isFinished,
+        endBlock: farm.endBlock,
+        currentBlock: currentBlock === 0 ? null : currentBlock,
         // This will be the function to get the health of the farm
       },
       earned: {
@@ -487,7 +497,7 @@ const Farms: React.FC = ({ children }) => {
       }))
       return <Table data={rowData} columns={columns} userDataReady={userDataReady} />
     }
-    return <FlexLayout><FarmsPage /></FlexLayout>
+    return <FlexLayout><FarmsPage currentBlock={currentBlock} /></FlexLayout>
   }
   const darkMode = useIsDarkMode()
   const [hoverButton, setHoverButton] = useState(false)
@@ -582,15 +592,9 @@ const Farms: React.FC = ({ children }) => {
                   : null
               }
             >
-              <TableData style={{ maxWidth: width >= 600 ? account ? '185px' : "285px" : "auto", minWidth: !account && '285px' }}>
-                <ViewModeTabs active={viewMode} />
+              <TableData style={{ minWidth: width >= 600 ? "275px" : "auto" }}>
+              <ViewModeTabs active={viewMode} />
               </TableData>
-              {width >= 992 && account && <TableData style={{ width: "9%"}}>
-                <ButtonLighter disabled={pendingTx || stakedOnlyFarms.length === 0} 
-                  onClick={()=>harvestAllPools()} style={{padding: '5px 10px', height: '38px', width: 'auto'}} >
-                  {pendingTx ? 'Harvesting...' :'Harvest all'}
-                </ButtonLighter>
-              </TableData>}
               {viewMode === ViewMode.TABLE && width > 992 ? (
                 options.map((option) => (
                   <TableData
@@ -675,7 +679,13 @@ const Farms: React.FC = ({ children }) => {
                 </TableData>
               )}
               {viewMode === ViewMode.TABLE && width > 992 && (
-                <TableData style={{ width: "15%" }} />
+                <TableData style={{ width: "15%" }} >
+                  {account && <ButtonLighter disabled={pendingTx || stakedOnlyFarms.length === 0} fontSize='13px' 
+                  onClick={()=>harvestAllPools()} 
+                  style={{padding: '5px 10px', height: '29px', width: 'auto', color:theme.darkMode ? '#CA90BB' : '#9E4D86', fontWeight: 500}} >
+                  {pendingTx ? 'HARVESTING...' :'HARVEST FROM ALL FARMS'}
+                </ButtonLighter>}
+                </TableData>
               )}
             </tr>
           </table>

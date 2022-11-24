@@ -10,6 +10,7 @@ import { Text } from "rebass";
 import { useWindowDimensions } from "../../../../hooks";
 import { RewardPerBlock } from "../../Farms";
 import {EarningTokenInfo} from "../../../../state/types";
+import DaysLeftBar from "../../../../components/DaysLeftBar";
 
 export interface ExpandableSectionProps {
     lpLabel?: string;
@@ -26,6 +27,8 @@ export interface ExpandableSectionProps {
     healthFactor: string;
     sousId: number;
     vaultAddress: string;
+    endBlock: number;
+    currentBlock: any;
 }
 
 const Wrapper = styled(Flex)`
@@ -35,20 +38,23 @@ const Wrapper = styled(Flex)`
 `;
 
 const CardHeading: React.FC<ExpandableSectionProps> = ({
-                                                           isClassic,
-                                                           isAnchor,
-                                                           isFinished,
-                                                           earningToken,
-                                                           token,
-                                                           quoteToken,
-                                                           gamma,
-                                                           healthFactor,
-                                                           sousId,
-                                                           vaultAddress,
-                                                           earningTokenBlock
-                                                       }) => {
+  isClassic,
+  isAnchor,
+  isFinished,
+  earningToken,
+  token,
+  quoteToken,
+  gamma,
+  healthFactor,
+  sousId,
+  vaultAddress,
+  earningTokenBlock,
+  endBlock,
+  currentBlock
+  }) => {
     const theme = useTheme();
     const {width} = useWindowDimensions()
+    const daysLeft = parseInt(((endBlock - currentBlock) / 6500).toFixed(0))
     return (
       <div
         style={{ padding: "10px", color: theme.text1 }}
@@ -58,21 +64,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
             <>
               <Flex flexWrap="wrap" width={'100%'} justifyContent={'space-between'}>
                 <Flex>
-                {isClassic ? (
-                  <DoubleCurrencyLogo
-                    currency0={token}
-                    currency1={quoteToken}
-                    margin={false}
-                    size={26}
-                  />
-                ) : (
-                  <DoubleCurrencyLogo
-                    currency0={!isAnchor ? token : quoteToken}
-                    currency1={null}
-                    margin={false}
-                    size={26}
-                  />
-                )}
+                
                 <BadgeSmall
                   style={{
                     fontSize: "13px",
@@ -97,13 +89,29 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
                   </span>
                   {isClassic ? "CLASSIC" : isAnchor ? "STABLE" : "FLOAT"}
                 </BadgeSmall>
-                </Flex>
                 <Text
                   color={theme.whiteHalf}
                   style={{ minWidth: "max-content", display: 'flex', alignItems: 'center' }}
                   fontWeight={400}
                   fontSize={'13px'}
                 >{`${token.symbol}/${quoteToken.symbol}`}</Text>
+                </Flex>
+                {isClassic ? (
+                  <DoubleCurrencyLogo
+                    currency0={token}
+                    currency1={quoteToken}
+                    margin={false}
+                    size={26}
+                  />
+                ) : (
+                  <DoubleCurrencyLogo
+                    currency0={!isAnchor ? token : quoteToken}
+                    currency1={null}
+                    margin={false}
+                    size={26}
+                  />
+                )}
+                
               </Flex>
             </>
             {/* <Flex justifyContent="center">
@@ -113,6 +121,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
             <Skeleton ml="4px" width={42} height={28} />
           )}
         </Flex> */}
+        <DaysLeftBar daysLeft={daysLeft} />
           </Flex>
         </Wrapper>
         {(

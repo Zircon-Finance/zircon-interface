@@ -12,6 +12,7 @@ import { BadgeSmall } from '../../../../components/Header'
 import { useWindowDimensions } from '../../../../hooks'
 import { Flex } from 'rebass'
 import { SerializedToken } from '../../../../constants/types'
+import DaysLeftBar from '../../../../components/DaysLeftBar'
 
 export interface FarmProps {
   label: string
@@ -22,6 +23,8 @@ export interface FarmProps {
   isClassic: boolean
   earningToken: SerializedToken[]
   isFinished: boolean
+  endBlock: number
+  currentBlock: any
 }
 
 const Container = styled.div`
@@ -37,23 +40,8 @@ const TokenWrapper = styled.div`
   padding-right: 8px;
 `
 
-const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pid, isAnchor, isClassic }) => {
-  // const { stakedBalance } = useFarmUser(pid)
-  // const { t } = useTranslation()
-  // const rawStakedBalance = getBalanceNumber(stakedBalance)
-
-  // const handleRenderFarming = (): JSX.Element => {
-  //   // if (rawStakedBalance) {
-  //   //   return (
-  //   //     <Text color="secondary" fontWeight={300} fontSize="12px" bold textTransform="uppercase">
-  //   //       {t('Farming')}
-  //   //     </Text>
-  //   //   )
-  //   // }
-
-  //   return null
-  // }
-
+const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pid, isAnchor, isClassic, endBlock, currentBlock }) => {
+  const daysLeft = parseInt(((endBlock - currentBlock) / 6500).toFixed(0))
   const {width} = useWindowDimensions()
   const theme = useTheme()
   return (
@@ -77,8 +65,8 @@ const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pi
       </TokenWrapper>
       <>
         <div>
-          <>
-            <Flex flexDirection={"column"} style={{ rowGap: "5px" }}>
+          <Flex flexDirection={'column'}>
+            <Flex flexDirection={"row"} style={{ rowGap: "5px" }}>
               <BadgeSmall
                 style={{
                   fontSize: "13px",
@@ -111,7 +99,8 @@ const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pi
                 fontSize={"13px"}
               >{`${token.symbol}/${quoteToken.symbol}`}</Text>
             </Flex>
-          </>
+            <DaysLeftBar viewMode='card' daysLeft={daysLeft} />
+          </Flex>
         </div>
       </>
     </Container>

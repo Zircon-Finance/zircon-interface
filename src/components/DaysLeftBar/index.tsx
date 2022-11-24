@@ -2,6 +2,8 @@ import { rgba } from 'polished'
 import React from 'react'
 import { Flex, Text } from 'rebass'
 import styled, { css, keyframes, useTheme } from 'styled-components'
+import { QuestionMarkContainer, ToolTip } from '../../views/Farms/components/FarmTable/Row'
+import QuestionMarkIcon from '../QuestionMarkIcon'
 
 const BarContainer = styled.div`
     width: 100%;
@@ -43,20 +45,41 @@ const Marker = styled.div<{ percentage: number }>`
 `
 
 const DaysLeftBar = ({viewMode = 'table', startBlock, endBlock, currentBlock}) => {
-const blocksLeft = endBlock - currentBlock
-const daysLeft = parseInt((blocksLeft / 6500).toFixed(0))
-const hoursLeft = parseInt(((blocksLeft / 6500) * 24).toFixed(0))
-const percentageRemaining = daysLeft * 100 / ((endBlock - startBlock) / 6500)
-const theme = useTheme()
+  const [hoverBlocks, setHoverBlocks] = React.useState(false)
+  const blocksLeft = endBlock - currentBlock
+  const daysLeft = parseInt((blocksLeft / 6500).toFixed(0))
+  const hoursLeft = parseInt(((blocksLeft / 6500) * 24).toFixed(0))
+  const percentageRemaining = daysLeft * 100 / ((endBlock - startBlock) / 6500)
+  const theme = useTheme()
+
+  const TooltipContent: React.FC = () => {return (
+    <ToolTip show={hoverBlocks}>
+      <Text fontSize='13px' fontWeight={500} color={theme.text1}>
+        {`Farm will be restarted in ${blocksLeft} blocks.`}
+      </Text>
+    </ToolTip>
+  )}
+
   return (
     <Flex flexDirection={"column"} alignItems={"center"} mt={"10px"} style={{width: '100%',minWidth: viewMode === 'card' && '200px'}}>
+      <Flex alignItems={"center"} justifyContent={'space-between'} style={{width: '100%'}}>
       <Text style={{ width: "100%", marginBottom: '5px' }} textAlign={"left"} fontSize={13}
       color = {daysLeft <= 3 ? theme.percentageRed : theme.percentageGreen}>
         {`${daysLeft ? daysLeft >= 1 ? 
-          `${daysLeft} ~ days left (${blocksLeft} blocks left)` : 
-          `${hoursLeft} ~ hours left (${blocksLeft} blocks left})` : 
+          `${daysLeft} ~ days left` : 
+          `${hoursLeft} ~ hours left` : 
           "Loading..."}`}
         </Text>
+        <QuestionMarkContainer
+          onMouseEnter={() => setHoverBlocks(true)}
+          onMouseLeave={() => setHoverBlocks(false)}
+          style={{marginTop: '0px', marginLeft: '0px'}}
+          >{hoverBlocks && (
+            <TooltipContent />
+          )}
+        <QuestionMarkIcon />
+        </QuestionMarkContainer>
+      </Flex>
       <BarContainer>
         <PercentageBar show={daysLeft !== 0} percentage={percentageRemaining}>
             <Marker percentage={percentageRemaining} />

@@ -94,6 +94,7 @@ export default function AddLiquidityPro({
   const theme = useTheme();
   const currencyA = useCurrency(currencyIdA);
   const currencyB = useCurrency(currencyIdB);
+
   const [errorTx, setErrorTx] = useState<string>("");
 
   const oneCurrencyIsWDEV = Boolean(
@@ -185,8 +186,12 @@ export default function AddLiquidityPro({
   const [txHash, setTxHash] = useState<string>("");
 
   const batchContract = useBatchPrecompileContract()
-  const token0Contract = useERC20(wrappedCurrency(currencyA, chainId)?.address, true)
-  const token1Contract = useERC20(wrappedCurrency(currencyB ?? currencyA, chainId)?.address, true)
+  const aCurrency = currencyA !== null ? wrappedCurrency(currencyA, chainId)?.address : '0x4545e94974adacb82fc56bcf136b07943e152055'
+  const bCurrency = currencyB !== null ? wrappedCurrency(currencyB, chainId)?.address : '0x4545e94974adacb82fc56bcf136b07943e152055'
+  const token0Contract = useERC20(aCurrency, true)
+  const token1Contract = useERC20(bCurrency, true)
+  console.log('token0Contract', token0Contract)
+  console.log('token1Contract', token1Contract)
 
   const getField = (shouldSendFloat) => {
     if (isFloat) {

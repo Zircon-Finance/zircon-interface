@@ -177,7 +177,7 @@ export function CurrencySearch({
     return (
       <SmallPlanet key={index} onClick={()=>handleCurrencySelect(token.address ? token.symbol === 'MOVR' ? DEV : token : currency)}>
         <CurrencyLogo currency={token.symbol ? token : currency} size={'18px'} />
-        <Text fontWeight={500} fontSize={14} style={{padding: '0 5px 0 5px'}}>{token?.symbol ? token?.symbol : currency.symbol}</Text>
+        <Text fontWeight={500} fontSize={14} style={{padding: '0 5px 0 5px'}}>{token?.symbol ? token?.symbol : currency?.symbol}</Text>
       </SmallPlanet>
   )}
 

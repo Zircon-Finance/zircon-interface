@@ -9,20 +9,17 @@ export const ActionContainer = styled.div`
   color: ${({ theme }) => theme.text1};
   flex-basis: 0;
   margin-bottom: 16px;
-  min-height: 120px;
   @media (min-width: 800px) {
     margin-bottom: 0;
   }
   ${({ theme }) => theme.mediaQueries.sm} {
     margin-right: 12px;
     margin-bottom: 0;
-    max-height: 100px;
   }
 
   ${({ theme }) => theme.mediaQueries.xl} {
     margin-right: 0;
     margin-bottom: 0;
-    max-height: 100px;
   }
 `
 

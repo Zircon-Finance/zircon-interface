@@ -66,7 +66,7 @@ const Farm: React.FunctionComponent<FarmProps> = ({ token, isFinished, quoteToke
       <>
         <div>
           <Flex flexDirection={'column'}>
-            <Flex flexDirection={"row"} style={{ rowGap: "5px" }}>
+            <Flex flexDirection={"row"} style={{ rowGap: "5px", alignItems: 'center' }}>
               <BadgeSmall
                 style={{
                   fontSize: "13px",
@@ -97,7 +97,7 @@ const Farm: React.FunctionComponent<FarmProps> = ({ token, isFinished, quoteToke
                 style={{ minWidth: "max-content" }}
                 fontWeight={400}
                 fontSize={"13px"}
-              >{`${token.symbol}/${quoteToken.symbol}`}</Text>
+              >{`${token.symbol}-${quoteToken.symbol}`}</Text>
             </Flex>
             {!isFinished && <DaysLeftBar viewMode='card' startBlock={startBlock} endBlock={endBlock} currentBlock={currentBlock} />}
           </Flex>

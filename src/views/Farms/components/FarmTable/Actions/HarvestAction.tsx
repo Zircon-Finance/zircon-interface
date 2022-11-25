@@ -4,7 +4,6 @@ import { useWeb3React } from '@web3-react/core'
 import BigNumber from 'bignumber.js'
 import Balance from '../../../../../components/Balance'
 import { useTranslation } from 'react-i18next'
-import styled from 'styled-components'
 import useCatchTxError from '../../../../../hooks/useCatchTxError'
 import { useDispatch } from 'react-redux'
 import { BIG_ZERO } from '../../../../../utils/bigNumber'
@@ -16,8 +15,6 @@ import { DeserializedPool } from '../../../../../state/types'
 import { useAddPopup } from '../../../../../state/application/hooks'
 import { useTransactionAdder } from '../../../../../state/transactions/hooks'
 import { fetchPoolsUserDataAsync } from '../../../../../state/pools'
-import { Pagination, FreeMode } from 'swiper'
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react'
 import ReactGA from 'react-ga4'
 import 'swiper/swiper.min.css'
 import 'swiper/modules/pagination/pagination.min.css'
@@ -27,20 +24,9 @@ import { Token } from 'zircon-sdk'
 import CurrencyLogo from '../../../../../components/CurrencyLogo'
 import { usePool } from '../../../../../state/pools/hooks'
 
-export const Shader = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  background: linear-gradient( to right, rgba(0,0,0,0) 0%, ${({ theme }) => theme.opacitySmall} 100%);
-  width: 20%;
-  height: 100%;
-  z-index: 1;
-`
-
 interface HarvestActionProps extends DeserializedPool {
     userDataReady: boolean
 }
-
 
 const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningToken ,sousId, userData, userDataReady, vaultAddress, earningTokenInfo }) => {
     const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
@@ -90,20 +76,16 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
         )
     }
 
-    const SwipeTokenCard = ({ token, index }: { token: Token; index: number }) => {
-
+    const SwipeTokenCard = ({ token, index, smallText }: { token: Token; index: number, smallText: boolean }) => {
         let currentBalance = earningTokenInfo ? getBalanceAmount(earningsBigNumber.times(earningTokenInfo[index].current)) : 0
         let currentPrice = earningTokenInfo ? getBalanceAmount(earningsBigNumber.times(earningTokenInfo[index].currentPrice)) : 0
-
         return (
-            <>
-                <Flex style={{marginBottom: '10px'}}>
-                    <Text color={theme.text1} fontSize={'24px'} >{`${currentBalance.toFixed(6)} ${token.symbol === 'MOVR' ? 'wMOVR' : token.symbol}`}</Text>
-                </Flex>
+            <Flex style={{flexDirection: 'column', marginRight: '10px', paddingRight: '10px', borderRight: smallText && index === 0 && `1px solid ${theme.opacitySmall}`}}>
+                <Text mb={'35px'} color={theme.text1} fontSize={smallText ? '16px' : '24px'} >{`${currentBalance.toFixed(5)} ${token.symbol === 'MOVR' ? 'wMOVR' : token.symbol}`}</Text>
                 <Text color={theme.text1} textAlign={'left'} fontSize="13px">
                     {`~ ${currentPrice?.toFixed(2)} USD`}
                 </Text>
-            </>
+            </Flex>
         )
     }
     return (
@@ -190,21 +172,11 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
                     </HarvestButton>)}
                 </div>
                 {width >= 992 ? (
-                    <Swiper
-                        slidesPerView={earningToken.length === 2 ? 1.4 : 1}
-                        spaceBetween={2}
-                        freeMode={true}
-                        pagination={{
-                            clickable: true,
-                        }}
-                        modules={[FreeMode, Pagination]}
-                        className="swipe-container"
-                    >
-                        {earningToken.length === 2 && <Shader />}
-                        {earningToken.map((token, index) => <SwiperSlide style={{borderRight: (earningToken.length === 2 && width >= 800) && '1px solid rgba(255,255,255,0.1)'}}>
-                            <SwipeTokenCard key={index} token={token} index={index} />
-                        </SwiperSlide>)}
-                    </Swiper>
+                    <Flex style={{width: '100%'}}>
+                        {earningToken.map((token, index) => 
+                        <SwipeTokenCard key={index} token={token} index={index} smallText={earningToken.length === 2} />
+                        )}
+                    </Flex>
                 ) : (
                     <div style={{width: '100%', overflow: 'scroll', marginTop: '5px'}}>
                         {earningToken.map((token, index) => (

@@ -97,7 +97,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
                   style={{ minWidth: "max-content", display: 'flex', alignItems: 'center' }}
                   fontWeight={400}
                   fontSize={'13px'}
-                >{`${token.symbol}/${quoteToken.symbol}`}</Text>
+                >{`${token.symbol}-${quoteToken.symbol}`}</Text>
                 </Flex>
                 {isClassic ? (
                   <DoubleCurrencyLogo

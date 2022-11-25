@@ -8,6 +8,8 @@ import { Token } from 'zircon-sdk'
 // import { useToken } from '../../../hooks/Tokens'
 // import { useDerivedPylonBurnInfoFixedPercentage } from '../../../state/burn/hooks'
 import { Field } from '../../../state/burn/actions'
+import { useUserFarmsViewMode } from '../../../state/user/hooks'
+import { ViewMode } from '../../../state/user/actions'
 // import { usePair } from '../../../data/Reserves'
 
 interface StackedLPProps {
@@ -52,16 +54,17 @@ const StakedLP: React.FunctionComponent<StackedLPProps> = ({
   const displayBalance = useCallback(() => {
     const stakedBalanceBigNumber = getBalanceAmount(stakedBalance)
     if (stakedBalanceBigNumber.gt(0) && stakedBalanceBigNumber.lt(0.0000001)) {
-      return stakedBalanceBigNumber.toFixed(8, BigNumber.ROUND_DOWN)
+      return stakedBalanceBigNumber.toFixed(4, BigNumber.ROUND_DOWN)
     }
-    return stakedBalanceBigNumber.toFixed(8, BigNumber.ROUND_DOWN)
+    return stakedBalanceBigNumber.toFixed(4, BigNumber.ROUND_DOWN)
   }, [stakedBalance])
 
   const theme = useTheme()
+  const [viewMode, ] = useUserFarmsViewMode();
 
   return (
-      <Flex flexDirection="column" alignItems="flex-start">
-        <Heading style={{color: theme.text1, fontWeight: 400, fontSize: '24px', marginBottom: '18px', marginTop: '18px'}}>{displayBalance() + " ZPT"}</Heading>
+      <Flex flexDirection="column" alignItems="flex-start" justifyContent={'space-between'} style={{height: '100%'}}>
+        <Heading style={{color: theme.text1, fontWeight: 400, fontSize: '24px', marginBottom: '18px', marginTop: viewMode === ViewMode.TABLE && '35px'}}>{displayBalance() + " ZPT"}</Heading>
         {stakedBalance.gt(0) && !isClassic && (
             <>
               <Balance

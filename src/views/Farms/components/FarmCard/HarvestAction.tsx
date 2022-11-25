@@ -15,30 +15,17 @@ import { useTransactionAdder } from '../../../../state/transactions/hooks'
 import { useAddPopup } from '../../../../state/application/hooks'
 import { Token } from 'zircon-sdk'
 import { HarvestButton } from '../FarmTable/Actions/styles'
-import { Pagination, FreeMode } from 'swiper'
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react'
 import 'swiper/swiper.min.css'
 import 'swiper/modules/pagination/pagination.min.css'
 import { useWindowDimensions } from '../../../../hooks'
 import CurrencyLogo from '../../../../components/CurrencyLogo'
 import { DeserializedPool } from '../../../../state/types'
 import { Text } from 'rebass'
-import styled from 'styled-components'
 import ReactGA from 'react-ga4'
 
 interface FarmCardActionsProps extends DeserializedPool {
     userDataReady: boolean
 }
-
-const Shader = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  background: linear-gradient( to right, rgba(0,0,0,0) 0%, ${({ theme }) => theme.opacitySmall} 100%);
-  width: 30%;
-  height: 100%;
-  z-index: 1;
-`
 
 
 const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, userData, userDataReady, vaultAddress, earningTokenInfo }) => {
@@ -84,18 +71,16 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, u
         )
     }
 
-    const SwipeTokenCard = ({ token, index }: { token: Token; index: number }) => {
+    const SwipeTokenCard = ({ token, index, smallText }: { token: Token; index: number, smallText: boolean }) => {
         let currentBalance = earningTokenInfo ? getBalanceAmount(earningsBigNumber.times(earningTokenInfo[index].current)) : 0
         let currentPrice = earningTokenInfo ? getBalanceAmount(earningsBigNumber.times(earningTokenInfo[index].currentPrice)) : 0
         return (
-            <>
-                <Flex style={{marginBottom: '10px', color: theme.text1}}>
-                    <Text color={theme.text1} fontSize={'24px'} >{`${currentBalance.toFixed(6)} ${token.symbol === 'MOVR' ? 'wMOVR' : token.symbol}`}</Text>
-                </Flex>
+            <Flex style={{flexDirection: 'column', marginRight: '10px', paddingRight: '10px', borderRight: smallText && index === 0 && `1px solid ${theme.opacitySmall}`}}>
+                <Text mb={'10px'} color={theme.text1} fontSize={smallText ? '16px' : '24px'} >{`${currentBalance.toFixed(5)} ${token.symbol === 'MOVR' ? 'wMOVR' : token.symbol}`}</Text>
                 <Text color={theme.text1} textAlign={'left'} fontSize="13px">
                     {`~ ${currentPrice?.toFixed(2)} USD`}
                 </Text>
-            </>
+            </Flex>
         )
     }
 
@@ -146,19 +131,11 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, u
                     </HarvestButton>
                 </div>
                 {width >= 992 ? (
-                    <Swiper
-                        slidesPerView={earningToken.length == 2 ? 1.7 : 1}
-                        spaceBetween={2}
-                        freeMode={true}
-                        pagination={{
-                            clickable: true,
-                        }}
-                        modules={[FreeMode, Pagination]}
-                        className="swipe-container"
-                    >
-                        {earningToken.length === 2 && <Shader />}
-                        {earningToken.map((token, index) => <SwiperSlide><SwipeTokenCard key={token.symbol} token={token} index={index} /></SwiperSlide>)}
-                    </Swiper>
+                    <Flex style={{width: '100%'}}>
+                    {earningToken.map((token, index) => 
+                        <SwipeTokenCard key={token.symbol} token={token} index={index} smallText={earningToken.length === 2} />
+                        )}                    
+                    </Flex>
                 ) : (
                     <div style={{width: '100%', overflow: 'scroll', marginTop: '5px'}}>
                         {earningToken.map((token, index) => (

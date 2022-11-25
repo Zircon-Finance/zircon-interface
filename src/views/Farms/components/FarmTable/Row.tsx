@@ -169,7 +169,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const [isVisible, setIsVisible] = useState(false)
   const {
     details,
-     userDataReady,
+    userDataReady,
   } = props
   const [currency1, currency2] = [useCurrency(details.token1.address),useCurrency(details.token2.address)]
   // const [, pylonPair] = usePylon(currency1, currency2)
@@ -509,7 +509,8 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
       {shouldRenderChild && (
         <tr style={{display: 'flex', flexDirection: 'column'}}>
           <td colSpan={6}>
-            <ActionPanel {...props} expanded={actionPanelExpanded} clickAction={setActionPanelExpanded} gamma={gammaAdjusted.toNumber()}healthFactor={healthFactor} />
+            <ActionPanel {...props} expanded={actionPanelExpanded} clickAction={setActionPanelExpanded} 
+            gamma={gammaAdjusted.toNumber()}healthFactor={healthFactor} currentBlock = {props.farm.currentBlock} />
           </td>
         </tr>
       )}

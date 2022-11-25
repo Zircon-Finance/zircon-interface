@@ -23,10 +23,8 @@ import { fetchPoolsUserDataAsync } from '../../../../state/pools'
 import { useCurrency } from '../../../../hooks/Tokens'
 import { useGamma } from '../../../../data/PylonData'
 import {useDerivedPylonMintInfo} from "../../../../state/mint/pylonHooks";
-import { StyledLinkExternal } from '../FarmTable/Actions/ActionPanel'
 import CapacityIndicatorSmall from '../../../../components/CapacityIndicatorSmall'
 import { useWindowDimensions } from '../../../../hooks'
-import { CONTRACT_ADDRESS_BASE } from '../../../../constants/lists'
 import { formattedNum } from '../../../../utils/formatBalance'
 
 const StyledCard = styled(Card)`
@@ -44,10 +42,10 @@ const StyledCard = styled(Card)`
 
 const FarmCardInnerContainer = styled(Flex)`
   flex-direction: column;
-  background: ${({ theme }) => theme.liquidityBg};
+  background: ${({ theme }) => theme.darkMode ? '#452632' : '#F8F7F7'};
   justify-content: space-around;
   padding: 10px;
-  height: 590px;
+  height: 600px;
   a {
     text-decoration: none;
   }
@@ -135,6 +133,8 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
           endBlock={farm.endBlock}
           startBlock={farm.startBlock}
           currentBlock={currentBlock === 0 ? null : currentBlock}
+          lpAddress={farm.lpAddress}
+          contractAddress={farm.contractAddress}
         />
         {farm.userData.stakedBalance.gt(0) || !isApproved ? (
           <CardActionsContainer
@@ -179,7 +179,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
             />
           </>
         )}
-
+        <Flex flexDirection={'column'} style={{padding: '0 10px'}}>
         {!removed && (
           <Flex justifyContent="space-between" alignItems="center" mt={width <= 500 && '15px' }>
             <Text color={theme.whiteHalf} fontSize="14px">
@@ -218,6 +218,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
               />
             </Flex>
           )}
+        </Flex>
         <Link
           to={
             farm.isClassic
@@ -230,7 +231,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
           <ButtonLinkGet
             mt="15px"
             style={{
-              margin: "10px 0",
+              marginTop: "10px",
               padding: "10px",
               fontSize: "13px",
               border: "none",
@@ -240,23 +241,6 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
             {`Get ${farm.token1.name} - ${farm.token2.name} LP tokens`}
           </ButtonLinkGet>
         </Link>
-        <Flex justifyContent={'space-around'} mb={width <= 500 && '10px'}>
-          <StyledLinkExternal
-            style={{ color: theme.pinkBrown, fontWeight: 500, marginRight: '10px' }}
-            href={CONTRACT_ADDRESS_BASE+farm.lpAddress}
-          >
-            {"See Pair Info ↗"}
-          </StyledLinkExternal>
-          <StyledLinkExternal
-            style={{
-              color: theme.pinkBrown,
-              fontWeight: 500,
-            }}
-            href={CONTRACT_ADDRESS_BASE+farm.contractAddress}
-          >
-            {"View Contract ↗"}
-          </StyledLinkExternal>
-        </Flex>
       </FarmCardInnerContainer>
     </StyledCard>
   );

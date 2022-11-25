@@ -29,17 +29,19 @@ const Action = styled.div`
 const ActionContainer = styled.div`
   display: flex;
   flex-direction: column;
-  border-radius: 7px;
   margin-bottom: 10px;
   padding: 10px;
   .swiper {
     max-width: 100%;
+    margin-left: 0px;
   }
   .swiper-pagination-bullet {
     display: none;
   }
   .swiper-slide {
-    border-right: 1px solid rgba(255,255,255,0.1);
+    width: auto !important;
+    padding-right: 10px;
+    margin-right: 10px !important;
     text-align: center;
   }
 `
@@ -112,9 +114,9 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
 
   const renderApprovalOrStakeButton = () => {
     return isApproved ? (
-      <ActionContainer style={{backgroundColor: theme.farmPoolCardsBg}}>
-          <Text  fontSize="13px" fontWeight={300} color={theme.text1}>
-            {t('Staked')}
+      <ActionContainer style={{borderBottom: `1px solid ${theme.opacitySmall}`}}>
+          <Text  fontSize="16px" fontWeight={500} color={theme.text1}>
+            {t('STAKED')}
           </Text>
           <StakeAction {...farm} lpLabel={lpLabel} addLiquidityUrl={addLiquidityUrl} displayApr={displayApr} />
         </ActionContainer>
@@ -131,7 +133,7 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
         <span/>
       ) : (
         <>
-        <ActionContainer style={{backgroundColor: theme.farmPoolCardsBg}}>
+        <ActionContainer style={{borderBottom: `1px solid ${theme.opacitySmall}`, borderTop: `1px solid ${theme.opacitySmall}`}}>
         <HarvestAction {...farm} userDataReady={userDataReady} />
         </ActionContainer>
         </>)}

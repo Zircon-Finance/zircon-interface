@@ -31,7 +31,7 @@ export const Shader = styled.div`
   position: absolute;
   top: 0;
   right: 0;
-  background: linear-gradient( to right, rgba(0,0,0,0) 0%, ${({ theme }) => theme.actionPanelBg} 100%);
+  background: linear-gradient( to right, rgba(0,0,0,0) 0%, ${({ theme }) => theme.opacitySmall} 100%);
   width: 20%;
   height: 100%;
   z-index: 1;
@@ -97,21 +97,21 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
 
         return (
             <>
-                <Flex style={{marginLeft: '5px', marginBottom: '7px'}}>
-                    {`${currentBalance.toFixed(6)} ${token.symbol === 'MOVR' ? 'wMOVR' : token.symbol}`}
+                <Flex style={{marginBottom: '10px'}}>
+                    <Text color={theme.text1} fontSize={'24px'} >{`${currentBalance.toFixed(6)} ${token.symbol === 'MOVR' ? 'wMOVR' : token.symbol}`}</Text>
                 </Flex>
-                <Text color={theme.whiteHalf} ml={'5px'} textAlign={'left'} fontSize="12px">
+                <Text color={theme.text1} textAlign={'left'} fontSize="13px">
                     {`~ ${currentPrice?.toFixed(2)} USD`}
                 </Text>
             </>
         )
     }
     return (
-        <ActionContainer style={{background: theme.actionPanelBg}}>
+        <ActionContainer style={{borderLeft: width >= 800 && `1px solid ${theme.opacitySmall}`, borderRadius: '0px'}}>
             <ActionContent style={{flexFlow: 'column'}}>
                 <div style={{display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center'}}>
                     <div style={{display: 'flex', flexFlow: 'row', height: '100%', justifyContent: 'space-between', alignItems: 'center'}}>
-                        <Text color={theme.text1} fontSize="13px">
+                        <Text color={theme.text1} fontSize="16px" fontWeight={500}>
                             {t('EARNED')}
                         </Text>
                          {/*<Heading color={theme.text1} style={{margin: '8px 0', fontWeight: '400', fontSize: '24px'}}>{displayBalance}</Heading>*/}
@@ -152,7 +152,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
                             }
                         }}
                     >
-                        {pendingTx ? t('Harvesting...') : t('Harvest all')}
+                        {pendingTx ? t('HARVESTING..') : t('HARVEST ALL')}
                     </HarvestButton>
                     {((pool.token1.symbol === 'ZRG' || pool.token2.symbol === 'ZRG') && pool.earningTokenInfo.find(t => t.symbol === 'KSM')?.currentPrice > 0) && (
                      <HarvestButton
@@ -191,7 +191,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
                 </div>
                 {width >= 992 ? (
                     <Swiper
-                        slidesPerView={earningToken.length === 2 ? 1.7 : 1}
+                        slidesPerView={earningToken.length === 2 ? 1.4 : 1}
                         spaceBetween={2}
                         freeMode={true}
                         pagination={{
@@ -200,8 +200,10 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
                         modules={[FreeMode, Pagination]}
                         className="swipe-container"
                     >
-                        <Shader />
-                        {earningToken.map((token, index) => <SwiperSlide><SwipeTokenCard key={index} token={token} index={index} /></SwiperSlide>)}
+                        {earningToken.length === 2 && <Shader />}
+                        {earningToken.map((token, index) => <SwiperSlide style={{borderRight: (earningToken.length === 2 && width >= 800) && '1px solid rgba(255,255,255,0.1)'}}>
+                            <SwipeTokenCard key={index} token={token} index={index} />
+                        </SwiperSlide>)}
                     </Swiper>
                 ) : (
                     <div style={{width: '100%', overflow: 'scroll', marginTop: '5px'}}>

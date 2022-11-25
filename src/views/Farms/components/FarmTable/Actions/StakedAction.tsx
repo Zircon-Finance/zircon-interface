@@ -35,6 +35,7 @@ import { useCallWithGasPrice } from '../../../../../hooks/useCallWithGasPrice'
 import { deserializeToken } from '../../../../../state/user/hooks'
 import { getBalanceAmount } from '../../../../../utils/formatBalance'
 import { Field } from '../../../../../state/burn/actions'
+import { useWindowDimensions } from '../../../../../hooks'
 
 const IconButtonWrapper = styled.div`
   display: flex;
@@ -191,10 +192,12 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
   ])
 
   const theme = useTheme()
+  const {width} = useWindowDimensions()
 
   if (!account) {
     return (
-        <ActionContainer style={{background: theme.actionPanelBg}}>
+        <ActionContainer style={{borderLeft: width >= 800 && `1px solid ${theme.opacitySmall}`, 
+        borderRadius: '0px', borderRight: width >= 800 && `1px solid ${theme.opacitySmall}`}}>
           <ActionTitles>
             <Text fontSize="13px">
               {t('Start Farming')}
@@ -242,23 +245,23 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
             </Portal>
 
             }
-            <ActionContainer style={{background: theme.actionPanelBg}}>
-              <ActionTitles style={{justifyContent: 'space-between'}}>
-                <Text color={theme.text1} fontSize="13px">
+            <ActionContainer style={{borderLeft: width >= 800 && `1px solid ${theme.opacitySmall}`, borderRadius: '0px', borderRight: width >= 800 && `1px solid ${theme.opacitySmall}`}}>
+              <ActionTitles style={{justifyContent: 'space-between', alignItems: 'center'}}>
+                <Text color={theme.text1} fontSize="16px" fontWeight={500}>
                   {t('STAKED')}
                 </Text>
                 <IconButtonWrapper>
                   <IconButton
-                      style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
-                      variant="tertiary"
+                    style={{background: '#B05D98', width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
+                    variant="tertiary"
                       onClick={()=>setshowModalWithdraw(true)} mr="6px">
                     <Flex>
                       <MinusIcon />
                     </Flex>
                   </IconButton>
                   <IconButton
-                      style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%'}}
-                      variant="tertiary"
+                    style={{background: '#B05D98', width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
+                    variant="tertiary"
                       onClick={()=>{setshowModalDeposit(true)}}
                       disabled={pool.isFinished}
                   >
@@ -297,7 +300,9 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
     }
 
     return (
-        <ActionContainer style={{background: theme.actionPanelBg}}>
+        <ActionContainer style={{borderLeft: width >= 800 && `1px solid ${theme.opacitySmall}`, 
+          borderRadius: '0px', 
+          borderRight: width >= 800 && `1px solid ${theme.opacitySmall}`}}>
           <ActionTitles>
             <Text bold textTransform="uppercase" color="textSubtle" fontSize="12px" pr="4px">
               {t('Stake')}
@@ -322,7 +327,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
 
   if (!userDataReady) {
     return (
-        <ActionContainer style={{background: theme.actionPanelBg}}>
+        <ActionContainer style={{borderLeft: width >= 800 && `1px solid ${theme.opacitySmall}`, borderRadius: '0px', borderRight: width >= 800 && `1px solid ${theme.opacitySmall}`}}>
           <ActionTitles>
             <Text fontSize="13px">
               {t('Start Farming')}
@@ -336,7 +341,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
   }
 
   return (
-      <ActionContainer style={{background: theme.bg6}}>
+      <ActionContainer style={{borderLeft: width >= 800 && `1px solid ${theme.opacitySmall}`, borderRadius: '0px', borderRight: width >= 800 && `1px solid ${theme.opacitySmall}`}}>
         <ActionTitles>
           <Text fontSize="13px">
             {t('Enable Farm')}

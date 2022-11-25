@@ -683,7 +683,13 @@ const Farms: React.FC = ({ children }) => {
                 <TableData style={{ width: "15%" }} >
                   {account && <ButtonLighter disabled={pendingTx || stakedOnlyFarms.length === 0} fontSize='13px' 
                   onClick={()=>harvestAllPools()} 
-                  style={{padding: '5px 10px', height: '29px', width: 'auto', color:theme.darkMode ? '#CA90BB' : '#9E4D86', fontWeight: 500}} >
+                  style={{background: theme.darkMode ? '#442433' : '#f5eef3', 
+                  padding: '5px 10px', 
+                  height: '29px', 
+                  width: 'auto', 
+                  color:theme.darkMode ? '#CA90BB' : '#9E4D86', 
+                  fontWeight: 500,
+                  border: 'none'}} >
                   {pendingTx ? 'HARVESTING...' :'HARVEST FROM ALL FARMS'}
                 </ButtonLighter>}
                 </TableData>

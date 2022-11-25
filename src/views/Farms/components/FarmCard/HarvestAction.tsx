@@ -34,7 +34,7 @@ const Shader = styled.div`
   position: absolute;
   top: 0;
   right: 0;
-  background: linear-gradient( to right, rgba(0,0,0,0) 0%, ${({ theme }) => theme.farmPoolCardsBg} 100%);
+  background: linear-gradient( to right, rgba(0,0,0,0) 0%, ${({ theme }) => theme.opacitySmall} 100%);
   width: 30%;
   height: 100%;
   z-index: 1;
@@ -89,10 +89,10 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, u
         let currentPrice = earningTokenInfo ? getBalanceAmount(earningsBigNumber.times(earningTokenInfo[index].currentPrice)) : 0
         return (
             <>
-                <Flex style={{marginLeft: '5px', marginBottom: '7px', color: theme.text1}}>
-                    {`${currentBalance.toFixed(6)} ${token.symbol === 'MOVR' ? 'wMOVR' : token.symbol}`}
+                <Flex style={{marginBottom: '10px', color: theme.text1}}>
+                    <Text color={theme.text1} fontSize={'24px'} >{`${currentBalance.toFixed(6)} ${token.symbol === 'MOVR' ? 'wMOVR' : token.symbol}`}</Text>
                 </Flex>
-                <Text color={theme.whiteHalf} ml={'5px'} textAlign={'left'} fontSize="12px">
+                <Text color={theme.text1} textAlign={'left'} fontSize="13px">
                     {`~ ${currentPrice?.toFixed(2)} USD`}
                 </Text>
             </>
@@ -102,10 +102,10 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, u
     return (
         <Flex mb="8px" justifyContent="space-between" alignItems="center">
             <Flex flexDirection="column" alignItems="flex-start" width={'100%'}>
-                <div style={{display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center', marginBottom: '15px'}}>
+                <div style={{display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center', marginBottom: '10px'}}>
                     <div style={{display: 'flex', flexFlow: 'row', height: '100%', justifyContent: 'space-between', alignItems: 'center'}}>
-                        <Text color={theme.text1} fontSize="13px">
-                            {t('Earned')}
+                        <Text color={theme.text1} fontSize="16px" fontWeight={500}>
+                            {t('EARNED')}
                         </Text>
                         {earningsBusd > 0 && (
                             <Balance fontSize="12px" color={theme.whiteHalf} decimals={2} value={earningsBusd} unit=" USD" prefix="~" marginLeft={2}/>
@@ -142,7 +142,7 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, u
                             }
                         }}
                     >
-                        {pendingTx ? t('Harvesting') : t('Harvest all')}
+                        {pendingTx ? t('HARVESTING..') : t('HARVEST ALL')}
                     </HarvestButton>
                 </div>
                 {width >= 992 ? (
@@ -156,7 +156,7 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, u
                         modules={[FreeMode, Pagination]}
                         className="swipe-container"
                     >
-                        <Shader />
+                        {earningToken.length === 2 && <Shader />}
                         {earningToken.map((token, index) => <SwiperSlide><SwipeTokenCard key={token.symbol} token={token} index={index} /></SwiperSlide>)}
                     </Swiper>
                 ) : (

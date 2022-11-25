@@ -41,6 +41,7 @@ import QuestionMarkIcon from '../../../../../components/QuestionMarkIcon'
 import { QuestionMarkContainer, ToolTip } from '../Row'
 import CapacityIndicatorSmall from '../../../../../components/CapacityIndicatorSmall/index'
 import { CONTRACT_ADDRESS_BASE } from '../../../../../constants/lists'
+import DaysLeftBar from '../../../../../components/DaysLeftBar'
 
 export interface ActionPanelProps {
   apr: AprProps
@@ -53,6 +54,7 @@ export interface ActionPanelProps {
   clickAction: Dispatch<SetStateAction<boolean>>
   gamma: number
   healthFactor: string,
+  currentBlock: any
 }
 
 interface ToolTipProps {
@@ -222,6 +224,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                                                                   expanded,
                                                                   gamma,
                                                                   healthFactor,
+                                                                  currentBlock
                                                                 }) => {
   const farm = details
   const staked = details.userData.stakedBalance.gt(0)
@@ -319,7 +322,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   }
 
   const TooltipContentRisk: React.FC<ToolTipProps> = ({option}) => {return (
-    <ToolTip style={{left: width >= 700 ? '50px' : '-200px', bottom: width >= 700 ? '-20px' : '-150px', width: width >= 700 ? '400px' : '230px'}} show={hoverRisk}>
+    <ToolTip style={{left: width >= 700 ? '-410px' : '-230px', bottom: width >= 700 ? '-10px' : '-20px', width: width >= 700 ? '400px' : '230px'}} show={hoverRisk}>
       <Text fontSize='13px' fontWeight={500} color={theme.text1}>
       {`${option === 'health' ? 'The health factor measures how balanced this Stable vault is. Imbalanced vaults may be partially slashed when withdrawing during critical market activity.' :
           option === 'divergence' ? 'Divergence measures how much impermanent loss the Float vault is suffering.' :
@@ -334,6 +337,8 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   }, [])
   const [hovered, setHovered] = useState(false)
   const {chainId} = useActiveWeb3React()
+
+  console.log('currentBlock', currentBlock)
 
   return (
       <>
@@ -424,32 +429,23 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                     </QuarterContainer>
                   </SpaceBetween>
               )}
+              <DaysLeftBar startBlock={farm.startBlock} endBlock={farm.endBlock} currentBlock={currentBlock} viewMode={'actionPanel'} />
               {width >= 800 ? (
                   <>
-                    <SpaceBetween>
+                    <Flex>
                     {
                     !farm.isFinished ?
                     <>
-                      <Flex flexDirection={'column'} style={{width: '100%', marginBottom: '5px'}}>
-                        <Text color={theme.whiteHalf} style={{minWidth: 'max-content', fontSize: '14px'}} fontWeight={400} mt='5px'>{'Monthly rewards'}</Text>
-                        <RewardPerBlock earningRewardsBlock={pool.earningTokenInfo} />
+                      <Flex flexDirection={'row'} style={{width: '100%', marginBottom: '5px', marginTop: '10px', justifyContent: 'space-between'}}>
+                        <Text color={theme.text1} style={{minWidth: 'max-content', fontSize: '14px'}} fontWeight={400}>{'Monthly rewards'}</Text>
+                        <Flex flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
+                          <RewardPerBlock earningRewardsBlock={pool.earningTokenInfo} />
+                        </Flex>
                       </Flex>
-
-                      <div style={{width: '50%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
-                        <CapacityIndicatorSmall gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true} hoverPage={'farmAction'}/>
-                        <QuestionMarkContainer
-                            onMouseEnter={() => setHoverRisk(true)}
-                            onMouseLeave={() => setHoverRisk(false)}
-                        >{hoverRisk && (
-                            <TooltipContentRisk option={!isAnchor ? 'divergence' : 'health'} />
-                        )}
-                          <QuestionMarkIcon />
-                        </QuestionMarkContainer>
-                      </div>
                     </> : <></>
                     }
-                    </SpaceBetween>
-                    <SpaceBetween>
+                    </Flex>
+                    <SpaceBetween style={{borderTop: `1px solid ${theme.opacitySmall}`, paddingTop: '5px'}}>
                       <StyledLinkExternal style={{color:theme.darkMode ? theme.meatPink : theme.poolPinkButton, fontWeight: 400}} href={bsc}>
                         {t('View contract ↗')}
                       </StyledLinkExternal>
@@ -544,12 +540,6 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
 
           <QuarterContainer style={{padding: width < 992 ? '0 10px' : '0 0 0 10px', justifyContent: 'center'}}>
             <ValueContainer>
-              {account && width <= 800 &&
-              !farm.isFinished && (<ValueWrapper>
-                <Text fontSize='13px' fontWeight={400} color={theme.text1}>{`${!isAnchor ? 'Divergence' : 'Health Factor'}`}</Text>
-                <CapacityIndicatorSmall gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true} hoverPage={'farmAction'}/>
-              </ValueWrapper>)
-              }
               <ValueWrapper>
                 <Text fontSize='13px' fontWeight={400} color={theme.text1}>{t('APR')}</Text>
                 <Apr white={true} left={true} {...apr} />
@@ -558,13 +548,27 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                 <Text color={theme.text1} fontSize='13px' fontWeight={400}>{t('Liquidity')}</Text>
                 <Liquidity small={true} {...liquidity} />
               </ValueWrapper>
+              {!farm.isFinished && <SpaceBetween>
+              <Text color={theme.text1} fontSize='13px' fontWeight={400}>{isAnchor ? 'Health Factor' : 'Divergence'}</Text>
+              <div style={{display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
+                <CapacityIndicatorSmall showHover={false} gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true} hoverPage={'farmAction'}/>
+                <QuestionMarkContainer
+                    onMouseEnter={() => setHoverRisk(true)}
+                    onMouseLeave={() => setHoverRisk(false)}
+                >{hoverRisk && (
+                    <TooltipContentRisk option={!isAnchor ? 'divergence' : 'health'} />
+                )}
+                  <QuestionMarkIcon />
+                </QuestionMarkContainer>
+              </div>
+              </SpaceBetween>}
               <Link to={farm.isClassic ?
                   `/add/${farm.token1.address}/${farm.token2.address}` :
                   `/add-pro/${farm.token1.address}/${farm.token2.address}/${farm.isAnchor ? 'stable' : 'float'}`}>
                 <ButtonLinkGet
                 style={{
                   margin: '10px 0',
-                  padding: '10px',
+                  padding: '5px',
                   fontSize: '13px',
                   border: 'none',
                   borderRadius: '12px',

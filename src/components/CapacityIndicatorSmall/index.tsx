@@ -24,9 +24,10 @@ interface Props {
   noSpan?: boolean
   hoverPage?: string
   font? : string
+  showHover?: boolean
 }
 
-const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan, hoverPage, font}) => {
+const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan, hoverPage, font, showHover=true}) => {
   const [hoverIndicator, setHoverIndicator] = React.useState(false);
   const theme = useTheme()
   const {width} = useWindowDimensions()
@@ -36,12 +37,12 @@ const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan
       hoverPage === 'addLiq' ? {bottom: '140px', left: '260px'} :
       hoverPage === 'removeLiq' ? {bottom: '150px', left: '200px'} :
       hoverPage === 'farmRow' ? {bottom: '55px', left: '-50px'} :
-      hoverPage === 'farmAction' ? {bottom: width >= 800 ? '0px' : '50px', left: width >= 800 ? '0px' : width <= 500 ? '100px' : '50%'} :
+      hoverPage === 'farmAction' ? {bottom: width >= 800 ? '0px' : '50px', left: width >= 800 ? '700px' : width <= 500 ? '100px' : '50%'} :
       hoverPage === 'farmActionMobile' ? {bottom: '50%', left: '20%'} :
       hoverPage === 'tableCardTop' ? {bottom: '69%', left: width >= 800 ? '20%' : '30%'} :
       hoverPage === 'tableCardBottom' ? {bottom: '125px', left: width >= 800 ? '20%' : '30%'} :
       hoverPage === 'positionCard' && {display: 'none', bottom: '50px', left: width >= 450 ? '70%' : '120px'}
-      } show={hoverIndicator && (gamma !== undefined || health !== undefined)}>
+      } show={hoverIndicator && showHover && (gamma !== undefined || health !== undefined)}>
         <Text fontSize='13px' fontWeight={500} color={theme.text1}>
             {isFloat ? gamma < 0.4 ? 'The vault has zero or negative impermanent loss to encourage new liquidity.' :
             (gamma < 0.7 && gamma >= 0.4) ? 'The Float vault is balanced, you will have very little impermanent loss' :
@@ -57,7 +58,7 @@ const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan
       <Flex onMouseEnter={() => setHoverIndicator(true)}
             onMouseLeave={() => setHoverIndicator(false)}
             style={{cursor: 'pointer'}}>
-        {hoverIndicator && (gamma !== undefined || health !== undefined) && (
+        {hoverIndicator && showHover && (gamma !== undefined || health !== undefined) && (
           <TooltipContentRisk gamma={gamma} health={health} isFloat={isFloat}/>
         )}
         {(!gamma || !health) ? <Skeleton width={60} /> : isFloat ? <div style={{display: "flex", flexDirection: 'row', justifyContent: 'center', alignItems: 'center', pointerEvents: 'none'}}>

@@ -11,6 +11,8 @@ import { useWindowDimensions } from "../../../../hooks";
 import { RewardPerBlock } from "../../Farms";
 import {EarningTokenInfo} from "../../../../state/types";
 import DaysLeftBar from "../../../../components/DaysLeftBar";
+import { CONTRACT_ADDRESS_BASE } from "../../../../constants/lists";
+import { StyledLinkExternal } from "../FarmTable/Actions/ActionPanel";
 
 export interface ExpandableSectionProps {
     lpLabel?: string;
@@ -30,6 +32,8 @@ export interface ExpandableSectionProps {
     endBlock: number;
     startBlock: number;
     currentBlock: any;
+    lpAddress: string;
+    contractAddress: string;
 }
 
 const Wrapper = styled(Flex)`
@@ -45,11 +49,9 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
   earningToken,
   token,
   quoteToken,
-  gamma,
-  healthFactor,
-  sousId,
-  vaultAddress,
   earningTokenBlock,
+  lpAddress,
+  contractAddress,
   endBlock,
   startBlock,
   currentBlock
@@ -122,21 +124,38 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
             <Skeleton ml="4px" width={42} height={28} />
           )}
         </Flex> */}
-        {!isFinished && <DaysLeftBar currentBlock={currentBlock} endBlock={endBlock} startBlock={startBlock} />}
+        {!isFinished && <DaysLeftBar currentBlock={currentBlock} endBlock={endBlock} startBlock={startBlock} viewMode={'tableView'} />}
           </Flex>
         </Wrapper>
         {(
-            !isFinished && <Flex flexDirection={'row'} style={{marginBottom: width <= 500 ? '20px' : earningToken.length === 1 && '17px'}}>
+            !isFinished && <Flex flexDirection={'row'} style={{marginBottom: width <= 500 ? '20px' : '0px'}}>
               <Text fontSize='13px' fontWeight={500} color={4e7455} style={{width: '45%'}} mb='10px'>
                 {'Monthly rewards'}
               </Text>
               <Flex flexDirection={width >= 700 ? 'column' : 'row'} style={{textAlign: 'right', width: '60%',
               display: width <= 700 && 'flex',
-              justifyContent: width <= 700 && 'flex-end'}}>
+              justifyContent: width <= 700 && 'flex-end', marginBottom: '5px'}}>
               <RewardPerBlock earningRewardsBlock={earningTokenBlock} />
               </Flex>
             </Flex>
             )}
+          <Flex justifyContent={'space-between'} style={{borderTop: `1px solid ${theme.opacitySmall}`, paddingTop: '5px'}}>
+          <StyledLinkExternal
+            style={{ color: theme.pinkBrown, fontWeight: 500, marginRight: '10px' }}
+            href={CONTRACT_ADDRESS_BASE+lpAddress}
+          >
+            {"See Pair Info ↗"}
+          </StyledLinkExternal>
+          <StyledLinkExternal
+            style={{
+              color: theme.pinkBrown,
+              fontWeight: 500,
+            }}
+            href={CONTRACT_ADDRESS_BASE+contractAddress}
+          >
+            {"View Contract ↗"}
+          </StyledLinkExternal>
+        </Flex>
       </div>
     );
 };

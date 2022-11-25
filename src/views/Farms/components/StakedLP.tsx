@@ -61,12 +61,12 @@ const StakedLP: React.FunctionComponent<StackedLPProps> = ({
 
   return (
       <Flex flexDirection="column" alignItems="flex-start">
-        <Heading style={{color: theme.text1, fontWeight: 400, fontSize: '24px'}}>{displayBalance() + " ZPT"}</Heading>
+        <Heading style={{color: theme.text1, fontWeight: 400, fontSize: '24px', marginBottom: '18px', marginTop: '18px'}}>{displayBalance() + " ZPT"}</Heading>
         {stakedBalance.gt(0) && !isClassic && (
             <>
               <Balance
-                  fontSize="12px"
-                  color={theme.whiteHalf}
+                  fontSize="13px"
+                  color={theme.text1}
                   decimals={2}
                   value={new BigNumber(stakedBalance).multipliedBy(stakedRatio).div(stakedBalancePool).multipliedBy(staked).multipliedBy(price)}
                   unit=" USD"

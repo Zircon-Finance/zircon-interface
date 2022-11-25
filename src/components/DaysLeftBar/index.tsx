@@ -5,6 +5,14 @@ import styled, { css, keyframes, useTheme } from 'styled-components'
 import { QuestionMarkContainer, ToolTip } from '../../views/Farms/components/FarmTable/Row'
 import QuestionMarkIcon from '../QuestionMarkIcon'
 
+interface DaysLeftProps {
+  startBlock: number
+  endBlock: number
+  currentBlock: any
+  viewMode?: any
+}
+
+
 const BarContainer = styled.div`
     width: 100%;
     height: 1px;
@@ -23,7 +31,7 @@ const showAnimation = (percentage) => keyframes`
 const PercentageBar = styled.div<{ percentage: number, show: boolean }>`
     width: ${({ percentage }) => percentage}%;
     height: 1px;
-    background-color: ${({ theme, percentage }) => percentage <= 10 ? theme.percentageRed : theme.percentageGreen};
+    background-color: ${({ theme, percentage }) => percentage ? percentage <= 10 ? theme.percentageRed : theme.percentageGreen : theme.opacitySmall};
     position: relative;
     top: -1px;
     display: flex;
@@ -44,7 +52,7 @@ const Marker = styled.div<{ percentage: number }>`
     left: 100%;
 `
 
-const DaysLeftBar = ({viewMode = 'table', startBlock, endBlock, currentBlock}) => {
+const DaysLeftBar: React.FC<DaysLeftProps> = ({viewMode = 'table', startBlock, endBlock, currentBlock}) => {
   const [hoverBlocks, setHoverBlocks] = React.useState(false)
   const blocksLeft = endBlock - currentBlock
   const daysLeft = parseInt((blocksLeft / 6500).toFixed(0))
@@ -53,7 +61,9 @@ const DaysLeftBar = ({viewMode = 'table', startBlock, endBlock, currentBlock}) =
   const theme = useTheme()
 
   const TooltipContent: React.FC = () => {return (
-    <ToolTip show={hoverBlocks}>
+    <ToolTip show={hoverBlocks} style={{bottom: viewMode === 'actionPanel' ? '-15px' : 
+    viewMode === 'tableView' && '-15px', 
+    left: viewMode === 'actionPanel' ? '30px' : viewMode === 'tableView' && '-240px'}}>
       <Text fontSize='13px' fontWeight={500} color={theme.text1}>
         {`Farm will be restarted in ${blocksLeft} blocks.`}
       </Text>
@@ -81,9 +91,9 @@ const DaysLeftBar = ({viewMode = 'table', startBlock, endBlock, currentBlock}) =
         </QuestionMarkContainer>
       </Flex>
       <BarContainer>
-        <PercentageBar show={daysLeft !== 0} percentage={percentageRemaining}>
+        {<PercentageBar show={daysLeft !== 0} percentage={percentageRemaining}>
             <Marker percentage={percentageRemaining} />
-        </PercentageBar>
+        </PercentageBar>}
       </BarContainer>
     </Flex>
   );

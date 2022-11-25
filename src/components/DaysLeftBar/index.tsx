@@ -57,6 +57,7 @@ const DaysLeftBar: React.FC<DaysLeftProps> = ({viewMode = 'table', startBlock, e
   const blocksLeft = endBlock - currentBlock
   const daysLeft = parseInt((blocksLeft / 6500).toFixed(0))
   const hoursLeft = parseInt(((blocksLeft / 6500) * 24).toFixed(0))
+  console.log('hoursLeft', hoursLeft)
   const percentageRemaining = daysLeft * 100 / ((endBlock - startBlock) / 6500)
   const theme = useTheme()
 

@@ -429,7 +429,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                     </QuarterContainer>
                   </SpaceBetween>
               )}
-              <DaysLeftBar startBlock={farm.startBlock} endBlock={farm.endBlock} currentBlock={currentBlock} viewMode={'actionPanel'} />
+              {!farm.isFinished && <DaysLeftBar startBlock={farm.startBlock} endBlock={farm.endBlock} currentBlock={currentBlock} viewMode={'actionPanel'} />}
               {width >= 800 ? (
                   <>
                     <Flex>

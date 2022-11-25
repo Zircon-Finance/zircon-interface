@@ -24,7 +24,7 @@ import { useCurrency } from '../../../../hooks/Tokens'
 import { useGamma } from '../../../../data/PylonData'
 import {useDerivedPylonMintInfo} from "../../../../state/mint/pylonHooks";
 import CapacityIndicatorSmall from '../../../../components/CapacityIndicatorSmall'
-import { useWindowDimensions } from '../../../../hooks'
+import { useActiveWeb3React, useWindowDimensions } from '../../../../hooks'
 import { formattedNum } from '../../../../utils/formatBalance'
 
 const StyledCard = styled(Card)`
@@ -113,6 +113,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
     }
   }
   const pairLiquidity = 0 //usePairLiquidity(farm.token1, farm.token2)
+  const {chainId} = useActiveWeb3React()
 
   return (
     <StyledCard isActive={isPromotedFarm}>
@@ -136,7 +137,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
           lpAddress={farm.lpAddress}
           contractAddress={farm.contractAddress}
         />
-        {farm.userData.stakedBalance.gt(0) || !isApproved ? (
+        {farm.userData.stakedBalance.gt(0) || (!isApproved && chainId !== 1285) ? (
           <CardActionsContainer
             farm={farm}
             lpLabel={lpLabel}

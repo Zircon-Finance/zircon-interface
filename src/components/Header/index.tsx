@@ -124,15 +124,11 @@ const UniIcon = styled.div`
 `
 
 export const BadgeSmall = styled.span`
-  background-color: ${({ theme }) => theme.darkMode ?' rgba(213, 174, 175, 0.07)' : ' rgba(135, 73, 85, 0.07)'};
+  background-color: ${({ theme }) => theme.darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(8, 5, 6, 0.05)'};
   padding: 3px 5px;
   border-radius: 5px;
-  color: ${({ theme }) => theme.whiteHalf};
   margin-left: 5px;
-  font-size: 10px;
-  @media (min-width: 500px) {
-    font-size: 16px;
-  }
+  font-weight: 500;
 `
 
 const HeaderControls = styled.div`

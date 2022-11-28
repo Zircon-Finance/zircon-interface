@@ -70,7 +70,6 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
                 
                 <BadgeSmall
                   style={{
-                    fontSize: "13px",
                     height: "23px",
                     alignSelf: "center",
                     marginLeft: "0px",
@@ -90,7 +89,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
                   >
                     {!isAnchor ? token.symbol : quoteToken.symbol}{" "}
                   </span>
-                  {isClassic ? "CLASSIC" : isAnchor ? "STABLE" : "FLOAT"}
+                  {isClassic ? "Classic" : isAnchor ? "Stable" : "Float"}
                 </BadgeSmall>
                 <Text
                   color={theme.whiteHalf}
@@ -129,7 +128,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
         </Wrapper>
         {(
             !isFinished && <Flex flexDirection={'row'} style={{marginBottom: width <= 500 ? '20px' : '0px'}}>
-              <Text fontSize='13px' fontWeight={500} color={4e7455} style={{width: '45%'}} mb='10px'>
+              <Text fontSize='13px' fontWeight={400} color={4e7455} style={{width: '45%'}} mb='10px'>
                 {'Monthly rewards'}
               </Text>
               <Flex flexDirection={width >= 700 ? 'column' : 'row'} style={{textAlign: 'right', width: '60%',
@@ -139,7 +138,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
               </Flex>
             </Flex>
             )}
-          <Flex justifyContent={'space-between'} style={{borderTop: `1px solid ${theme.opacitySmall}`, paddingTop: '5px'}}>
+          <Flex justifyContent={'space-between'} style={{borderTop: `1px solid ${theme.opacitySmall}`, paddingTop: '10px'}}>
           <StyledLinkExternal
             style={{ color: theme.pinkBrown, fontWeight: 500, marginRight: '10px' }}
             href={CONTRACT_ADDRESS_BASE+lpAddress}

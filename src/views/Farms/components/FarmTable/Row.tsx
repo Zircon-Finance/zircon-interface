@@ -414,7 +414,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                     ) : (
                       <ButtonPinkGamma
                         style={{
-                          width: "80%",
+                          width: "auto",
                           fontSize: "13px",
                           padding: "0 15px",
                           borderRadius: "12px",

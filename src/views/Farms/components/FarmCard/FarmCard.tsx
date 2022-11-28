@@ -183,12 +183,12 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
         <Flex flexDirection={'column'} style={{padding: '0 10px'}}>
         {!removed && (
           <Flex justifyContent="space-between" alignItems="center" mt={width <= 500 && '15px' }>
-            <Text color={theme.whiteHalf} fontSize="14px">
+            <Text color={theme.darkMode ? 'rgba(255,255,255,0.9)' : '#080506'} fontSize="13px">
               {t("APR")}:
             </Text>
             <Text
               color={theme.text1}
-              fontSize="14px"
+              fontSize="13px"
               style={{ display: "flex", alignItems: "center" }}
             >
               {" "}
@@ -197,16 +197,16 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
           </Flex>
         )}
         <Flex mt="10px" justifyContent="space-between">
-          <Text color={theme.whiteHalf} fontSize="14px">
+          <Text color={theme.darkMode ? 'rgba(255,255,255,0.9)' : '#080506'} fontSize="13px">
             {t("Liquidity")}:
           </Text>
-          <Text color={theme.text1} fontSize="14px">
+          <Text color={theme.text1} fontSize="13px">
             {formattedNum(farm.isClassic ? pairLiquidity : new BigNumber(farm?.liquidity?.pair + farm?.liquidity?.pylon).toFixed(2))} USD
           </Text>
         </Flex>
         {!farm.isFinished && (
             <Flex justifyContent="space-between" alignItems="center" mt="10px">
-              <Text color={theme.whiteHalf} fontSize="14px">
+              <Text color={theme.darkMode ? 'rgba(255,255,255,0.9)' : '#080506'} fontSize="13px">
                 {!farm.isAnchor ? 'Divergence' : `Health Factor`}:
               </Text>
               <CapacityIndicatorSmall
@@ -239,7 +239,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
               fontWeight: 500,
             }}
           >
-            {`Get ${farm.token1.name} - ${farm.token2.name} LP tokens`}
+            {`Get ${farm.token1.symbol} - ${farm.token2.symbol} LP tokens`}
           </ButtonLinkGet>
         </Link>
       </FarmCardInnerContainer>

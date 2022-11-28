@@ -98,7 +98,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
 
     navigationBorder: darkMode ? '#61403C' : '#e7e2e2',
 
-    anchorFloatBadge: darkMode ? '#442734' : '#eee6e8',
+    anchorFloatBadge: darkMode ? '#442734' : 'rgba(8, 5, 6, 0.05)',
 
     questionMarkBg: darkMode ? '#653047' : '#FCFCFD',
 

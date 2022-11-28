@@ -167,11 +167,11 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
               </Flex>
             </Flex>
             <Separator />
-            <Flex justifyContent={'center'} pt='10px' pb='10px' flexDirection={'column'} alignItems='center'>
+            <Flex justifyContent={'center'} pt='10px' pb='10px' flexDirection={'column'} alignItems='left' ml='15px'>
               <Text style={{color: theme.whiteHalf}} fontSize='13px'>
                 {('Reserves')}
               </Text>
-              <Flex flexDirection={'column'} alignItems='center'>
+              <Flex flexDirection={'column'} alignItems='left'>
                 <Text style={{color: theme.text1}} fontSize='13px' fontWeight={500}>
                   {`${farm.reserves?.reserve0.toFixed(0)} ${farm.token1.symbol}` }
                 </Text>

@@ -23,6 +23,7 @@ export interface AprProps {
   hideButton?: boolean
   left?: boolean
   white? : boolean
+  showHover?: boolean
 }
 
 const Container = styled.div`
@@ -52,6 +53,7 @@ const Apr: React.FC<AprProps> = ({
   hideButton = false,
   baseApr,
   feesApr,
+  showHover=true,
   white,
 }) => {
   const addLiquidityUrl = `placeholder`
@@ -71,7 +73,7 @@ const Apr: React.FC<AprProps> = ({
           addLiquidityUrl={addLiquidityUrl}
           white={white}
         />
-        {(hoverApr && width >= 1000) && <LiqContainer style={{top: '50px'}} show={hoverApr}>
+        {(hoverApr && width >= 1000 && showHover) && <LiqContainer style={{top: '50px'}} show={hoverApr}>
             <Flex alignItems={'center'}>
               <Flex flexDirection='column' pl='15px' pb='10px' pr='5px'>
                 <Text style={{color: theme.whiteHalf}} fontSize='12px'>

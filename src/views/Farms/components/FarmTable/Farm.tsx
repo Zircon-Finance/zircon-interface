@@ -33,7 +33,6 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  letter-spacing: 0.05em;
 
 `
 
@@ -84,7 +83,6 @@ const Farm: React.FunctionComponent<FarmProps> = ({ token, isFinished, quoteToke
                     color: theme.darkMode ? theme.text1 : "#080506",
                     fontSize: "16px",
                     marginRight: "3px",
-                    fontWeight: 400,
                     letterSpacing: "0",
                   }}
                 >

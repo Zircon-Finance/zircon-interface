@@ -365,7 +365,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
             <ActionContainer style={{padding: '0 10px'}}>
               {width >= 800 ? (
                   <SpaceBetween>
-                    <div style={{letterSpacing: '0.05em'}}>
+                    <div>
                       <>
                         <Flex flexWrap='wrap'>
                           <BadgeSmall
@@ -437,7 +437,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                     !farm.isFinished ?
                     <>
                       <Flex flexDirection={'row'} style={{width: '100%', marginBottom: '5px', marginTop: '10px', justifyContent: 'space-between'}}>
-                        <Text color={theme.text1} style={{minWidth: 'max-content', fontSize: '14px'}} fontWeight={400}>{'Monthly rewards'}</Text>
+                        <Text color={theme.text1} style={{minWidth: 'max-content', fontSize: '13px'}} fontWeight={400}>{'Monthly rewards'}</Text>
                         <Flex flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
                           <RewardPerBlock earningRewardsBlock={pool.earningTokenInfo} />
                         </Flex>
@@ -480,7 +480,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                   </>
                   :
                   !farm.isFinished && (<SpaceBetween style={{marginBottom: '16px'}}>
-                    <Text color={theme.whiteHalf} style={{minWidth: 'max-content', fontSize: '14px'}} fontWeight={400} mb='10px'>{'Monthly rewards'}</Text>
+                    <Text color={theme.whiteHalf} style={{minWidth: 'max-content', fontSize: '13px'}} fontWeight={400} mb='10px'>{'Monthly rewards'}</Text>
                     <Flex flexDirection={"column"}>
                      <RewardPerBlock earningRewardsBlock={pool?.earningTokenInfo}  />
                     </Flex>
@@ -542,7 +542,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
             <ValueContainer>
               <ValueWrapper>
                 <Text fontSize='13px' fontWeight={400} color={theme.text1}>{t('APR')}</Text>
-                <Apr white={true} left={true} {...apr} />
+                <Apr white={true} left={true} {...apr} showHover={false} />
               </ValueWrapper>
               <ValueWrapper>
                 <Text color={theme.text1} fontSize='13px' fontWeight={400}>{t('Liquidity')}</Text>

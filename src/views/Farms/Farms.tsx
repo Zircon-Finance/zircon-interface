@@ -261,6 +261,7 @@ const Farms: React.FC = ({ children }) => {
   const addPopup = useAddPopup()
   const addTransaction = useTransactionAdder()
   const dispatch = useDispatch()
+  const [hoverHarvestAll, setHoverHarvestAll] = useState(false)
 
   const harvestAllPools = async() => {
     setPendingTx(true)
@@ -683,7 +684,10 @@ const Farms: React.FC = ({ children }) => {
                 <TableData style={{ width: "15%" }} >
                   {account && <ButtonLighter disabled={pendingTx || stakedOnlyFarms.length === 0} fontSize='13px' 
                   onClick={()=>harvestAllPools()} 
-                  style={{background: theme.darkMode ? '#442433' : '#f5eef3', 
+                  onMouseEnter={() => setHoverHarvestAll(true)}
+                  onMouseLeave={() => setHoverHarvestAll(false)}
+                  style={{background: hoverHarvestAll ? theme.darkMode ? 'rgba(202, 144, 187, 0.17)' : 'rgba(202, 144, 187, 0.07)' : 
+                  theme.darkMode ? '#442433' : '#f5eef3', 
                   padding: '5px 10px', 
                   height: '29px', 
                   width: 'auto', 

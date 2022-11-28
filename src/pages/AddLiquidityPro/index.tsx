@@ -152,7 +152,7 @@ export default function AddLiquidityPro({
           f.token1.symbol === (currencyA?.symbol === 'wMOVR' ? 'MOVR' : currencyA?.symbol) &&
           f.token2.symbol === (currencyB?.symbol === 'wMOVR' ? 'MOVR' : currencyB?.symbol) &&
           f.isAnchor === !isFloat &&
-          f.apr !== 0
+          f.apr !== 0 && f.isFinished === false
   );
   const { pool } = usePool(useMemo(() => farm ? farm?.sousId : 1, [farm]));
   const addTransaction = useTransactionAdder()
@@ -190,8 +190,6 @@ export default function AddLiquidityPro({
   const bCurrency = currencyB !== null ? wrappedCurrency(currencyB, chainId)?.address : '0x4545e94974adacb82fc56bcf136b07943e152055'
   const token0Contract = useERC20(aCurrency, true)
   const token1Contract = useERC20(bCurrency ?? aCurrency, true)
-  console.log('aCurrency', aCurrency)
-  console.log('bCurrency', token1Contract)
 
   const getField = (shouldSendFloat) => {
     if (isFloat) {

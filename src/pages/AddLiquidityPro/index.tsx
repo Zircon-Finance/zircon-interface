@@ -189,9 +189,9 @@ export default function AddLiquidityPro({
   const aCurrency = currencyA !== null ? wrappedCurrency(currencyA, chainId)?.address : '0x4545e94974adacb82fc56bcf136b07943e152055'
   const bCurrency = currencyB !== null ? wrappedCurrency(currencyB, chainId)?.address : '0x4545e94974adacb82fc56bcf136b07943e152055'
   const token0Contract = useERC20(aCurrency, true)
-  const token1Contract = useERC20(bCurrency, true)
-  console.log('token0Contract', token0Contract)
-  console.log('token1Contract', token1Contract)
+  const token1Contract = useERC20(bCurrency ?? aCurrency, true)
+  console.log('aCurrency', aCurrency)
+  console.log('bCurrency', token1Contract)
 
   const getField = (shouldSendFloat) => {
     if (isFloat) {

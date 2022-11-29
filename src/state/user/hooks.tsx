@@ -29,7 +29,8 @@ import {
   FarmFinishedOnly,
   updateUserFarmFinishedOnly,
   addChosenToken,
-  removeChosenToken
+  removeChosenToken,
+  updateShowBanner,
 } from './actions'
 
 export function serializeToken(token: Token): SerializedToken {
@@ -175,6 +176,20 @@ export function useUserFarmsFilterAnchorFloat(): [FarmFilterAnchorFloat, (filter
     [dispatch],
   )
   return [userFarmsFilterAnchorFloat, setUserFarmsFilterAnchorFloat]
+}
+
+export function useShowBannerManager(): [boolean, () => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const showbanner = useSelector<AppState, AppState['user']['showBanner']>((state) => {
+    return state.user.showBanner
+  })
+  const setShowBanner = useCallback(
+    () => {
+      dispatch(updateShowBanner({ showBanner: !showbanner }))
+    },
+    [dispatch],
+  )
+  return [showbanner, setShowBanner]
 }
 
 

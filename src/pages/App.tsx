@@ -30,6 +30,8 @@ import { useWindowDimensions } from '../hooks'
 import Farms from '../views/Farms/Farms'
 import Lottie from "lottie-react-web";
 import animation from '../assets/lotties/0uCdcx9Hn5.json'
+import { useShowBannerManager } from '../state/user/hooks'
+import { PhishingBanner } from '../components/PhishingBanner'
 
 const AppWrapper = styled.div`
   display: flex;
@@ -95,6 +97,7 @@ export default function App() {
     opacityDiv !== 0 && setTimeout(() => setOpacityDiv(parseFloat((opacity - 0.1).toFixed(1))), 50)
   }
   opacityDiv !== 0 && countDown(opacityDiv)
+  const [showBanner, ] = useShowBannerManager()
   return (
     <Suspense fallback={null}>
       <HashRouter>
@@ -107,6 +110,7 @@ export default function App() {
         <Route component={GoogleAnalyticsReporter} />
         <Route component={DarkModeQueryParamReader} />
         <AppWrapper>
+          {showBanner && <PhishingBanner />}
           {opacityDiv !== 0 && <LottieContainer style={{opacity: opacityDiv}}><Lottie
                 style={{width: "100px"}}
                 options={{

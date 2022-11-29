@@ -26,7 +26,8 @@ import {
   updateUserFarmFinishedOnly,
   FarmFinishedOnly,
   addChosenToken,
-  removeChosenToken
+  removeChosenToken,
+  updateShowBanner
 } from './actions'
 import { GAS_PRICE_GWEI } from '../../utils/getGasPrice'
 
@@ -69,6 +70,7 @@ export interface UserState {
   userFarmFinishedOnly: FarmFinishedOnly
   gasPrice: string
   chosenTokens: string[]
+  showBanner: boolean
 }
 
 function pairKey(token0Address: string, token1Address: string) {
@@ -91,7 +93,8 @@ export const initialState: UserState = {
   userFarmFinishedOnly: FarmFinishedOnly.FALSE,
   gasPrice: GAS_PRICE_GWEI.default,
   showMobileSearchBar: false,
-  chosenTokens: ["0x4545e94974adacb82fc56bcf136b07943e152055"]
+  chosenTokens: ["0x4545e94974adacb82fc56bcf136b07943e152055"],
+  showBanner: true
 }
 
 export default createReducer(initialState, builder =>
@@ -111,6 +114,10 @@ export default createReducer(initialState, builder =>
 
       if(!state.chosenTokens) {
         state.chosenTokens = initialState.chosenTokens
+      }
+
+      if(state.showBanner === undefined) {
+        state.showBanner = initialState.showBanner
       }
 
       state.lastUpdateVersionTimestamp = currentTimestamp()
@@ -155,6 +162,9 @@ export default createReducer(initialState, builder =>
     })
     .addCase(removeChosenToken, (state, { payload: {id} }) => {
       state.chosenTokens = state.chosenTokens?.filter(token => token !== id)
+    })
+    .addCase(updateShowBanner, (state, { payload: {showBanner} }) => {
+      state.showBanner = showBanner
     })
     .addCase(updateUserDeadline, (state, action) => {
       state.userDeadline = action.payload.userDeadline

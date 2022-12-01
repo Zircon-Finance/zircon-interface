@@ -1,5 +1,5 @@
 import {TransactionResponse} from '@ethersproject/providers'
-import {Currency, currencyEquals, DEV, Percent, WDEV} from 'zircon-sdk'
+import {Currency, currencyEquals, NATIVE_TOKEN, Percent, WDEV} from 'zircon-sdk'
 import React, {useCallback, useMemo, useState} from 'react'
 import {ArrowDown, Plus} from 'react-feather'
 import ReactGA from 'react-ga4'
@@ -173,8 +173,8 @@ export default function RemoveProLiquidity({
     const liquidityAmount = parsedAmounts[Field.LIQUIDITY]
     if (!liquidityAmount) throw new Error('missing liquidity amount')
 
-    const currencyBIsETH = currencyB === DEV
-    const oneCurrencyIsETH = currencyA === DEV || currencyBIsETH
+    const currencyBIsETH = currencyB === NATIVE_TOKEN[chainId]
+    const oneCurrencyIsETH = currencyA === NATIVE_TOKEN[chainId] || currencyBIsETH
     const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline
 
     if (!tokenA || !tokenB) throw new Error('could not wrap')
@@ -325,7 +325,7 @@ export default function RemoveProLiquidity({
               {parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)}
             </Text>
             <RowFixed gap="4px">
-              <CurrencyLogo currency={currencyA} size={'24px'} />
+              <CurrencyLogo currency={currencyA} size={'24px'} chainId={chainId} />
               <Text fontSize={24} fontWeight={400} style={{ marginLeft: '10px' }}>
                 {currencyA?.symbol}
               </Text>
@@ -339,7 +339,7 @@ export default function RemoveProLiquidity({
               {parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)}
             </Text>
             <RowFixed gap="4px">
-              <CurrencyLogo currency={currencyB} size={'24px'} />
+              <CurrencyLogo currency={currencyB} size={'24px'} chainId={chainId} />
               <Text fontSize={24} fontWeight={400} style={{ marginLeft: '10px' }}>
                 {currencyB?.symbol}
               </Text>
@@ -424,8 +424,8 @@ export default function RemoveProLiquidity({
       [onUserInput]
   )
 
-  const oneCurrencyIsETH = currencyA === DEV || currencyB === DEV
-  const firstCurrencyIsETH = currencyA === DEV
+  const oneCurrencyIsETH = currencyA === NATIVE_TOKEN[chainId] || currencyB === NATIVE_TOKEN[chainId]
+  const firstCurrencyIsETH = currencyA === NATIVE_TOKEN[chainId]
   const oneCurrencyIsWDEV = Boolean(
       chainId &&
       ((currencyA && currencyEquals(WDEV[chainId], currencyA)) ||
@@ -439,20 +439,20 @@ export default function RemoveProLiquidity({
 
   const handleSelectCurrencyA = useCallback(
       (currency: Currency) => {
-        if (currencyIdB && currencyId(currency) === currencyIdB) {
-          history.push(`/remove-pro/${currencyId(currency)}/${currencyIdA}/${isFloat ? "FLOAT" : "ANCHOR"}`)
+        if (currencyIdB && currencyId(currency, chainId) === currencyIdB) {
+          history.push(`/remove-pro/${currencyId(currency, chainId)}/${currencyIdA}/${isFloat ? "FLOAT" : "ANCHOR"}`)
         } else {
-          history.push(`/remove-pro/${currencyId(currency)}/${currencyIdB}/${isFloat ? "FLOAT" : "ANCHOR"}`)
+          history.push(`/remove-pro/${currencyId(currency, chainId)}/${currencyIdB}/${isFloat ? "FLOAT" : "ANCHOR"}`)
         }
       },
       [currencyIdA, currencyIdB, history, isFloat]
   )
   const handleSelectCurrencyB = useCallback(
       (currency: Currency) => {
-        if (currencyIdA && currencyId(currency) === currencyIdA) {
-          history.push(`/remove-pro/${currencyIdB}/${currencyId(currency)}/${isFloat ? "FLOAT" : "ANCHOR"}`)
+        if (currencyIdA && currencyId(currency, chainId) === currencyIdA) {
+          history.push(`/remove-pro/${currencyIdB}/${currencyId(currency, chainId)}/${isFloat ? "FLOAT" : "ANCHOR"}`)
         } else {
-          history.push(`/remove-pro/${currencyIdA}/${currencyId(currency)}/${isFloat ? "FLOAT" : "ANCHOR"}`)
+          history.push(`/remove-pro/${currencyIdA}/${currencyId(currency, chainId)}/${isFloat ? "FLOAT" : "ANCHOR"}`)
         }
       },
       [currencyIdA, currencyIdB, history, isFloat]
@@ -566,7 +566,7 @@ export default function RemoveProLiquidity({
                         <span style={{width: '100%', fontSize: '13px'}}>{'YOU WILL RECEIVE'}</span>
                         {(!sync || isFloat) && <RowBetween>
                           <RowFixed>
-                            <CurrencyLogo currency={currencyA} style={{ marginRight: '12px' }} />
+                            <CurrencyLogo currency={currencyA} style={{ marginRight: '12px' }} chainId={chainId} />
                             <Text fontSize={16} fontWeight={400} id="remove-liquidity-tokena-symbol">
                               {currencyA?.symbol}
                             </Text>
@@ -578,7 +578,7 @@ export default function RemoveProLiquidity({
                         </RowBetween>}
                         {(!sync || !isFloat) && <RowBetween>
                           <RowFixed>
-                            <CurrencyLogo currency={currencyB} style={{ marginRight: '12px' }} />
+                            <CurrencyLogo currency={currencyB} style={{ marginRight: '12px' }} chainId={chainId} />
                             <Text fontSize={16} fontWeight={400} id="remove-liquidity-tokenb-symbol">
                               {currencyB?.symbol}
                             </Text>
@@ -592,8 +592,8 @@ export default function RemoveProLiquidity({
                             <RowBetween style={{ justifyContent: 'flex-end' }}>
                               {oneCurrencyIsETH ? (
                                   <StyledInternalLink
-                                      to={`/remove-pro/${currencyA === DEV ? WDEV[chainId].address : currencyIdA}/${
-                                          currencyB === DEV ? WDEV[chainId].address : currencyIdB
+                                      to={`/remove-pro/${currencyA === NATIVE_TOKEN[chainId] ? WDEV[chainId].address : currencyIdA}/${
+                                          currencyB === NATIVE_TOKEN[chainId] ? WDEV[chainId].address : currencyIdB
                                       }/${isFloat ? "FLOAT" : "STABLE"}`}
                                   >
                                     Receive wMOVR
@@ -601,8 +601,8 @@ export default function RemoveProLiquidity({
                               ) : oneCurrencyIsWDEV ? (
                                   <StyledInternalLink
                                       to={`/remove-pro/${
-                                          currencyA && currencyEquals(currencyA, WDEV[chainId]) ? 'ETH' : currencyIdA
-                                      }/${currencyB && currencyEquals(currencyB, WDEV[chainId]) ? 'ETH' : currencyIdB}/${isFloat ? "FLOAT" : "STABLE"}`}
+                                          currencyA && currencyEquals(currencyA, WDEV[chainId]) ? NATIVE_TOKEN[chainId].symbol : currencyIdA
+                                      }/${currencyB && currencyEquals(currencyB, WDEV[chainId]) ? NATIVE_TOKEN[chainId].symbol : currencyIdB}/${isFloat ? "FLOAT" : "STABLE"}`}
                                   >
                                     Receive MOVR
                                   </StyledInternalLink>

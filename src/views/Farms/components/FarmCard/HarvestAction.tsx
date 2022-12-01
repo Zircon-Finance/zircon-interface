@@ -29,7 +29,7 @@ interface FarmCardActionsProps extends DeserializedPool {
 
 
 const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, userData, userDataReady, vaultAddress, earningTokenInfo }) => {
-    const { account } = useWeb3React()
+    const { account, chainId } = useWeb3React()
     const earningsBigNumber = new BigNumber(userData.pendingReward)
     let earnings = BIG_ZERO
     let earningsBusd = getBalanceUSD(earningsBigNumber, earningTokenInfo?.map(t => t.currentPrice))
@@ -59,7 +59,7 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, u
         return (
             <Flex justifyContent={'space-between'} style={{borderBottom: '1px solid rgba(255,255,255,0.1)', padding: '10px 0', alignItems: 'center'}}>
                 <Flex>
-                    <CurrencyLogo style={{marginRight: '3px'}} currency={token} />
+                    <CurrencyLogo style={{marginRight: '3px'}} currency={token} chainId={chainId}/>
                     <Text color={theme.text1} fontSize='16px'>
                         {`${currentBalance?.toFixed(6)} ${token.symbol}`}
                     </Text>

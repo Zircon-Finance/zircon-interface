@@ -11,6 +11,7 @@ import { useFetchPairPrices } from '../../state/swap/hooks'
 import styled, { useTheme } from 'styled-components'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import CurrencyLogo from '../CurrencyLogo'
+import { useActiveWeb3React } from '../../hooks'
 
 export enum PairDataTimeWindowEnum {
   DAY,
@@ -83,6 +84,7 @@ const BasicChart = ({
   const valueToDisplay = hoverValue || pairPrices[pairPrices.length - 1]?.value
   const { changePercentage, changeValue } = getTimeWindowChange(pairPrices)
   const isChangePositive = changeValue >= 0
+  const {chainId} = useActiveWeb3React()
   const chartHeight = isChartExpanded ? 'calc(100% - 120px)' : '293px'
   const currentDate = new Date().toLocaleString([], {
     year: 'numeric',
@@ -118,7 +120,7 @@ const BasicChart = ({
             {outputCurrency ? (
               <DoubleCurrencyLogo currency0={inputCurrency} currency1={outputCurrency} size={24} margin />
             ) : (
-              inputCurrency && <CurrencyLogo currency={inputCurrency} size="24px" style={{ marginRight: '8px' }} />
+              inputCurrency && <CurrencyLogo currency={inputCurrency} size="24px" style={{ marginRight: '8px' }} chainId={chainId} />
             )}
             {inputCurrency && (
               <Text color={theme.text1}>

@@ -1,6 +1,6 @@
 import {BigNumber} from "@ethersproject/bignumber";
 import {TransactionResponse} from "@ethersproject/providers";
-import {Currency, currencyEquals, DEV, TokenAmount, WDEV} from "zircon-sdk";
+import {Currency, currencyEquals, NATIVE_TOKEN, TokenAmount, WDEV} from "zircon-sdk";
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import ReactGA from "react-ga4";
 import {RouteComponentProps} from "react-router-dom";
@@ -144,6 +144,12 @@ export default function AddLiquidityPro({
   // });
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noPylon);
   const isValid = !error;
+  console.log('currencyA', currencyA)
+  console.log('currencyB', currencyB)
+  console.log('Is valid', isValid)
+  console.log('mintinfo', mintInfo)
+  console.log('is valid error', error)
+  console.log('pylonstate', pylonState)
 
   // handle pool button values
   const {pools} = usePools();
@@ -186,10 +192,12 @@ export default function AddLiquidityPro({
   const [txHash, setTxHash] = useState<string>("");
 
   const batchContract = useBatchPrecompileContract()
-  const aCurrency = currencyA !== null ? wrappedCurrency(currencyA, chainId)?.address : '0x4545e94974adacb82fc56bcf136b07943e152055'
-  const bCurrency = currencyB !== null ? wrappedCurrency(currencyB, chainId)?.address : '0x4545e94974adacb82fc56bcf136b07943e152055'
-  const token0Contract = useERC20(aCurrency, true)
-  const token1Contract = useERC20(bCurrency ?? aCurrency, true)
+  const aCurrency = currencyA !== null ? wrappedCurrency(currencyA, chainId)?.address : chainId === 1285 ? 
+    '0x4545e94974adacb82fc56bcf136b07943e152055' : chainId === 56 && '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c'
+  const bCurrency = currencyB !== null ? wrappedCurrency(currencyB, chainId)?.address : chainId === 1285 ? 
+  '0x4545e94974adacb82fc56bcf136b07943e152055' : chainId === 56 && '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c'
+  const token0Contract = useERC20(aCurrency, true) ?? undefined
+  const token1Contract = useERC20(bCurrency ?? aCurrency, true) ?? undefined
 
   const getField = (shouldSendFloat) => {
     if (isFloat) {
@@ -248,7 +256,7 @@ export default function AddLiquidityPro({
   ].reduce((accumulator, field) => {
     return {
       ...accumulator,
-      [field]: maxAmountSpend(currencyBalances[field]),
+      [field]: maxAmountSpend(chainId, currencyBalances[field]),
     };
   }, {});
 
@@ -305,15 +313,15 @@ export default function AddLiquidityPro({
         args: Array<string | string[] | number | boolean>,
         value: BigNumber | null;
 
-    if (currencyA === DEV || currencyB === DEV) {
-      const tokenBIsETH = currencyB === DEV;
+    if (currencyA === NATIVE_TOKEN[chainId] || currencyB === NATIVE_TOKEN[chainId]) {
+      const tokenBIsETH = currencyB === NATIVE_TOKEN[chainId];
       estimate = pylonRouter.estimateGas.initETH;
       method = pylonRouter.initETH;
       args = [
         wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId)
             ?.address ?? "", // token
         (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
-        currencyA === DEV,
+        currencyA === NATIVE_TOKEN[chainId],
         account,
         deadlineFromNow,
       ];
@@ -404,27 +412,27 @@ export default function AddLiquidityPro({
         value: BigNumber | null;
 
 
-    const tokenBIsETH = getCurrency(false) === DEV;
+    const tokenBIsETH = getCurrency(false) === NATIVE_TOKEN[chainId];
 
     console.log('args', [
       wrappedCurrency(
           tokenBIsETH ? getCurrency(true) : getCurrency(false),
           chainId
       )?.address ?? "", // token
-      DEV === currencies[Field.CURRENCY_A], // second option is anchor so it should mint anchor when float.currency a is equal to b
+      NATIVE_TOKEN[chainId] === currencies[Field.CURRENCY_A], // second option is anchor so it should mint anchor when float.currency a is equal to b
       account,
       stake ? contractAddress : AddressZero,
       deadlineFromNow,
     ])
     if (sync === "off") {
-      if (getCurrency(true) === DEV) {
+      if (getCurrency(true) === NATIVE_TOKEN[chainId]) {
         method = router.addSyncLiquidityETH;
         args = [
           wrappedCurrency(
               tokenBIsETH ? getCurrency(true) : getCurrency(false),
               chainId
           )?.address ?? "", // token
-          DEV === currencies[Field.CURRENCY_A], // second option is anchor so it should mint anchor when float.currency a is equal to b
+          NATIVE_TOKEN[chainId] === currencies[Field.CURRENCY_A], // second option is anchor so it should mint anchor when float.currency a is equal to b
           liquidityMin.toString(),
           account,
           stake ? contractAddress : AddressZero,
@@ -457,7 +465,7 @@ export default function AddLiquidityPro({
         value = null;
       }
     } else {
-      if (getCurrency(true) === DEV || getCurrency(false) === DEV) {
+      if (getCurrency(true) === NATIVE_TOKEN[chainId] || getCurrency(false) === NATIVE_TOKEN[chainId]) {
         method = router.addAsyncLiquidityETH;
         console.error([
             tokenBIsETH ? getCurrency(true)?.name : getCurrency(false)?.name,
@@ -470,16 +478,16 @@ export default function AddLiquidityPro({
               tokenBIsETH ? getCurrency(true) : getCurrency(false),
               chainId
           )?.address ?? "", // token
-          (currencies[Field.CURRENCY_A] === DEV ? parsedAmountB : parsedAmountA).raw.toString(),
+          (currencies[Field.CURRENCY_A] === NATIVE_TOKEN[chainId] ? parsedAmountB : parsedAmountA).raw.toString(),
           liquidityMin.toString(),
-          currencies[Field.CURRENCY_A] === DEV,
+          currencies[Field.CURRENCY_A] === NATIVE_TOKEN[chainId],
           !isFloat, // second option is anchor so it should mint anchor when float.currency a is equal to b
           account,
           stake ? contractAddress : AddressZero,
           deadlineFromNow,
         ];
         value = BigNumber.from(
-            (currencies[Field.CURRENCY_A] === DEV ? parsedAmountA : parsedAmountB).raw.toString()
+            (currencies[Field.CURRENCY_A] === NATIVE_TOKEN[chainId] ? parsedAmountA : parsedAmountB).raw.toString()
         );
       } else {
         method = router.addAsyncLiquidity;
@@ -502,8 +510,10 @@ export default function AddLiquidityPro({
     const approvalCallData1 = token1Contract.interface.encodeFunctionData('approve', [router.address, parsedAmounts[getField(false)].raw.toString()])
     const farmApprovalCallData = lpContract.interface.encodeFunctionData('approve', [sousChefContract.address, MaxUint256])
 
-    const callData = router.interface.encodeFunctionData(((sync === "off" ? ((getCurrency(true) === DEV) ? 'addSyncLiquidityETH' : 'addSyncLiquidity') :
-    ((getCurrency(true) === DEV || getCurrency(false) === DEV) ? 'addAsyncLiquidityETH' : 'addAsyncLiquidity'))), args)
+    const callData = router.interface.encodeFunctionData(((sync === "off" ? 
+    ((getCurrency(true) === NATIVE_TOKEN[chainId]) ? 'addSyncLiquidityETH' : 'addSyncLiquidity') :
+    ((getCurrency(true) === NATIVE_TOKEN[chainId] || getCurrency(false) === NATIVE_TOKEN[chainId]) ? 
+    'addAsyncLiquidityETH' : 'addAsyncLiquidity'))), args)
 
     console.log('args', args)
     setAttemptingTxn(true);
@@ -584,8 +594,8 @@ export default function AddLiquidityPro({
         method: (...args: any) => Promise<TransactionResponse>,
         args: Array<string | string[] | number>,
         value: BigNumber | null
-    if (currencyA === DEV || currencyB === DEV) {
-      const tokenBIsETH = currencyB === DEV
+    if (currencyA === NATIVE_TOKEN[chainId] || currencyB === NATIVE_TOKEN[chainId]) {
+      const tokenBIsETH = currencyB === NATIVE_TOKEN[chainId]
       estimate = router.estimateGas.addLiquidityETH
       method = router.addLiquidityETH
       args = [
@@ -786,7 +796,7 @@ export default function AddLiquidityPro({
 
   const handleCurrencyASelect = useCallback(
       (currencyA: Currency) => {
-        const newCurrencyIdA = currencyId(currencyA);
+        const newCurrencyIdA = currencyId(currencyA, chainId);
         // setFloat({
         //   currency_a: currencyA,
         //   field_a: Field.CURRENCY_A,
@@ -809,7 +819,7 @@ export default function AddLiquidityPro({
 
   const handleCurrencyBSelect = useCallback(
       (currencyB: Currency) => {
-        const newCurrencyIdB = currencyId(currencyB);
+        const newCurrencyIdB = currencyId(currencyB, chainId);
         // setFloat({
         //   currency_a: currencies[Field.CURRENCY_A],
         //   field_a: Field.CURRENCY_A,

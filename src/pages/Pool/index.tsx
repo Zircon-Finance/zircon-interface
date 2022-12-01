@@ -139,7 +139,7 @@ export default function Pool() {
                 {/* <Question text="When you add liquidity, you are given pool tokens that represent your share. If you don’t see a pool you joined in this list, try importing a pool below." /> */}
               </RowBetween>
 
-              {!account || chainId !== 1285 ? (
+              {!account || !(chainId === 1285 || chainId === 56) ? (
                   <LightCard padding="40px" style={{border: 'none'}}>
                     <TYPE.body color={theme.text5} textAlign="center">
                       {t('connectToViewLiquidity')}
@@ -187,7 +187,7 @@ export default function Pool() {
               </div>
               <div style={{width: '85%',display: 'flex', justifyContent: 'center'}}>
                 <ButtonSecondary style={{borderRadius: '17px', marginRight: '5px', padding: '0px', fontWeight: 500, fontSize: width > 992 ? '18px' : '13px', color: theme.pinkBrown}} as={Link} to={'/find'}>{'Import'}</ButtonSecondary>
-                <ButtonPrimary id="add-liquidity-button" as={Link} to={'/add-pro/0x4545E94974AdACb82FC56BCf136B07943e152055'} style={{padding: '18px 0 18px 0', fontSize: width > 992 ? '18px' : '13px'}}>{'Add liquidity'}</ButtonPrimary>
+                <ButtonPrimary id="add-liquidity-button" as={Link} to={`/add-pro/${chainId === 1285 ? '0x4545E94974AdACb82FC56BCf136B07943e152055' : 'ETH'}`} style={{padding: '18px 0 18px 0', fontSize: width > 992 ? '18px' : '13px'}}>{'Add liquidity'}</ButtonPrimary>
               </div>
             </AutoRow>
           </AutoColumn>

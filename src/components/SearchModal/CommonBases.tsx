@@ -1,6 +1,6 @@
 import React from 'react'
 import { Text } from 'rebass'
-import { ChainId, Currency, currencyEquals, DEV, Token } from 'zircon-sdk'
+import { ChainId, Currency, currencyEquals, NATIVE_TOKEN, Token } from 'zircon-sdk'
 import styled from 'styled-components'
 
 import { SUGGESTED_BASES } from '../../constants'
@@ -45,22 +45,22 @@ export default function CommonBases({
       <AutoRow gap="4px">
         <BaseWrapper
           onClick={() => {
-            if (!selectedCurrency || !currencyEquals(selectedCurrency, DEV)) {
-              onSelect(DEV)
+            if (!selectedCurrency || !currencyEquals(selectedCurrency, NATIVE_TOKEN[chainId])) {
+              onSelect(NATIVE_TOKEN[chainId])
             }
           }}
-          disable={selectedCurrency === DEV}
+          disable={selectedCurrency === NATIVE_TOKEN[chainId]}
         >
-          <CurrencyLogo currency={DEV} style={{ marginRight: 8 }} />
+          <CurrencyLogo currency={NATIVE_TOKEN[chainId]} style={{ marginRight: 8 }} chainId={chainId}/>
           <Text fontWeight={400} fontSize={16}>
-            DEV
+            {NATIVE_TOKEN[chainId].symbol}
           </Text>
         </BaseWrapper>
         {(chainId ? SUGGESTED_BASES[chainId] : []).map((token: Token) => {
           const selected = selectedCurrency instanceof Token && selectedCurrency.address === token.address
           return (
             <BaseWrapper onClick={() => !selected && onSelect(token)} disable={selected} key={token.address}>
-              <CurrencyLogo currency={token} style={{ marginRight: 8 }} />
+              <CurrencyLogo currency={token} style={{ marginRight: 8 }} chainId={chainId} />
               <Text fontWeight={400} fontSize={16}>
                 {token.symbol}
               </Text>

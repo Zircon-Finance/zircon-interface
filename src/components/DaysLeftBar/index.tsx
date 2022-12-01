@@ -33,6 +33,7 @@ const PercentageBar = styled.div<{ percentage: number, show: boolean }>`
     height: 1px;
     background-color: ${({ theme, percentage }) => percentage ? percentage <= 10 ? theme.percentageRed : theme.percentageGreen : theme.opacitySmall};
     position: relative;
+    max-width: 200px;
     display: flex;
     justify-content: flex-start;
     animation: ${({ show, percentage }) =>
@@ -75,7 +76,7 @@ const DaysLeftBar: React.FC<DaysLeftProps> = ({viewMode = 'table', startBlock, e
       <Flex alignItems={"center"} justifyContent={'space-between'} style={{width: '100%'}}>
       <Text style={{ width: "100%", marginBottom: '5px' }} textAlign={"left"} fontSize={13}
       color = {daysLeft <= 3 ? theme.percentageRed : theme.text1}>
-        {`${daysLeft ? daysLeft >= 1 ? 
+        {`${(daysLeft || hoursLeft) ? hoursLeft >= 24 ? 
           `~ ${daysLeft} days left` : 
           `~ ${hoursLeft} hours left` : 
           "Loading..."}`}

@@ -1,5 +1,5 @@
 import { parseBytes32String } from '@ethersproject/strings'
-import { Currency, DEV, Token, currencyEquals } from 'zircon-sdk'
+import { Currency, Token, currencyEquals, NATIVE_TOKEN } from 'zircon-sdk'
 import { useMemo } from 'react'
 import { useSelectedTokenList } from '../state/lists/hooks'
 import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'
@@ -109,9 +109,10 @@ export function useToken(tokenAddress?: string): Token | undefined | null {
 }
 
 export function useCurrency(currencyId: string | undefined): Currency | null | undefined {
-  const isETH = currencyId?.toUpperCase() === 'ETH'
+  const {chainId} = useActiveWeb3React()
+  const isETH = currencyId?.toUpperCase() === NATIVE_TOKEN[chainId].symbol
   const token = useToken(isETH ? undefined : currencyId)
-  return isETH ? DEV : token
+  return isETH ? NATIVE_TOKEN[chainId] : token
 }
 
 export async function getTopTokens() {

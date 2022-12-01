@@ -121,6 +121,7 @@ const provider = window.ethereum
 const moonbeamChainId = '0x504';
 const moonriverChainId = '0x505';
 const moonbaseAlphaChainId = '0x507';
+const bscChainId = '0x38';
 
 const supportedNetworks = {
   moonbeam: {
@@ -153,6 +154,17 @@ const supportedNetworks = {
     nativeCurrency: {
       name: 'DEV',
       symbol: 'DEV',
+      decimals: 18,
+    },
+  },
+  bsc: {
+    chainId: bscChainId,
+    chainName: 'Binance Smart Chain',
+    rpcUrls: ['https://bsc-dataseed.binance.org/'],
+    blockExplorerUrls: ['https://bscscan.com'],
+    nativeCurrency: {
+      name: 'BNB',
+      symbol: 'BNB',
       decimals: 18,
     },
   },
@@ -375,7 +387,7 @@ export default function WalletModal({
   }
 
   function getModalContent() {
-    if (error || chainId !== 1285) {
+    if (error || !(chainId === 1285 || chainId === 56)) {
       return (
         <UpperSection>
 
@@ -392,7 +404,7 @@ export default function WalletModal({
               {connector === injected && <ButtonPrimary mt={'30px'} onClick={() => connectNet('moonriver')} >{'Click to connect'}</ButtonPrimary>}
               </>
             ) : (
-              'Error connecting. Please make sure you are connected to the appropriate Moonriver Alpha network.'
+              'Error connecting. Please make sure you are connected to the appropriate Moonriver network.'
             )}
           </ContentWrapper>
         </UpperSection>

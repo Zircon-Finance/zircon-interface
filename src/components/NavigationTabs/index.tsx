@@ -10,8 +10,9 @@ import QuestionHelper from '../QuestionHelper'
 import Settings from '../Settings'
 import { useWindowDimensions } from '../../hooks'
 import { connectNet } from '../WalletModal'
-import MoonbeamLogo from '../MoonbeamLogo'
+// import MoonbeamLogo from '../MoonbeamLogo'
 import MoonriverLogo from '../MoonriverLogo'
+import BnbLogo from '../BnbLogo'
 
 const Tabs = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -65,6 +66,15 @@ const StyledArrowLeft = styled(ArrowLeft)`
   stroke: ${({ theme }) => theme.pinkBrown} !important;
 `
 
+const BnbContainer = styled.div`
+display: flex;
+svg {
+  path {
+    fill: #F0B90B;
+  }
+}
+`
+
 export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' }) {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
@@ -83,14 +93,14 @@ export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' }) {
   )
 }
 
-export function ChainPoolTab({ active }: { active: 'moonbeam' | 'moonriver' }) {
+export function ChainPoolTab({ active }: { active: 'bsc' | 'moonriver' }) {
   const { width } = useWindowDimensions();
   return (
-    <Tabs style={{ marginRight: '10px', width: width >= 700 ? 'auto' : '100%' }}>
-      <StyledNavLink id={`swap-nav-link`} to={'#'} onClick={()=> {connectNet('moonbase')}} isActive={() => active === 'moonbeam'}>
-        <MoonbeamLogo />
+    <Tabs style={{ marginRight: '10px', width: width >= 700 ? 'auto' : '100%', padding: '3px' }}>
+      <StyledNavLink id={`swap-chain-bsc`} to={'#'} onClick={()=> {connectNet('bsc')}} isActive={() => active === 'bsc'} style={{padding: '5px 10px'}}>
+        <BnbContainer><BnbLogo /></BnbContainer>
       </StyledNavLink>
-      <StyledNavLink id={`pool-nav-link`}to={'#'} onClick={()=> {connectNet('moonriver')}} isActive={() => active === 'moonriver'}>
+      <StyledNavLink id={`swap-chain-moonriver`}to={'#'} onClick={()=> {connectNet('moonriver')}} isActive={() => active === 'moonriver'} style={{padding: '5px 10px'}}>
         <MoonriverLogo />
       </StyledNavLink>
     </Tabs>

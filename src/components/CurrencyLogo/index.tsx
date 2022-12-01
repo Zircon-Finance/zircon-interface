@@ -1,4 +1,4 @@
-import {Currency, DEV, Token} from 'zircon-sdk'
+import {Currency, NATIVE_TOKEN, Token} from 'zircon-sdk'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
@@ -27,21 +27,23 @@ const StyledLogo = styled(Logo)<{ size: string }>`
 export default function CurrencyLogo({
                                        currency,
                                        size = '24px',
-                                       style
+                                       style,
+                                       chainId
                                      }: {
   currency?: Currency
   size?: string
   style?: React.CSSProperties
+  chainId: number
 }) {
   // const uriLocations = useHttpLocations(currency instanceof WrappedTokenInfo ? currency.logoURI : undefined)
   const srcs: string[] = useMemo(() => {
-    if (currency === DEV) return []
+    if (currency === NATIVE_TOKEN[chainId]) return []
 
     return [getTokenLogoURL(currency?.symbol as string), getTokenLogoURL2(currency instanceof Token ? currency?.address as string : "")]
     //return [getTokenLogoURL(currency.address)]
   }, [currency])
 
-  if (currency === DEV) {
+  if (currency === NATIVE_TOKEN[chainId]) {
     return <StyledEthereumLogo src={MovrLogo} size={size} style={style} />
   }
 

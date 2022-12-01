@@ -27,12 +27,12 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
         wrappedCurrency(currencyB, chainId)
       ]),
     [chainId, currencies]
-
   )
 
   const pylonAddresses = useMemo(
     () =>
       tokens.map(([tokenA, tokenB]) => {
+        console.log('Pylon address is: ', tokenA && tokenB ? Pylon.getAddress(tokenA, tokenB) : undefined, 'from tokens ', tokenA, tokenB)
         return tokenA && tokenB && !tokenA.equals(tokenB) ? Pylon.getAddress(tokenA, tokenB) : undefined
       }),
     [tokens]
@@ -46,6 +46,8 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
   )
 
   const results = useMultipleContractSingleData(pylonAddresses, PYLON_INTERFACE, 'getSyncReserves')
+  console.log('Calling getSyncReserves on pylonAddresses', pylonAddresses)
+  console.log('results', results)
   const resultsPair = useMultipleContractSingleData(pairAddresses, PAIR_INTERFACE, 'getReserves')
   return useMemo(() => {
     return results.map((result, i) => {

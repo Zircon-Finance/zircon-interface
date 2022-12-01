@@ -10,6 +10,7 @@ import {Separator} from '../../components/SearchModal/styleds'
 import {PylonState} from "../../data/PylonReserves";
 import { StyledWarningIcon } from '../AddLiquidity/ConfirmAddModalBottom'
 import { useTheme } from 'styled-components'
+import { useActiveWeb3React } from '../../hooks'
 
 export function ConfirmAddModalBottom({
     pylonState,
@@ -41,19 +42,20 @@ export function ConfirmAddModalBottom({
   formattedLiquidity?: number
 }) {
   const theme = useTheme()
+  const {chainId} = useActiveWeb3React()
   return (
     <>
         {(sync === "half" || isFloat) && <RowBetween>
         <TYPE.body>{currencies[Field.CURRENCY_A]?.symbol} Deposited</TYPE.body>
         <RowFixed>
-          <CurrencyLogo currency={currencies[Field.CURRENCY_A]} style={{ marginRight: '8px' }} />
+          <CurrencyLogo currency={currencies[Field.CURRENCY_A]} style={{ marginRight: '8px' }} chainId={chainId} />
           <TYPE.body style={{overflow: 'auto'}}>{parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)}</TYPE.body>
         </RowFixed>
       </RowBetween>}
         {(sync === "half" || !isFloat || pylonState !== PylonState.EXISTS) && <RowBetween>
         <TYPE.body>{currencies[Field.CURRENCY_B]?.symbol} Deposited</TYPE.body>
         <RowFixed>
-          <CurrencyLogo currency={currencies[Field.CURRENCY_B]} style={{ marginRight: '8px' }} />
+          <CurrencyLogo currency={currencies[Field.CURRENCY_B]} style={{ marginRight: '8px' }} chainId={chainId} />
           <TYPE.body style={{overflow: 'auto'}}>{parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)}</TYPE.body>
         </RowFixed>
       </RowBetween>}

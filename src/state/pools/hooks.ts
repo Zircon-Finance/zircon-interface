@@ -23,7 +23,6 @@ import { usePylon } from '../../data/PylonReserves'
 import { useCurrency } from '../../hooks/Tokens'
 import { useTokenBalance } from '../wallet/hooks'
 import { usePair } from '../../data/Reserves'
-import { useSousChef } from '../../hooks/useContract'
 
 export const useFetchPublicPoolsData = () => {
   const dispatch = useDispatch()
@@ -82,20 +81,6 @@ export const usePairLiquidity = (token1, token2) => {
 // export const usePoolsWithVault = () => {
 //   return useSelector(poolsWithVaultSelector)
 // }
-
-export const useStartBlock = async(sousId) => {
-  const {account, chainId} = useWeb3React()
-  const sousChefContract = useSousChef(sousId)
-  const startBlock = account && chainId === 1285 ? await sousChefContract.startBlock().then((value) => value.toNumber()) : 0
-  return startBlock
-}
-
-export const useEndBlock = async(sousId) => {
-  const {account, chainId} = useWeb3React()
-  const sousChefContract = useSousChef(sousId)
-  const endBlock = account && chainId === 1285 ? await sousChefContract.bonusEndBlock().then((value) => value.toNumber()) : 0
-  return endBlock
-}
 
 export const usePoolsPageFetch = () => {
   const { account } = useWeb3React()

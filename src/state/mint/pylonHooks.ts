@@ -1,4 +1,4 @@
-import {Currency, CurrencyAmount, DEV, JSBI, Pair, Percent, Price, Pylon, TokenAmount} from 'zircon-sdk'
+import {Currency, CurrencyAmount, JSBI, NATIVE_TOKEN, Pair, Percent, Price, Pylon, TokenAmount} from 'zircon-sdk'
 import {useCallback, useEffect, useMemo, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {useTotalSupply} from '../../data/TotalSupply'
@@ -90,6 +90,7 @@ export function useDerivedPylonMintInfo(
   const energyAddress = Pylon.getEnergyAddress(pylonPair?.token0, pylonPair?.token1) //useEnergyAddress(pylonPair?.token0, pylonPair?.token1)
   const ptbEnergy = useTokenBalance(energyAddress, pylonPair?.pair.liquidityToken)
   const reserveAnchor = useTokenBalance(energyAddress, pylonPair?.anchorLiquidityToken)
+  console.log('Calling for reserve anchor with params: ', 'energyAddress: ', energyAddress, 'anchorLiquidityToken: ', pylonPair?.anchorLiquidityToken, 'on pylon: ', pylonPair,  'result: ', reserveAnchor)
   const healthFactor = useMemo(() => {
     try {
       return pylonInfo && pylonInfo[0] && pylonState === PylonState.EXISTS && pylonPair && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && lastK && pylonConstants && pylonState === PylonState.EXISTS?
@@ -112,6 +113,7 @@ export function useDerivedPylonMintInfo(
     }
 
   }, [pylonInfo, pylonPair, ptbEnergy, reserveAnchor, pylonPoolBalance, totalSupply, lastK, pylonConstants,pylonState])
+  console.log('healthFactor', reserveAnchor, pylonPoolBalance, totalSupply, lastK, pylonConstants, pylonState, healthFactor)
   const noPylon: boolean =
       pylonState === PylonState.NOT_EXISTS || Boolean(pylonSupply && JSBI.equal(pylonSupply.raw, ZERO))
 
@@ -143,7 +145,7 @@ export function useDerivedPylonMintInfo(
             dependentField === Field.CURRENCY_B
                 ? pylonPair.pair.priceOf(tokenA).quote(wrappedIndependentAmount)
                 : pylonPair.pair.priceOf(tokenB).quote(wrappedIndependentAmount)
-        return dependentCurrency === DEV ? CurrencyAmount.ether(dependentTokenAmount.raw) : dependentTokenAmount
+        return dependentCurrency === NATIVE_TOKEN[chainId] ? CurrencyAmount.ether(dependentTokenAmount.raw) : dependentTokenAmount
       }
       return undefined
     } else {
@@ -269,9 +271,9 @@ export function useDerivedPylonMintInfo(
     error = 'Insufficient ' + currencies[Field.CURRENCY_B]?.symbol + ' balance'
   }
 
-  if (!mintInfo || mintInfo?.isDerivedVFB) {
-    error = !mintInfo ? 'Enter an amount' : 'Try a higher input amount'
-  }
+  // if (!mintInfo || mintInfo?.isDerivedVFB) {
+  //   error = !mintInfo ? 'Enter an amount' : 'Try a higher input amount'
+  // }
 
   return {
     dependentField,

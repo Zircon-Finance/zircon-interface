@@ -62,7 +62,7 @@ function TokenWarningCard({ token }: TokenWarningCardProps) {
     <Wrapper error={duplicateNameOrSymbol}>
       <AutoRow gap="6px">
         <AutoColumn gap="24px">
-          <CurrencyLogo currency={token} size={'16px'} />
+          <CurrencyLogo currency={token} size={'16px'} chainId={chainId} />
           <div> </div>
         </AutoColumn>
         <AutoColumn gap="10px" justify="flex-start">

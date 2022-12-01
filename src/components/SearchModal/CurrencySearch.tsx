@@ -1,4 +1,4 @@
-import { Currency, DEV, Token } from 'zircon-sdk'
+import { Currency, DEV, NATIVE_TOKEN, Token } from 'zircon-sdk'
 import React, { KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import ReactGA from 'react-ga4'
 import { useTranslation } from 'react-i18next'
@@ -27,6 +27,7 @@ import CurrencyLogo from '../CurrencyLogo'
 import { mainnetTokens } from '../../constants/tokens'
 import { useChosenTokens } from '../../state/user/hooks'
 import { StarFull } from '../TopTokensRow'
+import { useActiveWeb3React } from '../../hooks'
 
 const SmallPlanet = styled.div`
   height: 28px;
@@ -174,9 +175,11 @@ export function CurrencySearch({
 
   const SmallToken = ({ token, index }: { token: any, index: number }) => {
     const currency = useToken(token)
+    const {chainId} = useActiveWeb3React()
     return (
-      <SmallPlanet key={index} onClick={()=>handleCurrencySelect(token.address ? token.symbol === 'MOVR' ? DEV : token : currency)}>
-        <CurrencyLogo currency={token.symbol ? token : currency} size={'18px'} />
+      <SmallPlanet key={index} onClick={()=>handleCurrencySelect(token.address ? token.symbol === NATIVE_TOKEN[chainId].symbol ? 
+      NATIVE_TOKEN[chainId] : token : currency)}>
+        <CurrencyLogo currency={token.symbol ? token : currency} size={'18px'} chainId = {chainId} />
         <Text fontWeight={500} fontSize={14} style={{padding: '0 5px 0 5px'}}>{token?.symbol ? token?.symbol : currency?.symbol}</Text>
       </SmallPlanet>
   )}

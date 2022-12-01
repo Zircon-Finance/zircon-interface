@@ -5,6 +5,7 @@ import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
 import CurrencyLogo from '../CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { RowBetween } from '../Row'
+import { useActiveWeb3React } from '../../hooks'
 
 const LabelRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -67,7 +68,7 @@ export default function CurrencyInputPanel({
 }: CurrencyInputPanelProps) {
 
   const [modalOpen, setModalOpen] = useState(false)
-
+  const {chainId} = useActiveWeb3React()
 
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
@@ -84,7 +85,7 @@ export default function CurrencyInputPanel({
                   {pair ? (
                     <DoubleCurrencyLogo currency0={pair.token0} currency1={pair.token1} size={24} margin={true} />
                   ) : currency ? (
-                    <CurrencyLogo currency={currency} size={'24px'} />
+                    <CurrencyLogo currency={currency} size={'24px'} chainId={chainId} />
                   ) : null}
                 </Aligner>
               </div>

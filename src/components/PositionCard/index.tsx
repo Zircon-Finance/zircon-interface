@@ -71,10 +71,10 @@ interface PylonPositionCardProps {
 
 export function MinimalPositionCard({ pair, showUnwrapped = false, border }: PositionCardProps) {
     const theme = useTheme()
-    const { account } = useActiveWeb3React()
+    const { account, chainId } = useActiveWeb3React()
 
-    const currency0 = showUnwrapped ? pair.token0 : unwrappedToken(pair.token0)
-    const currency1 = showUnwrapped ? pair.token1 : unwrappedToken(pair.token1)
+    const currency0 = showUnwrapped ? pair.token0 : unwrappedToken(pair.token0, chainId)
+    const currency1 = showUnwrapped ? pair.token1 : unwrappedToken(pair.token1, chainId)
 
     const [showMore, setShowMore] = useState(false)
 
@@ -159,9 +159,9 @@ export function MinimalPositionCard({ pair, showUnwrapped = false, border }: Pos
 
 export default function FullPositionCard({ pair, border }: PositionCardProps) {
     const theme = useTheme()
-    const { account } = useActiveWeb3React()
-    const currency0 = unwrappedToken(pair.token0)
-    const currency1 = unwrappedToken(pair.token1)
+    const { account, chainId } = useActiveWeb3React()
+    const currency0 = unwrappedToken(pair.token0, chainId)
+    const currency1 = unwrappedToken(pair.token1, chainId)
 
     const [showMore, setShowMore] = useState(false)
 
@@ -246,7 +246,7 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
                                         <Text fontSize={13} fontWeight={400} marginLeft={'6px'}>
                                             {token0Deposited?.toSignificant(6)}
                                         </Text>
-                                        <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={currency0} />
+                                        <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={currency0} chainId={chainId} />
                                     </RowFixed>
                                 ) : (
                                     '-'
@@ -263,7 +263,7 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
                                         <Text fontSize={13} fontWeight={400} marginLeft={'6px'}>
                                             {token1Deposited?.toSignificant(6)}
                                         </Text>
-                                        <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={currency1} />
+                                        <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={currency1} chainId={chainId} />
                                     </RowFixed>
                                 ) : (
                                     '-'
@@ -279,13 +279,13 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
                             </FixedHeightRow>
                         </div>
                         <div style={{display: 'flex', flexFlow: 'row', padding: '5px'}}>
-                            <ButtonPositionsMobile as={Link} to={`/remove/${currencyId(currency0)}/${currencyId(currency1)}`}
+                            <ButtonPositionsMobile as={Link} to={`/remove/${currencyId(currency0, chainId)}/${currencyId(currency1, chainId)}`}
                                                    style={{marginRight: '2.5px'}}>
                                 <Text fontSize={width > 500 ? 16 : 13} fontWeight={400}>
                                     {'Remove'}
                                 </Text>
                             </ButtonPositionsMobile>
-                            <ButtonPositionsMobile as={Link} to={`/add/${currencyId(currency0)}/${currencyId(currency1)}`} padding={'6px'}
+                            <ButtonPositionsMobile as={Link} to={`/add/${currencyId(currency0, chainId)}/${currencyId(currency1, chainId)}`} padding={'6px'}
                                                    style={{marginLeft: '2.5px'}} >
                                 {/* {width > 500 && <Plus strokeWidth={1} /> } */}
                                 <Text fontSize={width > 500 ? 16 : 13} fontWeight={400}>
@@ -302,9 +302,9 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
 
 export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonConstants }: PylonPositionCardProps) {
     const theme = useTheme()
-    const { account } = useActiveWeb3React()
-    const currency0 = unwrappedToken(pylon.token0)
-    const currency1 = unwrappedToken(pylon.token1)
+    const { account, chainId } = useActiveWeb3React()
+    const currency0 = unwrappedToken(pylon.token0, chainId)
+    const currency1 = unwrappedToken(pylon.token1, chainId)
 
     const [showMore, setShowMore] = useState(false)
 
@@ -376,7 +376,7 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
                                             <Text fontSize={13} fontWeight={400} marginLeft={'6px'}>
                                                 {token0Deposited?.toSignificant(6)}
                                             </Text>
-                                            <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={currency0} />
+                                            <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={currency0} chainId={chainId} />
                                         </RowFixed>
                                     ) : (
                                         '-'
@@ -393,7 +393,7 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
                                             <Text fontSize={13} fontWeight={400} marginLeft={'6px'}>
                                                 {token1Deposited?.toSignificant(6)}
                                             </Text>
-                                            <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={currency1} />
+                                            <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={currency1} chainId={chainId} />
                                         </RowFixed>
                                     ) : (
                                         '-'
@@ -416,13 +416,13 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
                             </FixedHeightRow>
                         </div>
                         <div style={{display: 'flex', flexFlow: 'row', padding: '5px'}}>
-                            <ButtonPositionsMobile as={Link} to={`/remove-pro/${currencyId(currency0)}/${currencyId(currency1)}/${isFloat ? "FLOAT" : "STABLE"}`}
+                            <ButtonPositionsMobile as={Link} to={`/remove-pro/${currencyId(currency0, chainId)}/${currencyId(currency1, chainId)}/${isFloat ? "FLOAT" : "STABLE"}`}
                                                    style={{marginRight: '2.5px'}}>
                                 <Text fontSize={width > 500 ? 16 : 13} fontWeight={400}>
                                     {'Remove'}
                                 </Text>
                             </ButtonPositionsMobile>
-                            <ButtonPositionsMobile as={Link} to={`/add-pro/${currencyId(currency0)}/${currencyId(currency1)}/${ isFloat ? "float" : "stable"}`} padding={'6px'}
+                            <ButtonPositionsMobile as={Link} to={`/add-pro/${currencyId(currency0, chainId)}/${currencyId(currency1, chainId)}/${ isFloat ? "float" : "stable"}`} padding={'6px'}
                                                    style={{marginLeft: '2.5px'}} >
                                 {/* {width > 500 && <Plus strokeWidth={1} /> } */}
                                 <Text fontSize={width > 500 ? 16 : 13} fontWeight={400}>
@@ -437,10 +437,10 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
     )
 }
 export function MinimalPositionPylonCard({ pylon, showUnwrapped = false, border, isFloat, blockNumber, pylonConstants}: PylonPositionCardProps) {
-    const { account } = useActiveWeb3React()
+    const { account, chainId } = useActiveWeb3React()
 
-    const currency0 = showUnwrapped ? pylon.token1 : unwrappedToken(pylon.token0)
-    const currency1 = showUnwrapped ? pylon.token0 : unwrappedToken(pylon.token1)
+    const currency0 = showUnwrapped ? pylon.token1 : unwrappedToken(pylon.token0, chainId)
+    const currency1 = showUnwrapped ? pylon.token0 : unwrappedToken(pylon.token1, chainId)
 
     const [showMore, setShowMore] = useState(false)
 

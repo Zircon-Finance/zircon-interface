@@ -3,6 +3,7 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 import { Flex, Text } from 'rebass';
 import { useTheme } from 'styled-components';
+import { useActiveWeb3React } from '../../hooks';
 import { useCurrency } from '../../hooks/Tokens';
 import { useChosenTokens } from '../../state/user/hooks';
 import { AbsContainer } from '../../views/Farms/components/FarmTable/Liquidity';
@@ -15,6 +16,7 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) 
     const currency = useCurrency(token)
     const [hoverPlus, setHoverPlus] = React.useState(false)
     const [hoverSwap, setHoverSwap] = React.useState(false)
+    const {chainId} = useActiveWeb3React()
     const [hovered, setHovered] = React.useState(false);
     const tokenData = topTokens.find((t) => t.token.id === token)
     const tokenDataPrevious = topTokensPrevious.find((t) => t.token.id === token)
@@ -60,6 +62,7 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) 
           <StarFull />
         </Flex>
         <CurrencyLogo
+          chainId = {chainId}
           key={index}
           currency={currency}
           size={"20px"}
@@ -140,6 +143,7 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) 
     <Flex onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} alignItems='center'>
       {hovered && hoverContent}
       <CurrencyLogo key={index} 
+        chainId = {chainId}
         currency={currency}
         size={'24px'} 
         style={{marginRight: '5px'}} />  

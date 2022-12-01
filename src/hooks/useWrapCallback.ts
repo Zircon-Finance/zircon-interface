@@ -1,4 +1,4 @@
-import { Currency, currencyEquals, DEV, WDEV } from 'zircon-sdk'
+import { Currency, currencyEquals, NATIVE_TOKEN, WDEV } from 'zircon-sdk'
 import { useMemo } from 'react'
 import { tryParseAmount } from '../state/swap/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
@@ -36,7 +36,7 @@ export default function useWrapCallback(
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
 
-    if (inputCurrency === DEV && currencyEquals(WDEV[chainId], outputCurrency)) {
+    if (inputCurrency === NATIVE_TOKEN[chainId] && currencyEquals(WDEV[chainId], outputCurrency)) {
       return {
         wrapType: WrapType.WRAP,
         execute:
@@ -52,7 +52,7 @@ export default function useWrapCallback(
             : undefined,
         inputError: sufficientBalance ? undefined : 'Insufficient MOVR balance'
       }
-    } else if (currencyEquals(WDEV[chainId], inputCurrency) && outputCurrency === DEV) {
+    } else if (currencyEquals(WDEV[chainId], inputCurrency) && outputCurrency === NATIVE_TOKEN[chainId]) {
       return {
         wrapType: WrapType.UNWRAP,
         execute:

@@ -187,8 +187,9 @@ export default function Swap() {
       setTopTokensPrevious(res.oneDayAgoQueryData)
     })
   }, [approval, approvalSubmitted])
+  const {chainId} = useActiveWeb3React()
 
-  const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT])
+  const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(chainId, currencyBalances[Field.INPUT])
   const atMaxAmountInput = Boolean(maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput))
 
   // the callback to execute the swap

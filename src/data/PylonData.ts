@@ -54,7 +54,20 @@ export function usePylonInfo(address?: string): (any)[] | undefined {
         "thisBlockEMA",
         "lastRootKTranslated",
         "anchorKFactor",
-        "formulaSwitch"
+        "formulaSwitch",
+        "lastFloatAccumulator",
+        "lastOracleTimestamp",
+        "lastPrice"
+    ])?.map<any>((res => res?.result?.[0]))
+    return address && result ? result : undefined
+}
+
+export function usePairInfo(address?: string): (any)[] | undefined {
+    const contract = usePairContract(address, false)
+    const result = useSingleContractMultipleMethods(contract, [
+        "price0CumulativeLast",
+        "price1CumulativeLast",
+        "kLast"
     ])?.map<any>((res => res?.result?.[0]))
     return address && result ? result : undefined
 }
@@ -74,6 +87,7 @@ export function usePylonConstants(): PylonFactory | undefined {
         "EMASamples",
         "muUpdatePeriod",
         "muChangeFactor",
+        "oracleUpdateSecs"
     ])
     const pairResult = useSingleContractMultipleMethods(factoryContract, [
         "liquidityFee",
@@ -86,5 +100,5 @@ export function usePylonConstants(): PylonFactory | undefined {
     ])
     let result = pylonResult.concat(pairResult).concat(energyResult)?.flatMap<any>((res => res?.result)).filter(t => t !== undefined)
     return result && result.length > 10 ? new PylonFactory(result[0], result[1], result[2], result[3], result[4], result[5], result[6],
-        result[7], result[8], result[9], result[10], result[11]) : undefined
+        result[7], result[8], result[9], result[10], result[11], result[12]) : undefined
 }

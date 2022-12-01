@@ -13,7 +13,7 @@ import { Field, typeInput } from './actions'
 
 import {usePylon} from "../../data/PylonReserves";
 import BigNumber from 'bignumber.js'
-import {useLastK, usePylonConstants, usePylonInfo} from "../../data/PylonData";
+import {useLastK, usePairInfo, usePylonConstants, usePylonInfo} from "../../data/PylonData";
 import {useBlockNumber} from "../application/hooks";
 
 export function useBurnState(): AppState['burn'] {
@@ -138,7 +138,7 @@ export function useDerivedBurnInfo(
 export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pylonPoolBalance: TokenAmount,
                                    totalSupply: TokenAmount, ptTotalSupply: TokenAmount, pylonInfo: any[],
                                    pylonConstants: PylonFactory, blockNumber: number,
-                                   lastK: string, isSync: boolean, isFloat: boolean, energyPT: TokenAmount, energyAnchor: TokenAmount): {
+                                   pairInfo: any[], isSync: boolean, isFloat: boolean, energyPT: TokenAmount, energyAnchor: TokenAmount): {
   amount?: TokenAmount;
   amountA?: TokenAmount;
   amountB?: TokenAmount;
@@ -151,7 +151,7 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
   omegaSlashingPercentage?: JSBI;
 } {
 
-  if(!ptTotalSupply || !userLiquidity || !pylonPoolBalance || !totalSupply || !pylonInfo || !pylonConstants || !lastK || !blockNumber || !pylonInfo[0]) {
+  if(!ptTotalSupply || !userLiquidity || !pylonPoolBalance || !totalSupply || !pylonInfo || !pylonConstants || !pairInfo || !blockNumber || !pylonInfo[0]) {
     return undefined
   }
   let isLastRoot = new BigNumber(pylonInfo[7].toString()).isEqualTo(0)
@@ -162,16 +162,17 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
       if(isSync) {
         console.log("burn::", totalSupply.raw.toString(), ptTotalSupply.raw.toString(), userLiquidity.raw.toString(),
             pylonInfo[0].toString(), pylonInfo[1].toString(), pylonInfo[2].toString(), pylonPoolBalance.raw.toString(), pylonInfo[3].toString(), BigInt(blockNumber), pylonConstants,
-            pylonInfo[4].toString(), pylonInfo[5].toString(), pylonInfo[6].toString(), pylonInfo[7].toString(), pylonInfo[8].toString(), pylonInfo[9].toString(), BigInt(lastK))
+            pylonInfo[4].toString(), pylonInfo[5].toString(), pylonInfo[6].toString(), pylonInfo[7].toString(), pylonInfo[8].toString(), pylonInfo[9].toString(), pairInfo[2].toString())
         if(JSBI.greaterThanOrEqual(ptTotalSupply.raw, userLiquidity.raw)) {
           let burnInfo = isFloat ?
               pylon.burnFloat(totalSupply, ptTotalSupply, userLiquidity,
                   pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-                  pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK)) :
+                  pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], pairInfo[2]) :
               pylon.burnAnchor(totalSupply, ptTotalSupply, userLiquidity,
                   pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-                  pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK), energyPT, energyAnchor);
-          return {...burnInfo, liquidity: isFloat ? [burnInfo.amount, new TokenAmount(pylon.token1, BigInt(0))] : [new TokenAmount(pylon.token0, BigInt(0)), burnInfo.amount]}
+                  pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], pairInfo[2], energyPT, energyAnchor);
+          return {...burnInfo, liquidity: isFloat ? [burnInfo.amount, new TokenAmount(pylon.token1, BigInt(0))] :
+                [new TokenAmount(pylon.token0, BigInt(0)), burnInfo.amount]}
         }else{
           return undefined
         }
@@ -179,11 +180,11 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
         let burnInfo = isFloat ?
             pylon.burnAsyncFloat(totalSupply, ptTotalSupply, userLiquidity,
                 pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK))
+                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], pairInfo[2])
             :
             pylon.burnAsyncAnchor(totalSupply, ptTotalSupply, userLiquidity,
                 pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK), energyPT, energyAnchor);
+                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], pairInfo[2], energyPT, energyAnchor);
 
         return {...burnInfo, liquidity: [burnInfo.amountA, burnInfo.amountB]}
 
@@ -192,7 +193,7 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
     }catch (e) {
       console.log("hello", pylon.address.toString(), totalSupply.raw.toString(), ptTotalSupply.raw.toString(), userLiquidity.raw.toString(),
           pylonInfo[0].toString(), pylonInfo[1].toString(), pylonInfo[2].toString(), pylonPoolBalance.raw.toString(), pylonInfo[3].toString(), BigInt(blockNumber).toString(), pylonConstants.toString(),
-          pylonInfo[4].toString(), pylonInfo[5].toString(), pylonInfo[6].toString(), pylonInfo[7].toString(), pylonInfo[8].toString(), pylonInfo[9].toString(), BigInt(lastK).toString())
+          pylonInfo[4].toString(), pylonInfo[5].toString(), pylonInfo[6].toString(), pylonInfo[7].toString(), pylonInfo[8].toString(), pylonInfo[9].toString(), pairInfo[2].toString())
       console.log(e)
       return undefined
     }
@@ -256,7 +257,8 @@ export function useDerivedPylonBurnInfo(
   const pylonPoolBalance = useTokenBalance(pylon?.address, pylon?.pair.liquidityToken)
   const ptTotalSupply = useTotalSupply(isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken)
   const totalSupply = useTotalSupply(pylon?.pair.liquidityToken)
-  const lastK = useLastK(pylon ? Pair.getAddress(pylon.token0, pylon.token1) : "");
+  const pairInfo = usePairInfo(pylon ? Pair.getAddress(pylon.token0, pylon.token1) : "")
+  // const lastK = useLastK(pylon ? Pair.getAddress(pylon.token0, pylon.token1) : "");
   // const pylonSupply = useTotalSupply(pylon?.pair.liquidityToken)
   const energyAddress = Pylon.getEnergyAddress(pylon?.token0, pylon?.token1)
 
@@ -267,15 +269,15 @@ export function useDerivedPylonBurnInfo(
     return getLiquidityValues(
         pylon, userLiquidity, pylonPoolBalance,
         totalSupply, ptTotalSupply, pylonInfo,
-        pylonConstants, blockNumber, lastK,
+        pylonConstants, blockNumber, pairInfo,
         isSync, isFloat, ptbEnergy, reserveAnchor)
   }, [pylon, userLiquidity, pylonPoolBalance,
-    totalSupply, ptTotalSupply, pylonInfo, pylonConstants, blockNumber, lastK, isSync, isFloat] )
+    totalSupply, ptTotalSupply, pylonInfo, pylonConstants, blockNumber, pairInfo, isSync, isFloat] )
 
   const [liquidityValueA, liquidityValueB] = !burnInfo ? [undefined, undefined] : burnInfo?.liquidity
 
   const healthFactor = useMemo(() => {
-    if (pylonInfo && pylon  && pylonInfo[0] && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && lastK && pylonConstants) {
+    if (pylonInfo && pylon  && pylonInfo[0] && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && pairInfo && pylonConstants) {
       return pylon.getHealthFactor(
           pylonInfo[0],
           pylonPoolBalance,
@@ -286,14 +288,14 @@ export function useDerivedPylonBurnInfo(
           pylonInfo[1],
           pylonInfo[7],
           pylonInfo[8],
-          JSBI.BigInt(lastK),
+          pairInfo[2], //JSBI.BigInt(lastK),
           pylonConstants
       ).toString();
     }else{
       return undefined
     }
 
-  }, [pylonInfo, pylon, ptbEnergy, reserveAnchor, pylonPoolBalance, totalSupply, lastK, pylonConstants])
+  }, [pylonInfo, pylon, ptbEnergy, reserveAnchor, pylonPoolBalance, totalSupply, pairInfo, pylonConstants])
 
   const liquidityValues: { [Field.CURRENCY_A]?: TokenAmount; [Field.CURRENCY_B]?: TokenAmount } = {
     [Field.CURRENCY_A]: liquidityValueA,

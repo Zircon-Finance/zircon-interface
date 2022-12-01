@@ -21,28 +21,28 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
   const { chainId } = useActiveWeb3React()
 
   const tokens = useMemo(
-    () =>
-      currencies.map(([currencyA, currencyB]) => [
-        wrappedCurrency(currencyA, chainId),
-        wrappedCurrency(currencyB, chainId)
-      ]),
-    [chainId, currencies]
+      () =>
+          currencies.map(([currencyA, currencyB]) => [
+            wrappedCurrency(currencyA, chainId),
+            wrappedCurrency(currencyB, chainId)
+          ]),
+      [chainId, currencies]
 
   )
 
   const pylonAddresses = useMemo(
-    () =>
-      tokens.map(([tokenA, tokenB]) => {
-        return tokenA && tokenB && !tokenA.equals(tokenB) ? Pylon.getAddress(tokenA, tokenB) : undefined
-      }),
-    [tokens]
+      () =>
+          tokens.map(([tokenA, tokenB]) => {
+            return tokenA && tokenB && !tokenA.equals(tokenB) ? Pylon.getAddress(tokenA, tokenB) : undefined
+          }),
+      [tokens]
   )
   const pairAddresses = useMemo(
-    () =>
-      tokens.map(([tokenA, tokenB]) => {
-        return tokenA && tokenB && !tokenA.equals(tokenB) ? Pair.getAddress(tokenA, tokenB) : undefined
-      }),
-    [tokens]
+      () =>
+          tokens.map(([tokenA, tokenB]) => {
+            return tokenA && tokenB && !tokenA.equals(tokenB) ? Pair.getAddress(tokenA, tokenB) : undefined
+          }),
+      [tokens]
   )
 
   const results = useMultipleContractSingleData(pylonAddresses, PYLON_INTERFACE, 'getSyncReserves')
@@ -62,12 +62,20 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
           // console.log(resPair.result)
           const reserve0 = resPair.result[0]
           const reserve1 = resPair.result[1]
+          const timestamp = resPair.result[2]
           // const { _reserve0, reserve1 } = resPair.result;
           // console.log(reserve0, reserve1)
           const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA]
           return [
             PylonState.ONLY_PAIR,
-            new Pylon(new Pair(new TokenAmount(token0, reserve0.toString()), new TokenAmount(token1, reserve1.toString())),new TokenAmount(tokenA, "0"), new TokenAmount(tokenB, "0"))
+            new Pylon(new Pair(
+                    new TokenAmount(token0, reserve0.toString()),
+                    new TokenAmount(token1, reserve1.toString()),
+                    timestamp.toString(),
+                    "15"
+                ),
+                new TokenAmount(tokenA, "0"),
+                new TokenAmount(tokenB, "0"))
           ]
         }else{
           return [PylonState.NOT_EXISTS, null]
@@ -76,10 +84,19 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
       const { _reserve0, _reserve1 } = reserves
       const reserve0 = resPair.result[0]
       const reserve1 = resPair.result[1]
+      const timestamp = resPair.result[2]
+
       const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA]
       return [
         PylonState.EXISTS,
-        new Pylon(new Pair(new TokenAmount(token0, reserve0.toString()), new TokenAmount(token1, reserve1.toString())),new TokenAmount(tokenA, _reserve0.toString()), new TokenAmount(tokenB, _reserve1.toString()))
+        new Pylon(new Pair(
+                new TokenAmount(token0, reserve0.toString()),
+                new TokenAmount(token1, reserve1.toString()),
+                timestamp.toString(),
+                "15"
+            ),
+            new TokenAmount(tokenA, _reserve0.toString()),
+            new TokenAmount(tokenB, _reserve1.toString()))
       ]
     })
   }, [results, tokens, resultsPair])

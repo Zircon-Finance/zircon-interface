@@ -387,7 +387,7 @@ export default function WalletModal({
   }
 
   function getModalContent() {
-    if (error || !(chainId === 1285 || chainId === 56)) {
+    if (error || !(chainId === 1285 || chainId === 56 || chainId === 1287)) {
       return (
         <UpperSection>
 

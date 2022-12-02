@@ -4,13 +4,13 @@ import {
   ChainId,
   Currency,
   CurrencyAmount,
-  DEV,
   JSBI,
   Pair,
   Token,
   TokenAmount,
   Trade,
   MOONBASE_ADDRESSES,
+  NATIVE_TOKEN,
 } from 'zircon-sdk'
 import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -47,12 +47,13 @@ export function useSwapActionHandlers(): {
   onChangeRecipient: (recipient: string | null) => void
 } {
   const dispatch = useDispatch<AppDispatch>()
+  const {chainId} = useActiveWeb3React()
   const onCurrencySelection = useCallback(
     (field: Field, currency: Currency) => {
       dispatch(
         selectCurrency({
           field,
-          currencyId: currency instanceof Token ? currency.address : currency === DEV ? 'ETH' : ''
+          currencyId: currency instanceof Token ? currency.address : currency === NATIVE_TOKEN[chainId] ? NATIVE_TOKEN[chainId].symbol : ''
         })
       )
     },

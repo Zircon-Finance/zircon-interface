@@ -15,36 +15,24 @@ import { useTransactionAdder } from '../../../../state/transactions/hooks'
 import { useAddPopup } from '../../../../state/application/hooks'
 import { Token } from 'zircon-sdk'
 import { HarvestButton } from '../FarmTable/Actions/styles'
-import { Pagination, FreeMode } from 'swiper'
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react'
 import 'swiper/swiper.min.css'
 import 'swiper/modules/pagination/pagination.min.css'
 import { useWindowDimensions } from '../../../../hooks'
 import CurrencyLogo from '../../../../components/CurrencyLogo'
 import { DeserializedPool } from '../../../../state/types'
 import { Text } from 'rebass'
-import styled from 'styled-components'
+import ReactGA from 'react-ga4'
 
 interface FarmCardActionsProps extends DeserializedPool {
     userDataReady: boolean
 }
 
-const Shader = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  background: linear-gradient( to right, rgba(0,0,0,0) 0%, ${({ theme }) => theme.farmPoolCardsBg} 100%);
-  width: 30%;
-  height: 100%;
-  z-index: 1;
-`
 
-
-const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, userData, userDataReady, vaultAddress, earningTokenCurrentPrice, earningTokenCurrentBalance }) => {
-    const { account } = useWeb3React()
+const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, userData, userDataReady, vaultAddress, earningTokenInfo }) => {
+    const { account, chainId } = useWeb3React()
     const earningsBigNumber = new BigNumber(userData.pendingReward)
     let earnings = BIG_ZERO
-    let earningsBusd = getBalanceUSD(earningsBigNumber, earningTokenCurrentPrice)
+    let earningsBusd = getBalanceUSD(earningsBigNumber, earningTokenInfo?.map(t => t.currentPrice))
 
     // If user didn't connect wallet default balance will be 0
     if (!earningsBigNumber.isZero()) {
@@ -52,7 +40,7 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, u
     }
     const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
     const { t } = useTranslation()
-    const { onReward } = useHarvestFarm(sousId)
+    const { onReward } = useHarvestFarm(sousId, userData.pendingReward.toString())
     const dispatch = useDispatch()
     const theme = useTheme()
     const addPopup = useAddPopup()
@@ -66,41 +54,43 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, u
         setRewardTokens(r.slice(0, -1))
     }, [])
     const TokenRow = ({ token, index }: { token: Token; index: number }) => {
-        let currentBalance = earningTokenCurrentBalance ? getBalanceAmount(earningsBigNumber.times(earningTokenCurrentBalance[index])) : 0
-        let currentPrice = earningTokenCurrentPrice ? getBalanceAmount(earningsBigNumber.times(earningTokenCurrentPrice[index])) : 0
+        let currentBalance = earningTokenInfo ? getBalanceAmount(earningsBigNumber.times(earningTokenInfo[index].current)) : 0
+        let currentPrice = earningTokenInfo ? getBalanceAmount(earningsBigNumber.times(earningTokenInfo[index].currentPrice)) : 0
         return (
             <Flex justifyContent={'space-between'} style={{borderBottom: '1px solid rgba(255,255,255,0.1)', padding: '10px 0', alignItems: 'center'}}>
                 <Flex>
-                    <CurrencyLogo style={{marginRight: '3px'}} currency={token} />
+                    <CurrencyLogo style={{marginRight: '3px'}} currency={token} chainId={chainId}/>
                     <Text color={theme.text1} fontSize='16px'>
                         {`${currentBalance?.toFixed(6)} ${token.symbol}`}
                     </Text>
                 </Flex>
-                <Balance fontSize="13px" color={theme.whiteHalf} decimals={2} value={currentPrice} unit=" USD" prefix="~" />
+                <Text fontSize="13px" color={theme.whiteHalf}>
+                    {`~ ${currentPrice?.toFixed(2)} USD`}
+                </Text>
             </Flex>
         )
     }
 
-    const SwipeTokenCard = ({ token, index }: { token: Token; index: number }) => {
-        let currentBalance = earningTokenCurrentBalance ? getBalanceAmount(earningsBigNumber.times(earningTokenCurrentBalance[index])) : 0
-        let currentPrice = earningTokenCurrentPrice ? getBalanceAmount(earningsBigNumber.times(earningTokenCurrentPrice[index])) : 0
+    const SwipeTokenCard = ({ token, index, smallText }: { token: Token; index: number, smallText: boolean }) => {
+        let currentBalance = earningTokenInfo ? getBalanceAmount(earningsBigNumber.times(earningTokenInfo[index].current)) : 0
+        let currentPrice = earningTokenInfo ? getBalanceAmount(earningsBigNumber.times(earningTokenInfo[index].currentPrice)) : 0
         return (
-            <>
-                <Flex style={{marginLeft: '5px', marginBottom: '7px', color: theme.text1}}>
-                    {`${currentBalance.toFixed(6)} ${token.symbol}`}
-                </Flex>
-                <Balance ml={'5px'} textAlign={'left'} fontSize="12px" color={theme.whiteHalf} decimals={2} unit="" value={currentPrice} prefix=" ~ $" />
-            </>
+            <Flex style={{flexDirection: 'column', marginRight: '10px', paddingRight: '10px', borderRight: smallText && index === 0 && `1px solid ${theme.opacitySmall}`}}>
+                <Text mb={'10px'} color={theme.text1} fontSize={smallText ? '16px' : '24px'} >{`${currentBalance.toFixed(5)} ${token.symbol === 'MOVR' ? 'wMOVR' : token.symbol}`}</Text>
+                <Text color={theme.text1} textAlign={'left'} fontSize="13px">
+                    {`~ ${currentPrice?.toFixed(2)} USD`}
+                </Text>
+            </Flex>
         )
     }
 
     return (
         <Flex mb="8px" justifyContent="space-between" alignItems="center">
             <Flex flexDirection="column" alignItems="flex-start" width={'100%'}>
-                <div style={{display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center', marginBottom: '15px'}}>
+                <div style={{display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center', marginBottom: '10px'}}>
                     <div style={{display: 'flex', flexFlow: 'row', height: '100%', justifyContent: 'space-between', alignItems: 'center'}}>
-                        <Text color={theme.text1} fontSize="13px">
-                            {t('Earned')}
+                        <Text color={theme.text1} fontSize="16px" fontWeight={500}>
+                            {t('EARNED')}
                         </Text>
                         {earningsBusd > 0 && (
                             <Balance fontSize="12px" color={theme.whiteHalf} decimals={2} value={earningsBusd} unit=" USD" prefix="~" marginLeft={2}/>
@@ -118,6 +108,11 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, u
                                 })
                             })
                             if (receipt?.status) {
+                                ReactGA.event({
+                                    category: 'Harvest Rewards',
+                                    action: 'Harvested from table view',
+                                    label: 'Harvested from table view'
+                                });
                                 addPopup(
                                     {
                                         txn: {
@@ -132,23 +127,15 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, u
                             }
                         }}
                     >
-                        {pendingTx ? t('Harvesting') : t('Harvest all')}
+                        {pendingTx ? t('HARVESTING..') : t('HARVEST ALL')}
                     </HarvestButton>
                 </div>
                 {width >= 992 ? (
-                    <Swiper
-                        slidesPerView={earningToken.length == 2 ? 1.7 : 1}
-                        spaceBetween={2}
-                        freeMode={true}
-                        pagination={{
-                            clickable: true,
-                        }}
-                        modules={[FreeMode, Pagination]}
-                        className="swipe-container"
-                    >
-                        <Shader />
-                        {earningToken.map((token, index) => <SwiperSlide><SwipeTokenCard key={token.symbol} token={token} index={index} /></SwiperSlide>)}
-                    </Swiper>
+                    <Flex style={{width: '100%'}}>
+                    {earningToken.map((token, index) => 
+                        <SwipeTokenCard key={token.symbol} token={token} index={index} smallText={earningToken.length === 2} />
+                        )}                    
+                    </Flex>
                 ) : (
                     <div style={{width: '100%', overflow: 'scroll', marginTop: '5px'}}>
                         {earningToken.map((token, index) => (

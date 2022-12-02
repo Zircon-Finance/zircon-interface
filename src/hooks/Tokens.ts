@@ -1,13 +1,21 @@
 import { parseBytes32String } from '@ethersproject/strings'
-import { Currency, DEV, Token, currencyEquals } from 'zircon-sdk'
+import { Currency, Token, currencyEquals, NATIVE_TOKEN } from 'zircon-sdk'
 import { useMemo } from 'react'
 import { useSelectedTokenList } from '../state/lists/hooks'
 import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'
 import { useUserAddedTokens } from '../state/user/hooks'
 import { isAddress } from '../utils'
-
+import axios from 'axios'
 import { useActiveWeb3React } from './index'
 import { useBytes32TokenContract, useTokenContract } from './useContract'
+const dayjs =  require('dayjs')
+const utc = require('dayjs/plugin/utc')
+const timezone = require('dayjs/plugin/timezone') // dependent on utc plugin
+dayjs.extend(utc)
+dayjs.extend(timezone)
+
+const GAMMA_SUBGRAPH_URI = 'https://api.thegraph.com/subgraphs/name/reshyresh/zircon-alpha'
+const BSC_SUBGRAPH_URI = 'https://api.thegraph.com/subgraphs/name/reshyresh/zi'
 
 export function useAllTokens(): { [address: string]: Token } {
   const { chainId } = useActiveWeb3React()
@@ -102,7 +110,56 @@ export function useToken(tokenAddress?: string): Token | undefined | null {
 }
 
 export function useCurrency(currencyId: string | undefined): Currency | null | undefined {
-  const isETH = currencyId?.toUpperCase() === 'ETH'
+  const {chainId} = useActiveWeb3React()
+  const isETH = currencyId?.toUpperCase() === NATIVE_TOKEN[chainId].symbol
   const token = useToken(isETH ? undefined : currencyId)
-  return isETH ? DEV : token
+  return isETH ? NATIVE_TOKEN[chainId] : token
+}
+
+export async function getTopTokens(chainId: number) {
+  let unix = dayjs().tz('GMT').subtract(1, 'day').startOf('day').unix()
+  let currentQuery = `{
+    tokenDayDatas(
+      first: 20
+      orderBy: id
+      orderDirection: desc
+      where: {dailyVolumeUSD_gt: "100", date: ${dayjs().tz('GMT').startOf('day').unix()}}
+    ) {
+      token {
+        id
+        name
+        symbol
+        decimals
+      }
+      priceUSD
+      dailyVolumeUSD
+      totalLiquidityUSD
+    }
+  }`
+
+  let oneDayAgoQuery = `{
+    tokenDayDatas(
+      first: 20
+      orderBy: id
+      orderDirection: desc
+      where: {dailyVolumeUSD_gt: "100", date: ${unix}}
+    ) {
+      token {
+        id
+        name
+        symbol
+        decimals
+      }
+      priceUSD
+      dailyVolumeUSD
+      totalLiquidityUSD
+    }
+  }`
+
+  let query = await axios.post(chainId === 1285 ? GAMMA_SUBGRAPH_URI : BSC_SUBGRAPH_URI, JSON.stringify({query: currentQuery, variables: null, operationName: undefined} ), ).then(
+    res => res.data.data.tokenDayDatas)
+  let oneDayAgoQueryData = await axios.post(chainId === 1285 ? GAMMA_SUBGRAPH_URI : BSC_SUBGRAPH_URI, JSON.stringify({query: oneDayAgoQuery, variables: null, operationName: undefined} ), ).then(
+    res => res.data.data.tokenDayDatas)
+
+  return {query, oneDayAgoQueryData}
 }

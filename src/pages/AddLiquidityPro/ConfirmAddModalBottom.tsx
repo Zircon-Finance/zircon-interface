@@ -10,6 +10,7 @@ import {Separator} from '../../components/SearchModal/styleds'
 import {PylonState} from "../../data/PylonReserves";
 import { StyledWarningIcon } from '../AddLiquidity/ConfirmAddModalBottom'
 import { useTheme } from 'styled-components'
+import { useActiveWeb3React } from '../../hooks'
 
 export function ConfirmAddModalBottom({
     pylonState,
@@ -21,7 +22,10 @@ export function ConfirmAddModalBottom({
   isFloat,
   onAdd,
   errorTx,
-  blocked
+  isStaking,
+  blocked,
+  shouldBlock,
+  formattedLiquidity,
 }: {
   pylonState?: PylonState
   price?: Fraction
@@ -33,26 +37,30 @@ export function ConfirmAddModalBottom({
   isFloat: boolean
   errorTx?: string
   blocked?: boolean
+  shouldBlock?: boolean
+  isStaking?: boolean
+  formattedLiquidity?: number
 }) {
   const theme = useTheme()
+  const {chainId} = useActiveWeb3React()
   return (
     <>
         {(sync === "half" || isFloat) && <RowBetween>
         <TYPE.body>{currencies[Field.CURRENCY_A]?.symbol} Deposited</TYPE.body>
         <RowFixed>
-          <CurrencyLogo currency={currencies[Field.CURRENCY_A]} style={{ marginRight: '8px' }} />
+          <CurrencyLogo currency={currencies[Field.CURRENCY_A]} style={{ marginRight: '8px' }} chainId={chainId} />
           <TYPE.body style={{overflow: 'auto'}}>{parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)}</TYPE.body>
         </RowFixed>
       </RowBetween>}
         {(sync === "half" || !isFloat || pylonState !== PylonState.EXISTS) && <RowBetween>
         <TYPE.body>{currencies[Field.CURRENCY_B]?.symbol} Deposited</TYPE.body>
         <RowFixed>
-          <CurrencyLogo currency={currencies[Field.CURRENCY_B]} style={{ marginRight: '8px' }} />
+          <CurrencyLogo currency={currencies[Field.CURRENCY_B]} style={{ marginRight: '8px' }} chainId={chainId} />
           <TYPE.body style={{overflow: 'auto'}}>{parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)}</TYPE.body>
         </RowFixed>
       </RowBetween>}
       <Separator />
-      <RowBetween>
+      <RowBetween style={{marginBottom: '-10px'}}>
         <TYPE.smallerBody>Rates</TYPE.smallerBody>
         <TYPE.smallerBody>
           {`1 ${currencies[Field.CURRENCY_A]?.symbol} = ${price?.toSignificant(4)} ${
@@ -79,13 +87,21 @@ export function ConfirmAddModalBottom({
           <span style={{ color: '#a68305', width: '100%', fontSize: '13px' }}>{'By our pre-calculations on the current state of the Pylon System, this transaction is likely to fail. Please wait a few minutes.'}</span>
         </RowBetween>
       )}
+
+      {shouldBlock && (
+        <RowBetween mt={10}>
+          <StyledWarningIcon style={{stroke: '#a68305'}} />
+          <span style={{ color: '#a68305', width: '100%', fontSize: '13px' }}>{'Turn On Swap & Add or try using a smaller amount.'}</span>
+        </RowBetween>
+      )}
+
       {/*<RowBetween>*/}
       {/*  <TYPE.smallerBody>Share of Pool:</TYPE.smallerBody>*/}
       {/*  <TYPE.smallerBody>{noLiquidity ? '100' : poolTokenPercentage?.toSignificant(4)}%</TYPE.smallerBody>*/}
       {/*</RowBetween>*/}
-      <ButtonPrimary style={{ margin: '20px 0 0 0' }} onClick={onAdd}>
+      <ButtonPrimary disabled={shouldBlock} style={{ margin: '20px 0 0 0' }} onClick={() => shouldBlock ? console.log("nop") : onAdd()}>
         <Text fontWeight={400} fontSize={16}>
-          {pylonState === PylonState.EXISTS ? 'Confirm Supply' : pylonState === PylonState.ONLY_PAIR ? 'Create Pylon & Supply' : 'Create Pair' }
+          {pylonState === PylonState.EXISTS ? isStaking ? 'Add & Farm' : 'Confirm Supply' : pylonState === PylonState.ONLY_PAIR ? 'Create Pylon & Supply' : 'Create Pair' }
         </Text>
       </ButtonPrimary>
     </>

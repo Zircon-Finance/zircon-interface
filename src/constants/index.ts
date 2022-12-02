@@ -1,4 +1,4 @@
-import {ChainId, JSBI, Percent, Token, WDEV, MOONBASE_ADDRESSES, MOONRIVER_ADDRESSES} from 'zircon-sdk'
+import {ChainId, JSBI, Percent, Token, WDEV, MOONBASE_ADDRESSES, MOONRIVER_ADDRESSES, BSC_ADDRESSES} from 'zircon-sdk'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { injected, talisman, walletconnect } from '../connectors'
 // fortmatic, portis, walletconnect, walletlink, lattice
@@ -7,12 +7,14 @@ export const ROUTER_ADDRESS: { [key: string]: string } = {
   [ChainId.MOONRIVER]: MOONRIVER_ADDRESSES.router,
   [ChainId.MOONBASE]: MOONBASE_ADDRESSES.router,
   [ChainId.MOONSHADOW]: MOONBASE_ADDRESSES.router,
+  [ChainId.BSC]: BSC_ADDRESSES.router,
 }
 export const PYLON_ROUTER_ADDRESS: { [key: string]: string } = {
   [ChainId.STANDALONE]: '0x42e2EE7Ba8975c473157634Ac2AF4098190fc741',
   [ChainId.MOONRIVER]: MOONRIVER_ADDRESSES.pylonRouter,
   [ChainId.MOONBASE]: MOONBASE_ADDRESSES.pylonRouter,
   [ChainId.MOONSHADOW]: MOONBASE_ADDRESSES.pylonRouter,
+  [ChainId.BSC]: BSC_ADDRESSES.pylonRouter,
 }
 // a list of tokens by chain
 type ChainTokenList = {
@@ -49,6 +51,7 @@ const WDEV_ONLY: ChainTokenList = {
   [ChainId.MOONROCK]: [WDEV[ChainId.MOONROCK]],
   [ChainId.MOONBASE]: [WDEV[ChainId.MOONBASE]],
   [ChainId.MOONSHADOW]: [WDEV[ChainId.MOONSHADOW]],
+  [ChainId.BSC]: [WDEV[ChainId.BSC]],
 }
 
 // used to construct intermediary pairs for trading
@@ -101,6 +104,18 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
       new Token(ChainId.MOONBASE, '0xcdf746c5c86df2c2772d2d36e227b4c0203cba25', 18, 'VEN', 'Venus'),
       new Token(ChainId.MOONBASE, '0xd9224c102a73e5941abfcd645e08623dc4d182bc', 18, 'UNS', 'Uranus'),
       new Token(ChainId.MOONBASE, '0xe75f9ae61926ff1d27d16403c938b4cd15c756d5', 18, 'SAT', 'Saturn')
+  ],
+  [ChainId.MOONRIVER]: [
+      new Token(ChainId.MOONRIVER, '0x4545E94974AdACb82FC56BCf136B07943e152055', 18, 'ZRG', 'Zircon Gamma'),
+      new Token(ChainId.MOONRIVER, '0x98878b06940ae243284ca214f92bb71a2b032b8a', 18, 'MOVR', 'MoonRiver'),
+      new Token(ChainId.MOONRIVER, '0xE3F5a90F9cb311505cd691a46596599aA1A0AD7D', 6, 'USDC', 'USDC'),
+      new Token(ChainId.MOONRIVER, '0x639A647fbe20b6c8ac19E48E2de44ea792c62c5C', 18, 'ETH', 'Ethereum'),
+      new Token(ChainId.MOONRIVER, '0xFfFFfFff1FcaCBd218EDc0EbA20Fc2308C778080', 18, 'KSM', 'Kusama'),
+      new Token(ChainId.MOONRIVER, '0x6Ccf12B480A99C54b23647c995f4525D544A7E72', 18, 'LDO', 'Lido')
+  ],
+  [ChainId.BSC]: [
+      new Token(ChainId.BSC, '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82', 18, 'CAKE', 'PancakeSwap Token'),
+      new Token(ChainId.BSC, '0xe9e7cea3dedca5984780bafc599bd69add087d56', 18, 'BUSD', 'BUSD Token'),
   ]
 }
 

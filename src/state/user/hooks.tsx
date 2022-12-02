@@ -25,7 +25,12 @@ import {
   ViewMode,
   FarmFilterAnchorFloat,
   updateuserFarmsFilterAnchorFloat,
-  updateShowMobileSearchBar
+  updateShowMobileSearchBar,
+  FarmFinishedOnly,
+  updateUserFarmFinishedOnly,
+  addChosenToken,
+  removeChosenToken,
+  updateShowBanner,
 } from './actions'
 
 export function serializeToken(token: Token): SerializedToken {
@@ -104,6 +109,45 @@ export function useUserFarmsViewMode(): [ViewMode, (viewMode: ViewMode) => void]
   return [userFarmsViewMode, setUserFarmsViewMode]
 }
 
+export function useUserFarmsFinishedOnly(): [FarmFinishedOnly, (finishedOnly: FarmFinishedOnly) => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const userFarmsFinishedOnly = useSelector<AppState, AppState['user']['userFarmFinishedOnly']>((state) => {
+    return state.user.userFarmFinishedOnly
+  })
+
+  const setUserFarmsFinishedOnly = useCallback(
+    (finishedOnly: FarmFinishedOnly) => {
+      dispatch(updateUserFarmFinishedOnly({ userFarmFinishedOnly: finishedOnly }))
+    },
+    [dispatch],
+  )
+
+  return [userFarmsFinishedOnly, setUserFarmsFinishedOnly]
+}
+
+export function useChosenTokens(): [string[], (id: string) => void, (id: string) => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const chosenTokens = useSelector<AppState, AppState['user']['chosenTokens']>((state) => {
+    return state.user.chosenTokens
+  })
+
+  const addChosenTokenCallback = useCallback(
+    (id: string) => {
+      dispatch(addChosenToken({id}))
+    },
+    [dispatch],
+  )
+
+  const removeChosenTokenCallback = useCallback(
+    (id: string) => {
+      dispatch(removeChosenToken({ id }))
+    },
+    [dispatch],
+  )
+
+  return [chosenTokens, addChosenTokenCallback, removeChosenTokenCallback]
+}
+
 export function useUserFarmsFilterPylonClassic(): [FarmFilter, (filter: FarmFilter) => void] {
   const dispatch = useDispatch<AppDispatch>()
   const userFarmsFilterPylonClassic = useSelector<AppState, AppState['user']['userFarmsFilterPylonClassic']>((state) => {
@@ -132,6 +176,20 @@ export function useUserFarmsFilterAnchorFloat(): [FarmFilterAnchorFloat, (filter
     [dispatch],
   )
   return [userFarmsFilterAnchorFloat, setUserFarmsFilterAnchorFloat]
+}
+
+export function useShowBannerManager(): [boolean, () => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const showbanner = useSelector<AppState, AppState['user']['showBanner']>((state) => {
+    return state.user.showBanner
+  })
+  const setShowBanner = useCallback(
+    () => {
+      dispatch(updateShowBanner({ showBanner: !showbanner }))
+    },
+    [dispatch],
+  )
+  return [showbanner, setShowBanner]
 }
 
 
@@ -318,6 +376,7 @@ export function useTrackedTokenPairs(): [Token, Token][] {
               (BASES_TO_TRACK_LIQUIDITY_FOR[chainId] ?? [])
                 // to construct pairs of the given token with each base
                 .map(base => {
+                  console.log('checking pair', token, base)
                   if (base.address === token.address) {
                     return null
                   } else {

@@ -165,7 +165,7 @@ const WalletName = styled.div`
   color: ${({ theme }) => theme.text1};
 `
 
-const IconWrapper = styled.div<{ size?: number }>`
+export const IconWrapper = styled.div<{ size?: number }>`
   ${({ theme }) => theme.flexColumnNoWrap};
   align-items: center;
   justify-content: center;
@@ -413,7 +413,7 @@ export default function AccountDetails({
                             href={getEtherscanLink(chainId, account, "address")}
                           >
                             <span style={{ marginLeft: "5px" }}>
-                              View on Moonbeam ↗
+                              View on Moonriver ↗
                             </span>
                           </AddressLink>
                         )}
@@ -433,8 +433,6 @@ export default function AccountDetails({
             <ButtonPositionsMobile
               style={{
                 width: "auto",
-                backgroundColor: "transparent",
-                border: `1px solid ${theme.whiteHalf} `,
                 color: theme.text1,
                 padding: "9px 12px 10px",
                 height: "34px"

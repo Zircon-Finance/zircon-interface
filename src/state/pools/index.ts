@@ -1,21 +1,18 @@
 import { createAsyncThunk, createSlice, PayloadAction, isAnyOf } from '@reduxjs/toolkit'
 import BigNumber from 'bignumber.js'
 import poolsConfig from '../../constants/pools'
+import axios from 'axios'
 import {
   PoolsState,
   SerializedPool,
-  // SerializedVaultFees,
+  EarningTokenInfo,
   // SerializedCakeVault,
   // SerializedLockedVaultUser,
 } from '../../state/types'
-import cakeAbi from '../../constants/abis/erc20.json'
 // import { getCakeVaultAddress } from 'utils/addressHelpers'
-import tokens from '../../constants/tokens'
 import {
-  fetchPoolsBlockLimits,
   // fetchPoolsProfileRequirement,
   fetchPoolsStakingLimits,
-  fetchPoolsTotalStaking,
 } from './fetchPools'
 import {
   fetchPoolsAllowance,
@@ -25,18 +22,12 @@ import {
 } from './fetchPoolsUser'
 // import { fetchPublicVaultData, fetchVaultFees } from './fetchVaultPublic'
 // import fetchVaultUser from './fetchVaultUser'
-import priceHelperLpsConfig from '../../constants/poolsHelperLps'
 
 import { resetUserState } from '../global/actions'
-import {BIG_TEN, BIG_ZERO} from '../../utils/bigNumber'
-import multicall from '../../utils/multicall'
+import {BIG_ZERO} from '../../utils/bigNumber'
 // import { getBalanceNumber } from '../../utils/formatBalance'
 // import { getPoolApr } from '../../utils/apr'
 import fetchPools from "./fetchPoolsInfo";
-import getPoolsPrices from "./getPoolsPrices";
-// import {fetchRewardsData} from "./fetchRewardsData";
-import {getPoolApr} from "../../utils/apr";
-import {fetchRewardsData} from "./fetchRewardsData";
 import {simpleRpcProvider} from "../../utils/providers";
 // import {JSBI, Pylon} from "zircon-sdk";
 // import {getPoolApr} from "../../utils/apr";
@@ -75,154 +66,62 @@ const initialState: PoolsState = {
   // cakeVault: initialPoolVaultState,
 }
 
-export const fetchCakePoolUserDataAsync = (account: string) => async (dispatch) => {
-  const allowanceCall = {
-    address: tokens.cake.address,
-    name: 'allowance',
-    params: [account,
-      // cakeVaultAddress
-    ],
-  }
-  const balanceOfCall = {
-    address: tokens.cake.address,
-    name: 'balanceOf',
-    params: [account],
-  }
-  const cakeContractCalls = [allowanceCall, balanceOfCall]
-  const [[allowance], [stakingTokenBalance]] = await multicall(cakeAbi, cakeContractCalls)
-
-  dispatch(
-      setPoolUserData({
-        sousId: 0,
-        data: {
-          allowance: new BigNumber(allowance.toString()).toJSON(),
-          stakingTokenBalance: new BigNumber(stakingTokenBalance.toString()).toJSON(),
-        },
-      }),
-  )
-}
-
 export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (dispatch, getState) => {
   try {
-    const [blockLimits, totalStakings, currentBlock] = await Promise.all([
-      fetchPoolsBlockLimits(),
-      fetchPoolsTotalStaking(),
+    const [currentBlock] = await Promise.all([
       currentBlockNumber ? Promise.resolve(currentBlockNumber) : simpleRpcProvider.getBlockNumber(),
     ])
-    // console.log("currentBlock", currentBlock)
-    // const activePriceHelperLpsConfig = priceHelperLpsConfig.filter((priceHelperLpConfig) => {
-    //   return (
-    //     poolsConfig
-    //       .filter((pool) => pool.earningToken.map((token) => token.address.toLowerCase() === priceHelperLpConfig.token.address.toLowerCase())).length > 0
-    //       // .filter((pool) => {
-    //       //   // const poolBlockLimit = blockLimits.find((blockLimit) => blockLimit.sousId === pool.sousId)
-    //       //   // if (poolBlockLimit) {
-    //       //   //   return poolBlockLimit.endBlock > currentBlock
-    //       //   // }
-    //       //   return false
-    //       // })
-    //   )
-    // })
-    const rewardsData = []
-    for (let i = 0; i < poolsConfig.length; i++) {
-      rewardsData[i] = await fetchRewardsData(poolsConfig[i])
-    }
-    const poolsInformation = await fetchPools(poolsConfig)
-    let poolsPrices = await getPoolsPrices(poolsInformation)
 
-    const priceHelperInformation = await fetchPools(priceHelperLpsConfig)
-    let priceZRG = await getPoolsPrices(priceHelperInformation)
+    const apiData = await axios.get('https://edgeapi.zircon.finance/static/yield').then((res) => res.data)
 
-    // const farmsWithPricesOfDifferentTokenPools = bnbBusdFarm
-    //   ? getFarmsPrices([bnbBusdFarm])
-    //   : []
-    // console.log("prices",farmsData, farmsWithPricesOfDifferentTokenPools);
-    // usd * reward / (1 - gamma) * resTR*2*usd
-    // const prices = getTokenPricesFromFarm([...farmsData, ...farmsWithPricesOfDifferentTokenPools])
-    const liveData = poolsPrices.map((pool, i) => {
-      const blockLimit = blockLimits.find((entry) => entry.sousId === pool.sousId)
-      const totalStaking = totalStakings.find((entry) => entry.sousId === pool.sousId)
-      // // const isPoolEndBlockExceeded = currentBlock > 0 && blockLimit ? currentBlock > Number(blockLimit.endBlock) : false
-      const isPoolFinished = pool.isFinished
-      // // || isPoolEndBlockExceeded
-      //
-
-
-      // const stakingTokenAddress = pool.stakingToken.address ? pool.stakingToken.address.toLowerCase() : null
-      // const stakingTokenPrice = pool.price
-      //
-      // const earningTokenAddress = pool.earningToken.map((token) => token.address ? token.address.toLowerCase() : null)
-      // const earningTokenPrice = earningTokenAddress ? earningTokenAddress.map((token) => prices[token]) : [0,0]
-      // return JSBI.divide(JSBI.multiply(JSBI.subtract(BASE, parseBigintIsh(gamme)), JSBI.divide(JSBI.multiply(JSBI.multiply(parseBigintIsh(reserve), TWO), parseBigintIsh(ptb)), parseBigintIsh(ptt))), BASE);
-
-      // console.log("values::", pool.lpTotalInQuoteToken, pool.gamma, new BigNumber(pool.ptb.toString()), pool.lpTotalSupply)
-      // let liquidityBySDK = Pylon.calculateLiquidity(pool.gamma, JSBI.BigInt(new BigNumber(pool.lpTotalInQuoteToken.toString()).toString()),
-      //     JSBI.BigInt(new BigNumber(pool.ptb.toString()).toString()), JSBI.BigInt(new BigNumber(pool.lpTotalSupply.toString()).toString()))
-
-      // console.log("liquidityBySDK", liquidityBySDK.toString())
-      const stakingTokenPrice = new BigNumber(pool.staked.toString()).multipliedBy(new BigNumber(pool.quotePrice)).toNumber()
-
-      /// TODO: do the calculations here instead of in the component
-      // let earningTokenPerBlock = pool.earningToken.map((token,index) => {
-      //   if (token.symbol === "1SWAP") {
-      //     return new BigNumber(rewardsData[i][index].balance.toString()).dividedBy(new BigNumber(10).pow(18)).dividedBy(blockLimit.endBlock-blockLimit.startBlock).toNumber()
-      //   } else if (token.symbol === "MOVR") {
-      //     return new BigNumber(rewardsData[i][index].balance.toString()).dividedBy(new BigNumber(10).pow(18)).dividedBy(blockLimit.endBlock-blockLimit.startBlock).toNumber()
-      //   }else {
-      //     return 0
-      //   }
-      // })
-
-      // console.log("rewardsData", rewardsData)
-      let earningTokenPrice = pool.earningToken.map((token,index) => {
-        if (token.symbol === "ZRG") {
-          return new BigNumber(priceZRG[0]?.tokenPrice).times(rewardsData[i][0][index]?.balance?.toString()).dividedBy(new BigNumber(10).pow(18)).dividedBy(blockLimit?.endBlock-blockLimit?.startBlock).toNumber()
-        } else if (token.symbol === "MOVR") {
-          return new BigNumber(priceZRG[0]?.quotePrice).times(rewardsData[i][0][index]?.balance?.toString()).dividedBy(new BigNumber(10).pow(18)).dividedBy(blockLimit?.endBlock-blockLimit?.startBlock).toNumber()
-        }else {
-          return 0
-        }
-      })
-      let earningTokenCurrentPrice = currentBlock > blockLimit.startBlock ? pool.earningToken.map((token,index) => {
-        if (token.symbol === "ZRG") {
-          return new BigNumber(priceZRG[0]?.tokenPrice).times(rewardsData[i][0][index]?.balance?.toString()).dividedBy(pool.vaultTotalSupply)//.dividedBy(new BigNumber(10).pow(18)).toNumber()
-        } else if (token.symbol === "MOVR") {
-          return new BigNumber(priceZRG[0]?.quotePrice).times(rewardsData[i][0][index]?.balance?.toString()).dividedBy(pool.vaultTotalSupply)//.dividedBy(new BigNumber(10).pow(18)).toNumber()
-        }else {
-          return 0
-        }
-      }) : []
-      let earningTokenCurrentBalance = currentBlock > blockLimit.startBlock ? pool.earningToken.map((token,index) => {
-        if (token.symbol === "ZRG") {
-          return new BigNumber(rewardsData[i][0][index]?.balance?.toString()).dividedBy(pool.vaultTotalSupply)//.dividedBy(new BigNumber(10).pow(18)).toNumber()
-        } else if (token.symbol === "MOVR") {
-          return new BigNumber(rewardsData[i][0][index]?.balance?.toString()).dividedBy(pool.vaultTotalSupply)//.dividedBy(new BigNumber(10).pow(18)).toNumber()
-        }else {
-          return 0
-        }
-      }) : []
-      console.log("earningTokenCurrentPrice", earningTokenCurrentPrice)
-      let liquidity  = String(BigNumber(pool.quotePrice.toString()).multipliedBy(pool.quoteTokenBalanceLP).multipliedBy(2).dividedBy(BIG_TEN.pow(pool.quoteTokenDecimals)).toString())
-
-      const apr = !isPoolFinished
-          ? getPoolApr(
-              stakingTokenPrice,
-              earningTokenPrice,
-          )
-          : 0
+    // Get start-end block for each pool
+    const blockLimits = apiData?.map((pool) => {
       return {
+        contractAddress: pool.contractAddress,
+        startBlock: parseInt(pool.startBlock),
+        endBlock: parseInt(pool.endBlock)
+      }
+    })
+
+    const poolsInformation = await fetchPools(poolsConfig)
+    const priceZRGMOVR = {zrg: apiData[0]?.zrgPrice, movr: apiData[0]?.movrPrice}
+
+    const liveData = poolsInformation.map((pool, i) => {
+      const apiPool = apiData.filter((poolArray) => poolArray.contractAddress === pool.contractAddress.toLowerCase());
+      const blockLimit = blockLimits.find((entry) => entry.contractAddress === pool.contractAddress.toLowerCase())
+
+      // Checking if pool is finished, either by the value on the files or because the block limit has been reached
+      const isPoolEndBlockExceeded = currentBlock > 0 && blockLimit ? currentBlock > Number(blockLimit.endBlock) : false
+      const isPoolFinished = pool.isFinished || isPoolEndBlockExceeded || !apiPool[0]
+      
+      let earningTokenInfo: EarningTokenInfo[] = apiPool[0]?.earningTokenInfo?.filter((entry) => entry.blockReward !== '0').map((earningInfo,index) => {
+        return {
+          symbol: earningInfo?.tokenSymbol,
+          blockReward: earningInfo?.blockReward,
+          blockRewardPrice: earningInfo?.blockRewardPrice,
+          current: earningInfo?.current,
+          currentPrice: earningInfo?.currentPrice,
+        }
+      }) || []
+
+      return {
+        sousId: pool.sousId,
         ...blockLimit,
-        ...totalStaking,
-        earningTokenPrice: earningTokenPrice,
-        rewardsData: rewardsData[i][0].map((reward) => reward[0].toString()),
-        earningTokenCurrentPrice: earningTokenCurrentPrice,
-        earningTokenCurrentBalance: earningTokenCurrentBalance,
-        vTotalSupply: pool.vaultTotalSupply,
-        liquidity: liquidity,
-        zrgPrice: priceZRG[0]?.tokenPrice,
-        movrPrice: priceZRG[0]?.quotePrice,
-        apr,
+        earningTokenInfo: earningTokenInfo || [],
+        vTotalSupply: apiPool[0]?.psiTS,
+        liquidity: {pylon: parseFloat(apiPool[0]?.tvl.tvlPylon), pair: parseFloat(apiPool[0]?.tvl.tvlPair)},
+        reserves: {reserve0: parseFloat(apiPool[0]?.reserves.r1Complete), reserve1: parseFloat(apiPool[0]?.reserves.r0Complete)},
+        zrgPrice: priceZRGMOVR?.zrg,
+        movrPrice: priceZRGMOVR?.movr,
+        staked: new BigNumber(apiPool[0]?.staked).toString(),
+        apr: parseFloat(apiPool[0]?.apr) + parseFloat(apiPool[0]?.feesAPR),
+        baseApr: parseFloat(apiPool[0]?.apr),
+        feesApr: parseFloat(apiPool[0]?.feesAPR),
         isFinished: isPoolFinished,
+        quotingPrice: apiPool[0]?.stablePrice,
+        tokenPrice: apiPool[0]?.tokenPrice,
+        stakedRatio: new BigNumber(apiPool[0]?.stakedRatio).toNumber(),
+        stakedBalancePool: new BigNumber(apiPool[0]?.totalStaked).toString(),
       }
     })
     dispatch(setPoolsPublicData(liveData))

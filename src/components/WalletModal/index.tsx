@@ -121,6 +121,7 @@ const provider = window.ethereum
 const moonbeamChainId = '0x504';
 const moonriverChainId = '0x505';
 const moonbaseAlphaChainId = '0x507';
+const bscChainId = '0x38';
 
 const supportedNetworks = {
   moonbeam: {
@@ -153,6 +154,17 @@ const supportedNetworks = {
     nativeCurrency: {
       name: 'DEV',
       symbol: 'DEV',
+      decimals: 18,
+    },
+  },
+  bsc: {
+    chainId: bscChainId,
+    chainName: 'Binance Smart Chain',
+    rpcUrls: ['https://bsc-dataseed.binance.org/'],
+    blockExplorerUrls: ['https://bscscan.com'],
+    nativeCurrency: {
+      name: 'BNB',
+      symbol: 'BNB',
       decimals: 18,
     },
   },
@@ -240,7 +252,7 @@ export default function WalletModal({
     // log selected wallet
     ReactGA.event({
       category: 'Wallet',
-      action: 'Change Wallet',
+      action: `Set ${name} wallet`,
       label: name
     })
     setPendingWallet(connector) // set wallet for pending view
@@ -375,7 +387,7 @@ export default function WalletModal({
   }
 
   function getModalContent() {
-    if (error || chainId !== 1287) {
+    if (error || !(chainId === 1285 || chainId === 56)) {
       return (
         <UpperSection>
 
@@ -392,7 +404,7 @@ export default function WalletModal({
               {connector === injected && <ButtonPrimary mt={'30px'} onClick={() => connectNet('moonriver')} >{'Click to connect'}</ButtonPrimary>}
               </>
             ) : (
-              'Error connecting. Please make sure you are connected to the appropriate Moonriver Alpha network.'
+              'Error connecting. Please make sure you are connected to the appropriate Moonriver network.'
             )}
           </ContentWrapper>
         </UpperSection>
@@ -444,7 +456,7 @@ export default function WalletModal({
           )}
           <span>
             <Text style={{textAlign: 'center', fontSize: '14px', marginTop: '10px'}}>
-              {'Connecting a wallet you accept'}
+              {'By connecting a wallet you accept'}
             </Text>
             <Text style={{textAlign: 'center', fontSize: '13px'}}>
               {` our `}
@@ -464,8 +476,11 @@ export default function WalletModal({
               border: "none",
               fontWeight: 500
             }}
+            onClick={() => {
+              window.open('https://ethereum.org/en/wallets/', '_blank');
+            }}
             >
-            <Link style={{textDecoration: 'none', color: theme.pinkGamma}} href="https://tokenlists.org" >
+            <Link style={{textDecoration: 'none', color: theme.pinkGamma}} href="#" >
               {'Learn how to connect'}
             </Link>
             </ButtonPink>

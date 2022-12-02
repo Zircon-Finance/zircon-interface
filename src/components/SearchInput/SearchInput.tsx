@@ -27,6 +27,11 @@ const SearchButton = styled.button`
   &:hover {
     background: ${({ theme }) => theme.cardExpanded};
   }
+  svg {
+    path {
+      stroke: ${({ theme }) => !theme.darkMode && '#874955 !important'};
+    }
+  }
 `
 
 const SearchInputFarm: React.FC<Props> = ({ onChange: onChangeCallback, placeholder = 'Search' }) => {

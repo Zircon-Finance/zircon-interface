@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { useERC20, useSousChef } from '../../../../../hooks/useContract'
 import useCatchTxError from '../../../../../hooks/useCatchTxError'
 // import { useRouter } from 'next/router'
+import ReactGA from 'react-ga4'
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import styled, { useTheme } from 'styled-components'
@@ -34,6 +35,7 @@ import { useCallWithGasPrice } from '../../../../../hooks/useCallWithGasPrice'
 import { deserializeToken } from '../../../../../state/user/hooks'
 import { getBalanceAmount } from '../../../../../utils/formatBalance'
 import { Field } from '../../../../../state/burn/actions'
+import { useWindowDimensions } from '../../../../../hooks'
 
 const IconButtonWrapper = styled.div`
   display: flex;
@@ -49,20 +51,20 @@ interface StackedActionProps extends DeserializedPool {
 }
 
 const Staked: React.FunctionComponent<StackedActionProps> = ({
-  sousId,
-  isClassic,
-  isAnchor,
-  token1,
-  token2,
-  apr,
-  lpLabel,
-  contractAddress,
-  vaultAddress,
-  earningToken,
-  stakingToken,
-  userDataReady,
-  displayApr,
-}) => {
+                                                               sousId,
+                                                               isClassic,
+                                                               isAnchor,
+                                                               token1,
+                                                               token2,
+                                                               apr,
+                                                               lpLabel,
+                                                               contractAddress,
+                                                               vaultAddress,
+                                                               earningToken,
+                                                               stakingToken,
+                                                               userDataReady,
+                                                               displayApr,
+                                                             }) => {
   const { t } = useTranslation()
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
   const { account } = useWeb3React()
@@ -70,7 +72,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
   const allowance = pool.userData.allowance
   const tokenBalance = pool.userData.stakingTokenBalance
   const stakedBalance = pool.userData.stakedBalance
-  const { onStake } = useStakeFarms(sousId)
+  const { onStake } = useStakeFarms(sousId, stakingToken.address)
   const { onUnstake } = useUnstakeFarms(sousId)
   // const router = useRouter()
   const [showModalDeposit, setshowModalDeposit] = useState(false)
@@ -97,15 +99,20 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
       })
     })
     if (receipt?.status) {
+      ReactGA.event({
+        category: 'Stake LP tokens',
+        action: 'Stake LP tokens from card view',
+        label: 'Stake '+amount+' '+pool.token1.symbol+"-"+pool.token2.symbol+' LP to farm'
+      });
       addPopup(
-        {
-          txn: {
-            hash: receipt.transactionHash,
-            success: receipt.status === 1,
-            summary: 'Stake '+amount+' '+pool.token1.symbol+"-"+pool.token2.symbol+' LP to farm',
-          }
-        },
-        receipt.transactionHash
+          {
+            txn: {
+              hash: receipt.transactionHash,
+              success: receipt.status === 1,
+              summary: 'Stake '+amount+' '+pool.token1.symbol+"-"+pool.token2.symbol+' LP to farm',
+            }
+          },
+          receipt.transactionHash
       )
       dispatch(fetchPoolsUserDataAsync(account))
     }
@@ -121,15 +128,20 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
       })
     })
     if (receipt?.status) {
+      ReactGA.event({
+        category: 'Unstake LP tokens',
+        action: 'Unstake LP tokens from card view',
+        label: 'Unstake '+amount+' '+pool.token1.symbol+"-"+pool.token2.symbol+' LP from farm'
+      });
       addPopup(
-        {
-          txn: {
-            hash: receipt.transactionHash,
-            success: receipt.status === 1,
-            summary: 'Removed '+amount+' '+pool.token1.symbol+"-"+pool.token2.symbol+' LP from farm',
-          }
-        },
-        receipt.transactionHash
+          {
+            txn: {
+              hash: receipt.transactionHash,
+              success: receipt.status === 1,
+              summary: 'Removed '+amount+' '+pool.token1.symbol+"-"+pool.token2.symbol+' LP from farm',
+            }
+          },
+          receipt.transactionHash
       )
       dispatch(fetchPoolsUserDataAsync(account))
     }
@@ -155,184 +167,192 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
 
     if (receipt?.status) {
       addPopup(
-        {
-          txn: {
-            hash: receipt.transactionHash,
-            success: true,
-            summary: 'Contract enabled!',
-          }
-        },
-        receipt.transactionHash
+          {
+            txn: {
+              hash: receipt.transactionHash,
+              success: true,
+              summary: 'Contract enabled!',
+            }
+          },
+          receipt.transactionHash
       )
       dispatch(fetchPoolsUserDataAsync(account))
     }
   }, [
-      dispatch,
-      account,
-      addPopup,
-      fetchWithCatchTxError,
-      addTransaction,
-      lpContract,
-      sousChefContract.address,
-      callWithGasPrice,
-      pool.token1.symbol,
-      pool.token2.symbol
-    ])
+    dispatch,
+    account,
+    addPopup,
+    fetchWithCatchTxError,
+    addTransaction,
+    lpContract,
+    sousChefContract.address,
+    callWithGasPrice,
+    pool.token1.symbol,
+    pool.token2.symbol
+  ])
 
   const theme = useTheme()
+  const {width} = useWindowDimensions()
 
   if (!account) {
     return (
-      <ActionContainer style={{background: theme.actionPanelBg}}>
-        <ActionTitles>
-          <Text fontSize="13px">
-            {t('Start Farming')}
-          </Text>
-        </ActionTitles>
-        <ActionContent>
-          {/* <ConnectWalletButton width="100%" /> */}
-        </ActionContent>
-      </ActionContainer>
+        <ActionContainer style={{borderLeft: width >= 800 && `1px solid ${theme.opacitySmall}`, 
+        borderRadius: '0px', borderRight: width >= 800 && `1px solid ${theme.opacitySmall}`}}>
+          <ActionTitles>
+            <Text fontSize="13px">
+              {t('Start Farming')}
+            </Text>
+          </ActionTitles>
+          <ActionContent>
+            {/* <ConnectWalletButton width="100%" /> */}
+          </ActionContent>
+        </ActionContainer>
     )
   }
 
   if (isApproved) {
     if (stakedBalance.gt(0)) {
       return (
-        <>
+          <>
 
-        {showModalDeposit &&
-        <ModalTopDeposit
-        max={tokenBalance }
-        lpLabel={pool.token1.symbol+"-"+pool.token2.symbol}
-        apr = {apr}
-        onDismiss = {() => setshowModalDeposit(false)}
-        displayApr = '1'
-        stakedBalance = {stakedBalance}
-        onConfirm = {handleStake}
-        tokenName = {stakingToken.name}
-        addLiquidityUrl = {`#/add-pro/${pool.token1.address}/${pool.token2.address}/${isAnchor ? 'stable' : 'float'}`}
-        cakePrice = {1 as unknown as BigNumber}
-        token = {stakingToken}
-        />
-        }
-
-        {showModalWithdraw &&
-        <Portal>
-          <ModalContainer>
-            <WithdrawModal
-            max={stakedBalance}
-            onConfirm={handleUnstake}
-            tokenName={pool.stakingToken.symbol}
-            onDismiss={()=>setshowModalWithdraw(false)}
-            token={pool.stakingToken} />
-          </ModalContainer>
-        </Portal>
-
-        }
-        <ActionContainer style={{background: theme.actionPanelBg}}>
-          <ActionTitles style={{justifyContent: 'space-between'}}>
-            <Text color={theme.text1} fontSize="13px">
-              {t('STAKED')}
-            </Text>
-            <IconButtonWrapper>
-            <IconButton
-              style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
-              variant="tertiary"
-              onClick={()=>setshowModalWithdraw(true)} mr="6px">
-              <Flex>
-                <MinusIcon />
-              </Flex>
-            </IconButton>
-              <IconButton
-                style={{background: theme.hoveredButton, width: '29px', height: '28px', borderRadius: '100%'}}
-                variant="tertiary"
-                onClick={()=>{setshowModalDeposit(true)}}
-                disabled={['history', 'archived'].some((item) => window.location.pathname.includes(item))}
-              >
-                <Flex>
-                  <PlusIcon />
-                </Flex>
-              </IconButton>
-            </IconButtonWrapper>
-          </ActionTitles>
-          <ActionContent>
-            <StakedLP
-              stakingToken = {stakingToken}
-              isClassic={isClassic}
-              percentage={percentage}
-              field={Field.LIQUIDITY_PERCENT}
-              isAnchor={isAnchor}
-              max={tokenBalance}
-              token1={deserializeToken(token1)}
-              token2={deserializeToken(token2)}
-              stakedBalance={stakedBalance}
-              lpSymbol={pool.token1.symbol+'-'+pool.token2.symbol}
-              quoteTokenSymbol={pool.token2.symbol}
-              tokenSymbol={pool.token1.symbol}
-              lpTotalSupply={1 as unknown as BigNumber}
-              tokenAmountTotal={1 as unknown as BigNumber}
-              quoteTokenAmountTotal={1 as unknown as BigNumber}
+            {showModalDeposit &&
+            <ModalTopDeposit
+                max={tokenBalance }
+                lpLabel={pool.token1.symbol+"-"+pool.token2.symbol}
+                apr = {apr}
+                onDismiss = {() => setshowModalDeposit(false)}
+                displayApr = '111'
+                stakedBalance = {stakedBalance}
+                onConfirm = {handleStake}
+                tokenName = {stakingToken.name}
+                addLiquidityUrl = {`#/add-pro/${pool.token1.address}/${pool.token2.address}/${isAnchor ? 'stable' : 'float'}`}
+                cakePrice = {1 as unknown as BigNumber}
+                token = {stakingToken}
+                pool={pool}
             />
+            }
 
-          </ActionContent>
-        </ActionContainer>
-        </>
+            {showModalWithdraw &&
+            <Portal>
+              <ModalContainer>
+                <WithdrawModal
+                    max={stakedBalance}
+                    onConfirm={handleUnstake}
+                    tokenName={pool.stakingToken.symbol}
+                    onDismiss={()=>setshowModalWithdraw(false)}
+                    token={pool.stakingToken} />
+              </ModalContainer>
+            </Portal>
+
+            }
+            <ActionContainer style={{borderLeft: width >= 800 && `1px solid ${theme.opacitySmall}`, borderRadius: '0px', borderRight: width >= 800 && `1px solid ${theme.opacitySmall}`}}>
+              <ActionTitles style={{justifyContent: 'space-between', alignItems: 'center'}}>
+                <Text color={theme.text1} fontSize="16px" fontWeight={500}>
+                  {t('STAKED')}
+                </Text>
+                <IconButtonWrapper>
+                  <IconButton
+                    style={{background: '#B05D98', width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
+                    variant="tertiary"
+                      onClick={()=>setshowModalWithdraw(true)} mr="6px">
+                    <Flex>
+                      <MinusIcon />
+                    </Flex>
+                  </IconButton>
+                  <IconButton
+                    style={{background: '#B05D98', width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
+                    variant="tertiary"
+                      onClick={()=>{setshowModalDeposit(true)}}
+                      disabled={pool.isFinished}
+                  >
+                    <Flex>
+                      <PlusIcon />
+                    </Flex>
+                  </IconButton>
+                </IconButtonWrapper>
+              </ActionTitles>
+              <ActionContent>
+                <StakedLP
+                    stakedRatio={pool.stakedRatio}
+                    staked={pool.staked}
+                    price={pool.quotingPrice}
+                    stakedBalancePool={pool.stakedBalancePool}
+                    stakingToken = {stakingToken}
+                    isClassic={isClassic}
+                    percentage={percentage}
+                    field={Field.LIQUIDITY_PERCENT}
+                    isAnchor={isAnchor}
+                    max={tokenBalance}
+                    token1={deserializeToken(token1)}
+                    token2={deserializeToken(token2)}
+                    stakedBalance={stakedBalance}
+                    lpSymbol={pool.token1.symbol+'-'+pool.token2.symbol}
+                    quoteTokenSymbol={pool.token2.symbol}
+                    tokenSymbol={pool.token1.symbol}
+                    lpTotalSupply={1 as unknown as BigNumber}
+                    tokenAmountTotal={1 as unknown as BigNumber}
+                />
+
+              </ActionContent>
+            </ActionContainer>
+          </>
       )
     }
 
     return (
-      <ActionContainer style={{background: theme.actionPanelBg}}>
-        <ActionTitles>
-          <Text bold textTransform="uppercase" color="textSubtle" fontSize="12px" pr="4px">
-            {t('Stake')}
-          </Text>
-          <Text bold textTransform="uppercase" color="secondary" fontSize="12px">
-            {'lpSymbol'}
-          </Text>
-        </ActionTitles>
-        <ActionContent>
-          <Button
-            width="100%"
-            onClick={()=>{setshowModalDeposit(true)}}
-            variant="secondary"
-            disabled={['history', 'archived'].some((item) => window.location.pathname.includes(item))}
-          >
-            {t('Stake LP')}
-          </Button>
-        </ActionContent>
-      </ActionContainer>
+        <ActionContainer style={{borderLeft: width >= 800 && `1px solid ${theme.opacitySmall}`, 
+          borderRadius: '0px', 
+          borderRight: width >= 800 && `1px solid ${theme.opacitySmall}`}}>
+          <ActionTitles>
+            <Text bold textTransform="uppercase" color="textSubtle" fontSize="12px" pr="4px">
+              {t('Stake')}
+            </Text>
+            <Text bold textTransform="uppercase" color="secondary" fontSize="12px">
+              {'lpSymbol'}
+            </Text>
+          </ActionTitles>
+          <ActionContent>
+            <Button
+                width="100%"
+                onClick={()=>{setshowModalDeposit(true)}}
+                variant="secondary"
+                disabled={['history', 'archived'].some((item) => window.location.pathname.includes(item))}
+            >
+              {t('Stake LP')}
+            </Button>
+          </ActionContent>
+        </ActionContainer>
     )
   }
 
   if (!userDataReady) {
     return (
-      <ActionContainer style={{background: theme.actionPanelBg}}>
-        <ActionTitles>
-          <Text fontSize="13px">
-            {t('Start Farming')}
-          </Text>
-        </ActionTitles>
-        <ActionContent>
-          <Skeleton width={180} marginBottom={28} marginTop={14} />
-        </ActionContent>
-      </ActionContainer>
+        <ActionContainer style={{borderLeft: width >= 800 && `1px solid ${theme.opacitySmall}`, borderRadius: '0px', borderRight: width >= 800 && `1px solid ${theme.opacitySmall}`}}>
+          <ActionTitles>
+            <Text fontSize="13px">
+              {t('Start Farming')}
+            </Text>
+          </ActionTitles>
+          <ActionContent>
+            <Skeleton width={180} marginBottom={28} marginTop={14} />
+          </ActionContent>
+        </ActionContainer>
     )
   }
 
   return (
-    <ActionContainer style={{background: theme.bg6}}>
-      <ActionTitles>
-        <Text fontSize="13px">
-          {t('Enable Farm')}
-        </Text>
-      </ActionTitles>
-      <ActionContent>
-        <Button style={{backgroundColor: theme.questionMarks, boxShadow: 'none'}} width="100%" disabled={pendingTx} onClick={handleApproval} variant="primary">
-          {t('Enable')}
-        </Button>
-      </ActionContent>
-    </ActionContainer>
+      <ActionContainer style={{borderLeft: width >= 800 && `1px solid ${theme.opacitySmall}`, borderRadius: '0px', borderRight: width >= 800 && `1px solid ${theme.opacitySmall}`}}>
+        <ActionTitles>
+          <Text fontSize="13px">
+            {t('Enable Farm')}
+          </Text>
+        </ActionTitles>
+        <ActionContent>
+          <Button style={{backgroundColor: theme.questionMarks, boxShadow: 'none'}} width="100%" disabled={pendingTx} onClick={handleApproval} variant="primary">
+            {t('Enable')}
+          </Button>
+        </ActionContent>
+      </ActionContainer>
   )
 }
 

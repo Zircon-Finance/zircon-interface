@@ -104,7 +104,7 @@ const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean }>`
   font-weight: 400;
   :hover,
   :focus {
-    background-color: ${({ pending, theme }) => (pending ? darken(0.05, theme.primary1) : theme.opacitySmall)};
+    background-color: ${({ pending, theme }) => (pending ? darken(0.05, theme.opacitySmall) : theme.opacitySmall)};
   }
 `
 
@@ -198,7 +198,7 @@ function Web3StatusInner() {
   const hasSocks = useHasSocks()
   const toggleWalletModal = useWalletModalToggle()
 
-  if (account && chainId === 1287) {
+  if (account && (chainId === 1285 || chainId === 56)) {
     return (
       <Web3StatusConnected id="web3-status-connected" onClick={toggleWalletModal} pending={hasPendingTransactions}>
         {hasPendingTransactions ? (
@@ -214,7 +214,7 @@ function Web3StatusInner() {
         {!hasPendingTransactions && connector && <StatusIcon connector={connector} />}
       </Web3StatusConnected>
     )
-  } else if (error || chainId !== 1287) {
+  } else if (error || !(chainId === 1285 || chainId === 56)) {
     return (
       <Web3StatusError onClick={toggleWalletModal}>
         <NetworkIcon />

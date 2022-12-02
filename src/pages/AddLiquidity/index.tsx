@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
-import { Currency, currencyEquals, DEV, TokenAmount, WDEV } from 'zircon-sdk'
+import { Currency, currencyEquals, NATIVE_TOKEN, TokenAmount, WDEV } from 'zircon-sdk'
 import React, { useCallback, useState } from 'react'
 import { Plus } from 'react-feather'
 import ReactGA from 'react-ga4'
@@ -16,6 +16,7 @@ import DoubleCurrencyLogo from '../../components/DoubleLogo'
 import { AddRemoveTabsClassic } from '../../components/NavigationTabs'
 import { MinimalPositionCard } from '../../components/PositionCard'
 import { RowBetween, RowFlat } from '../../components/Row'
+import { MaxUint256 } from '@ethersproject/constants'
 
 import { ROUTER_ADDRESS } from '../../constants'
 import { PairState } from '../../data/Reserves'
@@ -29,7 +30,7 @@ import { useDerivedMintInfo, useMintActionHandlers, useMintState } from '../../s
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { useIsExpertMode, useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
 import { TYPE } from '../../theme'
-import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from '../../utils'
+import { calculateSlippageAmount, getRouterContract } from '../../utils'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import AppBody from '../AppBody'
@@ -39,6 +40,7 @@ import { currencyId } from '../../utils/currencyId'
 import { PoolPriceBar } from './PoolPriceBar'
 import LearnIcon from '../../components/LearnIcon'
 import InfoCircle from '../../components/InfoCircle'
+import { useBatchPrecompileContract, useTokenContract } from '../../hooks/useContract'
 
 export default function AddLiquidity({
   match: {
@@ -90,6 +92,10 @@ export default function AddLiquidity({
   const [allowedSlippage] = useUserSlippageTolerance() // custom from users
   const [txHash, setTxHash] = useState<string>('')
 
+  const batchContract = useBatchPrecompileContract()
+  const token0Contract = useTokenContract(wrappedCurrency(currencyA, chainId)?.address)
+  const token1Contract = useTokenContract(wrappedCurrency(currencyB, chainId)?.address)
+
   // get formatted amounts
   const formattedAmounts = {
     [independentField]: typedValue,
@@ -101,7 +107,7 @@ export default function AddLiquidity({
     (accumulator, field) => {
       return {
         ...accumulator,
-        [field]: maxAmountSpend(currencyBalances[field])
+        [field]: maxAmountSpend(chainId, currencyBalances[field])
       }
     },
     {}
@@ -146,12 +152,15 @@ export default function AddLiquidity({
 
     const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline
 
+    const approvalCallData0 = token0Contract.interface.encodeFunctionData('approve', [router.address, MaxUint256])
+    const approvalCallData1 = token1Contract.interface.encodeFunctionData('approve', [router.address, MaxUint256])
+
     let estimate,
       method: (...args: any) => Promise<TransactionResponse>,
       args: Array<string | string[] | number>,
       value: BigNumber | null
-    if (currencyA === DEV || currencyB === DEV) {
-      const tokenBIsETH = currencyB === DEV
+    if (currencyA === NATIVE_TOKEN[chainId] || currencyB === NATIVE_TOKEN[chainId]) {
+      const tokenBIsETH = currencyB === NATIVE_TOKEN[chainId]
       estimate = router.estimateGas.addLiquidityETH
       method = router.addLiquidityETH
       args = [
@@ -178,13 +187,24 @@ export default function AddLiquidity({
       ]
       value = null
     }
+    console.log('estimate', estimate)
+
+    const callData = router.interface.encodeFunctionData((currencyA === NATIVE_TOKEN[chainId] || currencyB === NATIVE_TOKEN[chainId] ? 
+      'addLiquidityETH' : 'addLiquidity'), args)
+
     setAttemptingTxn(true)
-    await estimate(...args, value ? { value } : {})
-      .then(estimatedGasLimit =>
+    await (
+        chainId === 1285 ?
+          batchContract.batchAll(
+            [token0Contract.address, token1Contract.address, router.address], 
+            ["000000000000000000", "000000000000000000", "000000000000000000"],
+            [approvalCallData0,approvalCallData1, callData],
+            []
+          )
+          :
         method(...args, {
-          ...(value ? { value } : {}),
-          gasLimit: calculateGasMargin(estimatedGasLimit)
-        }).then(response => {
+          ...(value ? { value } : {})
+        })).then(response => {
           setAttemptingTxn(false)
 
           addTransaction(response, {
@@ -207,7 +227,6 @@ export default function AddLiquidity({
             label: [currencies[Field.CURRENCY_A]?.symbol, currencies[Field.CURRENCY_B]?.symbol].join('/')
           })
         })
-      )
       .catch(error => {
         setAttemptingTxn(false)
         setErrorTx(error.message)
@@ -253,10 +272,10 @@ export default function AddLiquidity({
           />
           </Text>
         </RowFlat>
-        <TYPE.italic fontSize={12} textAlign="left" padding={'8px 0 0 0 '}>
-          {`Output is estimated. If the price changes by more than ${allowedSlippage /
+        <Text fontSize={12} textAlign="left" padding={"8px 0 0 0 "} color={theme.whiteHalf}>
+            {`Output is estimated. If the price changes by more than ${allowedSlippage /
             100}% your transaction will revert.`}
-        </TYPE.italic>
+          </Text>
       </AutoColumn>
     )
   }
@@ -281,7 +300,7 @@ export default function AddLiquidity({
 
   const handleCurrencyASelect = useCallback(
     (currencyA: Currency) => {
-      const newCurrencyIdA = currencyId(currencyA)
+      const newCurrencyIdA = currencyId(currencyA, chainId)
       if (newCurrencyIdA === currencyIdB) {
         history.push(`/add/${currencyIdB  || ''}/${currencyIdA  || ''}`)
       } else {
@@ -292,7 +311,7 @@ export default function AddLiquidity({
   )
   const handleCurrencyBSelect = useCallback(
     (currencyB: Currency) => {
-      const newCurrencyIdB = currencyId(currencyB)
+      const newCurrencyIdB = currencyId(currencyB, chainId)
       if (currencyIdA === newCurrencyIdB) {
         if (currencyIdB) {
           history.push(`/add/${currencyIdB  || ''}/${newCurrencyIdB  || ''}`)
@@ -365,7 +384,6 @@ export default function AddLiquidity({
               currency={currencies[Field.CURRENCY_A]}
               id="add-liquidity-input-tokena"
               showCommonBases
-              tokens={[currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B]]}
             />
             <ColumnCenter>
               <Plus size="30" color='gray' />
@@ -381,7 +399,6 @@ export default function AddLiquidity({
               currency={currencies[Field.CURRENCY_B]}
               id="add-liquidity-input-tokenb"
               showCommonBases
-              tokens={[currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B]]}
             />
 
           </AutoColumn>
@@ -407,11 +424,11 @@ export default function AddLiquidity({
                     <ButtonLight onClick={toggleWalletModal}>Connect Wallet</ButtonLight>
                     ) : (
                     <AutoColumn gap={'md'}>
-                      {(approvalA === ApprovalState.NOT_APPROVED ||
+                      {chainId !== 1285 && ((approvalA === ApprovalState.NOT_APPROVED ||
                         approvalA === ApprovalState.PENDING ||
                         approvalB === ApprovalState.NOT_APPROVED ||
                         approvalB === ApprovalState.PENDING) &&
-                        isValid && (
+                        isValid) && (
                           <RowBetween>
                             {approvalA !== ApprovalState.APPROVED && (
                               <ButtonPrimary

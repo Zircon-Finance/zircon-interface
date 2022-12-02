@@ -9,7 +9,7 @@ import DoubleCurrencyLogo from '../DoubleLogo'
 
 import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
 import { useTranslation } from 'react-i18next'
-import { useWindowDimensions } from '../../hooks'
+import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
 import { useIsDarkMode } from '../../state/user/hooks'
 
 
@@ -118,6 +118,7 @@ interface CurrencyInputPanelProps {
   style?: React.CSSProperties
   showCommonBases?: boolean
   anchor?: boolean
+  price?: number
 }
 
 export default function CurrencyInputPanel({
@@ -132,7 +133,8 @@ export default function CurrencyInputPanel({
   id,
   style,
   showCommonBases,
-  anchor
+  anchor,
+  price,
 }: CurrencyInputPanelProps) {
   const { t } = useTranslation()
 
@@ -146,6 +148,7 @@ export default function CurrencyInputPanel({
   const { width } = useWindowDimensions()
   const darkMode = useIsDarkMode()
   const [hovered, setHovered] = useState(false)
+  const {chainId} = useActiveWeb3React()
 
   return (
     <InputPanel id={id}>
@@ -177,7 +180,7 @@ export default function CurrencyInputPanel({
                       margin={true}
                     />
                   ) : currency ? (
-                    <CurrencyLogo currency={currency} size={"24px"} />
+                    <CurrencyLogo currency={currency} size={"24px"} chainId={chainId} />
                   ) : null}
                   {pair ? (
                     <StyledTokenName className="pair-name-container">
@@ -205,7 +208,6 @@ export default function CurrencyInputPanel({
                               width: '100%',
                               alignSelf: 'center',
                               display: 'flex',
-                              justifyContent: 'center',
                               alignItems: 'center',
                             }}
                           >

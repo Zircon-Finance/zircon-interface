@@ -92,8 +92,8 @@ Cypress.Commands.overwrite('visit', (original, url, options) => {
 
 Cypress.Commands.add('select_moons', () => {
     cy.visit('/add/ETH/')
-    cy.get('#add-liquidity-input-tokenb').contains('token').click()
-    cy.get('#list-introduction-choose-a-list').contains('list').click()
-    cy.get('.select-button').contains('Select').click()
-    cy.get('#modal-close-x').click()
+    cy.get('#add-liquidity-input-tokenb', { timeout: 10000 }).contains('token').click()
+    cy.get('#list-introduction-choose-a-list', { timeout: 10000 }).should('be.visible').contains('list').click({ force: true })
+    cy.get('.select-button', { timeout: 10000 }).contains('Select').click()
+    cy.get('#modal-close-x', { timeout: 10000 }).click()
 })

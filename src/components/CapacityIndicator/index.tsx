@@ -13,13 +13,12 @@ const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 80%;
-  height: 100%;
   color: ${({ theme }) => theme.darkMode ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)'};
   border: 1px solid ${({ theme }) => theme.darkMode ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)'};
   border-radius: 12px;
-  padding: 8px 8px;
   font-size: 16px;
   margin: 8px auto 8px auto;
+  border-bottom: none;
 `
 const RowContainer = styled.div`
   display: flex;
@@ -27,6 +26,8 @@ const RowContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  padding: 8px;
+  border-bottom: 1px solid ${({ theme }) => theme.darkMode ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)'};
 `
 const SmallContainer = styled.div`
   display: flex;
@@ -59,11 +60,11 @@ const CapacityIndicator: React.FC<Props> = ({gamma, hoverPage, health, isFloat, 
     const [hoverFee, setHoverFee] = React.useState(false);
     const [hoverSlashing, setHoverSlashing] = React.useState(false);
     const [hoverSlippage, setHoverSlippage] = React.useState(false);
-    console.log("feePercentage", feePercentage.toString())
-    const TooltipContentRisk: React.FC<ToolTipProps> = ({option}) => {return (
+    const TooltipContentRisk: React.FC<ToolTipProps> = ({option}) => { return (
         <ToolTip style={{left: '-100px'}} show={hoverRisk || hoverFee || hoverSlashing || hoverSlippage}>
             <Text fontSize='13px' fontWeight={500} color={theme.text1}>
-                {`${option === 'health' ? 'The health factor measures how balanced this Stable vault is. Imbalanced vaults may be partially slashed when withdrawing during critical market activity.' :
+                {`${ blocked ? "Transaction temporarly blocked" :
+                    option === 'health' ? 'The health factor measures how balanced this Stable vault is. Imbalanced vaults may be partially slashed when withdrawing during critical market activity.' :
                 option === 'divergence' ? 'Divergence measures how much impermanent loss the Float vault is suffering.' :
                 option === 'deltaFee' ? 'The pool is applying a “Delta Tax” because prices or liquidity have changed too fast recently. Just wait a few minutes for this to pass.':
                 option === 'fee' ? 'You pay a dynamic fee between 0.01% and 0.5% to join the Pylon vaults. The fee is lowest when the Pylon vaults are balanced.' :
@@ -88,12 +89,14 @@ const CapacityIndicator: React.FC<Props> = ({gamma, hoverPage, health, isFloat, 
                         <QuestionMarkIcon />
                     </QuestionMarkContainer>
                 </SmallContainer>
-                <span style={{marginLeft: 8}}>{feePercentage?.toFixed(4)}%</span>
+                <span style={{marginRight: 8, color: parseFloat(feePercentage?.toFixed(2)) >= 1 ? '#E67066' : '#5CB376'}}>
+                    {feePercentage?.toFixed(2)}%
+                </span>
             </RowContainer>}
 
             {!blocked && extraFee.gt(0) && <RowContainer>
                 <SmallContainer>
-                    {!noSpan && <span style={{marginLeft: 8}}>{'Slippage For Amount > ' + extraFeeTreshold.toFixed(4)}</span>}
+                    {!noSpan && <span style={{marginLeft: 8}}>{'Slippage For Amount > ' + extraFeeTreshold.toFixed(2)}</span>}
                     <QuestionMarkContainer
                         onMouseEnter={() => setHoverSlippage(true)}
                         onMouseLeave={() => setHoverSlippage(false)}
@@ -104,10 +107,10 @@ const CapacityIndicator: React.FC<Props> = ({gamma, hoverPage, health, isFloat, 
                         <QuestionMarkIcon />
                     </QuestionMarkContainer>
                 </SmallContainer>
-                <span style={{marginLeft: 8}}>{extraFee?.toFixed(4)}%</span>
+                <span style={{marginRight: 8, color: parseFloat(extraFee?.toFixed(2)) >= 1 ? '#E67066' : '#5CB376'}}>{extraFee?.toFixed(2)}%</span>
             </RowContainer>}
 
-            {!blocked && slashingOmega.gt(0) && <RowContainer>
+            {!blocked && slashingOmega.gt("0.01") && <RowContainer>
                 <SmallContainer>
                     {!noSpan && <span style={{marginLeft: 8}}>{'Omega'}</span>}
                     <QuestionMarkContainer
@@ -120,13 +123,13 @@ const CapacityIndicator: React.FC<Props> = ({gamma, hoverPage, health, isFloat, 
                         <QuestionMarkIcon />
                     </QuestionMarkContainer>
                 </SmallContainer>
-                <span style={{marginLeft: 8}}>{slashingOmega?.toFixed(4)}%</span>
+                <span style={{marginRight: 8}}>{slashingOmega?.toFixed(2)}%</span>
             </RowContainer>}
 
-            <RowContainer>
+            <RowContainer style={{borderBottomLeftRadius: '12px', borderBottomRightRadius: '12px'}}>
                 <SmallContainer>
 
-                    {!noSpan && <span style={{marginLeft: 8}}>{blocked ? "Transaction likely to fail" : isFloat ? 'Divergence' : 'Health factor'}</span>}
+                    {!noSpan && <span style={{marginLeft: 8, color: blocked ? '#E67066' : undefined}}>{blocked ? "Tx likely to fail" : isFloat ? 'Divergence' : 'Health factor'}</span>}
                     <QuestionMarkContainer
                         onMouseEnter={() => setHoverRisk(true)}
                         onMouseLeave={() => setHoverRisk(false)}

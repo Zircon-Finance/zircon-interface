@@ -98,7 +98,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
 
     navigationBorder: darkMode ? '#61403C' : '#e7e2e2',
 
-    anchorFloatBadge: darkMode ? '#442734' : '#eee6e8',
+    anchorFloatBadge: darkMode ? '#442734' : 'rgba(8, 5, 6, 0.05)',
 
     questionMarkBg: darkMode ? '#653047' : '#FCFCFD',
 
@@ -122,6 +122,10 @@ export function colors(chainId: any, darkMode: boolean): Colors {
 
     meatPink: '#D5AEAF',
 
+    percentageRed: darkMode ? '#E67066' : '#BC2929',
+
+    percentageGreen: darkMode ? '#5CB376' : '#287438',
+
     pinkBrown : darkMode ? '#D5AEAF' : '#874955',
 
     farmPoolCardsBg: darkMode ? '#39202b' : '#eeecf0',
@@ -142,7 +146,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
 
     tableButton: darkMode ? '#442233' : '#f1ebf0',
 
-    positionsButtons: darkMode ? '#755452' : '#EAE5E8',
+    positionsButtons: darkMode ? '#5b3244' : '#EAE5E8',
     modalBg : darkMode ? 'rgba(0,0,0,0.5)' : 'rgba(36, 17, 26, 0.5)',
 
     liquidityBg: darkMode ? '#331924' : '#F5F3F6',
@@ -169,7 +173,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     yellow2: '#D75FA3',
 
     colors: {
-      backgroundDisabled: "#E9EAEB",
+      backgroundDisabled: darkMode ? "#482C38" : '#F0EDEE',
       backgroundAlt: '#4A303E',
       backgroundAlt2: "rgba(255, 255, 255, 0.7)",
       cardBorder: '#361E2A',

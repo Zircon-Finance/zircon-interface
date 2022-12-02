@@ -25,18 +25,15 @@ import { useERC20, useSousChef } from '../../../../hooks/useContract'
 import useCatchTxError from '../../../../hooks/useCatchTxError'
 import { useTransactionAdder } from '../../../../state/transactions/hooks'
 import { useDispatch } from 'react-redux'
-import { fetchFarmUserDataAsync } from '../../../../state/farms'
-import { useIsDarkMode } from '../../../../state/user/hooks'
-import { useCurrentBlock, useEndBlock, usePool, useStartBlock } from '../../../../state/pools/hooks'
+import { usePool } from '../../../../state/pools/hooks'
 import { useCallWithGasPrice } from '../../../../hooks/useCallWithGasPrice'
-import { useTokenBalance } from '../../../../state/wallet/hooks'
-import { Token } from 'zircon-sdk'
 import { useCurrency } from '../../../../hooks/Tokens'
 import {useDerivedPylonMintInfo} from "../../../../state/mint/pylonHooks";
 import BigNumberJs from "bignumber.js";
 import {useGamma} from "../../../../data/PylonData";
 import CapacityIndicatorSmall from "../../../../components/CapacityIndicatorSmall";
 import { fetchPoolsUserDataAsync } from '../../../../state/pools'
+import { RewardPerBlock } from '../../Farms'
 // import { useFarmUser } from '../../../../state/farms/hooks'
 
 export interface RowProps {
@@ -125,6 +122,7 @@ animation: ${({ expanded }) =>
   width: 100%;
   border-bottom: 1px solid ${({ theme }) => theme.opacitySmall};
   @media (min-width: 992px) {
+    border-bottom: none;
     display: table;
     height: 80px;
 `
@@ -171,7 +169,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const [isVisible, setIsVisible] = useState(false)
   const {
     details,
-     userDataReady,
+    userDataReady,
   } = props
   const [currency1, currency2] = [useCurrency(details.token1.address),useCurrency(details.token2.address)]
   // const [, pylonPair] = usePylon(currency1, currency2)
@@ -187,9 +185,10 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
       false,
       "off"
   );
-  const gamma = useGamma(pylonPair?.address)
+  const pool = usePool(details.sousId).pool
+  const gamma = useGamma(pylonPair?.address)//TODO: change with pool?.gamma
 
-  const hasStakedAmount = !!usePool(details.sousId).pool.userData.stakedBalance.toNumber()
+  const hasStakedAmount = !!pool.userData.stakedBalance.toNumber()
   const [actionPanelExpanded, setActionPanelExpanded] = useState(false)
   const [hovered, setHovered] = useState(false)
   const shouldRenderChild = actionPanelExpanded
@@ -208,30 +207,6 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     </ToolTip>
   )}
 
-  // POOL HARVEST DATA
-  const [startBlock, setStartBlock] = useState(0)
-  const [endBlock, setEndBlock] = useState(0)
-  const [currentBlock, setCurrentBlock] = useState(0)
-  useStartBlock(details.sousId).then((block?) => setStartBlock(block))
-  useEndBlock(details.sousId).then((block?) => setEndBlock(block))
-  useCurrentBlock().then((block?) => setCurrentBlock(block))
-  //TODO: this has to be only one component PD and shared between Row and this
-  const RewardPerBlock = ({ token }: { token: Token }) => {
-    const { pool } = usePool(details.sousId)
-    const balance = useTokenBalance(pool.vaultAddress, token)
-    const blocksLeft = endBlock - Math.max(currentBlock, startBlock)
-    // console.log("current", currentBlock)
-    // console.log("start", startBlock)
-    // console.log("balance", balance)
-    // console.log("blocksLeft", blocksLeft)
-    const rewardBlocksPerDay = (parseFloat((balance?.toFixed(6)))/blocksLeft)*6400*30
-    return(
-        <Text fontSize='13px' fontWeight={500} color={'#4e7455'}>
-          {`~ ${rewardBlocksPerDay.toFixed(4)}  ${token.symbol}`}
-        </Text>
-      )
-    }
-  //--------------------------------------------------------------------------------------------------//
 
   const toggleActionPanel = () => {
     setActionPanelExpanded(!actionPanelExpanded)
@@ -248,10 +223,12 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const dispatch = useDispatch()
   const sousChefContract = useSousChef(details.sousId)
   const { callWithGasPrice } = useCallWithGasPrice()
+  const [pendingTx, setPendingTx] = useState(false)
 
   const handleApproval = useCallback(async () => {
     const receipt = await fetchWithCatchTxError(() => {
       return callWithGasPrice(lpContract, 'approve', [sousChefContract.address, MaxUint256]).then(response => {
+        setPendingTx(true)
         addTransaction(response, {
           summary:  `Enable ${details.token1.symbol}-${details.token2.symbol} stake contract`
         })
@@ -269,8 +246,8 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
         },
         receipt.transactionHash
       )
+      setPendingTx(false)
       dispatch(fetchPoolsUserDataAsync(account))
-      dispatch(fetchFarmUserDataAsync({ account, pids: [details.sousId] }))
     }
   },
   [
@@ -286,6 +263,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     sousChefContract.address,
     callWithGasPrice,
   ])
+  const [hoverEnable, setHoverEnable] = useState(false)
   const mobileVer = width <= 992
   const { isDesktop } = useMatchBreakpoints()
   const isSmallerScreen = !isDesktop
@@ -294,15 +272,15 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const isApproved = account && details.userData.allowance && details.userData.allowance.isGreaterThan(0)
   const stakedAmount = usePool(details.sousId).pool.userData.stakedBalance.toNumber()
   const toggleWalletModal = useWalletModalToggle()
-  const darkMode = useIsDarkMode()
-  const [rewardTokens, setRewardTokens] = useState("")
-  useEffect(() => {
-    let r = ''
-    props.farm?.earningToken.forEach((token) => r += ` ${token.symbol} &`)
-    setRewardTokens(r.slice(0, -1))
-  }, [])
+  // const [rewardTokens, setRewardTokens] = useState("")
+  // useEffect(() => {
+  //   let r = ''
+  //   props.farm?.earningToken.forEach((token) => r += ` ${token.symbol === 'MOVR' ? 'wMOVR' : token.symbol} &`)
+  //   setRewardTokens(r.slice(0, -1))
+  // }, [])
   const [hoverRisk, setHoverRisk] = useState(false)
   const gammaAdjusted = new BigNumberJs(gamma).div(new BigNumberJs(10).pow(18))
+  const {chainId} = useActiveWeb3React()
 
   const handleRenderRow = () => {
     if (!mobileVer) {
@@ -310,7 +288,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
         !actionPanelExpanded && (
         <StyledTr expanded={isVisible} onClick={toggleActionPanel} onMouseOver={() => setHovered(true)}
         onMouseOut={() => setHovered(false)}
-        style={{backgroundColor: hovered ? theme.cardExpanded : null, borderBottom: !darkMode ? `1px solid ${theme.cardExpanded}` : null}} >
+        style={{backgroundColor: hovered ? theme.darkMode ? '#452632' : '#F5F3F4' : null}} >
           {Object.keys(props).map((key) => {
             const columnIndex = columnNames.indexOf(key)
             if (columnIndex === -1) {
@@ -324,8 +302,8 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                   <TableData key={key} style={{width: gamma ? '15%' : '12%'}}>
                     <CellInner>
                       <CellLayout>
-                      <div style={{width: '200%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
-                            <CapacityIndicatorSmall gamma={gammaAdjusted} health={healthFactor} isFloat={!props.farm.isAnchor} noSpan={false}
+                        <div style={{width: '200%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
+                            {!props.farm.isFinished && <><CapacityIndicatorSmall gamma={gammaAdjusted} health={healthFactor} isFloat={!props.farm.isAnchor} noSpan={false}
                             hoverPage={'farmRow'}/>
                             <QuestionMarkContainer
                               onMouseEnter={() => setHoverRisk(true)}
@@ -334,8 +312,8 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                                 <TooltipContentRisk option={!props.farm.isAnchor ? 'divergence' : 'health'} />
                               )}
                             <QuestionMarkIcon />
-                            </QuestionMarkContainer>
-                            </div>
+                            </QuestionMarkContainer></>}
+                        </div>
                         <Details actionPanelToggled={actionPanelExpanded} />
                       </CellLayout>
                     </CellInner>
@@ -375,20 +353,15 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                     ) : (
                       <Flex style={{alignItems: 'center'}}>
                         <>
-                        {!account ? (
-                        <Text style={{width: '50%'}} color={'#4e7455'}>
-                          {`Earn${rewardTokens.slice(0, -1)}`}
-                        </Text>
-                        ) : (
+                        {
+                        !props.farm.isFinished &&
                         <Flex flexDirection={'column'}>
-                          <Text fontSize='13px' fontWeight={500} color={4e7455} marginBottom={2}>
-                            {'Monthly Rewards:'}
+                          <Text fontSize='13px' fontWeight={400} color={theme.whiteHalf}>
+                            {'Monthly rewards'}
                           </Text>
-                          <>
-                            {details.earningToken.map((token) => <RewardPerBlock token={token} />)}
-                          </>
+                            <RewardPerBlock earningRewardsBlock={details?.earningTokenInfo}  />
                         </Flex>
-                        )}
+                        }
                         </>
                       </Flex>
                   )}
@@ -398,21 +371,62 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                 return (
                   <TableData key={key}>
                     {account ? (
-                    isApproved ?
-                    props.staked.staked.gt(0) ? (
-                      <CellInner>
-                        <CellLayout hovered={hovered} label={t('Staked')}>
-                          {createElement(cells[key], { ...props[key], hovered, setHovered })}
-                        </CellLayout>
-                      </CellInner>) : (
-                      <StakeAdd row={true} margin={true} width={'75%'} />)
-                    : (
-                      <ButtonPinkGamma style={{width: '80%', fontSize: '13px', padding: '10px', borderRadius: '12px'}}
-                      onClick={handleApproval}>{'Enable contract'}</ButtonPinkGamma>)) : (
-                        <ButtonPinkGamma style={{width: '80%', fontSize: '13px', padding: '10px', borderRadius: '12px'}}
-                    onClick={toggleWalletModal}>{'Connect wallet'}</ButtonPinkGamma>)}
+                      (isApproved || chainId === 1285) ? (
+                        props.staked.staked.gt(0) ? (
+                          <CellInner>
+                            <CellLayout hovered={hovered} label={t("Staked")}>
+                              {createElement(cells[key], {
+                                ...props[key],
+                                hovered,
+                                setHovered,
+                              })}
+                            </CellLayout>
+                          </CellInner>
+                        ) : (
+                          <StakeAdd
+                            pink={true}
+                            row={true}
+                            margin={true}
+                            width={"86px"}
+                            height={"35px"}
+                            isFinished={props.farm.isFinished}
+                          />
+                        )
+                      ) : (
+                        <ButtonPinkGamma
+                        onMouseOver={() => setHoverEnable(true)}
+                        onMouseOut={() => setHoverEnable(false)}
+                          style={{
+                            width: "80%",
+                            fontSize: "13px",
+                            padding: "0px 12px",
+                            borderRadius: "12px",
+                            height: "34px",
+                            fontWeight: 500,
+                            background: theme.darkMode && hoverEnable ? 'rgba(202, 144, 187, 0.17)' : 'rgba(202, 144, 187, 0.07)'
+                          }}
+                          disabled={pendingTx || props.farm.isFinished}
+                          onClick={handleApproval}
+                        >
+                          {pendingTx ? "Enabling..." : "Enable contract"}
+                        </ButtonPinkGamma>
+                      )
+                    ) : (
+                      <ButtonPinkGamma
+                        style={{
+                          width: "auto",
+                          fontSize: "13px",
+                          padding: "0 15px",
+                          borderRadius: "12px",
+                          height: "34px",
+                        }}
+                        onClick={toggleWalletModal}
+                      >
+                        {"Connect wallet"}
+                      </ButtonPinkGamma>
+                    )}
                   </TableData>
-                )
+                );
 
               default:
                 return (
@@ -449,7 +463,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
             <EarnedMobileCell>
               <CellLayout label={t('Earned')}>
                 {account ? (
-                  isApproved ? (stakedAmount ? (
+                  (isApproved || chainId === 1285) ? (stakedAmount ? (
                     <>
                       <span style={{color: theme.whiteHalf, fontSize: '13px', marginRight: '5px'}}>{'Earned: '}</span>
                       <Earned {...props.earned} userDataReady={userDataReady} />
@@ -458,17 +472,17 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                     <ButtonPinkGamma style={{fontSize: '13px', padding: '10px', borderRadius: '12px', maxHeight: '38px'}}>
                       <Flex justifyContent={'space-between'} flexDirection={'row'} alignItems={'center'}>
                         <svg width="25" height="25" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M22.75 9.875V36.125" stroke="#9D94AA" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M9.625 23H35.875" stroke="#9D94AA" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M22.75 9.875V36.125" stroke="#CA98BB" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M9.625 23H35.875" stroke="#CA98BB" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
                         <Text style={{minWidth: 'auto'}}>Stake</Text>
                       </Flex>
                     </ButtonPinkGamma>
                   )) : (
-                    <ButtonPinkGamma style={{fontSize: '13px', padding: '10px', borderRadius: '12px'}}
-                    onClick={handleApproval}>{'Enable contract'}</ButtonPinkGamma>
+                    <ButtonPinkGamma style={{fontSize: '13px', padding: '10px', borderRadius: '12px', height: '34px'}} disabled={pendingTx || props.farm.isFinished}
+                    onClick={handleApproval}>{pendingTx ? 'Enabling...' : 'Enable contract'}</ButtonPinkGamma>
                   )) : (
-                    <ButtonPinkGamma style={{fontSize: '13px', padding: '10px', borderRadius: '12px'}}
+                    <ButtonPinkGamma style={{fontSize: '13px', padding: '10px', borderRadius: '12px', height: '34px'}}
                     onClick={toggleWalletModal}>{'Connect wallet'}</ButtonPinkGamma>
                   )}
 
@@ -495,7 +509,8 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
       {shouldRenderChild && (
         <tr style={{display: 'flex', flexDirection: 'column'}}>
           <td colSpan={6}>
-            <ActionPanel {...props} expanded={actionPanelExpanded} clickAction={setActionPanelExpanded} gamma={gammaAdjusted.toNumber()}healthFactor={healthFactor} />
+            <ActionPanel {...props} expanded={actionPanelExpanded} clickAction={setActionPanelExpanded} 
+            gamma={gammaAdjusted.toNumber()}healthFactor={healthFactor} currentBlock = {props.farm.currentBlock} />
           </td>
         </tr>
       )}

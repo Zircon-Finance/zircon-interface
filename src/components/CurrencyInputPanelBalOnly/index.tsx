@@ -86,6 +86,7 @@ interface CurrencyInputPanelProps {
   isFloat?: boolean
   sync?: string
   exists?: boolean
+  price?: number
 }
 
 export default function CurrencyInputPanel({
@@ -106,11 +107,12 @@ export default function CurrencyInputPanel({
   showCommonBases,
   isFloat,
   sync,
-  exists
+  exists,
+  price
 }: CurrencyInputPanelProps) {
 
   const [modalOpen, setModalOpen] = useState(false)
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const [focus, setIsFocus] = useState(false)
 
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
@@ -135,7 +137,7 @@ export default function CurrencyInputPanel({
                 {!hideInput && (
                   <>
                       <span style={{padding: '5px 5px 0px 10px'}}>
-                        <CurrencyLogo currency={currency} size={'30px'} />
+                        <CurrencyLogo currency={currency} size={'30px'} chainId={chainId} />
                         </span>
                       <span style={{fontSize: '16px', alignSelf: 'center', paddingRight: '12px'}}>
                         {(currency && currency.symbol && currency.symbol.length > 20
@@ -147,6 +149,7 @@ export default function CurrencyInputPanel({
                       <span style={{fontSize: width < 700 ? '13px' : '16px', color: theme.whiteHalf}}>{isFloat ? 'FLOAT' : 'STABLE'}</span>
 
                     <NumericalInput
+                      currency={currency}
                       onFocus={()=>setIsFocus(true)}
                       onBlur={()=>setIsFocus(false)}
                       style={{background: 'transparent', textAlign: 'end'}}
@@ -181,11 +184,10 @@ export default function CurrencyInputPanel({
                     ? 'Balance: ' + selectedCurrencyBalance?.toSignificant(6)
                     : ' -'}
                   </Text>
-
                   </div>
                   {currency &&
                   <Text style={{paddingRight: '0.75rem', alignSelf: 'center'}} color={theme.whiteHalf}>
-                    {'' /* This was added, it's supposed to convert to $ */}
+                    {`${price && (price*parseFloat(selectedCurrencyBalance?.toFixed(6))).toFixed(2) || ''} ${price > 0 ? `$` : ''}` /* This was added, it's supposed to convert to $ */}
                   </Text>
                   }
                 </TYPE.body>

@@ -72,9 +72,6 @@ const StyledMenu = styled.div`
   align-items: center;
   position: relative;
   border: none;
-  svg {
-    transform: rotate(90deg);
-  }
 `
 
 const StyledListUrlText = styled.div`

@@ -1,4 +1,4 @@
-import { Currency, DEV, Token } from 'zircon-sdk'
+import { Currency, DEV, NATIVE_TOKEN, Token } from 'zircon-sdk'
 import React, { KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import ReactGA from 'react-ga4'
 import { useTranslation } from 'react-i18next'
@@ -24,6 +24,10 @@ import { PaddedColumn, SearchInput, Separator } from './styleds'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { ButtonPositionsMobile } from '../Button'
 import CurrencyLogo from '../CurrencyLogo'
+import { mainnetTokens } from '../../constants/tokens'
+import { useChosenTokens } from '../../state/user/hooks'
+import { StarFull } from '../TopTokensRow'
+import { useActiveWeb3React } from '../../hooks'
 
 const SmallPlanet = styled.div`
   height: 28px;
@@ -117,8 +121,11 @@ export function CurrencySearch({
     ]
   }, [filteredTokens, searchQuery, searchToken, tokenComparator])
 
-  const selectedFloatTokens = [filteredSortedTokens[23], filteredSortedTokens[6], DEV, filteredSortedTokens[15], filteredSortedTokens[16], filteredSortedTokens[12]]
-  const selectedAnchorTokens = [filteredSortedTokens[23], filteredSortedTokens[33], filteredSortedTokens[6], filteredSortedTokens[15], DEV]
+  const floatTokens = ['ETH', 'KSM', 'LDO', 'kBTC', 'wMOVR']
+  const anchorTokens = ['USDC', 'ETH', 'KSM', 'wMOVR']
+
+  const selectedFloatTokens = filteredSortedTokens.filter(token => floatTokens.includes(token.symbol)).concat(mainnetTokens.movr)
+  const selectedAnchorTokens = filteredSortedTokens.filter(token => anchorTokens.includes(token.symbol)).concat(mainnetTokens.movr)
 
   const handleCurrencySelect = useCallback(
     (currency: Currency) => {
@@ -163,6 +170,22 @@ export function CurrencySearch({
 
   const selectedListInfo = useSelectedListInfo()
   const [hover, setHover] = useState(false)
+  const [chosenTokens] = useChosenTokens();
+  console.log('object keys: ', Object.keys(allTokens))
+  console.log('chosen tokens: ', chosenTokens)
+  const tokensToShow = chosenTokens.filter(token => Object.keys(allTokens).map(token => token.toLowerCase()).includes(token.toLowerCase()))
+  console.log('tokensToShow', tokensToShow)
+
+  const SmallToken = ({ token, index }: { token: any, index: number }) => {
+    const currency = useToken(token)
+    const {chainId} = useActiveWeb3React()
+    return (
+      <SmallPlanet key={index} onClick={()=>handleCurrencySelect(token.address ? token.symbol === NATIVE_TOKEN[chainId].symbol ? 
+      NATIVE_TOKEN[chainId] : token : currency)}>
+        <CurrencyLogo currency={token.symbol ? token : currency} size={'18px'} chainId = {chainId} />
+        <Text fontWeight={500} fontSize={14} style={{padding: '0 5px 0 5px'}}>{token?.symbol ? token?.symbol : currency?.symbol}</Text>
+      </SmallPlanet>
+  )}
 
   return (
     <Column style={{ width: '100%', flex: '1 1' }}>
@@ -192,24 +215,30 @@ export function CurrencySearch({
         </RowBetween>
       </PaddedColumn>
 
-      {(isFloat !== undefined && filteredSortedTokens.length > 0 && !searchQuery) && 
+      {tokensToShow?.length > 0 && !searchQuery && (
+        <Flex flexDirection="column" style={{padding: '0 20px', gap: '5px'}}>
+        <Text color={theme.whiteHalf} style={{display: 'flex', alignItems: 'center'}}> 
+         <Flex style={{marginRight: '5px'}}><StarFull /></Flex> {`Favourite tokens`}</Text>
+          <Flex flexDirection="row" style={{display: 'flex', marginBottom: '15px', flexWrap: 'wrap'}}>
+            {tokensToShow?.map((token, i) => (
+              <SmallToken token={token} index={i} />
+            ))}
+          </Flex>
+        </Flex>
+      )}
+
+      {(isFloat !== undefined && filteredSortedTokens.length > 0 && !searchQuery) &&
       <Flex flexDirection="column" style={{padding: '0 20px', gap: '5px'}}>
         <Text color={theme.whiteHalf}>{`Recommended for ${isFloat ? 'Float' : 'Anchor'}`}</Text>
         <Flex flexDirection="row" style={{display: 'flex', marginBottom: '15px', flexWrap: 'wrap'}}>
         {isFloat === true &&
           selectedFloatTokens?.map((token, i) => (
-            <SmallPlanet onClick={()=>handleCurrencySelect(token)}>
-              <CurrencyLogo currency={token} size={'18px'} />
-              <Text fontWeight={500} fontSize={14} style={{padding: '0 5px 0 5px'}}>{token?.symbol}</Text>
-            </SmallPlanet>
+            <SmallToken token={token} index={i} />
           ))
         }
         {isFloat === false &&
           selectedAnchorTokens?.map((token, i) => (
-            <SmallPlanet onClick={()=>handleCurrencySelect(token)}>
-              <CurrencyLogo currency={token} size={'18px'} />
-              <Text fontWeight={500} fontSize={14} style={{padding: '0 5px 0 5px'}}>{token?.symbol}</Text>
-            </SmallPlanet>
+            <SmallToken token={token} index={i} />
           ))
         }
         </Flex>
@@ -251,7 +280,7 @@ export function CurrencySearch({
             </Row>
           ) : null}
           <ButtonPositionsMobile
-            style={{ height: '34px', padding: '10px 12px', fontWeight: 400, color: theme.white, fontSize: 13, width: 'auto', 
+            style={{ height: '34px', padding: '10px 12px', fontWeight: 400, color: theme.white, fontSize: 13, width: 'auto',
             background: hover ? theme.changeButtonHover : theme.changeButtonNormal }}
             onClick={onChangeList}
             id="currency-search-change-list-button"

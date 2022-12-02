@@ -1,4 +1,4 @@
-import { Currency, currencyEquals, DEV, WDEV } from 'zircon-sdk'
+import { Currency, currencyEquals, NATIVE_TOKEN, WDEV } from 'zircon-sdk'
 import { useMemo } from 'react'
 import { tryParseAmount } from '../state/swap/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
@@ -36,7 +36,7 @@ export default function useWrapCallback(
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
 
-    if (inputCurrency === DEV && currencyEquals(WDEV[chainId], outputCurrency)) {
+    if (inputCurrency === NATIVE_TOKEN[chainId] && currencyEquals(WDEV[chainId], outputCurrency)) {
       return {
         wrapType: WrapType.WRAP,
         execute:
@@ -44,15 +44,15 @@ export default function useWrapCallback(
             ? async () => {
                 try {
                   const txReceipt = await wethContract.deposit({ value: `0x${inputAmount.raw.toString(16)}` })
-                  addTransaction(txReceipt, { summary: `Wrap ${inputAmount.toSignificant(6)} DEV to WDEV` })
+                  addTransaction(txReceipt, { summary: `Wrap ${inputAmount.toSignificant(6)} MOVR to WMOVR` })
                 } catch (error) {
                   console.error('Could not deposit', error)
                 }
               }
             : undefined,
-        inputError: sufficientBalance ? undefined : 'Insufficient DEV balance'
+        inputError: sufficientBalance ? undefined : 'Insufficient MOVR balance'
       }
-    } else if (currencyEquals(WDEV[chainId], inputCurrency) && outputCurrency === DEV) {
+    } else if (currencyEquals(WDEV[chainId], inputCurrency) && outputCurrency === NATIVE_TOKEN[chainId]) {
       return {
         wrapType: WrapType.UNWRAP,
         execute:
@@ -60,13 +60,13 @@ export default function useWrapCallback(
             ? async () => {
                 try {
                   const txReceipt = await wethContract.withdraw(`0x${inputAmount.raw.toString(16)}`)
-                  addTransaction(txReceipt, { summary: `Unwrap ${inputAmount.toSignificant(6)} WDEV to ETH` })
+                  addTransaction(txReceipt, { summary: `Unwrap ${inputAmount.toSignificant(6)} WMOVR to MOVR` })
                 } catch (error) {
                   console.error('Could not withdraw', error)
                 }
               }
             : undefined,
-        inputError: sufficientBalance ? undefined : 'Insufficient WDEV balance'
+        inputError: sufficientBalance ? undefined : 'Insufficient WMOVR balance'
       }
     } else {
       return NOT_APPLICABLE

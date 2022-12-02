@@ -11,7 +11,7 @@ import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
 //import { useDarkModeManager } from '../../state/user/hooks'
 import { useETHBalances } from '../../state/wallet/hooks'
 import {
-  // ChainPoolTab,
+  ChainPoolTab,
   SwapPoolTabs } from '../../components/NavigationTabs'
 
 // import { YellowCard } from '../Card'
@@ -23,6 +23,8 @@ import { useDarkModeManager } from '../../state/user/hooks';
 import { ButtonOutlined } from '../Button';
 import Portal from '@reach/portal';
 import ClaimModal from '../ClaimModal';
+import { useFetchPublicPoolsData } from '../../state/pools/hooks';
+import { NATIVE_TOKEN } from 'zircon-sdk';
 // import { connectNet } from '../WalletModal';
 // import VersionSwitch from './VersionSwitch'
 
@@ -37,7 +39,6 @@ const HeaderFrame = styled.div`
     justify-content: space-between;
     flex-direction: column;
     width: 100%;
-    top: 0;
     position: absolute;
     overflow-x: hidden;
     ${({ theme }) => theme.mediaWidth.upToExtraSmall`
@@ -123,15 +124,11 @@ const UniIcon = styled.div`
 `
 
 export const BadgeSmall = styled.span`
-  background-color: ${({ theme }) => theme.anchorFloatBadge};
+  background-color: ${({ theme }) => theme.darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(8, 5, 6, 0.05)'};
   padding: 3px 5px;
   border-radius: 5px;
-  color: ${({ theme }) => theme.whiteHalf};
   margin-left: 5px;
-  font-size: 10px;
-  @media (min-width: 500px) {
-    font-size: 16px;
-  }
+  font-weight: 500;
 `
 
 const HeaderControls = styled.div`
@@ -173,32 +170,10 @@ export default function Header() {
   const [darkMode, toggleSetDarkMode] = useDarkModeManager();
   const [showClaimTokens, setShowClaimTokens] = React.useState(false);
   const theme = useTheme();
+  useFetchPublicPoolsData()
 
   return (
     <HeaderFrame>
-      {/* {width < 1100 &&
-        <div style={{display: 'flex', paddingLeft: '15px', justifyContent: 'space-between', boxShadow: `inset 1px -10px 2px -10px ${theme.bg14}`,
-                    alignSelf: 'start'}}>
-              <div style={{display: 'grid', gridAutoFlow: 'column', columnGap: '20px', alignItems: 'center'}}>
-                  <Text color={chainId !== 1287 ? theme.white : theme.text2}
-                        fontSize={13}
-                        onClick={() => connectNet('moonbase')}
-                        style={{borderBottom: `${chainId !== 1287 ? ('1px solid'+theme.bg5) : 'none'}`,
-                              cursor: 'pointer',
-                              height: '50px',
-                              display: 'flex',
-                              alignItems: 'center'}}>{'NORMAL'}</Text>
-                  <Text color={chainId !== 1287 ? theme.white : theme.text2}
-                        fontSize={13}
-                        onClick={() => connectNet('moonriver')}
-                        style={{borderBottom: `${chainId !== 1287 ? ('1px solid'+theme.bg5) : 'none'}`,
-                              cursor: 'pointer',
-                              height: '50px',
-                              display: 'flex',
-                              alignItems: 'center'}}>{'GAMMA'}</Text>
-            </div>
-          </div>
-      } */}
       <RowBetween style={{ alignItems: 'flex-start', flexWrap: width >= 700 ? 'nowrap' : 'wrap', justifyContent: 'center'}} padding="20px 20px 0 20px">
         {showClaimTokens && (
           <Portal>
@@ -208,13 +183,14 @@ export default function Header() {
         {width >= 700 ?
         <>
         <HeaderElement>
-          <Title href="." style={{width: account ? width < 1100 ? '250px' : '450px' : width > 1100 ? '350px' : '160px', height: width >= 1100 ? '50px' : '45px'}}>
+          <Title href="." style={{width: account ? width < 1100 ? 'auto' : '450px' : width > 1100 ? '350px' : '160px', height: width >= 1100 ? '50px' : '45px'}}>
             <UniIcon id="z-logo">
               <img style={{ height: 24, display: 'flex', margin: 'auto' }} src={!darkMode ? DarkLogo : WhiteLogo} alt="logo" />
             </UniIcon>
             {chainId === 1287 && <BadgeSmall style={{fontSize: '13px', padding: '5px 10px', background: '#56332e', color: '#FFF'}}>
               {'BETA'}
               </BadgeSmall>}
+              <ChainPoolTab active={chainId === 1285 ? 'moonriver' : 'bsc'} />
           </Title>
         </HeaderElement>
         {width > 1100 ?
@@ -231,7 +207,6 @@ export default function Header() {
             <SunLogo  />
             </button>
             <ButtonOutlined mr="10px" style={{border: `1px solid ${theme.navigationTabs}`, color: theme.pinkBrown, padding: '12px 20px', maxHeight: '50px'}} onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined>
-           {/* <ChainPoolTab active={chainId !== 1287 ? 'moonbeam' : 'moonriver'} /> */}
           </HeaderElement> </> :
           <div style={{display: 'grid', gridGap: '15px'}}>
           <HeaderElement>
@@ -245,7 +220,6 @@ export default function Header() {
             <SunLogo  />
             </button>
             <ButtonOutlined mr="10px" style={{border: `1px solid ${theme.navigationTabs}`, color: theme.pinkBrown, padding: '12px 20px', maxHeight: '50px'}} onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined>
-           {/* <ChainPoolTab active={chainId !== 1287 ? 'moonbeam' : 'moonriver'} /> */}
            </HeaderElement>
            <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : location.pathname === '/farm' ? 'farm' : 'pool'} />
           </div>}
@@ -253,7 +227,7 @@ export default function Header() {
           <AccountElement active={!!account} style={{ pointerEvents: 'auto', height: '50px' }}>
               {account && userEthBalance ? (
                 <BalanceText style={{ flexShrink: 0 }} pl="1.25rem" pr="0.5rem" fontWeight={400}>
-                  {userEthBalance?.toSignificant(4)} MOVR
+                  {userEthBalance?.toSignificant(4)} {NATIVE_TOKEN[chainId].symbol}
                 </BalanceText>
               ) : null}
               <Web3Status />
@@ -284,7 +258,7 @@ export default function Header() {
             <SunLogo  />
             </button>
             <ButtonOutlined style={{border: `1px solid ${theme.navigationTabs}`, color: theme.pinkBrown, padding: '13.5px 20px', maxHeight: '50px'}} onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined>
-           {/* <ChainPoolTab active={chainId !== 1287 ? 'moonbeam' : 'moonriver'} /> */}
+           <ChainPoolTab active={chainId === 1285 ? 'moonriver' : 'bsc'} />
            </>
           </HeaderElement>
           <HeaderControls>
@@ -292,7 +266,7 @@ export default function Header() {
               <AccountElement active={!!account} style={{ pointerEvents: 'auto', padding: '2px' }}>
                 {account && userEthBalance ? (
                   <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={400}>
-                    {userEthBalance?.toSignificant(4)} DEV
+                    {userEthBalance?.toSignificant(4)} {chainId === 1285 ? 'MOVR' : chainId === 56 && 'BNB'}
                   </BalanceText>
                 ) : null}
                 <Web3Status />

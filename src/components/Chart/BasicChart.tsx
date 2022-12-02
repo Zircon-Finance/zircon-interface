@@ -11,6 +11,7 @@ import { useFetchPairPrices } from '../../state/swap/hooks'
 import styled, { useTheme } from 'styled-components'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import CurrencyLogo from '../CurrencyLogo'
+import { useActiveWeb3React } from '../../hooks'
 
 export enum PairDataTimeWindowEnum {
   DAY,
@@ -25,12 +26,14 @@ const ButtonsContainer = styled.div`
   display: flex;
   padding: 5px;
   font-size: 13px;
+  margin-right: 10px;
 `;
 
 const DateButtons = styled.div`
   width: 100%;
   justify-content: space-between;
   display: flex;
+  margin-bottom: 15px;
 `;
 
 const TimeButton = styled.button`
@@ -81,7 +84,8 @@ const BasicChart = ({
   const valueToDisplay = hoverValue || pairPrices[pairPrices.length - 1]?.value
   const { changePercentage, changeValue } = getTimeWindowChange(pairPrices)
   const isChangePositive = changeValue >= 0
-  const chartHeight = isChartExpanded ? 'calc(100% - 120px)' : '289px'
+  const {chainId} = useActiveWeb3React()
+  const chartHeight = isChartExpanded ? 'calc(100% - 120px)' : '293px'
   const currentDate = new Date().toLocaleString([], {
     year: 'numeric',
     month: 'short',
@@ -116,7 +120,7 @@ const BasicChart = ({
             {outputCurrency ? (
               <DoubleCurrencyLogo currency0={inputCurrency} currency1={outputCurrency} size={24} margin />
             ) : (
-              inputCurrency && <CurrencyLogo currency={inputCurrency} size="24px" style={{ marginRight: '8px' }} />
+              inputCurrency && <CurrencyLogo currency={inputCurrency} size="24px" style={{ marginRight: '8px' }} chainId={chainId} />
             )}
             {inputCurrency && (
               <Text color={theme.text1}>
@@ -137,7 +141,7 @@ const BasicChart = ({
             </Flex>
         </Flex>
       </TopContainer>
-      <div style={{borderRadius: '27px', backgroundColor: 'transparent', padding: '15px'}}>
+      <div style={{borderRadius: '27px', backgroundColor: 'transparent', paddingBottom: '15px'}}>
       <DateButtons>
         <Text color={theme.whiteHalf} style={{alignSelf: 'center', width: '100%', paddingLeft: '15px', height: 'auto', fontSize: '13px'}}>
             {hoverDate || currentDate}
@@ -145,8 +149,8 @@ const BasicChart = ({
           <ButtonsContainer >
             <TimeButton style={{cursor: 'pointer', backgroundColor: timeWindow === 0 ? theme.badgeSmall : 'transparent'}} onClick={()=> setTimeWindow(0)}>{'24H'}</TimeButton>
             <TimeButton style={{cursor: 'pointer', backgroundColor: timeWindow === 1 ? theme.badgeSmall : 'transparent'}} onClick={()=> setTimeWindow(1)}>{'1W'}</TimeButton>
-            {/* <TimeButton style={{backgroundColor: timeWindow === 2 ? '#4D346C' : 'transparent'}} onClick={()=> setTimeWindow(2)}>{'1M'}</TimeButton>
-            <TimeButton style={{backgroundColor: timeWindow === 3 ? '#4D346C' : 'transparent'}} onClick={()=> setTimeWindow(3)}>{'1Y'}</TimeButton> */}
+            <TimeButton style={{cursor: 'pointer', backgroundColor: timeWindow === 2 ? theme.badgeSmall : 'transparent'}} onClick={()=> setTimeWindow(2)}>{'1M'}</TimeButton>
+            {/* <TimeButton style={{backgroundColor: timeWindow === 3 ? '#4D346C' : 'transparent'}} onClick={()=> setTimeWindow(3)}>{'1Y'}</TimeButton> */}
           </ButtonsContainer>
         </DateButtons>
       <Box height={isMobile ? '100%' : chartHeight}>

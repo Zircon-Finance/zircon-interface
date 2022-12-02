@@ -560,7 +560,7 @@ const pools: SerializedPoolConfig[] = [
     poolCategory: PoolCategory.CORE,
     harvest: true,
     sortOrder: 1,
-    isFinished: true,
+    isFinished: false,
   },
   {
     sousId: 11,

@@ -33,7 +33,7 @@ const PercentageBar = styled.div<{ percentage: number, show: boolean }>`
     height: 1px;
     background-color: ${({ theme, percentage }) => percentage ? percentage <= 10 ? theme.percentageRed : theme.percentageGreen : theme.opacitySmall};
     position: relative;
-    max-width: 200px;
+    max-width: 300px;
     display: flex;
     justify-content: flex-start;
     animation: ${({ show, percentage }) =>

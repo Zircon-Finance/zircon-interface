@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Flex, Text } from 'rebass';
 import { useTheme } from 'styled-components';
 import { useActiveWeb3React } from '../../hooks';
-import { useCurrency } from '../../hooks/Tokens';
+import { useAllTokens, useCurrency } from '../../hooks/Tokens';
 import { useChosenTokens } from '../../state/user/hooks';
 import { AbsContainer } from '../../views/Farms/components/FarmTable/Liquidity';
 import PlusIcon from '../../views/Farms/components/PlusIcon';
@@ -13,10 +13,11 @@ import RepeatIcon from '../RepeatIcon';
 import { ArrowMarket, DialogContainer, StarFull } from '../TopTokensRow';
 
 const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) => {
+    const {chainId} = useActiveWeb3React()
     const currency = useCurrency(token)
     const [hoverPlus, setHoverPlus] = React.useState(false)
+    const allTokens = useAllTokens()
     const [hoverSwap, setHoverSwap] = React.useState(false)
-    const {chainId} = useActiveWeb3React()
     const [hovered, setHovered] = React.useState(false);
     const tokenData = topTokens.find((t) => t.token.id === token)
     const tokenDataPrevious = topTokensPrevious.find((t) => t.token.id === token)
@@ -138,6 +139,8 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) 
         }
       </DialogContainer>
     );
+
+  if (!Object.keys(allTokens).map(token => token.toLowerCase()).includes(token.toLowerCase())) return null
 
   return (
     <Flex onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} alignItems='center'>

@@ -96,7 +96,7 @@ export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' }) {
 export function ChainPoolTab({ active }: { active: 'bsc' | 'moonriver' }) {
   const { width } = useWindowDimensions();
   return (
-    <Tabs style={{ marginRight: '10px', width: width >= 700 ? 'auto' : '100%', padding: '3px' }}>
+    <Tabs style={{ width: width >= 700 ? 'auto' : '100%', padding: '3px', marginLeft: '20px', marginRight: '0px' }}>
       <StyledNavLink id={`swap-chain-bsc`} to={'#'} onClick={()=> {connectNet('bsc')}} isActive={() => active === 'bsc'} style={{padding: '5px 10px'}}>
         <BnbContainer><BnbLogo /></BnbContainer>
       </StyledNavLink>

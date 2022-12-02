@@ -170,8 +170,11 @@ export function CurrencySearch({
 
   const selectedListInfo = useSelectedListInfo()
   const [hover, setHover] = useState(false)
-
   const [chosenTokens] = useChosenTokens();
+  console.log('object keys: ', Object.keys(allTokens))
+  console.log('chosen tokens: ', chosenTokens)
+  const tokensToShow = chosenTokens.filter(token => Object.keys(allTokens).map(token => token.toLowerCase()).includes(token.toLowerCase()))
+  console.log('tokensToShow', tokensToShow)
 
   const SmallToken = ({ token, index }: { token: any, index: number }) => {
     const currency = useToken(token)
@@ -212,12 +215,12 @@ export function CurrencySearch({
         </RowBetween>
       </PaddedColumn>
 
-      {chosenTokens?.length > 0 && !searchQuery && (
+      {tokensToShow?.length > 0 && !searchQuery && (
         <Flex flexDirection="column" style={{padding: '0 20px', gap: '5px'}}>
         <Text color={theme.whiteHalf} style={{display: 'flex', alignItems: 'center'}}> 
          <Flex style={{marginRight: '5px'}}><StarFull /></Flex> {`Favourite tokens`}</Text>
           <Flex flexDirection="row" style={{display: 'flex', marginBottom: '15px', flexWrap: 'wrap'}}>
-            {chosenTokens?.map((token, i) => (
+            {tokensToShow?.map((token, i) => (
               <SmallToken token={token} index={i} />
             ))}
           </Flex>

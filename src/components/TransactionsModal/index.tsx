@@ -114,7 +114,7 @@ export default function TransactionsModal() {
         <MenuFlyout>
           <AutoColumn gap="sm" style={{padding: '5px'}} >
             <ButtonEmpty as={Link} to={'/find'} onClick={() => toggle()}> Import Pool</ButtonEmpty>
-            <ButtonEmpty as={Link} to={'/add/ETH'} onClick={() => toggle()}>Classic Liquidity</ButtonEmpty>
+            <ButtonEmpty as={Link} to={'/add/'} onClick={() => toggle()}>Classic Liquidity</ButtonEmpty>
             <ButtonEmpty as={Link} to={'/pool'}onClick={() => {
               toggle()
               window.open('https://docs.zircon.finance', '_blank');

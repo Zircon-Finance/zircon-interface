@@ -196,8 +196,8 @@ export default function AddLiquidityPro({
     '0x4545e94974adacb82fc56bcf136b07943e152055' : chainId === 56 && '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c'
   const bCurrency = currencyB !== null ? wrappedCurrency(currencyB, chainId)?.address : chainId === 1285 ? 
   '0x4545e94974adacb82fc56bcf136b07943e152055' : chainId === 56 && '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c'
-  const token0Contract = useERC20(aCurrency, true) ?? undefined
-  const token1Contract = useERC20(bCurrency ?? aCurrency, true) ?? undefined
+  const token0Contract = useERC20(aCurrency ?? '0x0000000000000000000000000000000000000000', true) ?? undefined
+  const token1Contract = useERC20(bCurrency ?? aCurrency ?? '0x0000000000000000000000000000000000000000', true) ?? undefined
 
   const getField = (shouldSendFloat) => {
     if (isFloat) {

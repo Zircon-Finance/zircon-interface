@@ -10,6 +10,12 @@ export function useBlockNumber(): number | undefined {
   return useSelector((state: AppState) => state.application.blockNumber[chainId ?? -1])
 }
 
+export function useBlockTimestamp(): number | undefined {
+  const { chainId } = useActiveWeb3React()
+
+  return useSelector((state: AppState) => state.application.blockNumber[chainId ?? -1])
+}
+
 export function useWalletModalOpen(): boolean {
   return useSelector((state: AppState) => state.application.walletModalOpen)
 }

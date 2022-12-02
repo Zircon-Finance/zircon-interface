@@ -15,6 +15,7 @@ import {usePylon} from "../../data/PylonReserves";
 import BigNumber from 'bignumber.js'
 import {useLastK, usePairInfo, usePylonConstants, usePylonInfo} from "../../data/PylonData";
 import {useBlockNumber} from "../application/hooks";
+import {BigintIsh} from "zircon-sdk/dist/constants";
 
 export function useBurnState(): AppState['burn'] {
   return useSelector<AppState, AppState['burn']>(state => state.burn)
@@ -163,6 +164,14 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
         console.log("burn::", totalSupply.raw.toString(), ptTotalSupply.raw.toString(), userLiquidity.raw.toString(),
             pylonInfo[0].toString(), pylonInfo[1].toString(), pylonInfo[2].toString(), pylonPoolBalance.raw.toString(), pylonInfo[3].toString(), BigInt(blockNumber), pylonConstants,
             pylonInfo[4].toString(), pylonInfo[5].toString(), pylonInfo[6].toString(), pylonInfo[7].toString(), pylonInfo[8].toString(), pylonInfo[9].toString(), pairInfo[2].toString())
+        // burnFloat(totalSupply: TokenAmount, floatTotalSupply: TokenAmount, poolTokensIn: TokenAmount,
+        // anchorVirtualBalance: BigintIsh | JSBI, muMulDecimals: BigintIsh, gamma: BigintIsh,
+        // ptb: TokenAmount, strikeBlock: BigintIsh, blockNumber: BigintIsh, factory: PylonFactory,
+        // emaBlockNumber: BigintIsh, gammaEMA: BigintIsh, thisBlockEMA: BigintIsh, lastRootK: BigintIsh,
+        // anchorKFactor: BigintIsh, isLineFormula: boolean, kLast: BigintIsh, blockTimestamp: BigintIsh,
+        // lastFloatAccumulator: BigintIsh, price0CumulativeLast: BigintIsh, price1CumulativeLast: BigintIsh,
+        // lastOracleTimestamp: BigintIsh, lastPrice: BigintIsh): BurnParams;
+
         if(JSBI.greaterThanOrEqual(ptTotalSupply.raw, userLiquidity.raw)) {
           let burnInfo = isFloat ?
               pylon.burnFloat(totalSupply, ptTotalSupply, userLiquidity,

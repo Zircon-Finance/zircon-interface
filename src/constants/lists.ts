@@ -1,6 +1,8 @@
 // the DCTDEX Default token list lives here
 export const DEFAULT_TOKEN_LIST_URL =
-  'https://gist.githubusercontent.com/ReshyResh/202584ed5ab07d5f08b2f1c56bfd475a/raw/a323dae242ae7713f14fd76fc0146956ab19d4de/BSC_Tokenlist.json'
+    'https://raw.githubusercontent.com/PureStake/moonbeam-uniswap/main/uniswap-interface-moonbeam/src/tokens.json'
+
+// 'https://gist.githubusercontent.com/ReshyResh/202584ed5ab07d5f08b2f1c56bfd475a/raw/a323dae242ae7713f14fd76fc0146956ab19d4de/BSC_Tokenlist.json'
 
 export const INFO_CLIENT = 'https://api.thegraph.com/subgraphs/name/reshyresh/zircon-gamma'
 export const BLOCKS_CLIENT = 'https://api.thegraph.com/subgraphs/name/rebase-agency/moonriver-blocks'

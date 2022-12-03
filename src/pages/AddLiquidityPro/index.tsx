@@ -192,9 +192,9 @@ export default function AddLiquidityPro({
   const [txHash, setTxHash] = useState<string>("");
 
   const batchContract = useBatchPrecompileContract()
-  const aCurrency = currencyA !== null ? wrappedCurrency(currencyA, chainId)?.address : chainId === 1285 ? 
+  const aCurrency = currencyA !== null ? wrappedCurrency(currencyA, chainId)?.address : chainId === 1285 ?
     '0x4545e94974adacb82fc56bcf136b07943e152055' : chainId === 56 && '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c'
-  const bCurrency = currencyB !== null ? wrappedCurrency(currencyB, chainId)?.address : chainId === 1285 ? 
+  const bCurrency = currencyB !== null ? wrappedCurrency(currencyB, chainId)?.address : chainId === 1285 ?
   '0x4545e94974adacb82fc56bcf136b07943e152055' : chainId === 56 && '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c'
   const token0Contract = useERC20(aCurrency ?? '0x0000000000000000000000000000000000000000', true) ?? undefined
   const token1Contract = useERC20(bCurrency ?? aCurrency ?? '0x0000000000000000000000000000000000000000', true) ?? undefined
@@ -461,7 +461,7 @@ export default function AddLiquidityPro({
           stake ? contractAddress : AddressZero,
           deadlineFromNow,
         ];
-
+        console.log("args", args);
         value = null;
       }
     } else {
@@ -510,9 +510,9 @@ export default function AddLiquidityPro({
     const approvalCallData1 = token1Contract.interface.encodeFunctionData('approve', [router.address, parsedAmounts[getField(false)].raw.toString()])
     const farmApprovalCallData = lpContract.interface.encodeFunctionData('approve', [sousChefContract.address, MaxUint256])
 
-    const callData = router.interface.encodeFunctionData(((sync === "off" ? 
+    const callData = router.interface.encodeFunctionData(((sync === "off" ?
     ((getCurrency(true) === NATIVE_TOKEN[chainId]) ? 'addSyncLiquidityETH' : 'addSyncLiquidity') :
-    ((getCurrency(true) === NATIVE_TOKEN[chainId] || getCurrency(false) === NATIVE_TOKEN[chainId]) ? 
+    ((getCurrency(true) === NATIVE_TOKEN[chainId] || getCurrency(false) === NATIVE_TOKEN[chainId]) ?
     'addAsyncLiquidityETH' : 'addAsyncLiquidity'))), args)
 
     console.log('args', args)
@@ -520,7 +520,7 @@ export default function AddLiquidityPro({
     await (
           chainId === 1285 ?
             batchContract.batchAll(
-              [lpContract.address, token0Contract.address, token1Contract.address,  router.address], 
+              [lpContract.address, token0Contract.address, token1Contract.address,  router.address],
               ["000000000000000000", "000000000000000000", "000000000000000000", (value !== undefined && value !== null) ? value : "000000000000000000"],
               [farmApprovalCallData, approvalCallData0, approvalCallData1, callData],
               []

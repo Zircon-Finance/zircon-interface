@@ -77,7 +77,7 @@ export function useDerivedPylonMintInfo(
 
   // Pylon
   const [pylonState, pylonPair] = usePylon(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B])
-
+  console.log("pylon add", pylonPair?.floatLiquidityToken.address.toString(), pylonPair?.anchorLiquidityToken.address.toString())
   const pylonInfo = usePylonInfo(pylonPair?.address)
   const pylonConstants = usePylonConstants()
   const blockNumber = useBlockNumber()

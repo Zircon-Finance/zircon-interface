@@ -49,6 +49,7 @@ const WDEV_ONLY: ChainTokenList = {
   [ChainId.MOONROCK]: [WDEV[ChainId.MOONROCK]],
   [ChainId.MOONBASE]: [WDEV[ChainId.MOONBASE]],
   [ChainId.MOONSHADOW]: [WDEV[ChainId.MOONSHADOW]],
+  [ChainId.BSC]: [WDEV[ChainId.BSC]],
 }
 
 // used to construct intermediary pairs for trading

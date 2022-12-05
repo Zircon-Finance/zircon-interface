@@ -10,7 +10,7 @@ import Page from '../../components/Layout/Page'
 import useIntersectionObserver from '../../hooks/useIntersectionObserver'
 import { useTranslation } from 'react-i18next'
 import {formattedNum, getBalanceNumber, getBalanceUSD} from '../../utils/formatBalance'
-import { useIsDarkMode, useShowBannerManager, useShowMobileSearchBarManager, useUserFarmsFilterAnchorFloat, useUserFarmsFilterPylonClassic, useUserFarmsFinishedOnly, useUserFarmStakedOnly, useUserFarmsViewMode } from '../../state/user/hooks'
+import { useIsDarkMode, useShowMobileSearchBarManager, useUserFarmsFilterAnchorFloat, useUserFarmsFilterPylonClassic, useUserFarmsFinishedOnly, useUserFarmStakedOnly, useUserFarmsViewMode } from '../../state/user/hooks'
 import {
   FarmFilter,
   FarmFilterAnchorFloat,
@@ -222,8 +222,6 @@ const Farms: React.FC = ({ children }) => {
   const { account } = useWeb3React()
   const [sortOption, setSortOption] = useState('hot')
   const [pendingTx, setPendingTx] = useState(false)
-  const [showBanner, ] = useShowBannerManager()
-  console.log('showBanner', showBanner)
   const { observerRef,
     // isIntersecting
   } = useIntersectionObserver()

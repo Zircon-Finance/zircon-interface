@@ -138,6 +138,7 @@ interface CurrencyInputPanelProps {
   style?: React.CSSProperties
   showCommonBases?: boolean
   isFloat?: boolean
+  price? : number
 }
 
 export default function CurrencyInputPanel({
@@ -156,6 +157,7 @@ export default function CurrencyInputPanel({
   id,
   isFloat,
   style,
+  price,
   showCommonBases
 }: CurrencyInputPanelProps) {
   const { t } = useTranslation()
@@ -217,6 +219,7 @@ export default function CurrencyInputPanel({
                 {!hideInput && (
                   <>
                     <NumericalInput
+                      currency={currency}
                       onFocus={()=>setIsFocus(true)}
                       onBlur={()=>setIsFocus(false)}
                       style={{textAlign: 'end'}}
@@ -255,7 +258,7 @@ export default function CurrencyInputPanel({
                   </div>
                   {currency && !hideBalance &&
                   <Text style={{paddingRight: '0.75rem', alignSelf: 'center', marginTop: showMaxButton ? '10px' : '0px'}} color={theme.whiteHalf}>
-                    {'0$' /* This was added, it's supposed to convert to $ */}
+                    {`${price && (price*parseFloat(selectedCurrencyBalance?.toFixed(6))).toFixed(2) || ''} ${price > 0 ? `$` : ''}` /* This was added, it's supposed to convert to $ */}
                   </Text>
                   }
                 </TYPE.body>

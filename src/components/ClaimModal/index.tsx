@@ -18,6 +18,8 @@ import Lottie from "lottie-react-web";
 import axios from 'axios'
 import {useTransactionAdder} from "../../state/transactions/hooks";
 import TransactionConfirmationModal from '../TransactionConfirmationModal'
+import { RowBetween } from '../Row'
+import { StyledWarningIcon } from '../../pages/AddLiquidity/ConfirmAddModalBottom'
 
 interface ClaimModalProps {
     onConfirm?: (amount: string, token: Token) => void
@@ -35,6 +37,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
                                                }) => {
     const { t } = useTranslation()
     const { account } = useActiveWeb3React()
+    const [errorTx, setErrorTx] = useState<string>("");
     const theme = useTheme()
     const addTransaction = useTransactionAdder()
     const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false);
@@ -42,13 +45,13 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
 
 
     const provider = account && new providers.Web3Provider(window.ethereum)
-    const airdrop_address = '0xfcb63d9D26965093fd7F87EC4Ce71D7b5949A49d'
+    const airdrop_address = '0x274b8752ca123712D9B966e53673092bb4d10311'
     const abi = airdrop_abi
 
     // call contract airdrop
     const airdrop_contract = new ethers.Contract(airdrop_address, abi, provider)
 
-    // contract signer
+    // contract ppsigner
     const signer = account && (new ethers.providers.Web3Provider(window.ethereum)).getSigner()
     const airdropWithSigner = airdrop_contract?.connect(signer)
     // proofData leaves
@@ -126,7 +129,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
                 {dataUser.isClaimed ? t('Total Claimed ZRG') : t('Total Claimable ZRG')}</Text>
             <AutoColumn gap='5px' style={{padding: '20px'}}>
                 <Text fontSize={'13px'} color={theme.text1} textAlign={'center'}>{'ZRG token'}</Text>
-                <Text fontSize={'13px'} color={theme.text1} textAlign={'center'}>{'This is a test token that operates in Moonbase Alpha.'}</Text>
+                <Text fontSize={'13px'} color={theme.text1} textAlign={'center'}>{'This is the official airdrop for ZRG Token operating in Moonriver Network.'}</Text>
             </AutoColumn>
             <ButtonOutlined style={{ alignSelf: 'center', background: theme.poolPinkButton, width: '100%'}}
                             disabled={(account && !dataUser?.amount) || (account && dataUser.isClaimed)}
@@ -151,8 +154,9 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
 
                                             }
                                         ).catch((error) => {
+                                            setAttemptingTxn(false)
+                                            setErrorTx('AirDrop has been temporarily paused, it will be resumed soon!')
                                             setDataUser({...dataUser, isClaimed: true})
-                                            onDismiss()
                                         }))
                                         : [onDismiss(),toggleWalletModal()]
                             }>
@@ -167,6 +171,12 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
                 }}/>
             </LottieContainer>
             }
+            {errorTx && (
+            <RowBetween mt={10}>
+            <StyledWarningIcon />
+            <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{errorTx}</span>
+            </RowBetween>
+        )}
         </Modal>
     )
 

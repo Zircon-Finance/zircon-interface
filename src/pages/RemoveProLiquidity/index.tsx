@@ -14,6 +14,7 @@ import DoubleCurrencyLogo from '../../components/DoubleLogo'
 import {AddRemoveTabs} from '../../components/NavigationTabs'
 import {MinimalPositionPylonCard} from '../../components/PositionCard'
 import Row, {RowBetween, RowFixed} from '../../components/Row'
+import { MaxUint256 } from '@ethersproject/constants'
 
 import Slider from '../../components/Slider'
 import CurrencyLogo from '../../components/CurrencyLogo'
@@ -22,7 +23,7 @@ import {useActiveWeb3React} from '../../hooks'
 import {useCurrency} from '../../hooks/Tokens'
 
 import {useTransactionAdder} from '../../state/transactions/hooks'
-import {StyledInternalLink, TYPE} from '../../theme'
+import {StyledInternalLink} from '../../theme'
 import {calculateSlippageAmount, getPylonRouterContract} from '../../utils'
 //calculateGasMargin,
 import {currencyId} from '../../utils/currencyId'
@@ -41,6 +42,10 @@ import {RouteComponentProps} from "react-router-dom";
 import LearnIcon from '../../components/LearnIcon'
 import {usePylonConstants} from "../../data/PylonData";
 import styled from 'styled-components'
+import BigNumberJs from "bignumber.js";
+import CapacityIndicator from "../../components/CapacityIndicator";
+import { StyledWarningIcon } from '../AddLiquidity/ConfirmAddModalBottom'
+import { useBatchPrecompileContract, useTokenContract } from '../../hooks/useContract'
 
 export const PercButton = styled.button<{ width: string }>`
   padding: 0.5rem 1rem;
@@ -84,7 +89,7 @@ export default function RemoveProLiquidity({
 
   // burn state
   const { independentField, typedValue } = useBurnState()
-  const { pylon, parsedAmounts, error } = useDerivedPylonBurnInfo(currencyA ?? undefined, currencyB ?? undefined, isFloat, sync)
+  const { pylon, parsedAmounts, error, healthFactor, gamma, burnInfo } = useDerivedPylonBurnInfo(currencyA ?? undefined, currencyB ?? undefined, isFloat, sync)
   const { onUserInput: _onUserInput } = useBurnActionHandlers()
   const isValid = !error
 
@@ -97,6 +102,9 @@ export default function RemoveProLiquidity({
   const [txHash, setTxHash] = useState<string>('')
   const [deadline] = useUserDeadline()
   const [allowedSlippage] = useUserSlippageTolerance()
+
+  const batchContract = useBatchPrecompileContract()
+  const tokenContract = useTokenContract(parsedAmounts[Field.LIQUIDITY]?.token?.address)
 
   const formattedAmounts = {
     [Field.LIQUIDITY_PERCENT]: parsedAmounts[Field.LIQUIDITY_PERCENT].equalTo('0')
@@ -125,69 +133,6 @@ export default function RemoveProLiquidity({
   )
   const pylonConstants = usePylonConstants()
   const blockNumber = useBlockNumber()
-  // async function onAttemptToApprove() {
-  //   if (!pairContract || !pylon?.pair || !library) throw new Error('missing dependencies')
-  //   const liquidityAmount = parsedAmounts[Field.LIQUIDITY]
-  //   if (!liquidityAmount) throw new Error('missing liquidity amount')
-  //   // try to gather a signature for permission
-  //   const nonce = await pairContract.nonces(account)
-  //
-  //   const deadlineForSignature: number = Math.ceil(Date.now() / 1000) + deadline
-  //
-  //   const EIP712Domain = [
-  //     { name: 'name', type: 'string' },
-  //     { name: 'version', type: 'string' },
-  //     { name: 'chainId', type: 'uint256' },
-  //     { name: 'verifyingContract', type: 'address' }
-  //   ]
-  //   const domain = {
-  //     name: 'Uniswap V2', //correct domain name!!!!!!!!!!!!!!!!!!!!!!!
-  //     version: '1',
-  //     chainId: chainId,
-  //     verifyingContract: pylon.pair.liquidityToken.address
-  //   }
-  //   const Permit = [
-  //     { name: 'owner', type: 'address' },
-  //     { name: 'spender', type: 'address' },
-  //     { name: 'value', type: 'uint256' },
-  //     { name: 'nonce', type: 'uint256' },
-  //     { name: 'deadline', type: 'uint256' }
-  //   ]
-  //   const message = {
-  //     owner: account,
-  //     spender: ROUTER_ADDRESS,
-  //     value: liquidityAmount.raw.toString(),
-  //     nonce: nonce.toHexString(),
-  //     deadline: deadlineForSignature
-  //   }
-  //   const data = JSON.stringify({
-  //     types: {
-  //       EIP712Domain,
-  //       Permit
-  //     },
-  //     domain,
-  //     primaryType: 'Permit',
-  //     message
-  //   })
-  //
-  //   library
-  //       .send('eth_signTypedData_v4', [account, data])
-  //       .then(splitSignature)
-  //       .then(signature => {
-  //         setSignatureData({
-  //           v: signature.v,
-  //           r: signature.r,
-  //           s: signature.s,
-  //           deadline: deadlineForSignature
-  //         })
-  //       })
-  //       .catch(error => {
-  //         // for all errors other than 4001 (EIP-1193 user rejected request), fall back to manual approve
-  //         if (error?.code !== 4001) {
-  //           approveCallback()
-  //         }
-  //       })
-  // }
 
   // wrapped onUserInput to clear signatures
   const onUserInput = useCallback(
@@ -210,6 +155,7 @@ export default function RemoveProLiquidity({
 
   // tx sending
   const addTransaction = useTransactionAdder()
+  const [errorTx, setErrorTx] = useState<string>('')
   async function onRemove() {
     if (!chainId || !library || !account) throw new Error('missing dependencies')
     const { [Field.CURRENCY_A]: currencyAmountA, [Field.CURRENCY_B]: currencyAmountB } = parsedAmounts
@@ -235,7 +181,7 @@ export default function RemoveProLiquidity({
 
     let methodNames: string[], args: (string  | boolean | number)[]
     // we have approval, use normal remove liquidity
-    if (approval === ApprovalState.APPROVED) {
+    if (approval === ApprovalState.APPROVED || chainId === 1285) {
       // removeLiquidityETH
       if(sync) {
         if (oneCurrencyIsETH) {
@@ -243,7 +189,7 @@ export default function RemoveProLiquidity({
           args = [
             currencyBIsETH ? tokenA.address : tokenB.address,
             liquidityAmount.raw.toString(),
-            '1', //amountsMin[currencyBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(),
+            amountsMin[currencyBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(),
             !currencyBIsETH,
             !isFloat,
             account,
@@ -257,7 +203,7 @@ export default function RemoveProLiquidity({
             tokenA.address,
             tokenB.address,
             liquidityAmount.raw.toString(),
-            "1", //amountsMin[Field.CURRENCY_A].toString(),
+            amountsMin[Field.CURRENCY_A].toString(),
             !isFloat,
             account,
             deadlineFromNow
@@ -272,13 +218,14 @@ export default function RemoveProLiquidity({
           args = [
             currencyBIsETH ? tokenA.address : tokenB.address,
             liquidityAmount.raw.toString(),
-            '1',//amountsMin[currencyBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(),
-            '1',//amountsMin[currencyBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(),
+            amountsMin[currencyBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(),
+            amountsMin[currencyBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(),
             !currencyBIsETH,
             !isFloat,
             account,
             deadlineFromNow
           ]
+          console.log("args", args)
         }
         // removeLiquidity
         else {
@@ -315,6 +262,11 @@ export default function RemoveProLiquidity({
         BigNumber.isBigNumber(safeGasEstimate)
     )
 
+    const approvalCallData = tokenContract.interface.encodeFunctionData('approve', [router.address, MaxUint256])
+    const callData = router.interface.encodeFunctionData((
+      sync ? oneCurrencyIsETH ? 'removeLiquiditySyncETH' : 'removeLiquiditySync' : 
+      oneCurrencyIsETH ? 'removeLiquidityAsyncETH' : 'removeLiquidityAsync'), args)
+
     // all estimations failed...
     if (indexOfSuccessfulEstimation === -1) {
       console.error('This transaction would fail. Please contact support.')
@@ -323,34 +275,43 @@ export default function RemoveProLiquidity({
       const safeGasEstimate = safeGasEstimates[indexOfSuccessfulEstimation]
 
       setAttemptingTxn(true)
-      await router[methodName](...args, {
+      await (chainId === 1285 ?
+        batchContract.batchAll(
+          [tokenContract.address, router.address], 
+          ["000000000000000000", "000000000000000000"],
+          [approvalCallData, callData],
+          []
+        )
+        :
+        router[methodName](...args, {
         gasLimit: safeGasEstimate
-      })
+      }))
           .then((response: TransactionResponse) => {
             setAttemptingTxn(false)
 
             addTransaction(response, {
               summary:
-                  sync ? 'Remove Sync' : 'Remove Async' +
-                  parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
-                  ' ' +
-                  currencyA?.symbol +
-                  ' and ' +
-                  parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
-                  ' ' +
-                  currencyB?.symbol
+                  sync ? 'Remove Sync ' : 'Remove Async ' +
+                      parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
+                      ' ' +
+                      currencyA?.symbol +
+                      ' and ' +
+                      parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
+                      ' ' +
+                      currencyB?.symbol
             })
 
             setTxHash(response.hash)
 
             ReactGA.event({
               category: 'Liquidity',
-              action: 'Remove Sync',
+              action: `Remove ${sync ? 'Sync' : 'Async'} liquidity`,
               label: [currencyA?.symbol, currencyB?.symbol].join('/')
             })
           })
-          .catch((error: Error) => {
+          .catch((error) => {
             setAttemptingTxn(false)
+            setErrorTx(error?.data?.message);
             // we only care if the error is something _other_ than the user rejected the tx
             console.error(error)
           })
@@ -385,10 +346,10 @@ export default function RemoveProLiquidity({
             </RowFixed>
           </RowBetween>
 
-          <TYPE.italic fontSize={12} color={theme.text2} textAlign="left" padding={'12px 0 0 0'}>
+          <Text fontSize={12} textAlign="left" padding={"12px 0 0 0 "} color={theme.whiteHalf}>
             {`Output is estimated. If the price changes by more than ${allowedSlippage /
             100}% your transaction will revert.`}
-          </TYPE.italic>
+          </Text>
         </AutoColumn>
     )
   }
@@ -398,7 +359,7 @@ export default function RemoveProLiquidity({
         <>
           <RowBetween>
             <Text color={theme.text2} fontWeight={400} fontSize={16}>
-              {'UNI ' + currencyA?.symbol + '/' + currencyB?.symbol} Burned
+              {'ZPT ' + currencyA?.symbol + '/' + currencyB?.symbol} Burned
             </Text>
             <RowFixed>
               <DoubleCurrencyLogo currency0={currencyA} currency1={currencyB} margin={true} />
@@ -425,8 +386,26 @@ export default function RemoveProLiquidity({
                 </RowBetween>
               </>
           )}
-          <ButtonPrimary disabled={!(approval === ApprovalState.APPROVED || signatureData !== null)} onClick={onRemove}>
-            <Text fontWeight={400} fontSize={20}>
+          {errorTx && (
+          <RowBetween mt={10}>
+            <StyledWarningIcon />
+            <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{errorTx}</span>
+          </RowBetween>
+          )}
+          {(burnInfo.blocked || burnInfo.asyncBlocked) && (
+          <RowBetween mt={10}>
+            <StyledWarningIcon />
+            <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{"Transaction is likely to fail so is currently blocked. Try in a few minutes"}</span>
+          </RowBetween>
+          )}
+          {(burnInfo.deltaApplied) && (
+          <RowBetween mt={10}>
+            <StyledWarningIcon />
+            <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{"We estimate a high fee for this transaction. Try in a few minutes"}</span>
+          </RowBetween>
+          )}
+          <ButtonPrimary disabled={chainId !== 1285 && (!(approval === ApprovalState.APPROVED || signatureData !== null) || burnInfo.blocked || burnInfo.asyncBlocked || burnInfo.deltaApplied)} onClick={onRemove}>
+            <Text fontWeight={400} fontSize={18}>
               Confirm
             </Text>
           </ButtonPrimary>
@@ -448,14 +427,14 @@ export default function RemoveProLiquidity({
   const oneCurrencyIsETH = currencyA === DEV || currencyB === DEV
   const firstCurrencyIsETH = currencyA === DEV
   const oneCurrencyIsWDEV = Boolean(
-    chainId &&
+      chainId &&
       ((currencyA && currencyEquals(WDEV[chainId], currencyA)) ||
-        (currencyB && currencyEquals(WDEV[chainId], currencyB)))
+          (currencyB && currencyEquals(WDEV[chainId], currencyB)))
   )
   const firstCurrencyIsWDEV = Boolean(
-    chainId &&
+      chainId &&
       ((currencyA && currencyEquals(WDEV[chainId], currencyA))
-    )
+      )
   )
 
   const handleSelectCurrencyA = useCallback(
@@ -481,6 +460,7 @@ export default function RemoveProLiquidity({
 
   const handleDismissConfirmation = useCallback(() => {
     setShowConfirm(false)
+    setErrorTx('')
     setSignatureData(null) // important that we clear signature data to avoid bad sigs
     // if there was a tx hash, we want to clear the input
     if (txHash) {
@@ -517,7 +497,7 @@ export default function RemoveProLiquidity({
               <TransparentCard style={{padding: '0px'}}>
                 <AutoColumn gap="20px">
                   <Flex justifyContent={'center'}>
-                  <div style={{display: 'flex', background: theme.darkMode ? '#482537' : theme.darkerContrastPink, borderRadius: '17px', justifyContent: 'center', height: '33px'}}>
+                    <div style={{display: 'flex', background: theme.darkMode ? '#482537' : theme.darkerContrastPink, borderRadius: '17px', justifyContent: 'center', height: '33px'}}>
 
                       <ButtonAnchor borderRadius={'12px'} padding={'5px 15px'}
                                     style={{backgroundColor: !showDetailed ? theme.slippageActive : 'transparent', fontWeight: 500, fontSize: '13px', color: !showDetailed ? '#fff' : theme.slippageActive}}
@@ -563,16 +543,16 @@ export default function RemoveProLiquidity({
                 <div style={{display: 'flex', borderRadius: '17px', padding: '5px', background: theme.liquidityBg}}>
 
                   <ButtonAnchor borderRadius={'12px'} padding={'10px'}
-                                style={{backgroundColor: sync ? theme.badgeSmall : 'transparent', 
-                                fontWeight: 400, fontSize: '13px', 
-                                color: sync ? theme.text1 : theme.meatPinkBrown}}
+                                style={{backgroundColor: sync ? theme.badgeSmall : 'transparent',
+                                  fontWeight: 400, fontSize: '13px',
+                                  color: sync ? theme.text1 : theme.meatPinkBrown}}
                                 onClick={()=> {setSync(true)}}>
                     OFF
                   </ButtonAnchor>
                   <ButtonAnchor borderRadius={'12px'} padding={'10px'}
                                 style={{backgroundColor: !sync ? theme.badgeSmall : 'transparent',
-                                fontWeight: 400, fontSize: '13px', 
-                                color: !sync ? theme.text1 : theme.meatPinkBrown}}
+                                  fontWeight: 400, fontSize: '13px',
+                                  color: !sync ? theme.text1 : theme.meatPinkBrown}}
                                 onClick={()=> {
                                   setSync(false)}}>
                     ON
@@ -583,7 +563,7 @@ export default function RemoveProLiquidity({
                   <>
                     <LightPinkCard>
                       <AutoColumn gap="10px">
-                      <span style={{width: '100%', fontSize: '13px'}}>{'YOU WILL RECEIVE'}</span>
+                        <span style={{width: '100%', fontSize: '13px'}}>{'YOU WILL RECEIVE'}</span>
                         {(!sync || isFloat) && <RowBetween>
                           <RowFixed>
                             <CurrencyLogo currency={currencyA} style={{ marginRight: '12px' }} />
@@ -616,7 +596,7 @@ export default function RemoveProLiquidity({
                                           currencyB === DEV ? WDEV[chainId].address : currencyIdB
                                       }/${isFloat ? "FLOAT" : "STABLE"}`}
                                   >
-                                    Receive WDEV
+                                    Receive wMOVR
                                   </StyledInternalLink>
                               ) : oneCurrencyIsWDEV ? (
                                   <StyledInternalLink
@@ -624,7 +604,7 @@ export default function RemoveProLiquidity({
                                           currencyA && currencyEquals(currencyA, WDEV[chainId]) ? 'ETH' : currencyIdA
                                       }/${currencyB && currencyEquals(currencyB, WDEV[chainId]) ? 'ETH' : currencyIdB}/${isFloat ? "FLOAT" : "STABLE"}`}
                                   >
-                                    Receive DEV
+                                    Receive MOVR
                                   </StyledInternalLink>
                               ) : null}
                             </RowBetween>
@@ -700,12 +680,26 @@ export default function RemoveProLiquidity({
                     </RowBetween>
                   </div>
               )}
+              <div style={{marginBottom: 32}}>
+                <CapacityIndicator
+                    hoverPage='removeLiq'
+                    gamma={new BigNumberJs(gamma).div(new BigNumberJs(10).pow(18))}
+                    health={healthFactor}
+                    isFloat={isFloat}
+                    slashingOmega={new BigNumberJs(burnInfo?.omegaSlashingPercentage.toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
+                    blocked={burnInfo?.blocked || burnInfo?.asyncBlocked}
+                    feePercentage={new BigNumberJs(burnInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
+                    isDeltaGamma={burnInfo?.deltaApplied}
+                    slippage={new BigNumberJs((burnInfo?.slippage ?? "0").toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
+                    reservesPTU={new BigNumberJs((burnInfo?.reservesPTU ?? "0").toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
+                />
+              </div>
               <div style={{ position: 'relative' }}>
                 {!account ? (
                     <ButtonLight onClick={toggleWalletModal}>Connect Wallet</ButtonLight>
                 ) : (
                     <RowBetween style={{paddingBottom: '10px'}}>
-                      <ButtonConfirmed
+                      {chainId !== 1285 && (<ButtonConfirmed
                           onClick={() => approveCallback()}
                           confirmed={approval === ApprovalState.APPROVED || signatureData !== null}
                           disabled={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
@@ -720,12 +714,12 @@ export default function RemoveProLiquidity({
                         ) : (
                             'Approve'
                         )}
-                      </ButtonConfirmed>
+                      </ButtonConfirmed>)}
                       <ButtonError
                           onClick={() => {
                             setShowConfirm(true)
                           }}
-                          disabled={!isValid || (signatureData === null && approval !== ApprovalState.APPROVED)}
+                          disabled={chainId !== 1285 ? (!isValid || (signatureData === null && approval !== ApprovalState.APPROVED)) : !isValid}
                           error={!isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]}
                       >
                         <Text fontSize={16} fontWeight={400}>
@@ -736,6 +730,9 @@ export default function RemoveProLiquidity({
                 )}
               </div>
             </AutoColumn>
+
+
+
           </WrapperWithPadding>
         </AppBodySmaller>
 

@@ -42,6 +42,7 @@ export const ButtonPrimary = styled(Base)`
   background-color: ${({ theme }) => theme.bg8};
   font-weight: 500;
   height: 60px;
+  font-size: 18px;
   color: white;
   &:hover {
     background-color: ${({ theme }) => theme.colors.input};
@@ -74,10 +75,10 @@ export const ButtonPositionsMobile = styled(Base)`
     background-color: ${({ theme }) => darken(0.05, theme.primary1)};
   }
   &:hover {
-    background-color: ${({ theme }) => theme.navigationTabs};
+    background-color: ${({ theme }) => theme.changeButtonHover};
   }
   &:active {
-    background-color: ${({ theme }) => theme.navigationBorder};
+    background-color: ${({ theme }) => theme.changeButtonHover};
   }
   &:disabled {
     background-color: ${({ theme, altDisabledStyle }) => (altDisabledStyle ? theme.primary1 : '#36195A')};
@@ -156,7 +157,7 @@ export const ButtonSecondary = styled(Base)`
     background-color: ${({ theme }) => theme.darkMode ? theme.bg12 : theme.navigationBorder};
   }
   &:disabled {
-    background-color: ${({ theme }) => theme.primary5};
+    background-color: ${({ theme }) => theme.opacitySmall};
     opacity: 50%;
     cursor: auto;
   }
@@ -188,16 +189,24 @@ export const ButtonOutlined = styled(Base)`
   border: 1px solid rgba(89, 73, 110, 0.4);
   background-color: transparent;
   color: ${({ theme }) => theme.text1};
-
-  &:focus {
-    box-shadow: 0 0 0 1px ${({ theme }) => theme.bg4};
-  }
+  
   &:hover {
     background-color: ${({ theme }) => theme.outlinedHover};
-    color: ${({ theme }) => theme.text1} !important;
+    color: ${({ theme }) => theme.text1};
   }
-  &:active {
-    box-shadow: 0 0 0 1px ${({ theme }) => theme.bg4};
+  &:disabled {
+    opacity: 50%;
+    cursor: auto;
+  }
+`
+
+export const ButtonLinkGet = styled(Base)`
+  border: 1px solid rgba(89, 73, 110, 0.4);
+  background-color: ${({ theme }) => theme.darkMode ? 'rgba(202, 144, 187, 0.07)' : 'rgba(158, 77, 134, 0.07)'};
+  color: ${({ theme }) => theme.darkMode ? theme.pinkGamma : '#9E4D86'};
+  
+  &:hover {
+    background-color: ${({ theme }) => theme.darkMode ? 'rgba(202, 144, 187, 0.17)' : 'rgba(158, 77, 134, 0.17)'};
   }
   &:disabled {
     opacity: 50%;
@@ -211,7 +220,7 @@ export const ButtonLighter = styled(Base)`
   color: ${({ theme }) => theme.text1};
 
   &:hover {
-    background-color: ${({ theme }) => theme.bg11};
+    background-color: ${({ theme }) => theme.opacitySmall};
   }
   &:disabled {
     opacity: 50%;
@@ -223,14 +232,10 @@ export const ButtonPinkGamma = styled(Base)`
   border: none;
   font-weight: 500;
   background-color: ${({ theme }) => theme.tableButton};
-  color: ${({ theme }) => theme.pinkGamma};
+  color: ${({ theme }) => theme.darkMode ? '#CA90BB' : '#9E4D86'};
 
   &:hover {
-    path {
-      stroke: #fff;
-    }
-    background-color: ${({ theme }) => theme.pinkGamma};
-    color: #fff !important;
+    background-color: ${({ theme }) => theme.darkMode ? 'rgba(202, 144, 187, 0.2)' : 'rgba(158, 77, 134, 0.2)'};
   }
   &:disabled {
     opacity: 50%;
@@ -341,6 +346,14 @@ export function ButtonError({ error, ...rest }: { error?: boolean } & ButtonProp
     return <ButtonErrorStyle {...rest} />
   } else {
     return <ButtonPrimary {...rest} />
+  }
+}
+
+export function ButtonErrorSecondary({ error, ...rest }: { error?: boolean } & ButtonProps) {
+  if (error) {
+    return <ButtonSecondary {...rest} />
+  } else {
+    return <ButtonSecondary {...rest} />
   }
 }
 

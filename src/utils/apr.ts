@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js'
 import lpAprs from '..//constants/lpAprs.json'
+import {EarningTokenInfo} from "../state/types";
 
-const BSC_BLOCK_TIME = 3
+const BSC_BLOCK_TIME = 13.5
 export const CAKE_PER_BLOCK = 40
 export const BLOCKS_PER_YEAR = (60 / BSC_BLOCK_TIME) * 60 * 24 * 365 // 10512000
 export const CAKE_PER_YEAR = CAKE_PER_BLOCK * BLOCKS_PER_YEAR
@@ -16,14 +17,18 @@ export const CAKE_PER_YEAR = CAKE_PER_BLOCK * BLOCKS_PER_YEAR
  */
 export const getPoolApr = (
   stakingTokenPrice: number,
-  rewardTokenPrice: number[],
-  totalStaked: number,
-  tokenPerBlock: number,
+  rewardTokenPrice: EarningTokenInfo[],
+  // totalStaked: number,
+  // tokenPerBlock: number,
 ): number => {
-  const totalRewardPricePerYear = new BigNumber(rewardTokenPrice[0]).times(tokenPerBlock).times(BLOCKS_PER_YEAR)
-  // To fix ^ 
-  const totalStakingTokenInPool = new BigNumber(stakingTokenPrice).times(totalStaked)
-  const apr = totalRewardPricePerYear.div(totalStakingTokenInPool).times(100)
+    // const totalRewards = tokenPerBlock * BLOCKS_PER_YEAR
+  const totalRewardPricePerYear = new BigNumber(rewardTokenPrice.map(t => t.blockRewardPrice).reduce((o, n) => {
+    return o + n
+  }, 0)).multipliedBy(BLOCKS_PER_YEAR)
+  // To fix ^
+  const totalStakingTokenInPool = new BigNumber(stakingTokenPrice)//.times(totalStaked)
+
+  const apr = new BigNumber(totalRewardPricePerYear).div(totalStakingTokenInPool).times(100)
   return apr.isNaN() || !apr.isFinite() ? null : apr.toNumber()
 }
 

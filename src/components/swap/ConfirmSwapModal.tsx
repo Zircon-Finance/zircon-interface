@@ -33,7 +33,8 @@ export default function ConfirmSwapModal({
   swapErrorMessage,
   isOpen,
   attemptingTxn,
-  txHash
+  txHash,
+  outputCurrency
 }: {
   isOpen: boolean
   trade: Trade | undefined
@@ -46,6 +47,7 @@ export default function ConfirmSwapModal({
   onConfirm: () => void
   swapErrorMessage: string | undefined
   onDismiss: () => void
+  outputCurrency: string | undefined
 }) {
   const showAcceptChanges = useMemo(
     () => Boolean(trade && originalTrade && tradeMeaningfullyDiffers(trade, originalTrade)),
@@ -104,6 +106,8 @@ export default function ConfirmSwapModal({
       hash={txHash}
       content={confirmationContent}
       pendingText={pendingText}
+      outputCurrency={outputCurrency}
+      smallClose={outputCurrency !== 'ETH'}
     />
   )
 }

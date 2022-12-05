@@ -12,6 +12,7 @@ import { BadgeSmall } from '../../../../components/Header'
 import { useWindowDimensions } from '../../../../hooks'
 import { Flex } from 'rebass'
 import { SerializedToken } from '../../../../constants/types'
+import DaysLeftBar from '../../../../components/DaysLeftBar'
 
 export interface FarmProps {
   label: string
@@ -21,6 +22,10 @@ export interface FarmProps {
   isAnchor: boolean
   isClassic: boolean
   earningToken: SerializedToken[]
+  isFinished: boolean
+  endBlock: number
+  startBlock: number
+  currentBlock: any
 }
 
 const Container = styled.div`
@@ -28,7 +33,6 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  letter-spacing: 0.05em;
 
 `
 
@@ -36,48 +40,69 @@ const TokenWrapper = styled.div`
   padding-right: 8px;
 `
 
-const Farm: React.FunctionComponent<FarmProps> = ({ token, quoteToken, label, pid, isAnchor, isClassic }) => {
-  // const { stakedBalance } = useFarmUser(pid)
-  // const { t } = useTranslation()
-  // const rawStakedBalance = getBalanceNumber(stakedBalance)
-
-  // const handleRenderFarming = (): JSX.Element => {
-  //   // if (rawStakedBalance) {
-  //   //   return (
-  //   //     <Text color="secondary" fontWeight={300} fontSize="12px" bold textTransform="uppercase">
-  //   //       {t('Farming')}
-  //   //     </Text>
-  //   //   )
-  //   // }
-
-  //   return null
-  // }
-
+const Farm: React.FunctionComponent<FarmProps> = ({ token, isFinished, quoteToken, isAnchor, isClassic, endBlock, currentBlock, startBlock }) => {
   const {width} = useWindowDimensions()
   const theme = useTheme()
   return (
     <Container>
       <TokenWrapper>
         {isClassic ? (
-        <DoubleCurrencyLogo currency0={token} currency1={quoteToken} margin={false} size={width >= 500 ? 25 : 30} />
+          <DoubleCurrencyLogo
+            currency0={token}
+            currency1={quoteToken}
+            margin={false}
+            size={width >= 500 ? 25 : 30}
+          />
         ) : (
-        <DoubleCurrencyLogo currency0={!isAnchor ? token : quoteToken} currency1={null} margin={false} size={30} />
+          <DoubleCurrencyLogo
+            currency0={!isAnchor ? token : quoteToken}
+            currency1={null}
+            margin={false}
+            size={30}
+          />
         )}
-        </TokenWrapper>
-        <>
-          <div>
-            <>
-            <Flex>
-              <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', marginRight: '5px',  display: 'flex', alignItems: 'center'}}>
-              <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{!isClassic && token.symbol} </span>{isClassic ? 'CLASSIC' :!isAnchor ? 'FLOAT' : 'ANCHOR'}
+      </TokenWrapper>
+      <>
+        <div>
+          <Flex flexDirection={'column'}>
+            <Flex flexDirection={"row"} style={{ rowGap: "5px", alignItems: 'center' }}>
+              <BadgeSmall
+                style={{
+                  fontSize: "13px",
+                  height: "23px",
+                  alignSelf: "center",
+                  marginLeft: "0px",
+                  marginRight: "5px",
+                  display: "flex",
+                  alignItems: "center",
+                  width: 'max-content',
+                }}
+              >
+                <span
+                  style={{
+                    color: theme.darkMode ? theme.text1 : "#080506",
+                    fontSize: "16px",
+                    marginRight: "3px",
+                    letterSpacing: "0",
+                  }}
+                >
+                  {!isClassic && (!isAnchor ? token.symbol : quoteToken.symbol)}{" "}
+                  {isClassic ? "CLASSIC" : !isAnchor ? "Float" : "Stable"}
+                </span>
               </BadgeSmall>
-              <Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{`${token.symbol}/${quoteToken.symbol}`}</Text>
+              <Text
+                color={theme.whiteHalf}
+                style={{ minWidth: "max-content" }}
+                fontWeight={400}
+                fontSize={"13px"}
+              >{`${token.symbol}-${quoteToken.symbol}`}</Text>
             </Flex>
-            </>
-          </div>
-        </>
+            {!isFinished && <DaysLeftBar viewMode='card' startBlock={startBlock} endBlock={endBlock} currentBlock={currentBlock} />}
+          </Flex>
+        </div>
+      </>
     </Container>
-  )
+  );
 }
 
 export default Farm

@@ -1,7 +1,7 @@
 import {
     JSBI, Pair, Percent, Pylon, PylonFactory,
 } from 'zircon-sdk'
-import React, { useState } from 'react'
+import React, {useState} from 'react'
 import { ChevronDown, ChevronUp } from 'react-feather'
 import { Link } from 'react-router-dom'
 import { Flex, Text } from 'rebass'
@@ -25,11 +25,15 @@ import { Dots } from '../swap/styleds'
 //   useVirtualAnchorBalance,
 // } from "../../data/PylonData";
 import { Separator } from '../SearchModal/styleds'
-import {getLiquidityValues} from "../../state/burn/hooks";
-import {useLastK, usePylonInfo} from "../../data/PylonData";
+import  {useDerivedPylonBurnInfo} from "../../state/burn/hooks";
+import BigNumberJs from "bignumber.js";
+import CapacityIndicatorSmall from "../CapacityIndicatorSmall";
 
 export const FixedHeightRow = styled(RowBetween)`
   height: 24px;
+`
+export const FixedHeightRow2 = styled(RowBetween)`
+  height: 80px;
 `
 
 export const HoverCard = styled(Card)`
@@ -307,42 +311,9 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
     const userPoolBalance = useTokenBalance(account ?? undefined, isFloat ? pylon.floatLiquidityToken : pylon.anchorLiquidityToken)
     const formattedPoolBalance = userPoolBalance.toSignificant(4) as unknown as number
 
-    const pylonInfo = usePylonInfo(pylon?.address)
-    const pylonPoolBalance = useTokenBalance(pylon?.address, pylon?.pair.liquidityToken)
-    const ptTotalSupply = useTotalSupply(isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken)
-    const totalSupply = useTotalSupply(pylon?.pair.liquidityToken)
-    const lastK = useLastK(pylon ? Pair.getAddress(pylon.token0, pylon.token1) : "");
+    const {burnInfo, healthFactor, gamma, parsedAmounts} = useDerivedPylonBurnInfo(currency0 ?? undefined, currency1 ?? undefined, isFloat, true, "100")
 
-    const [token0Deposited, token1Deposited] =
-        !!pylon &&
-        !!pylonInfo &&
-        !!pylonConstants &&
-        !!userPoolBalance &&
-        !!pylonPoolBalance &&
-        !!totalSupply &&
-        !!ptTotalSupply &&
-        JSBI.greaterThanOrEqual(ptTotalSupply.raw, userPoolBalance.raw) ?
-            getLiquidityValues(pylon, userPoolBalance, pylonPoolBalance,
-                totalSupply, ptTotalSupply,
-                pylonInfo, pylonConstants, blockNumber, lastK, true, isFloat) :
-            [undefined, undefined]
-
-    // const [token0Deposited, token1Deposited] = [undefined, undefined]
-    //   !!pylon &&
-    //   !!userPoolBalance &&
-    //   !!pylonPoolBalance &&
-    //   !!totalSupply &&
-    //   !!ptTotalSupply &&
-    //   !!userPoolBalance &&
-    // //   // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
-    // //
-    // JSBI.greaterThanOrEqual(ptTotalSupply.raw, userPoolBalance.raw)
-    //     ? [
-    //      getLiquidityValues(),
-    //         isFloat ? new TokenAmount(totalSupply.token, BigInt(0)) :
-    //             pylon.burnAnchor(totalSupply, ptTotalSupply, userPoolBalance, BigInt(vab), BigInt(vfb), BigInt(gamma), BigInt(lastK), pylonPoolBalance, BigInt(lpt))
-    //       ]
-    //     : [undefined, undefined]
+    const [token0Deposited, token1Deposited] = !burnInfo ? [undefined, undefined] : [parsedAmounts["CURRENCY_A"], parsedAmounts["CURRENCY_B"]]
 
     const { width } = useWindowDimensions();
 
@@ -360,33 +331,7 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
                                         {currency0.symbol}/{currency1.symbol}
                                     </Text>
                                 </> }
-                            {/*<div style={{display: 'flex', flexDirection: 'row',marginLeft: 20}}>*/}
-                            {/*    {isFloat ? (*/}
-                            {/*        <>*/}
-                            {/*            <RowFixed>*/}
-                            {/*                <Text color={theme.whiteHalf} fontWeight={400} fontSize={16} style={{display: 'flex', alignItems: 'center', marginLeft: 30}}>*/}
-                            {/*                    <BadgeSmall>{currency0.symbol} {'Float'}</BadgeSmall>*/}
-                            {/*                    {!currency0 || !currency1 ? <Dots>Loading</Dots> : `${currency0.symbol}/${currency1.symbol}`}*/}
-                            {/*                </Text>*/}
-                            {/*                /!*<BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', marginRight: '5px',  display: 'flex', alignItems: 'center'}}>*!/*/}
-                            {/*                /!*    <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{currency0.symbol} {'Float'}</span>*!/*/}
-                            {/*                /!*</BadgeSmall>*!/*/}
-                            {/*                /!*<Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{` - ${currency1.symbol}`}</Text>*!/*/}
-                            {/*            </RowFixed>*/}
-                            {/*        </>*/}
-                            {/*    ) : (*/}
-                            {/*        <>*/}
-                            {/*            <Flex>*/}
-                            {/*                /!*<Text color={theme.text1} style={{minWidth: 'max-content'}} fontWeight={400}>{currency0.symbol} -</Text>*!/*/}
-                            {/*                <BadgeSmall style={{fontSize: '13px', height: '23px', alignSelf: 'center', marginLeft: '0px', marginRight: '5px',  display: 'flex', alignItems: 'center'}}>*/}
-                            {/*                    <span style={{color: theme.text1, fontSize: '16px', marginRight: '3px'}}>{`${currency1.symbol} Stable`}</span>*/}
-                            {/*                </BadgeSmall>*/}
-                            {/*            </Flex>*/}
-                            {/*        </>*/}
-                            {/*    )*/}
-                            {/*    }*/}
-                            {/*    <span style={{color: theme.whiteHalf, fontSize: '16px', marginRight: '3px', marginTop: '3px'}}>{`${currency0.symbol}-${currency1.symbol}`}</span>*/}
-                            {/*</div>*/}
+
                         </RowFixed>
                         <RowFixed>
                             { !showMore &&
@@ -394,14 +339,12 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
                                 {userPoolBalance ?  formattedPoolBalance < 0.000000001 ? '0.000...' + String(formattedPoolBalance).slice(-4) : formattedPoolBalance : '-'}
                             </Text>
                             }
-                            {
-                                width > 500 && (
-                                    showMore ? (
-                                        <ChevronUp size="20" style={{ marginLeft: '10px' }} />
-                                    ) : (
-                                        <ChevronDown size="20" style={{ marginLeft: '10px' }} />
-                                    ))
-                            }
+                            {width > 500 && (
+                                showMore ? (
+                                    <ChevronUp size="20" style={{ marginLeft: '10px' }} />
+                                ) : (
+                                    <ChevronDown size="20" style={{ marginLeft: '10px' }} />
+                                ))}
                         </RowFixed>
                     </FixedHeightRow>
                 </div>
@@ -412,7 +355,7 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
                             <FixedHeightRow>
                                 <RowFixed>
                                     <Text fontSize={16} fontWeight={400}>
-                                        Your pool tokens:
+                                        Your {isFloat? "Float" : "Stable"} pool tokens:
                                     </Text>
                                 </RowFixed>
                                 <RowFixed>
@@ -422,49 +365,56 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
                                 </RowFixed>
                             </FixedHeightRow>
                             <Separator style={{margin: '10px 0 10px 0'}} />
-                            <FixedHeightRow>
-                                <RowFixed>
-                                    <Text fontSize={13} fontWeight={400}>
-                                        Pooled {currency0.symbol}:
-                                    </Text>
-                                </RowFixed>
-                                {token0Deposited ? (
+                            {isFloat ? <FixedHeightRow>
                                     <RowFixed>
-                                        <Text fontSize={13} fontWeight={400} marginLeft={'6px'}>
-                                            {token0Deposited?.toSignificant(6)}
+                                        <Text fontSize={13} fontWeight={400}>
+                                            Pooled {currency0.symbol}:
                                         </Text>
-                                        <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={currency0} />
                                     </RowFixed>
-                                ) : (
-                                    '-'
-                                )}
-                            </FixedHeightRow>
-                            <FixedHeightRow>
+                                    {token0Deposited ? (
+                                        <RowFixed>
+                                            <Text fontSize={13} fontWeight={400} marginLeft={'6px'}>
+                                                {token0Deposited?.toSignificant(6)}
+                                            </Text>
+                                            <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={currency0} />
+                                        </RowFixed>
+                                    ) : (
+                                        '-'
+                                    )}
+                                </FixedHeightRow> :
+                                <FixedHeightRow>
+                                    <RowFixed>
+                                        <Text fontSize={13} fontWeight={400}>
+                                            Pooled {currency1.symbol}:
+                                        </Text>
+                                    </RowFixed>
+                                    {token1Deposited ? (
+                                        <RowFixed>
+                                            <Text fontSize={13} fontWeight={400} marginLeft={'6px'}>
+                                                {token1Deposited?.toSignificant(6)}
+                                            </Text>
+                                            <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={currency1} />
+                                        </RowFixed>
+                                    ) : (
+                                        '-'
+                                    )}
+                                </FixedHeightRow> }
+                            <FixedHeightRow style={{alignItems: 'center'}}>
                                 <RowFixed>
                                     <Text fontSize={13} fontWeight={400}>
-                                        Pooled {currency1.symbol}:
+                                        {isFloat ? 'Divergence' : 'Health Factor'}:
                                     </Text>
                                 </RowFixed>
-                                {token1Deposited ? (
+                                {burnInfo ? (
                                     <RowFixed>
-                                        <Text fontSize={13} fontWeight={400} marginLeft={'6px'}>
-                                            {token1Deposited?.toSignificant(6)}
-                                        </Text>
-                                        <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={currency1} />
+                                        <CapacityIndicatorSmall gamma={new BigNumberJs(gamma).div(new BigNumberJs(10).pow(18))} health={healthFactor} isFloat={isFloat}
+                                                                hoverPage="positionCard" />
                                     </RowFixed>
                                 ) : (
                                     '-'
                                 )}
                             </FixedHeightRow>
                         </div>
-                        {/* <FixedHeightRow>*/}
-                        {/*  <Text fontSize={13} fontWeight={400}>*/}
-                        {/*    Your pool share:*/}
-                        {/*  </Text>*/}
-                        {/*  <Text fontSize={13} fontWeight={400}>*/}
-                        {/*    {poolTokenPercentage ? poolTokenPercentage.toFixed(2) + '%' : '-'}*/}
-                        {/*  </Text>*/}
-                        {/*</FixedHeightRow> */}
                         <div style={{display: 'flex', flexFlow: 'row', padding: '5px'}}>
                             <ButtonPositionsMobile as={Link} to={`/remove-pro/${currencyId(currency0)}/${currencyId(currency1)}/${isFloat ? "FLOAT" : "STABLE"}`}
                                                    style={{marginRight: '2.5px'}}>
@@ -472,7 +422,7 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
                                     {'Remove'}
                                 </Text>
                             </ButtonPositionsMobile>
-                            <ButtonPositionsMobile as={Link} to={`/add-pro/${currencyId(currency0)}/${currencyId(currency1)}`} padding={'6px'}
+                            <ButtonPositionsMobile as={Link} to={`/add-pro/${currencyId(currency0)}/${currencyId(currency1)}/${ isFloat ? "float" : "stable"}`} padding={'6px'}
                                                    style={{marginLeft: '2.5px'}} >
                                 {/* {width > 500 && <Plus strokeWidth={1} /> } */}
                                 <Text fontSize={width > 500 ? 16 : 13} fontWeight={400}>
@@ -495,25 +445,12 @@ export function MinimalPositionPylonCard({ pylon, showUnwrapped = false, border,
     const [showMore, setShowMore] = useState(false)
 
     const userPoolBalance = useTokenBalance(account ?? undefined, isFloat ? pylon.floatLiquidityToken : pylon.anchorLiquidityToken)
-    const pylonInfo = usePylonInfo(pylon?.address)
-    const pylonPoolBalance = useTokenBalance(pylon?.address, pylon?.pair.liquidityToken)
-    const ptTotalSupply = useTotalSupply(isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken)
-    const totalSupply = useTotalSupply(pylon?.pair.liquidityToken)
-    const lastK = useLastK(pylon ? Pair.getAddress(pylon.token0, pylon.token1) : "");
+    const formattedPoolBalance = userPoolBalance?.toSignificant(4) as unknown as number
 
-    const [token0Deposited, token1Deposited] =
-        !!pylon &&
-        !!pylonInfo &&
-        !!pylonConstants &&
-        !!userPoolBalance &&
-        !!pylonPoolBalance &&
-        !!totalSupply &&
-        !!ptTotalSupply &&
-        JSBI.greaterThanOrEqual(ptTotalSupply.raw, userPoolBalance.raw) ?
-            getLiquidityValues(pylon, userPoolBalance, pylonPoolBalance,
-                totalSupply, ptTotalSupply,
-                pylonInfo, pylonConstants, blockNumber, lastK, true, isFloat) :
-            [undefined, undefined]
+    const {burnInfo, parsedAmounts} = useDerivedPylonBurnInfo(currency0 ?? undefined, currency1 ?? undefined, isFloat, true, "100")
+
+    const [token0Deposited, token1Deposited] = !burnInfo ? [undefined, undefined] : [parsedAmounts["CURRENCY_A"], parsedAmounts["CURRENCY_B"]]
+
 
     const { width } = useWindowDimensions();
     const theme = useTheme()
@@ -563,23 +500,12 @@ export function MinimalPositionPylonCard({ pylon, showUnwrapped = false, border,
                         </span>
                                                 {"FLOAT"}
                                             </BadgeSmall>
-                                            {/*<Text*/}
-                                            {/*  color={theme.text1}*/}
-                                            {/*  style={{ minWidth: "max-content" }}*/}
-                                            {/*  fontWeight={400}*/}
-                                            {/*>{` - ${currency1.symbol}`}</Text>*/}
                                         </Flex>
                                     </>
                                 ) : (
                                     <>
                                         <Flex>
-                                            {/*<Text*/}
-                                            {/*  color={theme.text1}*/}
-                                            {/*  style={{ minWidth: "max-content" }}*/}
-                                            {/*  fontWeight={400}*/}
-                                            {/*>*/}
-                                            {/*  {currency0.symbol} -*/}
-                                            {/*</Text>*/}
+
                                             <BadgeSmall
                                                 style={{
                                                     fontSize: "16px",
@@ -605,12 +531,12 @@ export function MinimalPositionPylonCard({ pylon, showUnwrapped = false, border,
                             </RowFixed>
                             <RowFixed>
                                 <Text fontWeight={400} fontSize={width > 500 ? 16 : 10}>
-                                    {userPoolBalance ? userPoolBalance.toSignificant(4) : "-"}
+                                    {userPoolBalance ?  formattedPoolBalance < 0.000000001 ? '0.000...' + String(formattedPoolBalance).slice(-4) : formattedPoolBalance : '-'}
                                 </Text>
                             </RowFixed>
                         </FixedHeightRow>
                         <AutoColumn gap="4px">
-                            <FixedHeightRow>
+                            {isFloat && <FixedHeightRow>
                                 <Text color={theme.text1} fontSize={13} fontWeight={400}>
                                     Pooled {currency0.symbol}
                                 </Text>
@@ -628,8 +554,8 @@ export function MinimalPositionPylonCard({ pylon, showUnwrapped = false, border,
                                 ) : (
                                     "-"
                                 )}
-                            </FixedHeightRow>
-                            <FixedHeightRow>
+                            </FixedHeightRow>}
+                            {!isFloat && <FixedHeightRow>
                                 <Text color={theme.text1} fontSize={13} fontWeight={400}>
                                     Pooled {currency1.symbol}
                                 </Text>
@@ -647,7 +573,7 @@ export function MinimalPositionPylonCard({ pylon, showUnwrapped = false, border,
                                 ) : (
                                     "-"
                                 )}
-                            </FixedHeightRow>
+                            </FixedHeightRow>}
                         </AutoColumn>
                     </AutoColumn>
                 </OutlineCard>

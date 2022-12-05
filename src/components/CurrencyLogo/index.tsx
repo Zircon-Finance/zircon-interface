@@ -1,4 +1,4 @@
-import { Currency, DEV } from 'zircon-sdk'
+import {Currency, DEV, Token} from 'zircon-sdk'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
@@ -7,8 +7,10 @@ import MovrLogo from '../../assets/images/movr-logo.png'
 // import { WrappedTokenInfo } from '../../state/lists/hooks'
 import Logo from '../Logo'
 
-const getTokenLogoURL = (symbol: string) =>
-  `https://raw.githubusercontent.com/Zircon-Finance/zircon-tokenlist/main/${symbol}/logo.png`
+export const getTokenLogoURL = (symbol: string) =>
+    `https://raw.githubusercontent.com/Zircon-Finance/zircon-tokenlist/main/${symbol}/logo.png`
+const getTokenLogoURL2 = (adddress: string) =>
+    `https://raw.githubusercontent.com/solarbeamio/solarbeam-tokenlist/main/assets/moonriver/${adddress}/logo.png`
 
 const StyledEthereumLogo = styled.img<{ size: string }>`
   width: ${({ size }) => size};
@@ -23,21 +25,20 @@ const StyledLogo = styled(Logo)<{ size: string }>`
 `
 
 export default function CurrencyLogo({
-  currency,
-  size = '24px',
-  style
-}: {
+                                       currency,
+                                       size = '24px',
+                                       style
+                                     }: {
   currency?: Currency
   size?: string
   style?: React.CSSProperties
 }) {
   // const uriLocations = useHttpLocations(currency instanceof WrappedTokenInfo ? currency.logoURI : undefined)
-
   const srcs: string[] = useMemo(() => {
     if (currency === DEV) return []
 
-      return [getTokenLogoURL(currency?.symbol as string)]
-      //return [getTokenLogoURL(currency.address)]
+    return [getTokenLogoURL(currency?.symbol as string), getTokenLogoURL2(currency instanceof Token ? currency?.address as string : "")]
+    //return [getTokenLogoURL(currency.address)]
   }, [currency])
 
   if (currency === DEV) {

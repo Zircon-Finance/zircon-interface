@@ -1,20 +1,24 @@
 import React, { Dispatch, SetStateAction } from 'react'
 import styled, { css, useTheme } from 'styled-components'
-import { IconButton, Text } from '@pancakeswap/uikit'
-import BigNumber from 'bignumber.js'
+import { IconButton, Skeleton, Text } from '@pancakeswap/uikit'
 import { expandAnimation, collapseAnimation } from './Staked'
 import PlusIcon from '../PlusIcon'
 import { Link } from 'react-router-dom'
 import { Flex } from 'rebass'
 import { useWindowDimensions } from '../../../../hooks'
 import { usePairLiquidity } from '../../../../state/pools/hooks'
+import BigNumberJs from "bignumber.js";
+import { formattedNum } from '../../../../utils/formatBalance'
+import PlusIconMini from '../PlusIconMini'
+import { Separator } from '../../../../components/SearchModal/styleds'
 
 
 export interface LiquidityProps {
-  liquidity: BigNumber
+  liquidity: number
   hovered: boolean
   setHovered: Dispatch<SetStateAction<boolean>>
   farm: any
+  small?: boolean
 }
 
 const LiquidityWrapper = styled.div`
@@ -45,7 +49,7 @@ const DialogContainer = styled.div<{ show }>`
       `};
   position: absolute;
   top: 40px;
-  background: ${({ theme }) => theme.hoveredButton};
+  background: #B05D98;
   border-radius: 17px;
   padding: 10px;
   z-index: 1000;
@@ -54,25 +58,44 @@ const DialogContainer = styled.div<{ show }>`
   font-size: 13px;
 `
 
-const AbsContainer = styled.div`
-  position: sticky;
+export const AbsContainer = styled.div`
+  position: absolute;
   z-index: 100;
-  left: 50px;
+  left: 120px;
   svg {
     pointer-events: none;
   }
 `
 
-const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered, setHovered, farm }) => {
+export const LiqContainer = styled.div<{ show }>`
+animation: ${({ show }) =>
+  show
+    ? css`
+      ${expandAnimation} 200ms
+    `
+    : css`
+      ${collapseAnimation} 300ms linear forwards
+    `};
+  position: absolute;
+  z-index: 80;
+  left: -15px;
+  top: 30px;
+  background: ${({ theme }) => theme.darkMode ? '#452632' : '#F5F3F4'};
+  border-radius: 17px;
+`
+
+const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered, setHovered, farm, small}) => {
   // const displayLiquidity = liquidity && liquidity.gt(0) ? (
-  //     `$${Number(liquidity).toLocaleString(undefined, { maximumFractionDigits: 0 })}` 
+  //     `$${Number(liquidity).toLocaleString(undefined, { maximumFractionDigits: 0 })}`
   //   ) : (
   //     <Skeleton width={60} />
   //   )
   const theme = useTheme()
+  const [hoverLiq, setHoverLiq] = React.useState(false)
   const { width } = useWindowDimensions()
   const [hoverPlus, setHoverPlus] = React.useState(false)
-  const pylonLiquidity = usePairLiquidity(farm.token1, farm.token2)
+  const pylonLiquidity = new BigNumberJs(farm?.liquidity?.pair + farm?.liquidity?.pylon).toFixed(2)
+    // console.log("chapo", farm.liquidity)
   const pairLiquidity = usePairLiquidity(farm.token1, farm.token2)
   const plusContent = (
       <DialogContainer show={hoverPlus}>
@@ -83,33 +106,36 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
   )
 
   return (
-    <Container>
+    <Container onMouseEnter={() => setHoverLiq(true)} onMouseLeave={() => setHoverLiq(false)}>
       <LiquidityWrapper>
-        <Text fontSize="13px" color={theme.text1}>
+        <Text fontSize={small ? '13px' : "16px"} color={theme.text1}>
           {farm.isClassic
-            ? pairLiquidity
-            : pylonLiquidity}
+            ? pairLiquidity !== 'NaN' ? formattedNum(pairLiquidity, true) : <Skeleton width={60} />
+            : pylonLiquidity !== 'NaN' ? formattedNum(pylonLiquidity, true) : <Skeleton width={60} />}
         </Text>
         {// liquidity.gt(0) &&
         hovered && width >= 1100 && (
+          <>
           <AbsContainer onMouseEnter={() => setHovered(true)}>
             <Link
               to={
                 farm.isClassic
                   ? `/add/${farm.token1.address}/${farm.token2.address}`
-                  : `/add-pro/${farm.token1.address}/${farm.token2.address}`
+                  : `/add-pro/${farm.token1.address}/${farm.token2.address}/${farm.isAnchor ? 'stable' : 'float'}`
               }
             >
               <IconButton
                 style={{
-                  background: theme.hoveredButton,
+                  background: '#B05D98',
                   width: "29px",
                   height: "28px",
                   borderRadius: "100%",
+                  marginLeft: '5px',
+                  boxShadow: 'none',
                 }}
               >
                 <Flex
-                  onMouseEnter={() => setHoverPlus(true)}
+                  onMouseEnter={() => (setHoverPlus(true), setHoverLiq(false))}
                   onMouseLeave={() => setHoverPlus(false)}
                 >
                   <PlusIcon />
@@ -118,6 +144,45 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
             </Link>
             {hoverPlus && plusContent}
           </AbsContainer>
+          {hoverLiq && <LiqContainer show={hoverLiq}>
+            <Flex flexDirection='column'>
+            <Separator style={{marginBottom: '10px'}} />
+            <Flex alignItems={'center'}>
+              <Flex flexDirection='column' pl='15px' pb='10px' pr='5px'>
+                <Text style={{color: theme.whiteHalf}} fontSize='12px'>
+                  {('Pair liquidity')}
+                </Text>
+                <Text style={{color: theme.text1}} fontSize='13px' fontWeight={500}>
+                  {formattedNum(farm.liquidity?.pair, true)}
+                </Text>
+              </Flex>
+              <Flex><PlusIconMini /></Flex>
+              <Flex flexDirection='column' pl='5px' pb='10px' pr='15px'>
+                <Text style={{color: theme.whiteHalf}} fontSize='12px'>
+                  {('Pylon liquidity')}
+                </Text>
+                <Text style={{color: theme.text1}} fontSize='13px' fontWeight={500}>
+                  {formattedNum(farm.liquidity?.pylon, true)}
+                </Text>
+              </Flex>
+            </Flex>
+            <Separator />
+            <Flex justifyContent={'center'} pt='10px' pb='10px' flexDirection={'column'} alignItems='left' ml='15px'>
+              <Text style={{color: theme.whiteHalf}} fontSize='13px'>
+                {('Reserves')}
+              </Text>
+              <Flex flexDirection={'column'} alignItems='left'>
+                <Text style={{color: theme.text1}} fontSize='13px' fontWeight={500}>
+                  {`${farm.reserves?.reserve0.toFixed(0)} ${farm.token1.symbol}` }
+                </Text>
+                <Text style={{color: theme.text1}} fontSize='13px' fontWeight={500}>
+                {`${farm.reserves?.reserve1.toFixed(0)} ${farm.token2.symbol}` }
+                </Text>
+              </Flex>
+            </Flex>
+          </Flex>
+          </LiqContainer>}
+          </>
         )}
       </LiquidityWrapper>
     </Container>

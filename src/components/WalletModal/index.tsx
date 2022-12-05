@@ -97,7 +97,7 @@ const Blurb = styled.div`
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 20px;
+  margin-top: 15px;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     margin: 1rem;
     font-size: 12px;
@@ -240,7 +240,7 @@ export default function WalletModal({
     // log selected wallet
     ReactGA.event({
       category: 'Wallet',
-      action: 'Change Wallet',
+      action: `Set ${name} wallet`,
       label: name
     })
     setPendingWallet(connector) // set wallet for pending view
@@ -297,7 +297,24 @@ export default function WalletModal({
             />
           )
         }
-        return null
+        if (option.name === 'MetaMask') {
+          return (
+            <Option
+              id={`connect-${key}`}
+              key={key}
+              color={'#E8831D'}
+              header={'Metamask'}
+              subheader={null}
+              onClick={() => {
+                window.ethereum ? tryActivation(option.connector) :
+                  window.open('https://metamask.io/', '_blank');
+              }}
+              link={'https://metamask.io/'}
+              icon={MetamaskIcon}
+            />
+          )
+        }
+        else return null
       }
 
       // overwrite injected when needed
@@ -371,11 +388,11 @@ export default function WalletModal({
           <ContentWrapper>
             {error instanceof UnsupportedChainIdError ? (
               <>
-              <h5 style={{textAlign: 'center'}}>{'Please connect to the appropriate Moonbase Alpha network.'}</h5>
+              <h5 style={{textAlign: 'center'}}>{'Please connect to the appropriate Moonriver network.'}</h5>
               {connector === injected && <ButtonPrimary mt={'30px'} onClick={() => connectNet('moonriver')} >{'Click to connect'}</ButtonPrimary>}
               </>
             ) : (
-              'Error connecting. Please make sure you are connected to the appropriate Moonbase Alpha network.'
+              'Error connecting. Please make sure you are connected to the appropriate Moonriver Alpha network.'
             )}
           </ContentWrapper>
         </UpperSection>
@@ -427,13 +444,13 @@ export default function WalletModal({
           )}
           <span>
             <Text style={{textAlign: 'center', fontSize: '14px', marginTop: '10px'}}>
-              {'Connecting a wallet you accept'}
+              {'By connecting a wallet you accept'}
             </Text>
-            <Text style={{textAlign: 'center', fontSize: '14px'}}>
-              {` our `} 
-              {<Link style={{color: theme.pinkBrown, textDecoration: 'none'}} href="#">terms and conditions</Link>}
+            <Text style={{textAlign: 'center', fontSize: '13px'}}>
+              {` our `}
+              {<Link style={{color: theme.pinkBrown, textDecoration: 'none'}} href="https://d3v8yom54t2cda.cloudfront.net/Terms+of+Service+-+Zircon+Finance.pdf">terms and conditions</Link>}
               {` and `}
-              {<Link style={{color: theme.pinkBrown, textDecoration: 'none'}} href="#">privacy policy</Link>}
+              {<Link style={{color: theme.pinkBrown, textDecoration: 'none'}} href="https://d3v8yom54t2cda.cloudfront.net/Privacy+Policy+-+Zircon+Finance.pdf">privacy policy</Link>}
             </Text>
           </span>
           {walletView !== WALLET_VIEWS.PENDING && (
@@ -447,8 +464,11 @@ export default function WalletModal({
               border: "none",
               fontWeight: 500
             }}
+            onClick={() => {
+              window.open('https://ethereum.org/en/wallets/', '_blank');
+            }}
             >
-            <Link style={{textDecoration: 'none', color: theme.pinkGamma}} href="https://tokenlists.org" >
+            <Link style={{textDecoration: 'none', color: theme.pinkGamma}} href="#" >
               {'Learn how to connect'}
             </Link>
             </ButtonPink>

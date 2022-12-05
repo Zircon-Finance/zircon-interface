@@ -5,7 +5,7 @@ import { abi as ZirconPylon } from '../constants/abi/ZirconPylon.json'
 import { abi as ZirconPylonFactory } from '../constants/abi/ZirconPylonFactory.json'
 import { abi as ZirconFactory } from '../constants/abi/ZirconFactory.json'
 import { abi as ZirconEnergyFactory } from '../constants/abi/ZirconEnergyFactory.json'
-
+import BatchPrecompileABI from '../constants/abi/batch_precompile.json'
 import { useMemo } from 'react'
 import ENS_ABI from '../constants/abis/ens-registrar.json'
 import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
@@ -17,7 +17,7 @@ import WDEV_ABI from '../constants/abis/weth.json'
 import { MULTICALL_ABI, MULTICALL_NETWORKS } from '../constants/multicall'
 import { getContract, getProviderOrSigner } from '../utils'
 import { useActiveWeb3React } from './index'
-import { getBep20Contract, getCakeContract, getFarmAuctionContract, getMasterchefContract, getSouschefContract } from '../utils/contractHelpers'
+import { getBep20Contract, getCakeContract, getMasterchefContract, getSouschefContract } from '../utils/contractHelpers'
 
 // returns null on errors
 function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
@@ -50,14 +50,6 @@ export const useMasterchef = () => {
 export const useSousChef = (id) => {
   const { library } = useActiveWeb3React()
   return useMemo(() => getSouschefContract(id, library.getSigner()), [id, library])
-}
-
-export const useFarmAuctionContract = (withSignerIfPossible = true) => {
-  const { account, library } = useActiveWeb3React()
-  return useMemo(
-    () => getFarmAuctionContract(withSignerIfPossible ? getProviderOrSigner(library, account) : null),
-    [library, account, withSignerIfPossible],
-  )
 }
 
 export const useCake = (): { reader; signer } => {
@@ -132,6 +124,11 @@ export function useEnergyFactoryContract(energyFactoryAddress?: string, withSign
 export function useMulticallContract(): Contract | null {
   const { chainId } = useActiveWeb3React()
   return useContract(chainId && MULTICALL_NETWORKS[chainId], MULTICALL_ABI, false)
+}
+
+export function useBatchPrecompileContract(): Contract | null {
+  const { chainId } = useActiveWeb3React()
+  return useContract(chainId && '0x0000000000000000000000000000000000000808', BatchPrecompileABI, true)
 }
 
 export function useSocksController(): Contract | null {

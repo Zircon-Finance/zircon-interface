@@ -5,7 +5,7 @@ describe('uriToHttp', () => {
     expect(uriToHttp('t2crtokens.eth')).toEqual([])
   })
   it('returns https first for http', () => {
-    expect(uriToHttp('http://test.com')).toEqual(['https://test.com', 'http://test.com'])
+    expect(uriToHttp('http://test.com')).toEqual(['http://test.com'])
   })
   it('returns https for https', () => {
     expect(uriToHttp('https://test.com')).toEqual(['https://test.com'])

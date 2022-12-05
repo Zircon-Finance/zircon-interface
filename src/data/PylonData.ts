@@ -41,6 +41,12 @@ export function useLastK(address?: string): string | undefined {
     const result: BigNumber = useSingleCallResult(contract, 'kLast')?.result?.[0]
     return address && result ? result.toString() : undefined
 }
+export function useLiquidityFee(): string | undefined {
+    const { chainId } = useActiveWeb3React()
+    const factoryContract = usePairFactoryContract(FACTORY_ADDRESS[chainId], false)
+    const liquidityFee = useSingleCallResult(factoryContract, "liquidityFee")?.result?.[0]
+    return liquidityFee ? liquidityFee.toString() : undefined
+}
 
 export function usePylonInfo(address?: string): (any)[] | undefined {
     const contract = usePylonContract(address, false)
@@ -63,7 +69,7 @@ export function usePylonInfo(address?: string): (any)[] | undefined {
 export function usePylonConstants(): PylonFactory | undefined {
     const { chainId } = useActiveWeb3React()
 
-    const pylonFactoryContract = usePylonFactoryContract( PYLON_FACTORY_ADDRESS[chainId], false)
+    const pylonFactoryContract = usePylonFactoryContract(PYLON_FACTORY_ADDRESS[chainId], false)
     const factoryContract = usePairFactoryContract(FACTORY_ADDRESS[chainId], false)
     const energyFactoryContract = useEnergyFactoryContract(EN_FACTORY_ADDRESS[chainId], false)
 

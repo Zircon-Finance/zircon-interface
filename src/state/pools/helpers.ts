@@ -49,11 +49,19 @@ export const transformPool = (pool: SerializedPool): DeserializedPool => {
     earningToken,
     profileRequirement,
     startBlock,
+    staked,
+    stakedRatio,
+    stakedBalancePool,
+    quotingPrice,
+      tokenPrice,
     ...rest
   } = pool
-
   return {
     ...rest,
+    staked: new BigNumber(staked),
+    stakedBalancePool: parseFloat(stakedBalancePool ?? ""),
+    quotingPrice: quotingPrice,
+    tokenPrice: tokenPrice,
     startBlock,
     profileRequirement: transformProfileRequirement(profileRequirement),
     stakingToken: deserializeToken(stakingToken),
@@ -62,6 +70,7 @@ export const transformPool = (pool: SerializedPool): DeserializedPool => {
     totalStaked: new BigNumber(totalStaked),
     stakingLimit: new BigNumber(stakingLimit),
     stakingLimitEndBlock: numberBlocksForUserLimit + startBlock,
+    stakedRatio: parseFloat(stakedRatio ?? ""),
   }
 }
 

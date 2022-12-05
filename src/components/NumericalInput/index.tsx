@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Currency } from 'zircon-sdk';
 import { escapeRegExp } from '../../utils'
 
 const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: string }>`
@@ -42,9 +43,11 @@ const inputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`) // match escaped "." charact
 export const Input = React.memo(function InnerInput({
   value,
   onUserInput,
+  currency,
   placeholder,
   ...rest
 }: {
+  currency: Currency
   value: string | number
   onUserInput: (input: string) => void
   error?: boolean
@@ -56,7 +59,7 @@ export const Input = React.memo(function InnerInput({
       onUserInput(nextUserInput)
     }
   }
-
+  let decimalsRegex = new RegExp("(\\.\\d{" + currency?.decimals + "})\\d+", "g");
   return (
     <StyledInput
       {...rest}
@@ -64,6 +67,7 @@ export const Input = React.memo(function InnerInput({
       onChange={event => {
         // replace commas with periods, because uniswap exclusively uses period as the decimal separator
         enforcer(event.target.value.replace(/,/g, '.'))
+        enforcer(event.target.value.replace(decimalsRegex, '$1'))
       }}
       // universal input options
       inputMode="decimal"

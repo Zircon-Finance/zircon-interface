@@ -2,8 +2,6 @@ import { useEffect, useMemo } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { useFastRefreshEffect, useSlowRefreshEffect } from '../../hooks/useRefreshEffect'
-import { farms } from '../../constants/farms'
-import {providers} from "ethers";
 import {
   fetchPoolsPublicDataAsync,
   fetchPoolsUserDataAsync,
@@ -15,7 +13,6 @@ import {
 import { DeserializedPool,
   // VaultKey
 } from '../types'
-import { fetchFarmsPublicDataAsync } from '../farms'
 import {
   poolsWithUserDataLoadingSelector,
   makePoolWithUserDataLoadingSelector,
@@ -34,8 +31,6 @@ export const useFetchPublicPoolsData = () => {
   useSlowRefreshEffect(
     (currentBlock) => {
       const fetchPoolsDataWithFarms = async () => {
-        const activeFarms = farms.filter((farm) => farm.pid !== 0)
-        await dispatch(fetchFarmsPublicDataAsync(activeFarms.map((farm) => farm.pid)))
         batch(() => {
           dispatch(fetchPoolsPublicDataAsync(currentBlock))
           dispatch(fetchPoolsStakingLimitsAsync())
@@ -101,14 +96,6 @@ export const useEndBlock = async(sousId) => {
   const endBlock = account && chainId === 1285 ? await sousChefContract.bonusEndBlock().then((value) => value.toNumber()) : 0
   return endBlock
 }
-
-export const useCurrentBlock = async() => {
-  const {account} = useWeb3React()
-  const provider = window.ethereum ? new providers.Web3Provider(window.ethereum) : null
-  const blockNumber = account ? await provider.getBlockNumber() : 0
-  return blockNumber
-}
-
 
 export const usePoolsPageFetch = () => {
   const { account } = useWeb3React()

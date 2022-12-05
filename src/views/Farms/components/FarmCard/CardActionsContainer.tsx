@@ -6,7 +6,6 @@ import useCatchTxError from '../../../../hooks/useCatchTxError'
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { MaxUint256 } from '@ethersproject/constants'
-import { fetchFarmUserDataAsync } from '../../../../state/farms'
 import styled, {useTheme} from 'styled-components'
 import HarvestAction from './HarvestAction'
 import StakeAction from './StakeAction'
@@ -15,13 +14,13 @@ import { ButtonPinkGamma } from '../../../../components/Button'
 import { useAddPopup, useWalletModalToggle } from '../../../../state/application/hooks'
 import { useTransactionAdder } from '../../../../state/transactions/hooks'
 import { DeserializedPool } from '../../../../state/types'
-import { updateUserAllowance } from '../../../../state/pools'
+import { fetchPoolsUserDataAsync, updateUserAllowance } from '../../../../state/pools'
 import { useCallWithGasPrice } from '../../../../hooks/useCallWithGasPrice'
 import { usePools } from '../../../../state/pools/hooks'
 
 const Action = styled.div`
   padding: 0px;
-  min-height: 270px;
+  min-height: 245px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -30,17 +29,19 @@ const Action = styled.div`
 const ActionContainer = styled.div`
   display: flex;
   flex-direction: column;
-  border-radius: 7px;
   margin-bottom: 10px;
   padding: 10px;
   .swiper {
     max-width: 100%;
+    margin-left: 0px;
   }
   .swiper-pagination-bullet {
     display: none;
   }
   .swiper-slide {
-    border-right: 1px solid rgba(255,255,255,0.1);
+    width: auto !important;
+    padding-right: 10px;
+    margin-right: 10px !important;
     text-align: center;
   }
 `
@@ -94,7 +95,7 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
         },
         receipt.transactionHash
       )
-      dispatch(fetchFarmUserDataAsync({ account, pids: [sousId] }))
+      dispatch(fetchPoolsUserDataAsync(account))
       dispatch(updateUserAllowance({ sousId, account }))
     }
   }, [ 
@@ -113,14 +114,14 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
 
   const renderApprovalOrStakeButton = () => {
     return isApproved ? (
-      <ActionContainer style={{backgroundColor: theme.farmPoolCardsBg}}>
-          <Text  fontSize="13px" fontWeight={300} color={theme.text1}>
-            {t('Staked')}
+      <ActionContainer style={{borderBottom: `1px solid ${theme.opacitySmall}`}}>
+          <Text  fontSize="16px" fontWeight={500} color={theme.text1}>
+            {t('STAKED')}
           </Text>
           <StakeAction {...farm} lpLabel={lpLabel} addLiquidityUrl={addLiquidityUrl} displayApr={displayApr} />
         </ActionContainer>
     ) : (
-      <ButtonPinkGamma width="100%" disabled={pendingTx} onClick={account ? handleApproval : toggleWalletModal}>
+      <ButtonPinkGamma width="100%" disabled={pendingTx || farm.isFinished} onClick={account ? handleApproval : toggleWalletModal}>
         {account ? 'Enable Contract' : 'Connect Wallet'}
       </ButtonPinkGamma>
     )
@@ -132,7 +133,7 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
         <span/>
       ) : (
         <>
-        <ActionContainer style={{backgroundColor: theme.farmPoolCardsBg}}>
+        <ActionContainer style={{borderBottom: `1px solid ${theme.opacitySmall}`, borderTop: `1px solid ${theme.opacitySmall}`}}>
         <HarvestAction {...farm} userDataReady={userDataReady} />
         </ActionContainer>
         </>)}

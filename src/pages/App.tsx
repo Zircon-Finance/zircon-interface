@@ -10,7 +10,7 @@ import AddLiquidity from './AddLiquidity'
 import AddLiquidityPro from './AddLiquidityPro'
 // import MobileView from './MobileView'
 import {
-  RedirectDuplicateTokenIdsPro,
+  RedirectDuplicateTokenIdsPro, RedirectDuplicateTokenIdsProAnchor,
   RedirectOldAddLiquidityProPathStructure,
   RedirectToAddLiquidityPro
 } from './AddLiquidityPro/redirects'
@@ -30,6 +30,8 @@ import { useWindowDimensions } from '../hooks'
 import Farms from '../views/Farms/Farms'
 import Lottie from "lottie-react-web";
 import animation from '../assets/lotties/0uCdcx9Hn5.json'
+import { useShowBannerManager } from '../state/user/hooks'
+import { PhishingBanner } from '../components/PhishingBanner'
 
 const AppWrapper = styled.div`
   display: flex;
@@ -95,11 +97,12 @@ export default function App() {
     opacityDiv !== 0 && setTimeout(() => setOpacityDiv(parseFloat((opacity - 0.1).toFixed(1))), 50)
   }
   opacityDiv !== 0 && countDown(opacityDiv)
+  const [showBanner, ] = useShowBannerManager()
   return (
     <Suspense fallback={null}>
       <HashRouter>
         {/* {isMobile && <Redirect to="/mobile" />}
-        {isMobile && <MobileWrapper><MobileView 
+        {isMobile && <MobileWrapper><MobileView
           icon='laptop'
           upperText='Please use your desktop to try the Zircon Beta'
           lowerText='Our app will be available on your phone soon'  />
@@ -107,6 +110,7 @@ export default function App() {
         <Route component={GoogleAnalyticsReporter} />
         <Route component={DarkModeQueryParamReader} />
         <AppWrapper>
+          {showBanner && <PhishingBanner />}
           {opacityDiv !== 0 && <LottieContainer style={{opacity: opacityDiv}}><Lottie
                 style={{width: "100px"}}
                 options={{
@@ -132,6 +136,7 @@ export default function App() {
                 <Route exact path="/add-pro" component={AddLiquidityPro} />
                 <Route exact path="/add-pro/:currencyIdA" component={RedirectOldAddLiquidityProPathStructure} />
                 <Route exact path="/add-pro/:currencyIdA/:currencyIdB" component={RedirectDuplicateTokenIdsPro} />
+                <Route exact path="/add-pro/:currencyIdA/:currencyIdB/:side" component={RedirectDuplicateTokenIdsProAnchor} />
                 <Route exact path="/farm" component={Farms} />
                 <Route exact strict path="/remove/:tokens" component={RedirectOldRemoveLiquidityPathStructure} />
                 <Route exact strict path="/remove/:currencyIdA/:currencyIdB" component={RemoveLiquidity} />

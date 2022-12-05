@@ -19,7 +19,6 @@ import AppBody from '../AppBody'
 import { Dots } from '../Pool/styleds'
 import {PylonState, usePylon} from "../../data/PylonReserves";
 import LearnIcon from '../../components/LearnIcon'
-import { useTheme } from 'styled-components'
 // import { usePylon } from '../../data/PylonReserves'
 
 enum Fields {
@@ -81,7 +80,6 @@ export default function PoolFinder() {
         setShowSearch(false)
     }, [setShowSearch])
 
-    const theme = useTheme()
 
     const prerequisiteMessage = (
         <LightCardNoBorder padding="45px 10px">
@@ -95,7 +93,7 @@ export default function PoolFinder() {
         <>
         <AppBody>
             <FindPoolTabs />
-            <AutoColumn style={{padding: '10px',backgroundColor: theme.bg7, borderRadius: '17px', marginBottom: '10px'}} gap="md">
+            <AutoColumn style={{padding: '10px', borderRadius: '17px', marginBottom: '10px'}} gap="md">
                 <ButtonDropdownLight
                     onClick={() => {
                         setShowSearch(true)
@@ -105,12 +103,12 @@ export default function PoolFinder() {
                     {currency0 ? (
                         <Row>
                             <CurrencyLogo currency={currency0} />
-                            <Text fontWeight={400} fontSize={20} marginLeft={'12px'}>
+                            <Text fontWeight={400} fontSize={18} marginLeft={'12px'}>
                                 {currency0.symbol}
                             </Text>
                         </Row>
                     ) : (
-                        <Text fontWeight={400} fontSize={20} marginLeft={'12px'}>
+                        <Text fontWeight={400} fontSize={18} marginLeft={'12px'}>
                             Select a Token
                         </Text>
                     )}
@@ -129,12 +127,12 @@ export default function PoolFinder() {
                     {currency1 ? (
                         <Row>
                             <CurrencyLogo currency={currency1} />
-                            <Text fontWeight={400} fontSize={20} marginLeft={'12px'}>
+                            <Text fontWeight={400} fontSize={18} marginLeft={'12px'}>
                                 {currency1.symbol}
                             </Text>
                         </Row>
                     ) : (
-                        <Text fontWeight={400} fontSize={20} marginLeft={'12px'}>
+                        <Text fontWeight={400} fontSize={18} marginLeft={'12px'}>
                             Select a Token
                         </Text>
                     )}

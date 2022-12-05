@@ -37,10 +37,8 @@ export interface SerializedFarm extends SerializedFarmConfig {
   tokenPriceBusd?: string
   quoteTokenPriceBusd?: string
   tokenAmountTotal?: SerializedBigNumber
-  quoteTokenAmountTotal?: SerializedBigNumber
   lpTotalInQuoteToken?: SerializedBigNumber
   lpTotalSupply?: SerializedBigNumber
-  tokenPriceVsQuote?: SerializedBigNumber
   poolWeight?: SerializedBigNumber
   userData?: SerializedFarmUserData
 }
@@ -49,10 +47,8 @@ export interface DeserializedFarm extends DeserializedFarmConfig {
   tokenPriceBusd?: string
   quoteTokenPriceBusd?: string
   tokenAmountTotal?: BigNumber
-  quoteTokenAmountTotal?: BigNumber
   lpTotalInQuoteToken?: BigNumber
   lpTotalSupply?: BigNumber
-  tokenPriceVsQuote?: BigNumber
   poolWeight?: BigNumber
   userData?: DeserializedFarmUserData
 }
@@ -61,19 +57,38 @@ export enum VaultKey {
   CakeVault = 'cakeVault',
   IfoPool = 'ifoPool',
 }
+export interface EarningTokenInfo {
+  blockReward: number,
+  blockRewardPrice: number,
+  symbol: string,
+  current: number,
+  currentPrice: number
+}
 
 interface CorePoolProps {
   startBlock?: number
   endBlock?: number
   apr?: number
+  baseApr?: number
+  feesApr?: number
+  liquidity?: {pair:number, pylon:number}
+  zrgPrice?: number
+  movrPrice?: number
   rawApr?: number
   stakingTokenPrice?: number
-  earningTokenPrice?: number
+  // earningTokenPrice?: number[]
+  earningTokenInfo?: EarningTokenInfo[]
   vaultKey?: VaultKey
+  vTotalSupply?: number,
 }
 
 export interface DeserializedPool extends DeserializedPoolConfig, CorePoolProps {
   totalStaked?: BigNumber
+  staked: BigNumber
+  stakedRatio: number
+  stakedBalancePool: number
+  quotingPrice?: string
+  tokenPrice?: string
   stakingLimit?: BigNumber
   stakingLimitEndBlock?: number
   profileRequirement?: {
@@ -91,6 +106,7 @@ export interface DeserializedPool extends DeserializedPoolConfig, CorePoolProps 
 export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
   totalStaked?: SerializedBigNumber
   stakingLimit?: SerializedBigNumber
+  quotingPrice?: SerializedBigNumber
   numberBlocksForUserLimit?: number
   profileRequirement?: {
     required: boolean
@@ -102,6 +118,19 @@ export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
     stakedBalance: SerializedBigNumber
     pendingReward: SerializedBigNumber
   }
+  gamma?: SerializedBigNumber
+  ptb?: SerializedBigNumber
+  quoteTokenBalanceTotal?: SerializedBigNumber
+  tokenBalanceTotal?: SerializedBigNumber
+  lpTotalSupply?: SerializedBigNumber
+  quotePrice?: SerializedBigNumber
+  tokenPrice?: SerializedBigNumber
+  lpTotalInQuoteToken?: SerializedBigNumber
+  vaultTotalSupply?: SerializedBigNumber
+  psionicFarmBalance?: SerializedBigNumber
+  staked?: SerializedBigNumber
+  stakedBalancePool?: SerializedBigNumber
+  stakedRatio?: SerializedBigNumber
 }
 
 // Slices states
@@ -236,13 +265,15 @@ export interface State {
 
 export interface PoolsState {
   data: SerializedPool[]
-  // cakeVault: SerializedCakeVault
+  //cakeVault: SerializedCakeVault
   userDataLoaded: boolean
 }
 
 export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
   totalStaked?: SerializedBigNumber
   stakingLimit?: SerializedBigNumber
+  quotingPrice?: SerializedBigNumber
+  tokenPrice?: SerializedBigNumber
   numberBlocksForUserLimit?: number
   profileRequirement?: {
     required: boolean

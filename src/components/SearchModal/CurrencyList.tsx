@@ -113,10 +113,10 @@ function CurrencyRow({
       selected={otherSelected}
     >
       <CurrencyLogo currency={currency} size={'42px'} />
-      <Column>
+      <Column style={{overflow: 'hidden'}}>
         <Text title={currency.name} fontWeight={400} style={{display: 'flex', flexFlow: 'column'}}>
           <span>{currency.symbol}</span>
-          <span style={{color: 'rgba(173, 149, 159, 1)', fontSize: '13px'}}>{currency.name}</span>
+          <span style={{color: 'rgba(173, 149, 159, 1)',width: 'max-content', fontSize: '13px'}}>{currency.name}</span>
         </Text>
         <FadedSpan>
           {!isOnSelectedList && customAdded ? (
@@ -133,7 +133,7 @@ function CurrencyRow({
             </TYPE.main>
           ) : null}
           {!isOnSelectedList && !customAdded ? (
-            <TYPE.main fontWeight={400}>
+            <TYPE.main fontWeight={400} fontSize={'14px'}>
               Found by address
               <LinkStyledButton
                 onClick={event => {
@@ -204,7 +204,7 @@ export default function CurrencyList({
       width="100%"
       itemData={itemData}
       itemCount={itemData.length}
-      itemSize={56}
+      itemSize={60}
       itemKey={itemKey}
     >
       {Row}

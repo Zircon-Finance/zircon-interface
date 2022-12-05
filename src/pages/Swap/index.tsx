@@ -2,7 +2,7 @@ import { CurrencyAmount, JSBI, Token, Trade } from 'zircon-sdk'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { ArrowDown } from 'react-feather'
 import ReactGA from 'react-ga4'
-import { Text } from 'rebass'
+import { Flex, Text } from 'rebass'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from 'styled-components'
 import AddressInputPanel from '../../components/AddressInputPanel'
@@ -20,10 +20,10 @@ import TradePrice from '../../components/swap/TradePrice'
 import TokenWarningModal from '../../components/TokenWarningModal'
 import ProgressSteps from '../../components/ProgressSteps'
 import Settings from '../../components/Settings'
-
+import orderBy from 'lodash/orderBy'
 import { INITIAL_ALLOWED_SLIPPAGE } from '../../constants'
 import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
-import { useCurrency } from '../../hooks/Tokens'
+import { getTopTokens, useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
 import useENSAddress from '../../hooks/useENSAddress'
 import { useSwapCallback } from '../../hooks/useSwapCallback'
@@ -38,7 +38,7 @@ import {
   useSwapActionHandlers,
   useSwapState
 } from '../../state/swap/hooks'
-import { useExpertModeManager, useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
+import { useChosenTokens, useExpertModeManager, useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
 import { LinkButtonHidden, LinkButtonLeftSide } from '../../theme'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
@@ -48,8 +48,19 @@ import Loader from '../../components/Loader'
 import LearnIcon from '../../components/LearnIcon'
 import PriceChartContainer from '../../components/Chart/PriceChartContainer'
 import NoChartAvailable from '../../components/Chart/NoChartAvailable'
+import { usePairPrices } from '../../state/mint/pylonHooks'
+import { usePair } from '../../data/Reserves'
+import { SelectedOptionDiv } from '../../views/Farms/Farms'
+import { TableData } from '../../views/Farms/components/FarmTable/Row'
+import FarmRepeatIcon from '../../components/FarmRepeatIcon'
+import { Row, SkeletonTable, StarFull, TopTokensRow } from '../../components/TopTokensRow'
+import FavTokensRow from '../../components/FavouriteTokensRow'
+import { Separator } from '../../components/SearchModal/styleds'
+import { usePools } from '../../state/pools/hooks'
+import { Skeleton } from '@pancakeswap/uikit'
 
 export default function Swap() {
+  const {pools} = usePools()
   const { t } = useTranslation()
   const loadedUrlParams = useDefaultsFromURLSearch()
 
@@ -67,6 +78,7 @@ export default function Swap() {
     setDismissTokenWarning(true)
   }, [])
 
+  const skeletons = 5;
   const { account } = useActiveWeb3React()
   const theme = useTheme()
 
@@ -92,6 +104,7 @@ export default function Swap() {
     currencies[Field.OUTPUT],
     typedValue
   )
+  const [chosenTokens] = useChosenTokens();
   const inputCurrency = useCurrency(inputCurrencyId)
   const outputCurrency = useCurrency(outputCurrencyId)
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
@@ -169,6 +182,10 @@ export default function Swap() {
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
     }
+    getTopTokens().then((res) => {
+      setTopTokens(res.query)
+      setTopTokensPrevious(res.oneDayAgoQueryData)
+    })
   }, [approval, approvalSubmitted])
 
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT])
@@ -267,12 +284,43 @@ export default function Swap() {
 
   const singleTokenPrice = useSingleTokenSwapInfo(inputCurrencyId, inputCurrency, outputCurrencyId, outputCurrency)
 
+  const [pairState,pair] = usePair(currencies[Field.INPUT], currencies[Field.OUTPUT])
+  const prices = usePairPrices(currencies[Field.INPUT], currencies[Field.OUTPUT], pair, pairState)
+
+  //Top tokens
+  const [topTokens, setTopTokens] = useState([])
+  const [topTokensPrevious, setTopTokensPrevious] = useState([])
+  const options = ['Price', 'Price change 24H', 'Volume 24H', 'TVL']
+  const [sortOption, setSortOption] = useState('volume 24h')
+
+  const sortTokens = (sortOption: string, tokensToSort: any[]) => {
+    switch (sortOption) {
+      case 'price':
+        return orderBy(tokensToSort, (token: any) => parseFloat(token.priceUSD) ?? 0, 'desc')
+      case 'price change 24h':
+          return orderBy(tokensToSort, (token: any) => {
+          const previousToken = topTokensPrevious.find((t) => t.token.id === token.token.id)
+          const changePercent = (((parseFloat(token?.priceUSD) - parseFloat(previousToken?.priceUSD)) / 
+          parseFloat(previousToken?.priceUSD)) * 100).toFixed(2);
+          return changePercent !== 'NaN' ? parseFloat(changePercent) : parseFloat('-100')
+        }, 'desc')
+      case 'volume 24h':
+        return orderBy(tokensToSort, (token: any) => parseFloat(token.dailyVolumeUSD), 'desc')
+      case 'tvl':
+        return orderBy(tokensToSort, (token: any) => parseFloat(token.totalLiquidityUSD), 'desc')
+      default:
+        return tokensToSort
+    }
+  }
+
+  const sortedTokens = useMemo(() => sortTokens(sortOption, topTokens), [sortOption, topTokens])
+
   return (
     <>
     <div style={{width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', gap: '20px'}}>
     { width > 1000 && (
     <div style={{
-      height: '450px',
+      height: '423px',
       position: 'relative',
       maxWidth: '480px',
       width: '100%',
@@ -283,9 +331,9 @@ export default function Swap() {
         <div style={{alignSelf: 'center'}}>
         { outputCurrency ? (
             <PriceChartContainer
-                inputCurrencyId={inputCurrencyId === 'ETH' ? '0xC9Eb4433B8a053b0ed3bf8de419C0f58b37b6eD1' : inputCurrencyId}
+                inputCurrencyId={inputCurrencyId === 'ETH' ? '0x98878b06940ae243284ca214f92bb71a2b032b8a' : inputCurrencyId}
                 inputCurrency={currencies[Field.INPUT]}
-                outputCurrencyId={outputCurrencyId === 'ETH' ? '0xC9Eb4433B8a053b0ed3bf8de419C0f58b37b6eD1' : outputCurrencyId}
+                outputCurrencyId={outputCurrencyId === 'ETH' ? '0x98878b06940ae243284ca214f92bb71a2b032b8a' : outputCurrencyId}
                 outputCurrency={currencies[Field.OUTPUT]}
                 isChartExpanded={isChartExpanded}
                 setIsChartExpanded={setIsChartExpanded}
@@ -317,7 +365,7 @@ export default function Swap() {
         <Settings />
         </div>
 
-        <Wrapper id="swap-page">
+        <Wrapper id="swap-page" style={{marginTop: !account && (outputCurrency === undefined ? '42px' : '52px')}}>
           <ConfirmSwapModal
             isOpen={showConfirm}
             trade={trade}
@@ -330,6 +378,7 @@ export default function Swap() {
             onConfirm={handleSwap}
             swapErrorMessage={swapErrorMessage}
             onDismiss={handleConfirmDismiss}
+            outputCurrency={outputCurrencyId}
           />
 
 
@@ -344,6 +393,7 @@ export default function Swap() {
               onCurrencySelect={handleInputSelect}
               otherCurrency={currencies[Field.OUTPUT]}
               id="swap-currency-input"
+              price={ prices[0]}
             />
             <AutoColumn>
               <AutoRow justify={isExpertMode ? recipient === null ? 'space-between' : 'center' : 'center'} style={{ padding: '0 1rem'}}>
@@ -380,6 +430,7 @@ export default function Swap() {
               onCurrencySelect={handleOutputSelect}
               otherCurrency={currencies[Field.INPUT]}
               id="swap-currency-output"
+              price={prices[1]}
             />
 
             {recipient !== null && !showWrap && isExpertMode && (
@@ -403,7 +454,7 @@ export default function Swap() {
               </>
             )}
 
-            {!showWrap && currencies[Field.OUTPUT] !== undefined && formattedAmounts[Field.INPUT] && formattedAmounts[Field.OUTPUT] &&  (
+            {!showWrap && currencies[Field.OUTPUT] !== undefined && formattedAmounts[Field.INPUT] && formattedAmounts[Field.OUTPUT] ?  (
               <Card padding={'.25rem .75rem 0 .75rem'} borderRadius={'20px'}>
                 <AutoColumn gap="4px">
                   {Boolean(trade) && (
@@ -430,7 +481,7 @@ export default function Swap() {
                   )}
                 </AutoColumn>
               </Card>
-            )}
+            ) : <div style={{height: (!account && outputCurrency !== undefined) ? '46px' : '26px'}}></div>}
           </AutoColumn>
           <BottomGrouping style={{marginTop: '0'}}>
             {!account ? (
@@ -510,7 +561,7 @@ export default function Swap() {
                 disabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError}
                 error={isValid && priceImpactSeverity > 2 && !swapCallbackError}
               >
-                <Text fontSize={20} fontWeight={400}>
+                <Text fontSize={18} fontWeight={400}>
                   {swapInputError
                     ? swapInputError
                     : priceImpactSeverity > 3 && !isExpertMode
@@ -527,9 +578,94 @@ export default function Swap() {
         {formattedAmounts[Field.INPUT] && formattedAmounts[Field.OUTPUT] && (<AdvancedSwapDetailsDropdown trade={trade} />)}
       </AppBody>
     </div>
+
+    {/* // User chosen tokens */}
+    {chosenTokens?.length > 0 && (
+      <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none'}}>
+        <Flex mt='23px' ml='20px'>
+            <StarFull />
+          </Flex>
+        <Flex id='user-chosen-tokens' style={{width: '100%', padding: '20px', flexWrap: 'wrap', gap: '25px 5px'}}>
+          {chosenTokens?.map((token, index) => {
+          return(
+            <FavTokensRow key={index} token={token} index={index} topTokens={topTokens} topTokensPrevious={topTokensPrevious}
+            handleSwap={handleInputSelect} />
+          )})}
+        </Flex>
+      </Flex>
+      )}
+
+    <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none'}}>
+    <table
+      style={{
+        width: "100%",
+        borderBottom: `1px solid ${theme.opacitySmall}`,
+        padding: '5px',
+      }}
+    ><tr style={{display: 'flex', height: '40px'}}>
+      <Flex style={{width: '35%', alignItems: 'center'}}><Text mx="10px">{'Top tokens'}</Text><FarmRepeatIcon /></Flex>
+          {options.map((option) => (
+            <TableData
+              key={option}
+              style={{
+                cursor:"pointer",
+                width: '15%',
+                display: 'flex',
+                alignItems: 'center',
+                height: '100%',
+                flexFlow: 'column',
+              }}
+              onClick={() => {
+                  sortOption === option.toLowerCase()
+                    ? setSortOption("hot")
+                    : setSortOption(option.toLowerCase());
+              }}
+            ><Flex style={{marginTop: '10px'}}>
+                <p
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    fontSize: "13px",
+                    color: !theme.darkMode ? theme.poolPinkButton : theme.meatPink,
+                    fontWeight: 500,
+                    margin: 0,
+                  }}
+                >
+                  {option}
+                </p><FarmRepeatIcon /></Flex>
+              {sortOption === option.toLowerCase() ? (
+                <SelectedOptionDiv style={{position: 'relative', top: '9px', width: '80%', left: '0px'}} />
+              ) : null}
+            </TableData>
+          ))}
+          <TableData style={{cursor:"pointer", width: '10%'}} />
+        </tr>
+        <Separator />
+        {topTokens.length === 0 ? [...Array(skeletons)].map(() => ( 
+          <Flex style={{width: '100%', margin: 'auto'}} flexDirection='column'>
+            <Row>
+              <SkeletonTable style={{width: '35%', marginLeft: '30px'}}><Skeleton width={'80%'} /></SkeletonTable>
+              <SkeletonTable style={{width: '15%'}}><Skeleton width={'90%'} /></SkeletonTable>
+              <SkeletonTable style={{width: '15%'}}><Skeleton width={'90%'} /></SkeletonTable>
+              <SkeletonTable style={{width: '15%'}}><Skeleton width={'90%'} /></SkeletonTable>
+              <SkeletonTable style={{width: '15%'}}><Skeleton width={'90%'} /></SkeletonTable>
+              <SkeletonTable style={{width: '10%'}}></SkeletonTable>
+            </Row>
+          </Flex>
+        )) : (
+        (topTokensPrevious.length > 0 && topTokens.length > 0) && sortedTokens.map((token, index) => (
+          <TopTokensRow
+            key={index} 
+            token={token} 
+            previousToken={topTokensPrevious.find((t) => t.token.id === token.token.id)} 
+            index={index}
+            handleInput={handleInputSelect}
+            tokens={topTokens}
+            pools={pools} />
+        )))}
+      </table>
+    </Flex>
     <LearnIcon />
     </>
   )
 }
-
-//465: {betterTradeLinkVersion && <BetterTradeLink version={betterTradeLinkVersion} />}

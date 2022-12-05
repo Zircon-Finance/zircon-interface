@@ -7,6 +7,14 @@ import CurrencyLogo from '../../components/CurrencyLogo'
 import { Field } from '../../state/mint/actions'
 import { TYPE } from '../../theme'
 import { Separator } from '../../components/SearchModal/styleds'
+import { AlertTriangle } from 'react-feather'
+import styled, { useTheme } from 'styled-components'
+
+export const StyledWarningIcon = styled(AlertTriangle)`
+  stroke: ${({ theme }) => theme.red1};
+  height: 40px;
+  width: 90px;
+`
 
 export function ConfirmAddModalBottom({
   noLiquidity,
@@ -14,7 +22,8 @@ export function ConfirmAddModalBottom({
   currencies,
   parsedAmounts,
   poolTokenPercentage,
-  onAdd
+  onAdd,
+  errorTx
 }: {
   noLiquidity?: boolean
   price?: Fraction
@@ -22,7 +31,9 @@ export function ConfirmAddModalBottom({
   parsedAmounts: { [field in Field]?: CurrencyAmount }
   poolTokenPercentage?: Percent
   onAdd: () => void
+  errorTx?: string
 }) {
+  const theme = useTheme()
   return (
     <>
       <RowBetween>
@@ -59,6 +70,12 @@ export function ConfirmAddModalBottom({
         <TYPE.smallerBody>Share of Pool:</TYPE.smallerBody>
         <TYPE.smallerBody>{noLiquidity ? '100' : poolTokenPercentage?.toSignificant(4)}%</TYPE.smallerBody>
       </RowBetween>
+      {errorTx && (
+        <RowBetween mt={10}>
+          <StyledWarningIcon />
+          <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{errorTx}</span>
+        </RowBetween>
+      )}
       <ButtonPrimary style={{ margin: '20px 0 0 0' }} onClick={onAdd}>
         <Text fontWeight={400} fontSize={16}>
           {noLiquidity ? 'Create Pool & Supply' : 'Confirm Supply'}

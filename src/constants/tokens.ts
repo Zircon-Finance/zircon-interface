@@ -1,6 +1,6 @@
-import { ChainId, Token } from 'zircon-sdk'
-import { serializeToken } from '../state/user/hooks'
-import { SerializedToken } from '../constants/types'
+import {ChainId, Token} from 'zircon-sdk'
+import {serializeToken} from '../state/user/hooks'
+import {SerializedToken} from '../constants/types'
 
 const { MOONBASE } = ChainId
 
@@ -33,6 +33,27 @@ export const mainnetTokens = defineTokens({
     18,
     'CAKE',
     'PancakeSwap Token',
+  ),
+  wmovr: new Token(
+    ChainId.MOONRIVER,
+    '0x98878B06940aE243284CA214f92Bb71a2b032B8A',
+    18,
+    'wMOVR',
+    'Wrapped MoonRiver',
+  ),
+  movr: new Token(
+    ChainId.MOONRIVER,
+    '0x0000000000000000000000000000000000000000',
+    18,
+    'MOVR',
+    'MoonRiver',
+  ),
+  zrg: new Token(
+    ChainId.MOONRIVER,
+    '0x3516a7588C2E6FFA66C9507eF51853eb85d76e5B',
+    18,
+    'ZRG',
+    'Zircon Gamma',
   ),
   tlos: new Token(MOONBASE, '0xb6C53431608E626AC81a9776ac3e999c5556717c', 18, 'TLOS', 'Telos'),
   saturn: new Token(MOONBASE, '0xe75F9ae61926FF1d27d16403C938b4cd15c756d5', 18, 'SAT', 'Saturn'),

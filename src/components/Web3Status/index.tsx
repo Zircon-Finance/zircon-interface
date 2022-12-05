@@ -104,7 +104,7 @@ const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean }>`
   font-weight: 400;
   :hover,
   :focus {
-    background-color: ${({ pending, theme }) => (pending ? darken(0.05, theme.primary1) : theme.opacitySmall)};
+    background-color: ${({ pending, theme }) => (pending ? darken(0.05, theme.opacitySmall) : theme.opacitySmall)};
   }
 `
 

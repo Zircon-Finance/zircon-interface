@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 export const ActionContainer = styled.div`
-  padding: 10px;
+  padding: 0 10px;
   display: flex;
   flex-flow: column;
   border-radius: 16px;
@@ -9,21 +9,17 @@ export const ActionContainer = styled.div`
   color: ${({ theme }) => theme.text1};
   flex-basis: 0;
   margin-bottom: 16px;
-  min-height: 120px;
   @media (min-width: 800px) {
-    min-height: 50px;
     margin-bottom: 0;
   }
   ${({ theme }) => theme.mediaQueries.sm} {
     margin-right: 12px;
     margin-bottom: 0;
-    max-height: 100px;
   }
 
   ${({ theme }) => theme.mediaQueries.xl} {
     margin-right: 0;
     margin-bottom: 0;
-    max-height: 100px;
   }
 `
 
@@ -41,12 +37,16 @@ export const ActionContent = styled.div`
   }
   .swiper {
     max-width: 100%;
+    margin-left: 0px;
+    margin-bottom: 10px;
   }
   .swiper-pagination-bullet {
     display: none;
   }
   .swiper-slide {
-    border-right: 1px solid rgba(255,255,255,0.1);
+    width: auto !important;
+    padding-right: 10px;
+    margin-right: 10px !important;
     text-align: center;
   }
 `
@@ -63,6 +63,6 @@ export const HarvestButton = styled.button`
   border: none;
   height: 27px;
 
-  background: ${({ theme }) => theme.hoveredButton};
+  background: #9e4d86;
   border-radius: 12px;
 `

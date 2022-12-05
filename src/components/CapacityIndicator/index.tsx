@@ -5,6 +5,7 @@ import {QuestionMarkContainer, ToolTip} from "../../views/Farms/components/FarmT
 import {Text} from "rebass";
 import QuestionMarkIcon from "../QuestionMarkIcon";
 import BigNumber from "bignumber.js";
+import BigNumberJs from "bignumber.js";
 
 const Container = styled.div`
   display: flex;
@@ -12,13 +13,12 @@ const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 80%;
-  height: 100%;
   color: ${({ theme }) => theme.darkMode ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)'};
   border: 1px solid ${({ theme }) => theme.darkMode ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)'};
   border-radius: 12px;
-  padding: 8px 8px;
   font-size: 16px;
   margin: 8px auto 8px auto;
+  border-bottom: none;
 `
 const RowContainer = styled.div`
   display: flex;
@@ -26,6 +26,8 @@ const RowContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  padding: 8px;
+  border-bottom: 1px solid ${({ theme }) => theme.darkMode ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)'};
 `
 const SmallContainer = styled.div`
   display: flex;
@@ -44,22 +46,40 @@ interface Props {
     extraFee?: BigNumber
     extraFeeTreshold?:  BigNumber
     isDeltaGamma?: boolean
+    slashingOmega?: BigNumber
+    hoverPage?: string
+    slippage?: BigNumber
+    reservesPTU?: BigNumber
 }
 
-const CapacityIndicator: React.FC<Props> = ({gamma, health, isFloat, noSpan, blocked, feePercentage,extraFee, extraFeeTreshold, isDeltaGamma}) => {
+interface ToolTipProps {
+    option: string
+  }
+
+const CapacityIndicator: React.FC<Props> = ({gamma, hoverPage, health, isFloat, noSpan, blocked, feePercentage,extraFee = new BigNumberJs(0), extraFeeTreshold = new BigNumberJs(0), isDeltaGamma, slashingOmega= new BigNumberJs(0), slippage = new BigNumberJs(0), reservesPTU = new BigNumberJs(0)}) => {
     const theme = useTheme();
     const [hoverRisk, setHoverRisk] = React.useState(false);
     const [hoverFee, setHoverFee] = React.useState(false);
-    const TooltipContentRisk = () => {return (
-        <ToolTip style={{left: '-200px'}} show={hoverRisk}>
+    const [hoverSlashing, setHoverSlashing] = React.useState(false);
+    const [hoverSlippage, setHoverSlippage] = React.useState(false);
+    const TooltipContentRisk: React.FC<ToolTipProps> = ({option}) => { return (
+        <ToolTip style={{left: '-100px'}} show={hoverRisk || hoverFee || hoverSlashing || hoverSlippage}>
             <Text fontSize='13px' fontWeight={500} color={theme.text1}>
-                {`The risk factor keeps track of the farms' stability. `}
+                {`${ blocked ? "Transaction temporarly blocked" :
+                    option === 'health' ? 'The health factor measures how balanced this Stable vault is. Imbalanced vaults may be partially slashed when withdrawing during critical market activity.' :
+                option === 'divergence' ? 'Divergence measures how much impermanent loss the Float vault is suffering.' :
+                option === 'deltaFee' ? 'The pool is applying a “Delta Tax” because prices or liquidity have changed too fast recently. Just wait a few minutes for this to pass.':
+                option === 'fee' ? 'You pay a dynamic fee between 0.01% and 0.5% to join the Pylon vaults. The fee is lowest when the Pylon vaults are balanced.' :
+                option === 'omega' ? 'The pool is currently imbalanced, Stable withdrawals are reduced by the distress fee to avoid liquidation. Don’t panic, this is temporary, unless you think this pool will “die”.' :
+                option === 'slippage' ? 'You may suffer some slippage losses when joining the pool. Reduce the amount or use the Swap & Add method to avoid it.' :
+                option === 'burnSlippage' ? 'You incur slippage fees for large amounts that exceed reserves. Use Burn & Swap to avoid it.' :
+                'General info'}`}
             </Text>
         </ToolTip>
     )}
     return (
         <Container>
-            {!blocked && feePercentage.gt(0) && <RowContainer>
+            {(!blocked && feePercentage && feePercentage.gt(0)) && <RowContainer>
                 <SmallContainer>
                     {!noSpan && <span style={{marginLeft: 8}}>{'Fee' + (isDeltaGamma ? " + Delta Fee" : "")}</span>}
                     <QuestionMarkContainer
@@ -67,45 +87,78 @@ const CapacityIndicator: React.FC<Props> = ({gamma, health, isFloat, noSpan, blo
                         onMouseLeave={() => setHoverFee(false)}
                     >
                         {hoverFee && (
-                            <TooltipContentRisk />
+                            <TooltipContentRisk option={isDeltaGamma ? "deltaFee" : "fee"} />
                         )}
                         <QuestionMarkIcon />
                     </QuestionMarkContainer>
                 </SmallContainer>
-                <span style={{marginLeft: 8}}>{feePercentage?.toFixed(4)}%</span>
+                <span style={{marginRight: 8, color: parseFloat(feePercentage?.toFixed(2)) >= 1 ? '#E67066' : '#5CB376'}}>
+                    {feePercentage?.toFixed(2)}%
+                </span>
             </RowContainer>}
 
             {!blocked && extraFee.gt(0) && <RowContainer>
                 <SmallContainer>
-                    {!noSpan && <span style={{marginLeft: 8}}>{'Slippage For Amount > ' + extraFeeTreshold.toFixed(4)}</span>}
+                    {!noSpan && <span style={{marginLeft: 8}}>{'Slippage For Amount > ' + extraFeeTreshold.toFixed(2)}</span>}
                     <QuestionMarkContainer
-                        onMouseEnter={() => setHoverFee(true)}
-                        onMouseLeave={() => setHoverFee(false)}
+                        onMouseEnter={() => setHoverSlippage(true)}
+                        onMouseLeave={() => setHoverSlippage(false)}
                     >
-                        {hoverFee && (
-                            <TooltipContentRisk />
+                        {hoverSlippage && (
+                            <TooltipContentRisk option='slippage' />
                         )}
                         <QuestionMarkIcon />
                     </QuestionMarkContainer>
                 </SmallContainer>
-                <span style={{marginLeft: 8}}>{extraFee?.toFixed(4)}%</span>
+                <span style={{marginRight: 8, color: parseFloat(extraFee?.toFixed(2)) >= 1 ? '#E67066' : '#5CB376'}}>{extraFee?.toFixed(2)}%</span>
+            </RowContainer>}
+            {!blocked && slippage.gt(0) && <RowContainer>
+                <SmallContainer>
+                    {!noSpan && <span style={{marginLeft: 8}}>{'Slippage > ' + reservesPTU.toFixed(0)}</span>}
+                    <QuestionMarkContainer
+                        onMouseEnter={() => setHoverSlippage(true)}
+                        onMouseLeave={() => setHoverSlippage(false)}
+                    >
+                        {hoverSlippage && (
+                            <TooltipContentRisk option='burnSlippage' />
+                        )}
+                        <QuestionMarkIcon />
+                    </QuestionMarkContainer>
+                </SmallContainer>
+                <span style={{marginRight: 8}}>{slippage?.toFixed(2)}%</span>
             </RowContainer>}
 
-            <RowContainer>
+            {!blocked && slashingOmega.gt("0.01") && <RowContainer>
+                <SmallContainer>
+                    {!noSpan && <span style={{marginLeft: 8}}>{'Omega'}</span>}
+                    <QuestionMarkContainer
+                        onMouseEnter={() => setHoverSlashing(true)}
+                        onMouseLeave={() => setHoverSlashing(false)}
+                    >
+                        {hoverSlashing && (
+                            <TooltipContentRisk option='omega' />
+                        )}
+                        <QuestionMarkIcon />
+                    </QuestionMarkContainer>
+                </SmallContainer>
+                <span style={{marginRight: 8}}>{slashingOmega?.toFixed(2)}%</span>
+            </RowContainer>}
+
+            <RowContainer style={{borderBottomLeftRadius: '12px', borderBottomRightRadius: '12px'}}>
                 <SmallContainer>
 
-                    {!noSpan && <span style={{marginLeft: 8}}>{blocked ? "Transaction likely to fail" : isFloat ? 'Capacity indicator' : 'Health factor'}</span>}
+                    {!noSpan && <span style={{marginLeft: 8, color: blocked ? '#E67066' : undefined}}>{blocked ? "Tx likely to fail" : isFloat ? 'Divergence' : 'Health factor'}</span>}
                     <QuestionMarkContainer
                         onMouseEnter={() => setHoverRisk(true)}
                         onMouseLeave={() => setHoverRisk(false)}
                     >
                         {hoverRisk && (
-                            <TooltipContentRisk />
+                            <TooltipContentRisk option={isFloat ? 'divergence' : 'health'} />
                         )}
                         <QuestionMarkIcon />
                     </QuestionMarkContainer>
                 </SmallContainer>
-                <CapacityIndicatorSmall gamma={gamma} health={health} isFloat={isFloat} />
+                <CapacityIndicatorSmall gamma={gamma} health={health} isFloat={isFloat} hoverPage={hoverPage} />
             </RowContainer>
         </Container>
     )

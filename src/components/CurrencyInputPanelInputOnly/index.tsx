@@ -90,18 +90,17 @@ const Container = styled.div<{ hideInput: boolean }>`
 `
 
 const StyledTokenName = styled.span<{ active?: boolean }>`
-  ${({ active }) => (active ? '  margin: 0 0 0 0.25rem;' : '  margin: 0 0.25rem 0 0.25rem;height: 24px;')}
+  ${({ active }) => (active ? '  margin: 0 0 0 0.25rem;' : '  margin: 0 0.25rem 0 0.25rem')}
   font-size:  13px;
   align-self: center;
   text-align: left;
   display: flex;
-  height: 24px;
   flex-flow: column;
   align-items: center;
-  @media (min-width: 700px) {
+  @media (min-width: 500px) {
     font-size: 16px;
     flex-flow: row;
-    ${({ active }) => (active ? '  margin: 0 0.75 0.75rem;' : '  margin: 0 0.25rem 0 0.25rem;height: 24px;')}
+    ${({ active }) => (active ? '  margin: 0 0.75 0.75rem;' : '  margin: 0 0.25rem 0 0.25rem')}
   }
 `
 
@@ -119,6 +118,7 @@ interface CurrencyInputPanelProps {
   style?: React.CSSProperties
   showCommonBases?: boolean
   anchor?: boolean
+  price?: number
 }
 
 export default function CurrencyInputPanel({
@@ -133,7 +133,8 @@ export default function CurrencyInputPanel({
   id,
   style,
   showCommonBases,
-  anchor
+  anchor,
+  price,
 }: CurrencyInputPanelProps) {
   const { t } = useTranslation()
 
@@ -202,8 +203,11 @@ export default function CurrencyInputPanel({
                         <>
                           <p
                             style={{
-                              margin: width > 700 ? "10px 0" : "10px 0 0 0",
+                              margin: width >= 500 ? "10px 0" : "0 0 0 0",
                               width: '100%',
+                              alignSelf: 'center',
+                              display: 'flex',
+                              alignItems: 'center',
                             }}
                           >
                             {currency?.symbol}
@@ -212,15 +216,14 @@ export default function CurrencyInputPanel({
                             style={{
                               width: '100%',
                               color: hovered ? theme.darkMode ? theme.cardLightBorder : currency ? theme.blackBrown : theme.cardLightBorder : !currency ? theme.blackBrown : theme.whiteHalf,
-                              marginBottom: width > 700 ? "0" : "10px",
-                              marginLeft: width < 700 ? '0' : "5px",
-                              fontSize: width > 700 ? "16px" : "13px",
+                              marginLeft: width <= 500 ? '0' : "5px",
+                              fontSize: width > 500 ? "16px" : "13px",
                             }}
                           >
                             {anchor ? "STABLE" : "FLOAT"}
                           </span>
                         </>
-                      )) || <p style={{height: '24px'}}>{t("selectToken")}</p>}
+                      )) || <p>{t("selectToken")}</p>}
                     </StyledTokenName>
                   )}
                 </div>

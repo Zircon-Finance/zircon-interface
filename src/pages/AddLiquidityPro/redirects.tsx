@@ -18,10 +18,21 @@ export function RedirectOldAddLiquidityProPathStructure(props: RouteComponentPro
     return <Redirect to={`/add-pro/${match[1]}/${match[2]}`} />
   }
 
-  return <AddLiquidityPro {...props} />
+  return <AddLiquidityPro {...props}/>
 }
 
 export function RedirectDuplicateTokenIdsPro(props: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
+  const {
+    match: {
+      params: { currencyIdA, currencyIdB }
+    }
+  } = props
+  if (currencyIdA.toLowerCase() === currencyIdB.toLowerCase()) {
+    return <Redirect to={`/add-pro/${currencyIdA}`} />
+  }
+  return <AddLiquidityPro {...props} />
+}
+export function RedirectDuplicateTokenIdsProAnchor(props: RouteComponentProps<{ currencyIdA: string; currencyIdB: string; side: string }>) {
   const {
     match: {
       params: { currencyIdA, currencyIdB }

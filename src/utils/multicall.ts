@@ -11,8 +11,8 @@ export interface MulticallOptions {
   requireSuccess?: boolean
 }
 
-const multicall = async <T = any>(abi: any[], calls: Call[]): Promise<T> => {
-  const multi = getMulticallContract()
+const multicall = async <T = any>(chainId: number, abi: any[], calls: Call[]): Promise<T> => {
+  const multi = getMulticallContract(chainId)
   const itf = new Interface(abi)
 
   const calldata = calls.map((call) => ({
@@ -32,12 +32,13 @@ const multicall = async <T = any>(abi: any[], calls: Call[]): Promise<T> => {
  * 2. The return includes a boolean whether the call was successful e.g. [wasSuccessful, callResult]
  */
 export const multicallv2 = async <T = any>(
+  chainId: number,
   abi: any[],
   calls: Call[],
   options: MulticallOptions = { requireSuccess: true },
 ): Promise<T> => {
   const { requireSuccess } = options
-  const multi = getMulticallContract()
+  const multi = getMulticallContract(chainId)
   const itf = new Interface(abi)
 
   const calldata = calls.map((call) => ({

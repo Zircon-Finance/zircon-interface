@@ -23,15 +23,17 @@ import { usePylon } from '../../data/PylonReserves'
 import { useCurrency } from '../../hooks/Tokens'
 import { useTokenBalance } from '../wallet/hooks'
 import { usePair } from '../../data/Reserves'
+import { useActiveWeb3React } from '../../hooks'
 
 export const useFetchPublicPoolsData = () => {
   const dispatch = useDispatch()
+  const {chainId} = useActiveWeb3React()
 
   useSlowRefreshEffect(
     (currentBlock) => {
       const fetchPoolsDataWithFarms = async () => {
         batch(() => {
-          dispatch(fetchPoolsPublicDataAsync(currentBlock))
+          dispatch(fetchPoolsPublicDataAsync(currentBlock, chainId))
           dispatch(fetchPoolsStakingLimitsAsync())
         })
       }
@@ -83,7 +85,7 @@ export const usePairLiquidity = (token1, token2) => {
 // }
 
 export const usePoolsPageFetch = () => {
-  const { account } = useWeb3React()
+  const { account, chainId } = useWeb3React()
   const dispatch = useDispatch()
   useFetchPublicPoolsData()
 
@@ -91,7 +93,7 @@ export const usePoolsPageFetch = () => {
     batch(() => {
       // dispatch(fetchCakeVaultPublicData())
       if (account) {
-        dispatch(fetchPoolsUserDataAsync(account))
+        dispatch(fetchPoolsUserDataAsync({chainId,account}))
         // dispatch(fetchCakeVaultUserData({ account }))
       }
     })

@@ -219,7 +219,7 @@ const Farms: React.FC = ({ children }) => {
   const [filter] = useUserFarmsFilterPylonClassic()
   const [filterAnchorFloat] = useUserFarmsFilterAnchorFloat()
   const [filtedFinishedOnly] = useUserFarmsFinishedOnly()
-  const { account } = useWeb3React()
+  const { account, chainId } = useWeb3React()
   const [sortOption, setSortOption] = useState('hot')
   const [pendingTx, setPendingTx] = useState(false)
   const [showBanner, ] = useShowBannerManager()
@@ -235,7 +235,7 @@ const Farms: React.FC = ({ children }) => {
 
   usePoolsPageFetch()
   if(account) {
-    fetchPoolsUserDataAsync(account)
+    fetchPoolsUserDataAsync({chainId, account})
   }
 
   const [numberOfFarmsVisible, setNumberOfFarmsVisible] = useState(NUMBER_OF_POOLS_VISIBLE)
@@ -267,7 +267,7 @@ const Farms: React.FC = ({ children }) => {
 
   const harvestAllPools = async() => {
     setPendingTx(true)
-    const contracts = stakedOnlyFarms.map((pool) => getSouschefContract(pool.sousId, library.getSigner()))
+    const contracts = stakedOnlyFarms.map((pool) => getSouschefContract(chainId, pool.sousId, library.getSigner()))
     const zeroValues = contracts.map(() => '000000000000000000')
     const callData = stakedOnlyFarms.map((pool, index) => contracts[index].interface.encodeFunctionData('deposit', ['0']))
     const receipt = await fetchWithCatchTxError(() => 
@@ -295,7 +295,7 @@ const Farms: React.FC = ({ children }) => {
         },
         receipt.transactionHash
       )
-      dispatch(fetchPoolsUserDataAsync(account))
+      dispatch(fetchPoolsUserDataAsync({chainId, account}))
     }
   }
 
@@ -345,7 +345,7 @@ const Farms: React.FC = ({ children }) => {
   let chosenPools = activeFarms
   
   useEffect(() => {
-    simpleRpcProvider.getBlockNumber().then((block) => {
+    simpleRpcProvider(chainId).getBlockNumber().then((block) => {
       setCurrentBlock(block)
     })
   }, [])

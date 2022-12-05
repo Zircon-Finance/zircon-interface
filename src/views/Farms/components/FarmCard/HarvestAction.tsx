@@ -123,7 +123,7 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, u
                                     },
                                     receipt.transactionHash
                                 )
-                                dispatch(fetchPoolsUserDataAsync(account))
+                                dispatch(fetchPoolsUserDataAsync({chainId, account}))
                             }
                         }}
                     >

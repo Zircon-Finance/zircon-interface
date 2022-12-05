@@ -105,7 +105,7 @@ export default function AddLiquidityPro({
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(fetchPoolsUserDataAsync(account))
+    dispatch(fetchPoolsUserDataAsync({chainId, account}))
   }, [account, dispatch])
 
   const toggleWalletModal = useWalletModalToggle(); // toggle wallet when disconnected

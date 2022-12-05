@@ -17,6 +17,7 @@ import { DeserializedPool } from '../../../../state/types'
 import { fetchPoolsUserDataAsync, updateUserAllowance } from '../../../../state/pools'
 import { useCallWithGasPrice } from '../../../../hooks/useCallWithGasPrice'
 import { usePools } from '../../../../state/pools/hooks'
+import { useActiveWeb3React } from '../../../../hooks'
 
 const Action = styled.div`
   padding: 0px;
@@ -56,6 +57,7 @@ interface FarmCardActionsProps {
 
 const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidityUrl, lpLabel, displayApr }) => {
   const { t } = useTranslation()
+  const {chainId} = useActiveWeb3React()
   const theme = useTheme()
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
   const { sousId, stakingToken } = farm
@@ -95,8 +97,8 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
         },
         receipt.transactionHash
       )
-      dispatch(fetchPoolsUserDataAsync(account))
-      dispatch(updateUserAllowance({ sousId, account }))
+      dispatch(fetchPoolsUserDataAsync({chainId, account}))
+      dispatch(updateUserAllowance({ sousId, account, chainId }))
     }
   }, [ 
       dispatch, 

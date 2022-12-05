@@ -282,7 +282,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           },
           receipt.transactionHash
       )
-      dispatch(fetchPoolsUserDataAsync(account))
+      dispatch(fetchPoolsUserDataAsync({chainId, account}))
     }
   }, [dispatch,
     account,
@@ -317,7 +317,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           },
           receipt.transactionHash
       )
-      dispatch(fetchPoolsUserDataAsync(account))
+      dispatch(fetchPoolsUserDataAsync({chainId, account}))
     }
   }
 

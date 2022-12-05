@@ -66,10 +66,10 @@ const initialState: PoolsState = {
   // cakeVault: initialPoolVaultState,
 }
 
-export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (dispatch, getState) => {
+export const fetchPoolsPublicDataAsync = (currentBlockNumber: number, chainId: number) => async (dispatch, getState) => {
   try {
     const [currentBlock] = await Promise.all([
-      currentBlockNumber ? Promise.resolve(currentBlockNumber) : simpleRpcProvider.getBlockNumber(),
+      currentBlockNumber ? Promise.resolve(currentBlockNumber) : simpleRpcProvider(chainId).getBlockNumber(),
     ])
 
     const apiData = await axios.get('https://edgeapi.zircon.finance/static/yield').then((res) => res.data)
@@ -83,7 +83,7 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
       }
     })
 
-    const poolsInformation = await fetchPools(poolsConfig)
+    const poolsInformation = await fetchPools(chainId, poolsConfig)
     const priceZRGMOVR = {zrg: apiData[0]?.zrgPrice, movr: apiData[0]?.movrPrice}
 
     const liveData = poolsInformation.map((pool, i) => {
@@ -130,13 +130,13 @@ export const fetchPoolsPublicDataAsync = (currentBlockNumber: number) => async (
   }
 }
 
-export const fetchPoolsStakingLimitsAsync = () => async (dispatch, getState) => {
+export const fetchPoolsStakingLimitsAsync = () => async (dispatch, getState, chainId) => {
   const poolsWithStakingLimit = getState().pools.data
   // .filter(({ stakingLimit }) => stakingLimit !== null && stakingLimit !== undefined)
   // .map((pool) => pool.sousId)
 
   try {
-    const stakingLimits = await fetchPoolsStakingLimits(poolsWithStakingLimit)
+    const stakingLimits = await fetchPoolsStakingLimits(chainId, poolsWithStakingLimit)
 
     const stakingLimitData = poolsConfig.map((pool) => {
       if (poolsWithStakingLimit.includes(pool.sousId)) {
@@ -161,14 +161,14 @@ export const fetchPoolsStakingLimitsAsync = () => async (dispatch, getState) => 
 
 export const fetchPoolsUserDataAsync = createAsyncThunk<
     { sousId: number; allowance: any; stakingTokenBalance: any; stakedBalance: any; pendingReward: any }[],
-    string
-    >('pool/fetchPoolsUserData', async (account, { rejectWithValue }) => {
+    {chainId: number;account: string }
+    >('pool/fetchPoolsUserData', async ({chainId, account}, { rejectWithValue }) => {
   try {
     const [allowances, stakingTokenBalances, stakedBalances, pendingRewards] = await Promise.all([
-      fetchPoolsAllowance(account),
-      fetchUserBalances(account),
-      fetchUserStakeBalances(account),
-      fetchUserPendingRewards(account),
+      fetchPoolsAllowance(account, chainId),
+      fetchUserBalances(account, chainId),
+      fetchUserStakeBalances(account, chainId),
+      fetchUserPendingRewards(account, chainId),
     ])
 
     const userData = poolsConfig.map((pool) => ({
@@ -186,33 +186,33 @@ export const fetchPoolsUserDataAsync = createAsyncThunk<
 
 export const updateUserAllowance = createAsyncThunk<
     { sousId: number; field: string; value: any },
-    { sousId: number; account: string }
-    >('pool/updateUserAllowance', async ({ sousId, account }) => {
-  const allowances = await fetchPoolsAllowance(account)
+    { sousId: number; account: string, chainId: number }
+    >('pool/updateUserAllowance', async ({ sousId, account, chainId }) => {
+  const allowances = await fetchPoolsAllowance(account, chainId)
   return { sousId, field: 'allowance', value: allowances[sousId] }
 })
 
 export const updateUserBalance = createAsyncThunk<
     { sousId: number; field: string; value: any },
-    { sousId: number; account: string }
-    >('pool/updateUserBalance', async ({ sousId, account }) => {
-  const tokenBalances = await fetchUserBalances(account)
+    { sousId: number; account: string; chainId: number }
+    >('pool/updateUserBalance', async ({ sousId, account, chainId }) => {
+  const tokenBalances = await fetchUserBalances(account, chainId)
   return { sousId, field: 'stakingTokenBalance', value: tokenBalances[sousId] }
 })
 
 export const updateUserStakedBalance = createAsyncThunk<
     { sousId: number; field: string; value: any },
-    { sousId: number; account: string }
-    >('pool/updateUserStakedBalance', async ({ sousId, account }) => {
-  const stakedBalances = await fetchUserStakeBalances(account)
+    { sousId: number; account: string, chainId: number }
+    >('pool/updateUserStakedBalance', async ({ sousId, account, chainId }) => {
+  const stakedBalances = await fetchUserStakeBalances(account, chainId)
   return { sousId, field: 'stakedBalance', value: stakedBalances[sousId] }
 })
 
 export const updateUserPendingReward = createAsyncThunk<
     { sousId: number; field: string; value: any },
-    { sousId: number; account: string }
-    >('pool/updateUserPendingReward', async ({ sousId, account }) => {
-  const pendingRewards = await fetchUserPendingRewards(account)
+    { sousId: number; account: string, chainId: number }
+    >('pool/updateUserPendingReward', async ({ sousId, account, chainId}) => {
+  const pendingRewards = await fetchUserPendingRewards(account, chainId)
   return { sousId, field: 'pendingReward', value: pendingRewards[sousId] }
 })
 

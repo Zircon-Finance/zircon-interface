@@ -9,6 +9,7 @@ import { getAddress } from '../../utils/addressHelpers'
 import multicall from '../../utils/multicall'
 
 export const fetchPoolsStakingLimits = async (
+  chainId: number,
   poolsWithStakingLimit: number[],
 ): Promise<{ [key: string]: { stakingLimit: BigNumber; numberBlocksForUserLimit: number } }> => {
   const validPools = poolsConfig
@@ -26,7 +27,7 @@ export const fetchPoolsStakingLimits = async (
     })
     .flat()
 
-  const poolStakingResultRaw = await multicall(sousChefV2, poolStakingCalls)
+  const poolStakingResultRaw = await multicall(chainId, sousChefV2, poolStakingCalls)
   const chunkSize = poolStakingCalls.length / validPools.length
   const poolStakingChunkedResultRaw = chunk(poolStakingResultRaw.flat(), chunkSize)
   return poolStakingChunkedResultRaw.reduce((accum, stakingLimitRaw, index) => {

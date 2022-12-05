@@ -77,7 +77,7 @@ export function useDerivedPylonMintInfo(
 
   // Pylon
   const [pylonState, pylonPair] = usePylon(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B])
-
+  console.log("pylon add", pylonPair?.floatLiquidityToken.address.toString(), pylonPair?.anchorLiquidityToken.address.toString())
   const pylonInfo = usePylonInfo(pylonPair?.address)
   const pylonConstants = usePylonConstants()
   const blockNumber = useBlockNumber()
@@ -139,6 +139,9 @@ export function useDerivedPylonMintInfo(
       const [tokenA, tokenB] = [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)]
       if (tokenA && tokenB && wrappedIndependentAmount && pylonPair) {
         const dependentCurrency = dependentField === Field.CURRENCY_B ? currencyB : currencyA
+        console.log("invariant", dependentField === Field.CURRENCY_B)
+        console.log("tokenA", tokenA.symbol.toString(), tokenB.address.toString(), wrappedIndependentAmount.currency.symbol.toString())
+
         const dependentTokenAmount =
             dependentField === Field.CURRENCY_B
                 ? pylonPair.pair.priceOf(tokenA).quote(wrappedIndependentAmount)

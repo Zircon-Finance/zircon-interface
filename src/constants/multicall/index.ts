@@ -8,7 +8,7 @@ const MULTICALL_NETWORKS: { [chainId in ChainId]: string } = {
   [ChainId.MOONROCK]: MOONBASE_ADDRESSES.multicall,
   [ChainId.MOONBASE]: MOONBASE_ADDRESSES.multicall,
   [ChainId.MOONSHADOW]: MOONBASE_ADDRESSES.multicall,
-  [ChainId.BSC]: BSC_ADDRESSES.multicall,
+  [ChainId.BSC]: BSC_ADDRESSES.multicall
 }
 
 export { MULTICALL_ABI, MULTICALL_NETWORKS }

@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction, useCallback, useEffect, useState} from 'react'
+import React, {Dispatch, SetStateAction, useCallback, useState} from 'react'
 import styled, { keyframes, css, useTheme } from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { Text } from '@pancakeswap/uikit'
@@ -245,7 +245,6 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const tokenBalance = pool.userData.stakingTokenBalance
   const stakedBalance = pool.userData.stakedBalance
   const [showModal, setShowModal] = useState(false)
-  const [rewardTokens, setRewardTokens] = useState("")
   const { onStake } = useStakeFarms(farm.sousId, farm.stakingToken.address)
   const { account } = useWeb3React()
   const dispatch = useDispatch()
@@ -330,15 +329,8 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
       </Text>
     </ToolTip>
   )}
-  useEffect(() => {
-    let r = ''
-    farm.earningToken.forEach((token) => r += ` ${token.symbol} &`)
-    setRewardTokens(r.slice(0, -1))
-  }, [])
   const [hovered, setHovered] = useState(false)
   const {chainId} = useActiveWeb3React()
-
-  console.log('currentBlock', currentBlock)
 
   return (
       <>
@@ -430,7 +422,6 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                   </SpaceBetween>
               )}
               {!farm.isFinished && <DaysLeftBar startBlock={farm.startBlock} endBlock={farm.endBlock} currentBlock={currentBlock} viewMode={'actionPanel'} />}
-              {width >= 800 ? (
                   <>
                     <Flex>
                     {
@@ -445,7 +436,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                     </> : <></>
                     }
                     </Flex>
-                    <SpaceBetween style={{borderTop: `1px solid ${theme.opacitySmall}`, paddingTop: '5px'}}>
+                    <SpaceBetween style={{borderTop: `1px solid ${theme.opacitySmall}`, paddingTop: '5px', marginBottom: width <= 800 && '20px'}}>
                       <StyledLinkExternal style={{color:theme.darkMode ? theme.meatPink : theme.poolPinkButton, fontWeight: 400}} href={bsc}>
                         {t('View contract ↗')}
                       </StyledLinkExternal>
@@ -453,40 +444,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                         {t('See pair info ↗')}
                       </StyledLinkExternal>
                     </SpaceBetween>
-                  </> ) : (
-                  !account ?
-                    <>
-                    <SpaceBetween style={{marginBottom: '16px'}}>
-                      <Flex style={{flexDirection: 'column'}}>
-                        <StyledLinkExternal style={{margin: '5px 0 5px 0'}} color={theme.meatPink} href={bsc}>{t('View Contract ↗')}</StyledLinkExternal>
-                        <StyledLinkExternal color={theme.meatPink} href={info}>{t('See Pair Info ↗')}</StyledLinkExternal>
-                      </Flex>
-                      <Flex flexDirection={"column"}>
-                      <Text color={theme.text1}>{`Earn${rewardTokens}`}</Text>
-                        {!farm.isFinished && <div style={{display: 'flex', marginLeft: '10px', alignItems: 'center', justifyContent: 'flex-end'}}>
-                          <CapacityIndicatorSmall gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true} hoverPage={'farmActionMobile'}/>
-
-                          <QuestionMarkContainer
-                              onMouseEnter={() => setHoverRisk(true)}
-                              onMouseLeave={() => setHoverRisk(false)}
-                          >{hoverRisk && (
-                              <TooltipContentRisk option={!isAnchor ? 'divergence' : 'health'} />
-                          )}
-                            <QuestionMarkIcon />
-                          </QuestionMarkContainer>
-                        </div>}
-                      </Flex>
-                    </SpaceBetween>
                   </>
-                  :
-                  !farm.isFinished && (<SpaceBetween style={{marginBottom: '16px'}}>
-                    <Text color={theme.whiteHalf} style={{minWidth: 'max-content', fontSize: '13px'}} fontWeight={400} mb='10px'>{'Monthly rewards'}</Text>
-                    <Flex flexDirection={"column"}>
-                     <RewardPerBlock earningRewardsBlock={pool?.earningTokenInfo}  />
-                    </Flex>
-                  </SpaceBetween>)
-              )}
-
               {/* <TagsContainer> */}
               {/* {farm.isCommunity ? <FarmAuctionTag /> : <CoreTag />} */}
               {/* {dual ? <DualTag /> : null} */}
@@ -580,25 +538,6 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           {width >= 800 && <QuarterContainer onClick={() => clickAction(false)} style={{justifyContent: 'center', alignItems: 'center', cursor: 'pointer'}}>
             <ArrowIcon toggled={expanded}  />
           </QuarterContainer>}
-        {account && width <= 800 &&
-        <Flex justifyContent={'space-around'} my={'5px'}>
-        <StyledLinkExternal
-          style={{ color: theme.pinkBrown, fontWeight: 500, marginRight: '10px' }}
-          href={CONTRACT_ADDRESS_BASE+farm.lpAddress}
-        >
-          {"See Pair Info ↗"}
-        </StyledLinkExternal>
-        <StyledLinkExternal
-          style={{
-            color: theme.pinkBrown,
-            fontWeight: 500,
-          }}
-          href={CONTRACT_ADDRESS_BASE+farm.contractAddress}
-        >
-          {"View Contract ↗"}
-        </StyledLinkExternal>
-      </Flex>
-        }
         </Container>
       </>
   )

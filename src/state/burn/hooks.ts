@@ -138,7 +138,7 @@ export function useDerivedBurnInfo(
 export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pylonPoolBalance: TokenAmount,
                                    totalSupply: TokenAmount, ptTotalSupply: TokenAmount, pylonInfo: any[],
                                    pylonConstants: PylonFactory, blockNumber: number,
-                                   pairInfo: any[], isSync: boolean, isFloat: boolean, energyPT: TokenAmount, energyAnchor: TokenAmount): {
+                                   pairInfo: any[], isSync: boolean, isFloat: boolean, energyPT: TokenAmount, energyAnchor: TokenAmount, timestamp: number): {
   amount?: TokenAmount;
   amountA?: TokenAmount;
   amountB?: TokenAmount;
@@ -175,10 +175,10 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
           let burnInfo = isFloat ?
               pylon.burnFloat(totalSupply, ptTotalSupply, userLiquidity,
                   pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-                  pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], pairInfo[2], "0", pylonInfo[10], pairInfo[0], pairInfo[1], pylonInfo[11], pylonInfo[12]) :
+                  pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], pairInfo[2], BigInt(timestamp), pylonInfo[10], pairInfo[0], pairInfo[1], pylonInfo[11], pylonInfo[12]) :
               pylon.burnAnchor(totalSupply, ptTotalSupply, userLiquidity,
                   pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-                  pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], pairInfo[2], energyPT, energyAnchor, "0", pylonInfo[10], pairInfo[0], pairInfo[1], pylonInfo[11], pylonInfo[12]);
+                  pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], pairInfo[2], energyPT, energyAnchor, BigInt(timestamp), pylonInfo[10], pairInfo[0], pairInfo[1], pylonInfo[11], pylonInfo[12]);
           return {...burnInfo, liquidity: isFloat ? [burnInfo.amount, new TokenAmount(pylon.token1, BigInt(0))] :
                 [new TokenAmount(pylon.token0, BigInt(0)), burnInfo.amount]}
         }else{
@@ -188,11 +188,11 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
         let burnInfo = isFloat ?
             pylon.burnAsyncFloat(totalSupply, ptTotalSupply, userLiquidity,
                 pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], pairInfo[2], "0", pylonInfo[10], pairInfo[0], pairInfo[1], pylonInfo[11], pylonInfo[12])
+                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], pairInfo[2], BigInt(timestamp), pylonInfo[10], pairInfo[0], pairInfo[1], pylonInfo[11], pylonInfo[12])
             :
             pylon.burnAsyncAnchor(totalSupply, ptTotalSupply, userLiquidity,
                 pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], pairInfo[2], energyPT, energyAnchor, "0", pylonInfo[10], pairInfo[0], pairInfo[1], pylonInfo[11], pylonInfo[12]);
+                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], pairInfo[2], energyPT, energyAnchor, BigInt(timestamp), pylonInfo[10], pairInfo[0], pairInfo[1], pylonInfo[11], pylonInfo[12]);
 
         return {...burnInfo, liquidity: [burnInfo.amountA, burnInfo.amountB]}
 
@@ -280,7 +280,7 @@ export function useDerivedPylonBurnInfo(
         pylon, userLiquidity, pylonPoolBalance,
         totalSupply, ptTotalSupply, pylonInfo,
         pylonConstants, blockNumber, pairInfo,
-        isSync, isFloat, ptbEnergy, reserveAnchor)
+        isSync, isFloat, ptbEnergy, reserveAnchor, timestamp)
   }, [pylon, userLiquidity, pylonPoolBalance,
     totalSupply, ptTotalSupply, pylonInfo, pylonConstants, blockNumber, pairInfo, isSync, isFloat] )
 
@@ -299,7 +299,13 @@ export function useDerivedPylonBurnInfo(
           pylonInfo[7],
           pylonInfo[8],
           pairInfo[2], //JSBI.BigInt(lastK),
-          pylonConstants
+          pylonConstants,
+          BigInt(timestamp),
+          pylonInfo[10],
+          pairInfo[0],
+          pairInfo[1],
+          pylonInfo[11],
+            pylonInfo[12]
       ).toString();
     }else{
       return undefined
@@ -427,18 +433,19 @@ export function useDerivedPylonBurnInfoFixedPercentage(
   const pylonInfo = usePylonInfo(pylon?.address)
   const pylonConstants = usePylonConstants()
   const blockNumber = useBlockNumber()
+  const timestamp = useBlockTimestamp()
   const pylonPoolBalance = useTokenBalance(pylon?.address, pylon?.pair.liquidityToken)
   const ptTotalSupply = useTotalSupply(isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken)
   const totalSupply = useTotalSupply(pylon?.pair.liquidityToken)
   const lastK = useLastK(pylon ? Pair.getAddress(pylon.token0, pylon.token1) : "");
-  // const pylonSupply = useTotalSupply(pylon?.pair.liquidityToken)
+  const pairInfo = usePairInfo(pylon ? Pair.getAddress(pylon.token0, pylon.token1) : "")
 
   let burnInfo = useMemo(() => {
     return getLiquidityValues(
         pylon, userLiquidity, pylonPoolBalance,
         totalSupply, ptTotalSupply, pylonInfo,
-        pylonConstants, blockNumber,
-        isSync, isFloat, ptbEnergy, reserveAnchor)
+        pylonConstants, blockNumber, pairInfo,
+        isSync, isFloat, ptbEnergy, reserveAnchor, timestamp)
   }, [pylon, userLiquidity, pylonPoolBalance,
     totalSupply, ptTotalSupply, pylonInfo, pylonConstants, blockNumber, lastK, isSync, isFloat] )
 
@@ -485,7 +492,13 @@ export function useDerivedPylonBurnInfoFixedPercentage(
           pylonInfo[7],
           pylonInfo[8],
           JSBI.BigInt(lastK),
-          pylonConstants
+          pylonConstants,
+          BigInt(timestamp),
+          pylonInfo[10],
+          pairInfo[0],
+          pairInfo[1],
+          pylonInfo[11],
+          pylonInfo[12]
       ).toString();
     }else{
       return undefined

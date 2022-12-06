@@ -205,6 +205,7 @@ export default function PoolFinder() {
             </AutoColumn>
 
             <CurrencySearchModal
+                chainId={chainId}
                 isOpen={showSearch}
                 onCurrencySelect={handleCurrencySelect}
                 onDismiss={handleSearchDismiss}

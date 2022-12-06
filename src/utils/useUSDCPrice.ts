@@ -45,7 +45,7 @@ export default function useUSDCPrice(currency?: Currency): Price | undefined {
 
     const ethPairETHAmount = ethPair?.reserveOf(WDEV[chainId])
     const ethPairETHUSDCValue: JSBI =
-      ethPairETHAmount && usdcEthPair ? usdcEthPair.priceOf(WDEV[chainId]).quote(ethPairETHAmount).raw : JSBI.BigInt(0)
+      ethPairETHAmount && usdcEthPair ? usdcEthPair.priceOf(WDEV[chainId]).quote(ethPairETHAmount, chainId).raw : JSBI.BigInt(0)
 
     // all other tokens
     // first try the usdc pair

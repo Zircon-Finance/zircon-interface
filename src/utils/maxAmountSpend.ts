@@ -9,9 +9,9 @@ export function maxAmountSpend(chainId: number, currencyAmount?: CurrencyAmount)
   if (!currencyAmount) return undefined
   if (currencyAmount.currency === NATIVE_TOKEN[chainId]) {
     if (JSBI.greaterThan(currencyAmount.raw, MIN_ETH)) {
-      return CurrencyAmount.ether(JSBI.subtract(currencyAmount.raw, MIN_ETH))
+      return CurrencyAmount.ether(JSBI.subtract(currencyAmount.raw, MIN_ETH), chainId)
     } else {
-      return CurrencyAmount.ether(JSBI.BigInt(0))
+      return CurrencyAmount.ether(JSBI.BigInt(0), chainId)
     }
   }
   return currencyAmount

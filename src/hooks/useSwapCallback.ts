@@ -101,7 +101,7 @@ export function useSwapCallback(
   const addTransaction = useTransactionAdder()
 
   const amountToApprove = useMemo(
-    () => (trade ? computeSlippageAdjustedAmounts(trade, allowedSlippage)[Field.INPUT] : undefined),
+    () => (trade ? computeSlippageAdjustedAmounts(chainId, trade, allowedSlippage)[Field.INPUT] : undefined),
     [trade, allowedSlippage]
   )
   const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined

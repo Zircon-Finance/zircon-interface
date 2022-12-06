@@ -11,7 +11,7 @@ import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
 //import { useDarkModeManager } from '../../state/user/hooks'
 import { useETHBalances } from '../../state/wallet/hooks'
 import {
-  ChainPoolTab,
+  // ChainPoolTab,
   SwapPoolTabs } from '../../components/NavigationTabs'
 
 // import { YellowCard } from '../Card'
@@ -183,14 +183,14 @@ export default function Header() {
         {width >= 700 ?
         <>
         <HeaderElement>
-          <Title href="." style={{width: account ? width < 1100 ? 'auto' : '450px' : width > 1100 ? '350px' : '160px', height: width >= 1100 ? '50px' : '45px'}}>
+          <Title href="." style={{width: account ? width < 1100 ? '250px' : '450px' : width > 1100 ? '350px' : '160px', height: width >= 1100 ? '50px' : '45px'}}>
             <UniIcon id="z-logo">
               <img style={{ height: 24, display: 'flex', margin: 'auto' }} src={!darkMode ? DarkLogo : WhiteLogo} alt="logo" />
             </UniIcon>
             {chainId === 1285 && <BadgeSmall style={{fontSize: '13px', padding: '5px 10px', background: '#56332e', color: '#FFF'}}>
               {'GAMMA'}
               </BadgeSmall>}
-              <ChainPoolTab active={chainId === 1285 ? 'moonriver' : 'bsc'} />
+              {/* <ChainPoolTab active={chainId === 1285 ? 'moonriver' : 'bsc'} /> */}
           </Title>
         </HeaderElement>
         {width > 1100 ?
@@ -258,7 +258,7 @@ export default function Header() {
             <SunLogo  />
             </button>
             <ButtonOutlined style={{border: `1px solid ${theme.navigationTabs}`, color: theme.pinkBrown, padding: '13.5px 20px', maxHeight: '50px'}} onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined>
-           <ChainPoolTab active={chainId === 1285 ? 'moonriver' : 'bsc'} />
+           {/* <ChainPoolTab active={chainId === 1285 ? 'moonriver' : 'bsc'} /> */}
            </>
           </HeaderElement>
           <HeaderControls>

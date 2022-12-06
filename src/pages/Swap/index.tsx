@@ -1,4 +1,4 @@
-import { CurrencyAmount, JSBI, Token, Trade } from 'zircon-sdk'
+import { CurrencyAmount, JSBI, NATIVE_TOKEN, Token, Trade } from 'zircon-sdk'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { ArrowDown } from 'react-feather'
 import ReactGA from 'react-ga4'
@@ -179,6 +179,7 @@ export default function Swap() {
 
   // mark when a user has submitted an approval, reset onTokenSelection for input field
   useEffect(() => {
+    onCurrencySelection(Field.INPUT, NATIVE_TOKEN[chainId])
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
     }
@@ -199,7 +200,7 @@ export default function Swap() {
     recipient
   )
 
-  const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
+  const { priceImpactWithoutFee } = computeTradePriceBreakdown(chainId, trade)
 
   const handleSwap = useCallback(() => {
     if (priceImpactWithoutFee && !confirmPriceImpactWithoutFee(priceImpactWithoutFee)) {
@@ -285,7 +286,7 @@ export default function Swap() {
   console.log('inputCurrency', inputCurrency)
   console.log('outputCurrency', outputCurrency)
 
-  const singleTokenPrice = useSingleTokenSwapInfo(inputCurrencyId, inputCurrency, outputCurrencyId, outputCurrency)
+  const singleTokenPrice = useSingleTokenSwapInfo(chainId, inputCurrencyId, inputCurrency, outputCurrencyId, outputCurrency)
 
   const [pairState,pair] = usePair(currencies[Field.INPUT], currencies[Field.OUTPUT])
   const prices = usePairPrices(currencies[Field.INPUT], currencies[Field.OUTPUT], pair, pairState)
@@ -334,9 +335,9 @@ export default function Swap() {
         <div style={{alignSelf: 'center'}}>
         { outputCurrency ? (
             <PriceChartContainer
-                inputCurrencyId={inputCurrencyId === 'ETH' ? '0x98878b06940ae243284ca214f92bb71a2b032b8a' : inputCurrencyId}
+                inputCurrencyId={inputCurrencyId === NATIVE_TOKEN[chainId].symbol ? '0x98878b06940ae243284ca214f92bb71a2b032b8a' : inputCurrencyId}
                 inputCurrency={currencies[Field.INPUT]}
-                outputCurrencyId={outputCurrencyId === 'ETH' ? '0x98878b06940ae243284ca214f92bb71a2b032b8a' : outputCurrencyId}
+                outputCurrencyId={outputCurrencyId === NATIVE_TOKEN[chainId].symbol ? '0x98878b06940ae243284ca214f92bb71a2b032b8a' : outputCurrencyId}
                 outputCurrency={currencies[Field.OUTPUT]}
                 isChartExpanded={isChartExpanded}
                 setIsChartExpanded={setIsChartExpanded}

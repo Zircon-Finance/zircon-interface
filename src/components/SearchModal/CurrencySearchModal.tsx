@@ -10,6 +10,7 @@ import { ListSelect } from './ListSelect'
 
 interface CurrencySearchModalProps {
   isOpen: boolean
+  chainId: number
   onDismiss: () => void
   isFloat?: boolean
   selectedCurrency?: Currency | null
@@ -20,6 +21,7 @@ interface CurrencySearchModalProps {
 
 export default function CurrencySearchModal({
   isOpen,
+  chainId,
   isFloat,
   onDismiss,
   onCurrencySelect,
@@ -73,6 +75,7 @@ export default function CurrencySearchModal({
         <ListIntroduction onSelectList={handleSelectListIntroduction} />
       ) : (
         <CurrencySearch
+          chainId={chainId}
           isOpen={isOpen}
           onDismiss={onDismiss}
           onCurrencySelect={handleCurrencySelect}

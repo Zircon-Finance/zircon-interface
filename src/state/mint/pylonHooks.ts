@@ -89,7 +89,6 @@ export function useDerivedPylonMintInfo(
   const energyAddress = Pylon.getEnergyAddress(pylonPair?.token0, pylonPair?.token1) //useEnergyAddress(pylonPair?.token0, pylonPair?.token1)
   const ptbEnergy = useTokenBalance(energyAddress, pylonPair?.pair.liquidityToken)
   const reserveAnchor = useTokenBalance(energyAddress, pylonPair?.anchorLiquidityToken)
-  console.log('Calling for reserve anchor with params: ', 'energyAddress: ', energyAddress, 'anchorLiquidityToken: ', pylonPair?.anchorLiquidityToken, 'on pylon: ', pylonPair,  'result: ', reserveAnchor)
   const healthFactor = useMemo(() => {
     try {
       return pylonInfo && pylonInfo[0] && pylonState === PylonState.EXISTS && pylonPair && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && lastK && pylonConstants && pylonState === PylonState.EXISTS?
@@ -112,7 +111,6 @@ export function useDerivedPylonMintInfo(
     }
 
   }, [pylonInfo, pylonPair, ptbEnergy, reserveAnchor, pylonPoolBalance, totalSupply, lastK, pylonConstants,pylonState])
-  console.log('healthFactor', reserveAnchor, pylonPoolBalance, totalSupply, lastK, pylonConstants, pylonState, healthFactor)
   const noPylon: boolean =
       pylonState === PylonState.NOT_EXISTS || Boolean(pylonSupply && JSBI.equal(pylonSupply.raw, ZERO))
 
@@ -127,11 +125,11 @@ export function useDerivedPylonMintInfo(
   }
 
   // amounts
-  const independentAmount: CurrencyAmount | undefined = tryParseAmount(typedValue, currencies[independentField])
+  const independentAmount: CurrencyAmount | undefined = tryParseAmount(chainId, typedValue, currencies[independentField])
   const dependentAmount: CurrencyAmount | undefined = useMemo(() => {
     if (noPylon) {
       if (otherTypedValue && currencies[dependentField]) {
-        return tryParseAmount(otherTypedValue, currencies[dependentField])
+        return tryParseAmount(chainId, otherTypedValue, currencies[dependentField])
       }
       return undefined
     } else if (independentAmount) {
@@ -140,14 +138,12 @@ export function useDerivedPylonMintInfo(
       const [tokenA, tokenB] = [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)]
       if (tokenA && tokenB && wrappedIndependentAmount && pylonPair) {
         const dependentCurrency = dependentField === Field.CURRENCY_B ? currencyB : currencyA
-        console.log("invariant", dependentField === Field.CURRENCY_B)
-        console.log("tokenA", tokenA.symbol.toString(), tokenB.address.toString(), wrappedIndependentAmount.currency.symbol.toString())
 
         const dependentTokenAmount =
             dependentField === Field.CURRENCY_B
-                ? pylonPair.pair.priceOf(tokenA).quote(wrappedIndependentAmount)
-                : pylonPair.pair.priceOf(tokenB).quote(wrappedIndependentAmount)
-        return dependentCurrency === NATIVE_TOKEN[chainId] ? CurrencyAmount.ether(dependentTokenAmount.raw) : dependentTokenAmount
+                ? pylonPair.pair.priceOf(tokenA).quote(wrappedIndependentAmount, chainId)
+                : pylonPair.pair.priceOf(tokenB).quote(wrappedIndependentAmount, chainId)
+        return dependentCurrency === NATIVE_TOKEN[chainId] ? CurrencyAmount.ether(dependentTokenAmount.raw, chainId) : dependentTokenAmount
       }
       return undefined
     } else {

@@ -66,7 +66,7 @@ const initialState: PoolsState = {
   // cakeVault: initialPoolVaultState,
 }
 
-export const fetchPoolsPublicDataAsync = (currentBlockNumber: number, chainId: number) => async (dispatch, getState) => {
+export const fetchPoolsPublicDataAsync = (chainId: number, currentBlockNumber?: number, ) => async (dispatch, getState) => {
   try {
     const [currentBlock] = await Promise.all([
       currentBlockNumber ? Promise.resolve(currentBlockNumber) : simpleRpcProvider(chainId).getBlockNumber(),

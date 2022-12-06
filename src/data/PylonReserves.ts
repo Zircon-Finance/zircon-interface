@@ -47,8 +47,6 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
   )
 
   const results = useMultipleContractSingleData(pylonAddresses, PYLON_INTERFACE, 'getSyncReserves')
-  console.log('Calling getSyncReserves on pylonAddresses', pylonAddresses)
-  console.log('results', results)
   const resultsPair = useMultipleContractSingleData(pairAddresses, PAIR_INTERFACE, 'getReserves')
   // const liquidityFee = useLiquidityFee()
 

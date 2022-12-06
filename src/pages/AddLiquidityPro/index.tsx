@@ -50,7 +50,7 @@ import RepeatIcon from "../../components/RepeatIcon";
 import {usePool, usePools} from "../../state/pools/hooks";
 import {useERC20, useSousChef} from "../../hooks/useContract";
 import useApprovePool from "../../views/Farms/hooks/useApproveFarm";
-import {fetchPoolsUserDataAsync} from "../../state/pools";
+import {fetchPoolsPublicDataAsync} from "../../state/pools";
 import {useDispatch} from "react-redux";
 import {AddressZero} from "@ethersproject/constants";
 import InfoCircle from "../../components/InfoCircle";
@@ -105,7 +105,7 @@ export default function AddLiquidityPro({
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(fetchPoolsUserDataAsync({chainId, account}))
+    dispatch(fetchPoolsPublicDataAsync(chainId))
   }, [account, dispatch])
 
   const toggleWalletModal = useWalletModalToggle(); // toggle wallet when disconnected
@@ -144,12 +144,6 @@ export default function AddLiquidityPro({
   // });
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noPylon);
   const isValid = !error;
-  console.log('currencyA', currencyA)
-  console.log('currencyB', currencyB)
-  console.log('Is valid', isValid)
-  console.log('mintinfo', mintInfo)
-  console.log('is valid error', error)
-  console.log('pylonstate', pylonState)
 
   // handle pool button values
   const {pools} = usePools();
@@ -834,7 +828,7 @@ export default function AddLiquidityPro({
           }
         } else {
           history.push(
-              `/add-pro/${currencyIdA ? currencyIdA : "ETH"}/${newCurrencyIdB || ''}`
+              `/add-pro/${currencyIdA ? currencyIdA : NATIVE_TOKEN[chainId].symbol}/${newCurrencyIdB || ''}`
           );
         }
       },

@@ -79,7 +79,7 @@ export default function Swap() {
   }, [])
 
   const skeletons = 5;
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const theme = useTheme()
 
   // toggle wallet when disconnected
@@ -244,11 +244,12 @@ export default function Swap() {
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
   // never show if price impact is above threshold in non expert mode
   const showApproveFlow =
+    chainId !== 1285 && (
     !swapInputError &&
     (approval === ApprovalState.NOT_APPROVED ||
       approval === ApprovalState.PENDING ||
       (approvalSubmitted && approval === ApprovalState.APPROVED)) &&
-    !(priceImpactSeverity > 3 && !isExpertMode)
+    !(priceImpactSeverity > 3 && !isExpertMode))
 
   const handleConfirmDismiss = useCallback(() => {
     setSwapState({ showConfirm: false, tradeToConfirm, attemptingTxn, swapErrorMessage, txHash })

@@ -264,7 +264,7 @@ export default function RemoveProLiquidity({
 
     const approvalCallData = tokenContract.interface.encodeFunctionData('approve', [router.address, MaxUint256])
     const callData = router.interface.encodeFunctionData((
-      sync ? oneCurrencyIsETH ? 'removeLiquiditySyncETH' : 'removeLiquiditySync' : 
+      sync ? oneCurrencyIsETH ? 'removeLiquiditySyncETH' : 'removeLiquiditySync' :
       oneCurrencyIsETH ? 'removeLiquidityAsyncETH' : 'removeLiquidityAsync'), args)
 
     // all estimations failed...
@@ -277,7 +277,7 @@ export default function RemoveProLiquidity({
       setAttemptingTxn(true)
       await (chainId === 1285 ?
         batchContract.batchAll(
-          [tokenContract.address, router.address], 
+          [tokenContract.address, router.address],
           ["000000000000000000", "000000000000000000"],
           [approvalCallData, callData],
           []
@@ -690,8 +690,8 @@ export default function RemoveProLiquidity({
                     blocked={burnInfo?.blocked || burnInfo?.asyncBlocked}
                     feePercentage={new BigNumberJs(burnInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
                     isDeltaGamma={burnInfo?.deltaApplied}
-                    slippage={new BigNumberJs(burnInfo?.slippage.toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
-                    reservesPTU={new BigNumberJs(burnInfo?.reservesPTU.toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
+                    slippage={new BigNumberJs((burnInfo?.slippage ?? "0").toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
+                    reservesPTU={new BigNumberJs((burnInfo?.reservesPTU ?? "0").toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
                 />
               </div>
               <div style={{ position: 'relative' }}>

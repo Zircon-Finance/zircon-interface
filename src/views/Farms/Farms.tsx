@@ -343,7 +343,7 @@ const Farms: React.FC = ({ children }) => {
   let chosenPools = activeFarms
   
   useEffect(() => {
-    simpleRpcProvider(chainId).getBlockNumber().then((block) => {
+    simpleRpcProvider(chainId ?? 1287).getBlockNumber().then((block) => {
       setCurrentBlock(block)
     })
   }, [])

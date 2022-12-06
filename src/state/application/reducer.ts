@@ -1,18 +1,19 @@
 import { createReducer, nanoid } from '@reduxjs/toolkit'
 import {
-  addPopup,
-  PopupContent,
-  removePopup,
-  toggleWalletModal,
-  toggleSettingsMenu,
-  toggleTransactionsMenu,
-  updateBlockNumber
+    addPopup,
+    PopupContent,
+    removePopup,
+    toggleWalletModal,
+    toggleSettingsMenu,
+    toggleTransactionsMenu,
+    updateBlockNumber, updateTimestamp
 } from './actions'
 
 type PopupList = Array<{ key: string; show: boolean; content: PopupContent; removeAfterMs: number | null }>
 
 export interface ApplicationState {
   blockNumber: { [chainId: number]: number }
+    timestamp: { [chainId: number]: number }
   popupList: PopupList
   walletModalOpen: boolean
   settingsMenuOpen: boolean
@@ -21,6 +22,7 @@ export interface ApplicationState {
 
 const initialState: ApplicationState = {
   blockNumber: {},
+  timestamp: {},
   popupList: [],
   walletModalOpen: false,
   settingsMenuOpen: false,
@@ -29,7 +31,14 @@ const initialState: ApplicationState = {
 
 export default createReducer(initialState, builder =>
   builder
-    .addCase(updateBlockNumber, (state, action) => {
+    .addCase(updateTimestamp, (state, action) => {
+      const { chainId, timestamp } = action.payload
+      if (typeof state.blockNumber[chainId] !== 'number') {
+        state.blockNumber[chainId] = timestamp
+      } else {
+        state.blockNumber[chainId] = Math.max(timestamp, state.timestamp[chainId])
+      }
+    }).addCase(updateBlockNumber, (state, action) => {
       const { chainId, blockNumber } = action.payload
       if (typeof state.blockNumber[chainId] !== 'number') {
         state.blockNumber[chainId] = blockNumber

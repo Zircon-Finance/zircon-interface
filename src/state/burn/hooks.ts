@@ -14,8 +14,7 @@ import { Field, typeInput } from './actions'
 import {usePylon} from "../../data/PylonReserves";
 import BigNumber from 'bignumber.js'
 import {useLastK, usePairInfo, usePylonConstants, usePylonInfo} from "../../data/PylonData";
-import {useBlockNumber} from "../application/hooks";
-import {BigintIsh} from "zircon-sdk/dist/constants";
+import {useBlockNumber, useBlockTimestamp} from "../application/hooks";
 
 export function useBurnState(): AppState['burn'] {
   return useSelector<AppState, AppState['burn']>(state => state.burn)
@@ -176,10 +175,10 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
           let burnInfo = isFloat ?
               pylon.burnFloat(totalSupply, ptTotalSupply, userLiquidity,
                   pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-                  pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], pairInfo[2]) :
+                  pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], pairInfo[2], "0", pylonInfo[10], pairInfo[0], pairInfo[1], pylonInfo[11], pylonInfo[12]) :
               pylon.burnAnchor(totalSupply, ptTotalSupply, userLiquidity,
                   pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-                  pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], pairInfo[2], energyPT, energyAnchor);
+                  pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], pairInfo[2], energyPT, energyAnchor, "0", pylonInfo[10], pairInfo[0], pairInfo[1], pylonInfo[11], pylonInfo[12]);
           return {...burnInfo, liquidity: isFloat ? [burnInfo.amount, new TokenAmount(pylon.token1, BigInt(0))] :
                 [new TokenAmount(pylon.token0, BigInt(0)), burnInfo.amount]}
         }else{
@@ -189,11 +188,11 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
         let burnInfo = isFloat ?
             pylon.burnAsyncFloat(totalSupply, ptTotalSupply, userLiquidity,
                 pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], pairInfo[2])
+                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], pairInfo[2], "0", pylonInfo[10], pairInfo[0], pairInfo[1], pylonInfo[11], pylonInfo[12])
             :
             pylon.burnAsyncAnchor(totalSupply, ptTotalSupply, userLiquidity,
                 pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], pairInfo[2], energyPT, energyAnchor);
+                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], pairInfo[2], energyPT, energyAnchor, "0", pylonInfo[10], pairInfo[0], pairInfo[1], pylonInfo[11], pylonInfo[12]);
 
         return {...burnInfo, liquidity: [burnInfo.amountA, burnInfo.amountB]}
 
@@ -262,6 +261,8 @@ export function useDerivedPylonBurnInfo(
   const pylonInfo = usePylonInfo(pylon?.address)
   const pylonConstants = usePylonConstants()
   const blockNumber = useBlockNumber()
+  const timestamp = useBlockTimestamp()
+  console.log("timestamp", timestamp)
   const userLiquidity = useTokenBalance(account ?? undefined, isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken)
   const pylonPoolBalance = useTokenBalance(pylon?.address, pylon?.pair.liquidityToken)
   const ptTotalSupply = useTotalSupply(isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken)
@@ -436,7 +437,7 @@ export function useDerivedPylonBurnInfoFixedPercentage(
     return getLiquidityValues(
         pylon, userLiquidity, pylonPoolBalance,
         totalSupply, ptTotalSupply, pylonInfo,
-        pylonConstants, blockNumber, lastK,
+        pylonConstants, blockNumber,
         isSync, isFloat, ptbEnergy, reserveAnchor)
   }, [pylon, userLiquidity, pylonPoolBalance,
     totalSupply, ptTotalSupply, pylonInfo, pylonConstants, blockNumber, lastK, isSync, isFloat] )

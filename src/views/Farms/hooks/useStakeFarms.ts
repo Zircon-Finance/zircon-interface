@@ -23,7 +23,7 @@ const sousStake = async (sousChefContract, amount, decimals = 18, stakingTokenCo
   const callData = sousChefContract.interface.encodeFunctionData('deposit', [new BigNumber(amount).times(BIG_TEN.pow(decimals)).toString(10)])
   const approvalCallData = stakingTokenContract.interface.encodeFunctionData('approve', [sousChefContract.address, MaxUint256])
 
-  return chainId === 1285 ?
+  return (chainId === 1285 || chainId === 1287) ?
   batchContract.batchAll(
     [stakingTokenContract.address, sousChefContract.address], 
     ["000000000000000000", "000000000000000000"],

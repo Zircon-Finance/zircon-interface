@@ -188,10 +188,9 @@ export function useSwapCallback(
         } = swapCalls[0]
 
         const approvalCallData = tokenContract ?
-         tokenContract.interface.encodeFunctionData('approve', [ROUTER_ADDRESS[chainId], BigNumber.from(amountToApprove.raw.toString())]) : undefined
+        tokenContract.interface.encodeFunctionData('approve', [ROUTER_ADDRESS[chainId], BigNumber.from(amountToApprove.raw.toString())]) : undefined
         const callData = routerContract.interface.encodeFunctionData(methodName, args)
-        console.log('SWAAAAPPP: ', methodName, args, value)
-        return (chainId === 1285 && tokenContract !== null ?
+        return ((chainId === 1285 || chainId === 1287) && tokenContract !== null ?
         batchContract.batchAll(
           [tokenContract.address, ROUTER_ADDRESS[chainId]], 
           ["000000000000000000", value],

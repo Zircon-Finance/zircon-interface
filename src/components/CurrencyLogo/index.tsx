@@ -32,7 +32,7 @@ export default function CurrencyLogo({
   const srcs: string[] = useMemo(() => {
     return [getTokenLogoURL(currency?.symbol as string), 
             getTokenLogoURL2(currency instanceof Token ? currency?.address as string : ""),
-            getTokenLogoURL3((currency?.name).toLowerCase() as string)]
+            getTokenLogoURL3((currency?.name)?.toLowerCase() as string)]
     //return [getTokenLogoURL(currency.address)]
   }, [currency])
 

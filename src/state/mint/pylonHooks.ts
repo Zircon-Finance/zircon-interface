@@ -182,9 +182,13 @@ export function useDerivedPylonMintInfo(
           let extraFeeTreshold = ZERO;
           let shouldBlock = false;
           if (isFloat) {
-            syncMintInfo = pylonPair.getFloatSyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA,
-                pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK))
+            syncMintInfo = pylonPair.getFloatSyncLiquidityMinted(
+                totalSupply, ptTotalSupply, tokenAmountA,
+                pylonInfo[0], pylonInfo[1], pylonInfo[2],
+                pylonPoolBalance, pylonInfo[3], BigInt(blockNumber),
+                pylonConstants, pylonInfo[4], pylonInfo[5],
+                pylonInfo[6], pylonInfo[7], pylonInfo[8],
+                pylonInfo[9], BigInt(lastK))
             // console.log("syncMintInfo", syncMintInfo)
             if (JSBI.greaterThan(syncMintInfo?.amountsToInvest?.sync, ZERO) && JSBI.greaterThan(syncMintInfo?.amountsToInvest?.async, ZERO)) {
               extraFeeTreshold = syncMintInfo?.amountsToInvest?.sync
@@ -210,6 +214,7 @@ export function useDerivedPylonMintInfo(
           return {...syncMintInfo, extraFeeTreshold: extraFeeTreshold, shouldBlock}
         }else {
           let asyncMintInfo;
+
           if (isFloat) {
             asyncMintInfo = pylonPair.getFloatAsyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA, tokenAmountB,
                 pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
@@ -225,9 +230,10 @@ export function useDerivedPylonMintInfo(
         return undefined
       }
     }catch (e) {
+      console.log("INTERFACE:: isFloat", isFloat)
       console.log("INTERFACE:: pairRes, pylonRes", pylonPair.pair.reserve0.raw.toString(), pylonPair.pair.reserve1.raw.toString(), pylonPair.reserve0.raw.toString(), pylonPair.reserve1.raw.toString() )
-      console.log("INTERFACE:: totalSupply, ptTotalSupply, blockNumber", totalSupply.raw.toString(), ptTotalSupply.raw.toString(), tokenAmountA.raw.toString())
-      console.log("INTERFACE:: ptb, lastk, amount", totalSupply.raw.toString(),  BigInt(lastK).toString(), BigInt(blockNumber))
+      console.log("INTERFACE:: totalSupply, ptTotalSupply, tokenAmountA, tokenAmountA", totalSupply.raw.toString(), ptTotalSupply.raw.toString(), tokenAmountA.raw.toString(), tokenAmountB.raw.toString())
+      console.log("INTERFACE:: ptb, lastk, blockNumber", pylonPoolBalance.raw.toString(),  BigInt(lastK).toString(), BigInt(blockNumber))
       console.log("INTERFACE:: virtualAnchorBalance, muMulDecimals, gammaMulDecimals", pylonInfo[0].toString(), pylonInfo[1].toString(), pylonInfo[2].toString())
       console.log("INTERFACE:: strikeBlock, EMABlockNumber, gammaEMA", pylonInfo[3].toString(), pylonInfo[4].toString(), pylonInfo[5].toString())
       console.log("INTERFACE:: thisBlockEMA, lastRootKTranslated, anchorKFactor, formulaSwitch", pylonInfo[6].toString(), pylonInfo[7].toString(), pylonInfo[8].toString(), pylonInfo[9].toString())

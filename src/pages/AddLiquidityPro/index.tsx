@@ -504,7 +504,6 @@ export default function AddLiquidityPro({
     const approvalCallData1 = token1Contract.interface.encodeFunctionData('approve', [router.address, parsedAmounts[Field.CURRENCY_B].raw.toString()])
     const farmApprovalCallData = lpContract.interface.encodeFunctionData('approve', [sousChefContract.address, MaxUint256])
 
-    console.log('dat::0', token0Contract.address, parsedAmounts[Field.CURRENCY_A].raw.toString())
     console.log('dat::1', token1Contract.address, parsedAmounts[Field.CURRENCY_B].raw.toString())
     const callData = router.interface.encodeFunctionData(((sync === "off" ?
     ((getCurrency(true) === NATIVE_TOKEN[chainId]) ? 'addSyncLiquidityETH' : 'addSyncLiquidity') :

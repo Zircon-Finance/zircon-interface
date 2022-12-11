@@ -5,9 +5,11 @@ import { Flex } from 'rebass'
 import { useTheme } from 'styled-components'
 import { TYPE } from '../../theme'
 import CurrencyLogo from '../CurrencyLogo'
+import { useActiveWeb3React } from '../../hooks'
 
 export default memo(function SwapRoute({ trade }: { trade: Trade }) {
   const theme = useTheme()
+  const {chainId} = useActiveWeb3React()
   return (
     <Flex
       px="1rem"
@@ -24,7 +26,7 @@ export default memo(function SwapRoute({ trade }: { trade: Trade }) {
         return (
           <Fragment key={i}>
             <Flex my="0.5rem" alignItems="center" style={{ flexShrink: 0 }}>
-              <CurrencyLogo currency={token} size="1.5rem" />
+              <CurrencyLogo currency={token} size="1.5rem" chainId={chainId} />
               <TYPE.black fontSize={14} color={theme.text1} ml="0.5rem">
                 {token.symbol}
               </TYPE.black>

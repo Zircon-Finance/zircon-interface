@@ -1,11 +1,12 @@
-import { TokenAmount, Pair, Currency, Pylon } from 'zircon-sdk'
+import {TokenAmount, Pair, Currency, Pylon} from 'zircon-sdk'
 import { useMemo } from 'react'
 import { abi as ZirconPylonABI } from '../constants/abi/ZirconPylon.json'
 import { Interface } from '@ethersproject/abi'
 import { useActiveWeb3React } from '../hooks'
 import { abi as ZirconPairABI } from '../constants/abi/ZirconPair.json'
-import { useMultipleContractSingleData } from '../state/multicall/hooks'
+import {useMultipleContractSingleData} from '../state/multicall/hooks'
 import { wrappedCurrency } from '../utils/wrappedCurrency'
+import {useLiquidityFee} from "./PylonData";
 const PAIR_INTERFACE = new Interface(ZirconPairABI)
 const PYLON_INTERFACE = new Interface(ZirconPylonABI)
 
@@ -21,21 +22,21 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
   const { chainId } = useActiveWeb3React()
 
   const tokens = useMemo(
-      () =>
-          currencies.map(([currencyA, currencyB]) => [
-            wrappedCurrency(currencyA, chainId),
-            wrappedCurrency(currencyB, chainId)
-          ]),
-      [chainId, currencies]
-
+    () =>
+      currencies.map(([currencyA, currencyB]) => [
+        wrappedCurrency(currencyA, chainId),
+        wrappedCurrency(currencyB, chainId)
+      ]),
+    [chainId, currencies]
   )
 
   const pylonAddresses = useMemo(
-      () =>
-          tokens.map(([tokenA, tokenB]) => {
-            return tokenA && tokenB && !tokenA.equals(tokenB) ? Pylon.getAddress(tokenA, tokenB) : undefined
-          }),
-      [tokens]
+    () =>
+      tokens.map(([tokenA, tokenB]) => {
+        console.log('Pylon address is: ', tokenA && tokenB ? Pylon.getAddress(tokenA, tokenB) : undefined, 'from tokens ', tokenA, tokenB)
+        return tokenA && tokenB && !tokenA.equals(tokenB) ? Pylon.getAddress(tokenA, tokenB) : undefined
+      }),
+    [tokens]
   )
   const pairAddresses = useMemo(
       () =>
@@ -47,6 +48,8 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
 
   const results = useMultipleContractSingleData(pylonAddresses, PYLON_INTERFACE, 'getSyncReserves')
   const resultsPair = useMultipleContractSingleData(pairAddresses, PAIR_INTERFACE, 'getReserves')
+  const liquidityFee = useLiquidityFee()
+
   return useMemo(() => {
     return results.map((result, i) => {
       const { result: reserves, loading } = result

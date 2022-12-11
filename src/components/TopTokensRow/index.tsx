@@ -3,6 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Flex, Text } from "rebass";
 import styled, { css, keyframes, useTheme } from "styled-components";
+import { useActiveWeb3React } from "../../hooks";
 import { useCurrency } from "../../hooks/Tokens";
 import { useChosenTokens } from "../../state/user/hooks";
 import { formattedNum } from "../../utils/formatBalance";
@@ -111,6 +112,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
     const {token, previousToken, index, handleInput, tokens, pools} = item;
     const currency = useCurrency(token.token.id)
     const theme = useTheme();
+    const {chainId} = useActiveWeb3React()
     const [chosenTokens, addChosenTokenCallback, removeChosenTokenFeedback] = useChosenTokens();
     const changePercent = (((parseFloat(token?.priceUSD) - parseFloat(previousToken?.priceUSD)) / parseFloat(previousToken?.priceUSD)) * 100).toFixed(2);
     const toggleLiquidityClick = () => {
@@ -173,6 +175,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
         <CurrencyLogo
         style={{ width: "30px", height: "30px", marginRight: "5px" }}
         currency={currency}
+        chainId={chainId}
         />
         <Text
         style={{alignSelf: "center", marginRight: '10px' }}

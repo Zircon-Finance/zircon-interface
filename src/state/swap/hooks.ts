@@ -4,13 +4,13 @@ import {
   ChainId,
   Currency,
   CurrencyAmount,
-  DEV,
   JSBI,
   Pair,
   Token,
   TokenAmount,
   Trade,
   MOONBASE_ADDRESSES,
+  NATIVE_TOKEN,
 } from 'zircon-sdk'
 import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -47,12 +47,13 @@ export function useSwapActionHandlers(): {
   onChangeRecipient: (recipient: string | null) => void
 } {
   const dispatch = useDispatch<AppDispatch>()
+  const {chainId} = useActiveWeb3React()
   const onCurrencySelection = useCallback(
     (field: Field, currency: Currency) => {
       dispatch(
         selectCurrency({
           field,
-          currencyId: currency instanceof Token ? currency.address : currency === DEV ? 'ETH' : ''
+          currencyId: currency instanceof Token ? currency.address : currency === NATIVE_TOKEN[chainId] ? NATIVE_TOKEN[chainId].symbol : ''
         })
       )
     },
@@ -86,7 +87,7 @@ export function useSwapActionHandlers(): {
 }
 
 // try to parse a user entered amount for a given token
-export function tryParseAmount(value?: string, currency?: Currency): CurrencyAmount | undefined {
+export function tryParseAmount(chainId: number, value?: string, currency?: Currency): CurrencyAmount | undefined {
   if (!value || !currency) {
     return undefined
   }
@@ -95,7 +96,7 @@ export function tryParseAmount(value?: string, currency?: Currency): CurrencyAmo
     if (typedValueParsed !== '0') {
       return currency instanceof Token
         ? new TokenAmount(currency, JSBI.BigInt(typedValueParsed))
-        : CurrencyAmount.ether(JSBI.BigInt(typedValueParsed))
+        : CurrencyAmount.ether(JSBI.BigInt(typedValueParsed), chainId)
     }
   } catch (error) {
     // should fail if the user specifies too many decimal places of precision (or maybe exceed max uint?)
@@ -123,6 +124,7 @@ function involvesAddress(trade: Trade, checksummedAddress: string): boolean {
 }
 
 export function useSingleTokenSwapInfo(
+  chainId: number,
   inputCurrencyId: string | undefined,
   inputCurrency: Currency | undefined,
   outputCurrencyId: string | undefined,
@@ -131,7 +133,7 @@ export function useSingleTokenSwapInfo(
   const token0Address = getTokenAddress(inputCurrencyId)
   const token1Address = getTokenAddress(outputCurrencyId)
 
-  const parsedAmount = tryParseAmount('1', inputCurrency ?? undefined)
+  const parsedAmount = tryParseAmount(chainId, '1', inputCurrency ?? undefined)
 
   const bestTradeExactIn = useTradeExactIn(parsedAmount, outputCurrency ?? undefined)
   if (!inputCurrency || !outputCurrency || !bestTradeExactIn) {
@@ -155,7 +157,7 @@ export function useDerivedSwapInfo(): {
   v2Trade: Trade | undefined
   inputError?: string
 } {
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
 
   const { t } = useTranslation()
 
@@ -178,7 +180,7 @@ export function useDerivedSwapInfo(): {
   ])
 
   const isExactIn: boolean = independentField === Field.INPUT
-  const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined)
+  const parsedAmount = tryParseAmount(chainId, typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined)
 
   const bestTradeExactIn = useTradeExactIn(isExactIn ? parsedAmount : undefined, outputCurrency ?? undefined)
   const bestTradeExactOut = useTradeExactOut(inputCurrency ?? undefined, !isExactIn ? parsedAmount : undefined)
@@ -223,7 +225,7 @@ export function useDerivedSwapInfo(): {
 
   const [allowedSlippage] = useUserSlippageTolerance()
 
-  const slippageAdjustedAmounts = v2Trade && allowedSlippage && computeSlippageAdjustedAmounts(v2Trade, allowedSlippage)
+  const slippageAdjustedAmounts = v2Trade && allowedSlippage && computeSlippageAdjustedAmounts(chainId, v2Trade, allowedSlippage)
 
   // compare input balance to max input based on version
   const [balanceIn, amountIn] = [

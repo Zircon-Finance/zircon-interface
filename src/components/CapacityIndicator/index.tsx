@@ -48,13 +48,15 @@ interface Props {
     isDeltaGamma?: boolean
     slashingOmega?: BigNumber
     hoverPage?: string
+    slippage?: BigNumber
+    reservesPTU?: BigNumber
 }
 
 interface ToolTipProps {
     option: string
   }
 
-const CapacityIndicator: React.FC<Props> = ({gamma, hoverPage, health, isFloat, noSpan, blocked, feePercentage,extraFee = new BigNumberJs(0), extraFeeTreshold = new BigNumberJs(0), isDeltaGamma, slashingOmega= new BigNumberJs(0)}) => {
+const CapacityIndicator: React.FC<Props> = ({gamma, hoverPage, health, isFloat, noSpan, blocked, feePercentage,extraFee = new BigNumberJs(0), extraFeeTreshold = new BigNumberJs(0), isDeltaGamma, slashingOmega= new BigNumberJs(0), slippage = new BigNumberJs(0), reservesPTU = new BigNumberJs(0)}) => {
     const theme = useTheme();
     const [hoverRisk, setHoverRisk] = React.useState(false);
     const [hoverFee, setHoverFee] = React.useState(false);
@@ -70,6 +72,7 @@ const CapacityIndicator: React.FC<Props> = ({gamma, hoverPage, health, isFloat, 
                 option === 'fee' ? 'You pay a dynamic fee between 0.01% and 0.5% to join the Pylon vaults. The fee is lowest when the Pylon vaults are balanced.' :
                 option === 'omega' ? 'The pool is currently imbalanced, Stable withdrawals are reduced by the distress fee to avoid liquidation. Don’t panic, this is temporary, unless you think this pool will “die”.' :
                 option === 'slippage' ? 'You may suffer some slippage losses when joining the pool. Reduce the amount or use the Swap & Add method to avoid it.' :
+                option === 'burnSlippage' ? 'You incur slippage fees for large amounts that exceed reserves. Use Burn & Swap to avoid it.' :
                 'General info'}`}
             </Text>
         </ToolTip>
@@ -108,6 +111,21 @@ const CapacityIndicator: React.FC<Props> = ({gamma, hoverPage, health, isFloat, 
                     </QuestionMarkContainer>
                 </SmallContainer>
                 <span style={{marginRight: 8, color: parseFloat(extraFee?.toFixed(2)) >= 1 ? '#E67066' : '#5CB376'}}>{extraFee?.toFixed(2)}%</span>
+            </RowContainer>}
+            {!blocked && slippage.gt(0) && <RowContainer>
+                <SmallContainer>
+                    {!noSpan && <span style={{marginLeft: 8}}>{'Slippage > ' + reservesPTU.toFixed(0)}</span>}
+                    <QuestionMarkContainer
+                        onMouseEnter={() => setHoverSlippage(true)}
+                        onMouseLeave={() => setHoverSlippage(false)}
+                    >
+                        {hoverSlippage && (
+                            <TooltipContentRisk option='burnSlippage' />
+                        )}
+                        <QuestionMarkIcon />
+                    </QuestionMarkContainer>
+                </SmallContainer>
+                <span style={{marginRight: 8}}>{slippage?.toFixed(2)}%</span>
             </RowContainer>}
 
             {!blocked && slashingOmega.gt("0.01") && <RowContainer>

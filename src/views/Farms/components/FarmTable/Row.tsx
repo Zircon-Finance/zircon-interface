@@ -247,7 +247,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
         receipt.transactionHash
       )
       setPendingTx(false)
-      dispatch(fetchPoolsUserDataAsync(account))
+      dispatch(fetchPoolsUserDataAsync({chainId, account}))
     }
   },
   [

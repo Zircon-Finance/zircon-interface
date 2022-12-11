@@ -1,4 +1,4 @@
-import {ChainId, JSBI, Percent, Token, WDEV, MOONBASE_ADDRESSES, MOONRIVER_ADDRESSES} from 'zircon-sdk'
+import {ChainId, JSBI, Percent, Token, WDEV, MOONBASE_ADDRESSES, MOONRIVER_ADDRESSES, BSC_ADDRESSES} from 'zircon-sdk'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { injected, talisman, walletconnect } from '../connectors'
 // fortmatic, portis, walletconnect, walletlink, lattice
@@ -7,12 +7,14 @@ export const ROUTER_ADDRESS: { [key: string]: string } = {
   [ChainId.MOONRIVER]: MOONRIVER_ADDRESSES.router,
   [ChainId.MOONBASE]: MOONBASE_ADDRESSES.router,
   [ChainId.MOONSHADOW]: MOONBASE_ADDRESSES.router,
+  [ChainId.BSC]: BSC_ADDRESSES.router,
 }
 export const PYLON_ROUTER_ADDRESS: { [key: string]: string } = {
   [ChainId.STANDALONE]: '0x42e2EE7Ba8975c473157634Ac2AF4098190fc741',
   [ChainId.MOONRIVER]: MOONRIVER_ADDRESSES.pylonRouter,
   [ChainId.MOONBASE]: MOONBASE_ADDRESSES.pylonRouter,
   [ChainId.MOONSHADOW]: MOONBASE_ADDRESSES.pylonRouter,
+  [ChainId.BSC]: BSC_ADDRESSES.pylonRouter,
 }
 // a list of tokens by chain
 type ChainTokenList = {
@@ -49,6 +51,7 @@ const WDEV_ONLY: ChainTokenList = {
   [ChainId.MOONROCK]: [WDEV[ChainId.MOONROCK]],
   [ChainId.MOONBASE]: [WDEV[ChainId.MOONBASE]],
   [ChainId.MOONSHADOW]: [WDEV[ChainId.MOONSHADOW]],
+  [ChainId.BSC]: [WDEV[ChainId.BSC]],
 }
 
 // used to construct intermediary pairs for trading
@@ -109,6 +112,10 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
       new Token(ChainId.MOONRIVER, '0x639A647fbe20b6c8ac19E48E2de44ea792c62c5C', 18, 'ETH', 'Ethereum'),
       new Token(ChainId.MOONRIVER, '0xFfFFfFff1FcaCBd218EDc0EbA20Fc2308C778080', 18, 'KSM', 'Kusama'),
       new Token(ChainId.MOONRIVER, '0x6Ccf12B480A99C54b23647c995f4525D544A7E72', 18, 'LDO', 'Lido')
+  ],
+  [ChainId.BSC]: [
+      new Token(ChainId.BSC, '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82', 18, 'CAKE', 'PancakeSwap Token'),
+      new Token(ChainId.BSC, '0xe9e7cea3dedca5984780bafc599bd69add087d56', 18, 'BUSD', 'BUSD Token'),
   ]
 }
 

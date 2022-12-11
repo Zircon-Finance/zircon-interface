@@ -1,4 +1,4 @@
-import { Currency, DEV, Token } from 'zircon-sdk'
+import { Currency, NATIVE_TOKEN, Token } from 'zircon-sdk'
 import React, { KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import ReactGA from 'react-ga4'
 import { useTranslation } from 'react-i18next'
@@ -27,6 +27,7 @@ import CurrencyLogo from '../CurrencyLogo'
 import { mainnetTokens } from '../../constants/tokens'
 import { useChosenTokens } from '../../state/user/hooks'
 import { StarFull } from '../TopTokensRow'
+import { useActiveWeb3React } from '../../hooks'
 
 const SmallPlanet = styled.div`
   height: 28px;
@@ -55,9 +56,11 @@ interface CurrencySearchProps {
   showCommonBases?: boolean
   onChangeList: () => void
   isFloat: boolean
+  chainId: number
 }
 
 export function CurrencySearch({
+  chainId,
   selectedCurrency,
   onCurrencySelect,
   otherSelectedCurrency,
@@ -153,7 +156,7 @@ export function CurrencySearch({
       if (e.key === 'Enter') {
         const s = searchQuery.toLowerCase().trim()
         if (s === 'dev') {
-          handleCurrencySelect(DEV)
+          handleCurrencySelect(NATIVE_TOKEN[chainId])
         } else if (filteredSortedTokens.length > 0) {
           if (
             filteredSortedTokens[0].symbol?.toLowerCase() === searchQuery.trim().toLowerCase() ||
@@ -169,14 +172,16 @@ export function CurrencySearch({
 
   const selectedListInfo = useSelectedListInfo()
   const [hover, setHover] = useState(false)
-
   const [chosenTokens] = useChosenTokens();
+  const tokensToShow = chosenTokens.filter(token => Object.keys(allTokens).map(token => token.toLowerCase()).includes(token.toLowerCase()))
 
   const SmallToken = ({ token, index }: { token: any, index: number }) => {
     const currency = useToken(token)
+    const {chainId} = useActiveWeb3React()
     return (
-      <SmallPlanet key={index} onClick={()=>handleCurrencySelect(token.address ? token.symbol === 'MOVR' ? DEV : token : currency)}>
-        <CurrencyLogo currency={token.symbol ? token : currency} size={'18px'} />
+      <SmallPlanet key={index} onClick={()=>handleCurrencySelect(token.address ? token.symbol === NATIVE_TOKEN[chainId].symbol ? 
+      NATIVE_TOKEN[chainId] : token : currency)}>
+        <CurrencyLogo currency={token.symbol ? token : currency} size={'18px'} chainId = {chainId} />
         <Text fontWeight={500} fontSize={14} style={{padding: '0 5px 0 5px'}}>{token?.symbol ? token?.symbol : currency?.symbol}</Text>
       </SmallPlanet>
   )}
@@ -209,12 +214,12 @@ export function CurrencySearch({
         </RowBetween>
       </PaddedColumn>
 
-      {chosenTokens?.length > 0 && !searchQuery && (
+      {tokensToShow?.length > 0 && !searchQuery && (
         <Flex flexDirection="column" style={{padding: '0 20px', gap: '5px'}}>
         <Text color={theme.whiteHalf} style={{display: 'flex', alignItems: 'center'}}> 
          <Flex style={{marginRight: '5px'}}><StarFull /></Flex> {`Favourite tokens`}</Text>
           <Flex flexDirection="row" style={{display: 'flex', marginBottom: '15px', flexWrap: 'wrap'}}>
-            {chosenTokens?.map((token, i) => (
+            {tokensToShow?.map((token, i) => (
               <SmallToken token={token} index={i} />
             ))}
           </Flex>

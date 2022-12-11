@@ -1,5 +1,5 @@
 // import { TransactionResponse } from '@ethersproject/providers'
-import { Currency, currencyEquals, DEV, Percent, WDEV } from 'zircon-sdk'
+import { Currency, currencyEquals, NATIVE_TOKEN, Percent, WDEV } from 'zircon-sdk'
 import React, { useCallback, useMemo, useState } from 'react'
 import { ArrowDown, Plus } from 'react-feather'
 // import ReactGA from 'react-ga4'
@@ -146,15 +146,15 @@ export default function RemoveLiquidity({
     const liquidityAmount = parsedAmounts[Field.LIQUIDITY]
     if (!liquidityAmount) throw new Error('missing liquidity amount')
 
-    const currencyBIsETH = currencyB === DEV
-    const oneCurrencyIsETH = currencyA === DEV || currencyBIsETH
+    const currencyBIsETH = currencyB === NATIVE_TOKEN[chainId]
+    const oneCurrencyIsETH = currencyA === NATIVE_TOKEN[chainId] || currencyBIsETH
     const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline
 
     if (!tokenA || !tokenB) throw new Error('could not wrap')
 
     let methodNames: string[], args: Array<string | string[] | number | boolean>
     // we have approval, use normal remove liquidity
-    if (approval === ApprovalState.APPROVED || chainId === 1285) {
+    if (approval === ApprovalState.APPROVED || chainId === 1285 || chainId === 1287) {
       // removeLiquidityETH
       if (oneCurrencyIsETH) {
         methodNames = ['removeLiquidityETH', 'removeLiquidityETHSupportingFeeOnTransferTokens']
@@ -197,7 +197,7 @@ export default function RemoveLiquidity({
       const safeGasEstimate = safeGasEstimates[indexOfSuccessfulEstimation]
 
       setAttemptingTxn(true)
-      await (chainId === 1285 ?
+      await ((chainId === 1285 || chainId === 1287) ?
         batchContract.batchAll(
           [tokenContract.address, router.address], 
           ["000000000000000000", "000000000000000000"],
@@ -247,7 +247,7 @@ export default function RemoveLiquidity({
             {parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)}
           </Text>
           <RowFixed gap="4px">
-            <CurrencyLogo currency={currencyA} size={'24px'} />
+            <CurrencyLogo currency={currencyA} size={'24px'} chainId={chainId} />
             <Text fontSize={24} fontWeight={400} style={{ marginLeft: '10px' }}>
               {currencyA?.symbol}
             </Text>
@@ -261,7 +261,7 @@ export default function RemoveLiquidity({
             {parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)}
           </Text>
           <RowFixed gap="4px">
-            <CurrencyLogo currency={currencyB} size={'24px'} />
+            <CurrencyLogo currency={currencyB} size={'24px'} chainId={chainId} />
             <Text fontSize={24} fontWeight={400} style={{ marginLeft: '10px' }}>
               {currencyB?.symbol}
             </Text>
@@ -314,7 +314,7 @@ export default function RemoveLiquidity({
           <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{errorTx}</span>
         </RowBetween>
         )}
-        <ButtonPrimary disabled={chainId !== 1285 && (!(approval === ApprovalState.APPROVED || signatureData !== null))} onClick={ ()=> onRemove()}>
+        <ButtonPrimary disabled={!(chainId === 1285 || chainId === 1287) && (!(approval === ApprovalState.APPROVED || signatureData !== null))} onClick={ ()=> onRemove()}>
           <Text fontWeight={400} fontSize={18}>
             Confirm
           </Text>
@@ -334,7 +334,7 @@ export default function RemoveLiquidity({
     [onUserInput]
   )
 
-  const oneCurrencyIsETH = currencyA === DEV || currencyB === DEV
+  const oneCurrencyIsETH = currencyA === NATIVE_TOKEN[chainId] || currencyB === NATIVE_TOKEN[chainId]
   const oneCurrencyIsWDEV = Boolean(
     chainId &&
       ((currencyA && currencyEquals(WDEV[chainId], currencyA)) ||
@@ -343,20 +343,20 @@ export default function RemoveLiquidity({
 
   const handleSelectCurrencyA = useCallback(
     (currency: Currency) => {
-      if (currencyIdB && currencyId(currency) === currencyIdB) {
-        history.push(`/remove/${currencyId(currency)}/${currencyIdA}`)
+      if (currencyIdB && currencyId(currency, chainId) === currencyIdB) {
+        history.push(`/remove/${currencyId(currency, chainId)}/${currencyIdA}`)
       } else {
-        history.push(`/remove/${currencyId(currency)}/${currencyIdB}`)
+        history.push(`/remove/${currencyId(currency, chainId)}/${currencyIdB}`)
       }
     },
     [currencyIdA, currencyIdB, history]
   )
   const handleSelectCurrencyB = useCallback(
     (currency: Currency) => {
-      if (currencyIdA && currencyId(currency) === currencyIdA) {
-        history.push(`/remove/${currencyIdB}/${currencyId(currency)}`)
+      if (currencyIdA && currencyId(currency, chainId) === currencyIdA) {
+        history.push(`/remove/${currencyIdB}/${currencyId(currency, chainId)}`)
       } else {
-        history.push(`/remove/${currencyIdA}/${currencyId(currency)}`)
+        history.push(`/remove/${currencyIdA}/${currencyId(currency, chainId)}`)
       }
     },
     [currencyIdA, currencyIdB, history]
@@ -449,7 +449,7 @@ export default function RemoveLiquidity({
                   <span style={{width: '100%', fontSize: '13px'}}>{'YOU WILL RECEIVE'}</span>
                     <RowBetween>
                       <RowFixed>
-                        <CurrencyLogo currency={currencyA} style={{ marginRight: '12px' }} />
+                        <CurrencyLogo currency={currencyA} style={{ marginRight: '12px' }} chainId={chainId} />
                         <Text fontSize={16} fontWeight={400} id="remove-liquidity-tokena-symbol">
                           {currencyA?.symbol}
                         </Text>
@@ -461,7 +461,7 @@ export default function RemoveLiquidity({
                     </RowBetween>
                     <RowBetween>
                       <RowFixed>
-                        <CurrencyLogo currency={currencyB} style={{ marginRight: '12px' }} />
+                        <CurrencyLogo currency={currencyB} style={{ marginRight: '12px' }} chainId={chainId} />
                         <Text fontSize={16} fontWeight={400} id="remove-liquidity-tokenb-symbol">
                           {currencyB?.symbol}
                         </Text>
@@ -475,8 +475,8 @@ export default function RemoveLiquidity({
                       <RowBetween style={{ justifyContent: 'flex-end' }}>
                         {oneCurrencyIsETH ? (
                           <StyledInternalLink
-                            to={`/remove/${currencyA === DEV ? WDEV[chainId].address : currencyIdA}/${
-                              currencyB === DEV ? WDEV[chainId].address : currencyIdB
+                            to={`/remove/${currencyA === NATIVE_TOKEN[chainId] ? WDEV[chainId].address : currencyIdA}/${
+                              currencyB === NATIVE_TOKEN[chainId] ? WDEV[chainId].address : currencyIdB
                             }`}
                           >
                             Receive wMOVR
@@ -484,8 +484,8 @@ export default function RemoveLiquidity({
                         ) : oneCurrencyIsWDEV ? (
                           <StyledInternalLink
                             to={`/remove/${
-                              currencyA && currencyEquals(currencyA, WDEV[chainId]) ? 'ETH' : currencyIdA
-                            }/${currencyB && currencyEquals(currencyB, WDEV[chainId]) ? 'ETH' : currencyIdB}`}
+                              currencyA && currencyEquals(currencyA, WDEV[chainId]) ? NATIVE_TOKEN[chainId].symbol : currencyIdA
+                            }/${currencyB && currencyEquals(currencyB, WDEV[chainId]) ? NATIVE_TOKEN[chainId].symbol : currencyIdB}`}
                           >
                             Receive MOVR
                           </StyledInternalLink>
@@ -568,7 +568,7 @@ export default function RemoveLiquidity({
                 <ButtonLight onClick={toggleWalletModal}>Connect Wallet</ButtonLight>
               ) : (
                 <RowBetween style={{paddingBottom: '10px'}}>
-                  {chainId !== 1285 && (<ButtonConfirmed
+                  {!(chainId === 1285 || chainId === 1287) && (<ButtonConfirmed
                     onClick={() => approveCallback()}
                     confirmed={approval === ApprovalState.APPROVED }
                     disabled={approval !== ApprovalState.NOT_APPROVED }
@@ -588,7 +588,7 @@ export default function RemoveLiquidity({
                     onClick={() => {
                       setShowConfirm(true)
                     }}
-                    disabled={chainId !== 1285 ? (!isValid || (approval !== ApprovalState.APPROVED)) : !isValid}
+                    disabled={!(chainId === 1285 || chainId === 1287) ? (!isValid || (approval !== ApprovalState.APPROVED)) : !isValid}
                     error={!isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]}
                   >
                     <Text fontSize={16} fontWeight={400}>

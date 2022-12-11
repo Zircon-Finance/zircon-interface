@@ -1,6 +1,6 @@
 import React  from 'react'
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
-import { Token, TokenAmount, WDEV } from 'zircon-sdk'
+import { NATIVE_TOKEN, Token, TokenAmount, WDEV } from 'zircon-sdk'
 
 import { Text } from 'rebass'
 import { AutoColumn } from '../Column'
@@ -28,7 +28,7 @@ function V1PositionCard({ token, V1LiquidityBalance }: PositionCardProps) {
           <RowFixed>
             <DoubleCurrencyLogo currency0={token} margin={true} size={20} />
             <Text fontWeight={400} fontSize={20} style={{ marginLeft: '' }}>
-              {`${chainId && token.equals(WDEV[chainId]) ? 'WDEV' : token.symbol}/ETH`}
+              {`${chainId && token.equals(WDEV[chainId]) ? WDEV[chainId]?.symbol : token.symbol}/${NATIVE_TOKEN[chainId]?.symbol}`}
             </Text>
             <Text
               fontSize={12}

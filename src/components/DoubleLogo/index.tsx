@@ -2,6 +2,7 @@ import { Currency } from 'zircon-sdk'
 import React from 'react'
 import styled from 'styled-components'
 import CurrencyLogo from '../CurrencyLogo'
+import { useActiveWeb3React } from '../../hooks'
 
 const Wrapper = styled.div<{ margin: boolean; sizeraw: number }>`
   position: relative;
@@ -32,10 +33,11 @@ export default function DoubleCurrencyLogo({
   size = 16,
   margin = false
 }: DoubleCurrencyLogoProps) {
+  const {chainId} = useActiveWeb3React()
   return (
     <Wrapper sizeraw={size} margin={margin}>
-      {currency0 && <HigherLogo currency={currency0} size={size.toString() + 'px'}  style={{marginRight: '5px'}}/>}
-      {currency1 && <CoveredLogo currency={currency1} size={(size).toString() + 'px'} sizeraw={size} style={{position: 'absolute', left: size/2, bottom:0}} />}
+      {currency0 && <HigherLogo chainId={chainId} currency={currency0} size={size.toString() + 'px'}  style={{marginRight: '5px'}}/>}
+      {currency1 && <CoveredLogo chainId={chainId} currency={currency1} size={(size).toString() + 'px'} sizeraw={size} style={{position: 'absolute', left: size/2, bottom:0}} />}
     </Wrapper>
   )
 }

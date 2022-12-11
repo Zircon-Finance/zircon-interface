@@ -1,6 +1,6 @@
 import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
-import { Trade, TokenAmount, CurrencyAmount, DEV } from 'zircon-sdk'
+import { Trade, TokenAmount, CurrencyAmount, NATIVE_TOKEN } from 'zircon-sdk'
 import { useCallback, useMemo } from 'react'
 import { ROUTER_ADDRESS } from '../constants'
 import { useTokenAllowance } from '../data/Allowances'
@@ -27,11 +27,12 @@ export function useApproveCallback(
   const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
   const pendingApproval = useHasPendingApproval(token?.address, spender)
+  const {chainId} = useActiveWeb3React()
 
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {
     if (!amountToApprove || !spender) return ApprovalState.UNKNOWN
-    if (amountToApprove.currency === DEV) return ApprovalState.APPROVED
+    if (amountToApprove.currency === NATIVE_TOKEN[chainId]) return ApprovalState.APPROVED
     // we might not have enough data to know whether or not we need to approve
     if (!currentAllowance) return ApprovalState.UNKNOWN
 
@@ -101,7 +102,7 @@ export function useApproveCallback(
 export function useApproveCallbackFromTrade(trade?: Trade, allowedSlippage = 0) {
   const { chainId } = useActiveWeb3React()
   const amountToApprove = useMemo(
-    () => (trade ? computeSlippageAdjustedAmounts(trade, allowedSlippage)[Field.INPUT] : undefined),
+    () => (trade ? computeSlippageAdjustedAmounts(chainId, trade, allowedSlippage)[Field.INPUT] : undefined),
     [trade, allowedSlippage]
   )
   return useApproveCallback(amountToApprove, ROUTER_ADDRESS[chainId ? chainId : ''])

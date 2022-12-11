@@ -13,6 +13,7 @@ import CurrencyLogo from '../CurrencyLogo'
 import { RowBetween, RowFixed } from '../Row'
 import { TruncatedText, SwapShowAcceptChanges } from './styleds'
 import { Separator } from '../SearchModal/styleds'
+import { useActiveWeb3React } from '../../hooks'
 
 export default function SwapModalHeader({
   trade,
@@ -27,13 +28,13 @@ export default function SwapModalHeader({
   showAcceptChanges: boolean
   onAcceptChanges: () => void
 }) {
-  const slippageAdjustedAmounts = useMemo(() => computeSlippageAdjustedAmounts(trade, allowedSlippage), [
+  const { chainId } = useActiveWeb3React()
+  const slippageAdjustedAmounts = useMemo(() => computeSlippageAdjustedAmounts(chainId, trade, allowedSlippage), [
     trade,
     allowedSlippage
   ])
-  const { priceImpactWithoutFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
+  const { priceImpactWithoutFee } = useMemo(() => computeTradePriceBreakdown(chainId, trade), [trade])
   const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)
-
   const theme = useTheme()
 
   return (
@@ -41,7 +42,7 @@ export default function SwapModalHeader({
     <AutoColumn gap={'md'} style={{ marginTop: '20px', backgroundColor: theme.bg14, padding: '16px', borderRadius: '17px' }}>
       <RowBetween align="flex-end">
         <RowFixed gap={'0px'} alignItems={'center'}>
-          <CurrencyLogo currency={trade.inputAmount.currency} size={'24px'} style={{ marginRight: '12px' }} />
+          <CurrencyLogo currency={trade.inputAmount.currency} size={'24px'} style={{ marginRight: '12px' }} chainId={chainId} />
           <TruncatedText
             fontSize={16}
             fontWeight={400}
@@ -61,7 +62,7 @@ export default function SwapModalHeader({
       </RowFixed>
       <RowBetween align="flex-end">
         <RowFixed gap={'0px'} alignItems={'center'}>
-          <CurrencyLogo currency={trade.outputAmount.currency} size={'24px'} style={{ marginRight: '12px' }} />
+          <CurrencyLogo currency={trade.outputAmount.currency} size={'24px'} style={{ marginRight: '12px' }} chainId={chainId} />
           <TruncatedText
             fontSize={16}
             fontWeight={400}

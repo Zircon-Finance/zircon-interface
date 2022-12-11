@@ -1,4 +1,4 @@
-import { CurrencyAmount, JSBI, Token, Trade } from 'zircon-sdk'
+import { CurrencyAmount, JSBI, NATIVE_TOKEN, Token, Trade } from 'zircon-sdk'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { ArrowDown } from 'react-feather'
 import ReactGA from 'react-ga4'
@@ -79,7 +79,7 @@ export default function Swap() {
   }, [])
 
   const skeletons = 5;
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const theme = useTheme()
 
   // toggle wallet when disconnected
@@ -179,16 +179,17 @@ export default function Swap() {
 
   // mark when a user has submitted an approval, reset onTokenSelection for input field
   useEffect(() => {
+    onCurrencySelection(Field.INPUT, NATIVE_TOKEN[chainId])
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
     }
-    getTopTokens().then((res) => {
+    getTopTokens(chainId).then((res) => {
       setTopTokens(res.query)
       setTopTokensPrevious(res.oneDayAgoQueryData)
     })
   }, [approval, approvalSubmitted])
 
-  const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT])
+  const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(chainId, currencyBalances[Field.INPUT])
   const atMaxAmountInput = Boolean(maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput))
 
   // the callback to execute the swap
@@ -199,7 +200,7 @@ export default function Swap() {
     recipient
   )
 
-  const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
+  const { priceImpactWithoutFee } = computeTradePriceBreakdown(chainId, trade)
 
   const handleSwap = useCallback(() => {
     if (priceImpactWithoutFee && !confirmPriceImpactWithoutFee(priceImpactWithoutFee)) {
@@ -244,11 +245,12 @@ export default function Swap() {
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
   // never show if price impact is above threshold in non expert mode
   const showApproveFlow =
+    chainId !== 1285 && (
     !swapInputError &&
     (approval === ApprovalState.NOT_APPROVED ||
       approval === ApprovalState.PENDING ||
       (approvalSubmitted && approval === ApprovalState.APPROVED)) &&
-    !(priceImpactSeverity > 3 && !isExpertMode)
+    !(priceImpactSeverity > 3 && !isExpertMode))
 
   const handleConfirmDismiss = useCallback(() => {
     setSwapState({ showConfirm: false, tradeToConfirm, attemptingTxn, swapErrorMessage, txHash })
@@ -281,8 +283,10 @@ export default function Swap() {
   ])
   const [isChartExpanded, setIsChartExpanded] = useState(false)
   const [isChartDisplayed] = useState(true)
+  console.log('inputCurrency', inputCurrency)
+  console.log('outputCurrency', outputCurrency)
 
-  const singleTokenPrice = useSingleTokenSwapInfo(inputCurrencyId, inputCurrency, outputCurrencyId, outputCurrency)
+  const singleTokenPrice = useSingleTokenSwapInfo(chainId, inputCurrencyId, inputCurrency, outputCurrencyId, outputCurrency)
 
   const [pairState,pair] = usePair(currencies[Field.INPUT], currencies[Field.OUTPUT])
   const prices = usePairPrices(currencies[Field.INPUT], currencies[Field.OUTPUT], pair, pairState)
@@ -331,9 +335,9 @@ export default function Swap() {
         <div style={{alignSelf: 'center'}}>
         { outputCurrency ? (
             <PriceChartContainer
-                inputCurrencyId={inputCurrencyId === 'ETH' ? '0x98878b06940ae243284ca214f92bb71a2b032b8a' : inputCurrencyId}
+                inputCurrencyId={inputCurrencyId === NATIVE_TOKEN[chainId].symbol ? '0x98878b06940ae243284ca214f92bb71a2b032b8a' : inputCurrencyId}
                 inputCurrency={currencies[Field.INPUT]}
-                outputCurrencyId={outputCurrencyId === 'ETH' ? '0x98878b06940ae243284ca214f92bb71a2b032b8a' : outputCurrencyId}
+                outputCurrencyId={outputCurrencyId === NATIVE_TOKEN[chainId].symbol ? '0x98878b06940ae243284ca214f92bb71a2b032b8a' : outputCurrencyId}
                 outputCurrency={currencies[Field.OUTPUT]}
                 isChartExpanded={isChartExpanded}
                 setIsChartExpanded={setIsChartExpanded}
@@ -582,7 +586,7 @@ export default function Swap() {
     {/* // User chosen tokens */}
     {chosenTokens?.length > 0 && (
       <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none'}}>
-        <Flex mt='23px' ml='20px'>
+        <Flex mt='auto' mb="auto" ml='20px'>
             <StarFull />
           </Flex>
         <Flex id='user-chosen-tokens' style={{width: '100%', padding: '20px', flexWrap: 'wrap', gap: '25px 5px'}}>

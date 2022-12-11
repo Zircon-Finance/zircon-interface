@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, DEV, JSBI, Token, TokenAmount } from 'zircon-sdk'
+import { Currency, CurrencyAmount, JSBI, NATIVE_TOKEN, Token, TokenAmount } from 'zircon-sdk'
 import { useMemo } from 'react'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
 import { useAllTokens } from '../../hooks/Tokens'
@@ -14,7 +14,7 @@ export function useETHBalances(
   uncheckedAddresses?: (string | undefined)[]
 ): { [address: string]: CurrencyAmount | undefined } {
   const multicallContract = useMulticallContract()
-
+  const { chainId } = useActiveWeb3React()
   const addresses: string[] = useMemo(
     () =>
       uncheckedAddresses
@@ -36,7 +36,7 @@ export function useETHBalances(
     () =>
       addresses.reduce<{ [address: string]: CurrencyAmount }>((memo, address, i) => {
         const value = results?.[i]?.result?.[0]
-        if (value) memo[address] = CurrencyAmount.ether(JSBI.BigInt(value.toString()))
+        if (value) memo[address] = CurrencyAmount.ether(JSBI.BigInt(value.toString()), chainId)
         return memo
       }, {}),
     [addresses, results]
@@ -102,9 +102,9 @@ export function useCurrencyBalances(
   const tokens = useMemo(() => currencies?.filter((currency): currency is Token => currency instanceof Token) ?? [], [
     currencies
   ])
-
+  const {chainId} = useActiveWeb3React()
   const tokenBalances = useTokenBalances(account, tokens)
-  const containsETH: boolean = useMemo(() => currencies?.some(currency => currency === DEV) ?? false, [currencies])
+  const containsETH: boolean = useMemo(() => currencies?.some(currency => currency === NATIVE_TOKEN[chainId]) ?? false, [currencies])
   const ethBalance = useETHBalances(containsETH ? [account] : [])
 
   return useMemo(
@@ -114,7 +114,7 @@ export function useCurrencyBalances(
         if (currency instanceof Token) {
           return tokenBalances[currency.address]
         }
-        if (currency === DEV) return ethBalance[account]
+        if (currency === NATIVE_TOKEN[chainId]) return ethBalance[account]
         return undefined
       }) ?? [],
     [account, currencies, ethBalance, tokenBalances]

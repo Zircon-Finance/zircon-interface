@@ -43,7 +43,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
     const { onReward, onCompound } = useHarvestFarm(sousId, userData.pendingReward.toFixed(0))
     const { t } = useTranslation()
     const dispatch = useDispatch()
-    const { account } = useWeb3React()
+    const { account, chainId } = useWeb3React()
     const theme = useTheme()
     const addPopup = useAddPopup()
     const addTransaction = useTransactionAdder()
@@ -66,7 +66,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
         return (
             <Flex justifyContent={'space-between'} style={{borderBottom: '1px solid rgba(255,255,255,0.1)', padding: '10px 0', alignItems: 'center'}}>
                 <Flex>
-                    <CurrencyLogo style={{marginRight: '3px'}} currency={token} />
+                    <CurrencyLogo style={{marginRight: '3px'}} currency={token} chainId={chainId} />
                     <Text color={theme.text1} fontSize='16px'>
                         {`${currentBalance?.toFixed(6)} ${token.symbol}`}
                     </Text>
@@ -130,7 +130,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
                                     },
                                     receipt.transactionHash
                                 )
-                                dispatch(fetchPoolsUserDataAsync(account))
+                                dispatch(fetchPoolsUserDataAsync({chainId, account}))
                             }
                         }}
                     >
@@ -164,7 +164,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
                                     },
                                     receipt.transactionHash
                                 )
-                                dispatch(fetchPoolsUserDataAsync(account))
+                                dispatch(fetchPoolsUserDataAsync({chainId, account}))
                             }
                         }}
                     >

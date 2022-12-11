@@ -10,6 +10,7 @@ const INPUT_FRACTION_AFTER_FEE = ONE_HUNDRED_PERCENT.subtract(BASE_FEE)
 
 // computes price breakdown for the trade
 export function computeTradePriceBreakdown(
+  chainId: number,
   trade?: Trade
 ): { priceImpactWithoutFee?: Percent; realizedLPFee?: CurrencyAmount } {
   // for each hop in our trade, take away the x*y=k price impact from 0.3% fees
@@ -37,20 +38,21 @@ export function computeTradePriceBreakdown(
     trade &&
     (trade.inputAmount instanceof TokenAmount
       ? new TokenAmount(trade.inputAmount.token, realizedLPFee.multiply(trade.inputAmount.raw).quotient)
-      : CurrencyAmount.ether(realizedLPFee.multiply(trade.inputAmount.raw).quotient))
+      : CurrencyAmount.ether(realizedLPFee.multiply(trade.inputAmount.raw).quotient, chainId))
 
   return { priceImpactWithoutFee: priceImpactWithoutFeePercent, realizedLPFee: realizedLPFeeAmount }
 }
 
 // computes the minimum amount out and maximum amount in for a trade given a user specified allowed slippage in bips
 export function computeSlippageAdjustedAmounts(
+  chainId: number,
   trade: Trade | undefined,
   allowedSlippage: number
 ): { [field in Field]?: CurrencyAmount } {
   const pct = basisPointsToPercent(allowedSlippage)
   return {
-    [Field.INPUT]: trade?.maximumAmountIn(pct),
-    [Field.OUTPUT]: trade?.minimumAmountOut(pct)
+    [Field.INPUT]: trade?.maximumAmountIn(pct, chainId),
+    [Field.OUTPUT]: trade?.minimumAmountOut(pct, chainId)
   }
 }
 

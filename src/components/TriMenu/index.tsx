@@ -112,7 +112,7 @@ export default function TriMenu() {
       {open && (
         <MenuFlyout>
           <AutoColumn gap="sm" style={{padding: '5px'}} >
-            <ButtonEmpty style={{fontWeight: 400, color: theme.pinkBrown}} as={Link} to={'/add/ETH'} onClick={() => toggle()}>Classic Liquidity</ButtonEmpty>
+            <ButtonEmpty style={{fontWeight: 400, color: theme.pinkBrown}} as={Link} to={'/add/'} onClick={() => toggle()}>Classic Liquidity</ButtonEmpty>
             <ButtonEmpty style={{fontWeight: 400, color: theme.pinkBrown}} as={Link} to={'/pool'}onClick={() => {
               toggle()
               window.open('https://docs.zircon.finance', '_blank');

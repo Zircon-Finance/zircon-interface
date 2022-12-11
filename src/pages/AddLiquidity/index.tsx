@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
-import { Currency, currencyEquals, DEV, TokenAmount, WDEV } from 'zircon-sdk'
+import { Currency, currencyEquals, NATIVE_TOKEN, TokenAmount, WDEV } from 'zircon-sdk'
 import React, { useCallback, useState } from 'react'
 import { Plus } from 'react-feather'
 import ReactGA from 'react-ga4'
@@ -107,7 +107,7 @@ export default function AddLiquidity({
     (accumulator, field) => {
       return {
         ...accumulator,
-        [field]: maxAmountSpend(currencyBalances[field])
+        [field]: maxAmountSpend(chainId, currencyBalances[field])
       }
     },
     {}
@@ -159,8 +159,8 @@ export default function AddLiquidity({
       method: (...args: any) => Promise<TransactionResponse>,
       args: Array<string | string[] | number>,
       value: BigNumber | null
-    if (currencyA === DEV || currencyB === DEV) {
-      const tokenBIsETH = currencyB === DEV
+    if (currencyA === NATIVE_TOKEN[chainId] || currencyB === NATIVE_TOKEN[chainId]) {
+      const tokenBIsETH = currencyB === NATIVE_TOKEN[chainId]
       estimate = router.estimateGas.addLiquidityETH
       method = router.addLiquidityETH
       args = [
@@ -189,11 +189,12 @@ export default function AddLiquidity({
     }
     console.log('estimate', estimate)
 
-    const callData = router.interface.encodeFunctionData((currencyA === DEV || currencyB === DEV ? 'addLiquidityETH' : 'addLiquidity'), args)
+    const callData = router.interface.encodeFunctionData((currencyA === NATIVE_TOKEN[chainId] || currencyB === NATIVE_TOKEN[chainId] ? 
+      'addLiquidityETH' : 'addLiquidity'), args)
 
     setAttemptingTxn(true)
     await (
-        chainId === 1285 ?
+      (chainId === 1285 || chainId === 1287) ?
           batchContract.batchAll(
             [token0Contract.address, token1Contract.address, router.address], 
             ["000000000000000000", "000000000000000000", "000000000000000000"],
@@ -299,7 +300,7 @@ export default function AddLiquidity({
 
   const handleCurrencyASelect = useCallback(
     (currencyA: Currency) => {
-      const newCurrencyIdA = currencyId(currencyA)
+      const newCurrencyIdA = currencyId(currencyA, chainId)
       if (newCurrencyIdA === currencyIdB) {
         history.push(`/add/${currencyIdB  || ''}/${currencyIdA  || ''}`)
       } else {
@@ -310,7 +311,7 @@ export default function AddLiquidity({
   )
   const handleCurrencyBSelect = useCallback(
     (currencyB: Currency) => {
-      const newCurrencyIdB = currencyId(currencyB)
+      const newCurrencyIdB = currencyId(currencyB, chainId)
       if (currencyIdA === newCurrencyIdB) {
         if (currencyIdB) {
           history.push(`/add/${currencyIdB  || ''}/${newCurrencyIdB  || ''}`)
@@ -318,7 +319,7 @@ export default function AddLiquidity({
           history.push(`/add/${newCurrencyIdB  || ''}`)
         }
       } else {
-        history.push(`/add/${currencyIdA ? currencyIdA : 'ETH'}/${newCurrencyIdB  || ''}`)
+        history.push(`/add/${currencyIdA ? currencyIdA : NATIVE_TOKEN[chainId].symbol}/${newCurrencyIdB  || ''}`)
       }
     },
     [currencyIdA, history, currencyIdB]
@@ -423,7 +424,7 @@ export default function AddLiquidity({
                     <ButtonLight onClick={toggleWalletModal}>Connect Wallet</ButtonLight>
                     ) : (
                     <AutoColumn gap={'md'}>
-                      {chainId !== 1285 && ((approvalA === ApprovalState.NOT_APPROVED ||
+                      {!(chainId === 1285 || chainId === 1287) && ((approvalA === ApprovalState.NOT_APPROVED ||
                         approvalA === ApprovalState.PENDING ||
                         approvalB === ApprovalState.NOT_APPROVED ||
                         approvalB === ApprovalState.PENDING) &&

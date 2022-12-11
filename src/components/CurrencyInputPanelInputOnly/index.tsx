@@ -9,7 +9,7 @@ import DoubleCurrencyLogo from '../DoubleLogo'
 
 import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
 import { useTranslation } from 'react-i18next'
-import { useWindowDimensions } from '../../hooks'
+import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
 import { useIsDarkMode } from '../../state/user/hooks'
 
 
@@ -148,6 +148,7 @@ export default function CurrencyInputPanel({
   const { width } = useWindowDimensions()
   const darkMode = useIsDarkMode()
   const [hovered, setHovered] = useState(false)
+  const {chainId} = useActiveWeb3React()
 
   return (
     <InputPanel id={id}>
@@ -179,7 +180,7 @@ export default function CurrencyInputPanel({
                       margin={true}
                     />
                   ) : currency ? (
-                    <CurrencyLogo currency={currency} size={"24px"} />
+                    <CurrencyLogo currency={currency} size={"24px"} chainId={chainId} />
                   ) : null}
                   {pair ? (
                     <StyledTokenName className="pair-name-container">
@@ -241,6 +242,7 @@ export default function CurrencyInputPanel({
       {!disableCurrencySelect && onCurrencySelect && (
         <CurrencySearchModal
           isOpen={modalOpen}
+          chainId={chainId}
           onDismiss={handleDismissSearch}
           onCurrencySelect={onCurrencySelect}
           selectedCurrency={currency}

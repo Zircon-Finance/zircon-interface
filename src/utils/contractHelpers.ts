@@ -2,7 +2,6 @@ import type { Signer } from '@ethersproject/abstract-signer'
 import type { Provider } from '@ethersproject/providers'
 import { Contract } from '@ethersproject/contracts'
 import { simpleRpcProvider } from './providers'
-import tokens from '../constants/tokens'
 import poolsConfig from '../constants/pools'
 
 
@@ -15,32 +14,28 @@ import {
 
 // ABI
 import bep20Abi from '../constants/abi/erc20.json'
-import cakeAbi from '../constants/abi/cake.json'
 import masterChef from '../constants/abi/masterchef.json'
 import MultiCallAbi from '../constants/abi/Multicall.json'
 import psionicFarm from '../constants/abi/psionicFarmABI.json'
 import { useBatchPrecompileContract } from '../hooks/useContract'
 
-const getContract = (abi: any, address: string, signer?: Signer | Provider) => {
-  const signerOrProvider = signer ?? simpleRpcProvider
+const getContract = (chainId: number, abi: any, address: string, signer?: Signer | Provider) => {
+  const signerOrProvider = signer ?? simpleRpcProvider(chainId)
   return new Contract(address, abi, signerOrProvider)
 }
 
-export const getBep20Contract = (address: string, signer?: Signer | Provider) => {
-  return getContract(bep20Abi, address, signer)
+export const getBep20Contract = (chainId: number, address: string, signer?: Signer | Provider) => {
+  return getContract(chainId, bep20Abi, address, signer)
 }
-export const getCakeContract = (signer?: Signer | Provider) => {
-  return getContract(cakeAbi, tokens.cake.address, signer)
+export const getMasterchefContract = (chainId: number, signer?: Signer | Provider) => {
+  return getContract(chainId, masterChef, getAddress(getMasterChefAddress()), signer)
 }
-export const getMasterchefContract = (signer?: Signer | Provider) => {
-  return getContract(masterChef, getAddress(getMasterChefAddress()), signer)
+export const getMulticallContract = (chainId: number) => {
+  return getContract(chainId, MultiCallAbi, getAddress(getMulticallAddress()), simpleRpcProvider(chainId))
 }
-export const getMulticallContract = () => {
-  return getContract(MultiCallAbi, getAddress(getMulticallAddress()), simpleRpcProvider)
-}
-export const getSouschefContract = (id: number, signer?: Signer | Provider) => {
+export const getSouschefContract = (chainId: number, id: number, signer?: Signer | Provider) => {
   const config = poolsConfig.find((pool) => pool.sousId === id)
-  return getContract(psionicFarm, getAddress(config.contractAddress), signer)
+  return getContract(chainId, psionicFarm, getAddress(config.contractAddress), signer)
 }
 
 export async function useBatchTransactions(addressList: string[], values: any[], transactionsData: any[], gasPrices: any[]){

@@ -1,5 +1,5 @@
 import { parseBytes32String } from '@ethersproject/strings'
-import { Currency, DEV, Token, currencyEquals } from 'zircon-sdk'
+import { Currency, Token, currencyEquals, NATIVE_TOKEN } from 'zircon-sdk'
 import { useMemo } from 'react'
 import { useSelectedTokenList } from '../state/lists/hooks'
 import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'
@@ -15,6 +15,7 @@ dayjs.extend(utc)
 dayjs.extend(timezone)
 
 const GAMMA_SUBGRAPH_URI = 'https://api.thegraph.com/subgraphs/name/reshyresh/zircon-alpha'
+const BSC_SUBGRAPH_URI = 'https://api.thegraph.com/subgraphs/name/reshyresh/zi'
 
 export function useAllTokens(): { [address: string]: Token } {
   const { chainId } = useActiveWeb3React()
@@ -109,12 +110,13 @@ export function useToken(tokenAddress?: string): Token | undefined | null {
 }
 
 export function useCurrency(currencyId: string | undefined): Currency | null | undefined {
-  const isETH = currencyId?.toUpperCase() === 'ETH'
+  const {chainId} = useActiveWeb3React()
+  const isETH = currencyId?.toUpperCase() === NATIVE_TOKEN[chainId].symbol
   const token = useToken(isETH ? undefined : currencyId)
-  return isETH ? DEV : token
+  return isETH ? NATIVE_TOKEN[chainId] : token
 }
 
-export async function getTopTokens() {
+export async function getTopTokens(chainId: number) {
   let unix = dayjs().tz('GMT').subtract(1, 'day').startOf('day').unix()
   let currentQuery = `{
     tokenDayDatas(
@@ -154,9 +156,9 @@ export async function getTopTokens() {
     }
   }`
 
-  let query = await axios.post(GAMMA_SUBGRAPH_URI, JSON.stringify({query: currentQuery, variables: null, operationName: undefined} ), ).then(
+  let query = await axios.post(chainId === 1285 ? GAMMA_SUBGRAPH_URI : BSC_SUBGRAPH_URI, JSON.stringify({query: currentQuery, variables: null, operationName: undefined} ), ).then(
     res => res.data.data.tokenDayDatas)
-  let oneDayAgoQueryData = await axios.post(GAMMA_SUBGRAPH_URI, JSON.stringify({query: oneDayAgoQuery, variables: null, operationName: undefined} ), ).then(
+  let oneDayAgoQueryData = await axios.post(chainId === 1285 ? GAMMA_SUBGRAPH_URI : BSC_SUBGRAPH_URI, JSON.stringify({query: oneDayAgoQuery, variables: null, operationName: undefined} ), ).then(
     res => res.data.data.tokenDayDatas)
 
   return {query, oneDayAgoQueryData}

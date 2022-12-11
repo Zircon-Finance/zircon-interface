@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, currencyEquals, DEV, Token } from 'zircon-sdk'
+import { Currency, CurrencyAmount, currencyEquals, NATIVE_TOKEN, Token } from 'zircon-sdk'
 import React, { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 import { FixedSizeList } from 'react-window'
 import { Flex, Text } from 'rebass'
@@ -17,8 +17,8 @@ import { FadedSpan, MenuItem } from './styleds'
 import Loader from '../Loader'
 import { isTokenOnList } from '../../utils'
 
-function currencyKey(currency: Currency): string {
-  return currency instanceof Token ? currency.address : currency === DEV ? 'DEV' : ''
+function currencyKey(currency: Currency, chainId: number): string {
+  return currency instanceof Token ? currency.address : currency === NATIVE_TOKEN[chainId] ? NATIVE_TOKEN[chainId].symbol : ''
 }
 
 const StyledBalanceText = styled(Text)`
@@ -94,9 +94,9 @@ function CurrencyRow({
   style: CSSProperties
 }) {
   const { account, chainId } = useActiveWeb3React()
-  const key = currencyKey(currency)
+  const key = currencyKey(currency, chainId)
   const selectedTokenList = useSelectedTokenList()
-  const isOnSelectedList = isTokenOnList(selectedTokenList, currency)
+  const isOnSelectedList = isTokenOnList(chainId, selectedTokenList, currency)
   const customAdded = useIsUserAddedToken(currency)
   const balance = useCurrencyBalance(account ?? undefined, currency)
 
@@ -112,7 +112,7 @@ function CurrencyRow({
       disabled={isSelected}
       selected={otherSelected}
     >
-      <CurrencyLogo currency={currency} size={'42px'} />
+      <CurrencyLogo currency={currency} size={'42px'} chainId={chainId} />
       <Column style={{overflow: 'hidden'}}>
         <Text title={currency.name} fontWeight={400} style={{display: 'flex', flexFlow: 'column'}}>
           <span>{currency.symbol}</span>
@@ -171,7 +171,8 @@ export default function CurrencyList({
   fixedListRef?: MutableRefObject<FixedSizeList | undefined>
   showETH: boolean
 }) {
-  const itemData = useMemo(() => (showETH ? [Currency.DEV, ...currencies] : currencies), [currencies, showETH])
+  const {chainId} = useActiveWeb3React()
+  const itemData = useMemo(() => (showETH ? [Currency.NATIVE_TOKEN[chainId], ...currencies] : currencies), [currencies, showETH])
 
   const Row = useCallback(
     ({ data, index, style }) => {
@@ -195,7 +196,7 @@ export default function CurrencyList({
     [onCurrencySelect, otherCurrency, selectedCurrency]
   )
 
-  const itemKey = useCallback((index: number, data: any) => currencyKey(data[index]), [])
+  const itemKey = useCallback((index: number, data: any) => currencyKey(data[index], chainId), [])
 
   return (
     <FixedSizeList

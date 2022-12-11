@@ -1,13 +1,16 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { JSBI, Percent, Router, SwapParameters, Trade, TradeType } from 'zircon-sdk'
+import { JSBI, Percent, Router, SwapParameters, TokenAmount, Trade, TradeType } from 'zircon-sdk'
 import { useMemo } from 'react'
-import { BIPS_BASE, DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE } from '../constants'
+import { BIPS_BASE, DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE, ROUTER_ADDRESS } from '../constants'
 import { useTransactionAdder } from '../state/transactions/hooks'
-import { calculateGasMargin, getRouterContract, isAddress, shortenAddress } from '../utils'
+import { getRouterContract, isAddress, shortenAddress } from '../utils'
 import isZero from '../utils/isZero'
 import { useActiveWeb3React } from './index'
 import useENS from './useENS'
+import { computeSlippageAdjustedAmounts } from '../utils/prices'
+import { Field } from '../state/swap/actions'
+import { useBatchPrecompileContract, useTokenContract } from './useContract'
 
 export enum SwapCallbackState {
   INVALID,
@@ -97,6 +100,16 @@ export function useSwapCallback(
 
   const addTransaction = useTransactionAdder()
 
+  const amountToApprove = useMemo(
+    () => (trade ? computeSlippageAdjustedAmounts(chainId, trade, allowedSlippage)[Field.INPUT] : undefined),
+    [trade, allowedSlippage]
+  )
+  const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined
+
+  const tokenContract = useTokenContract(token?.address)
+  const routerContract = getRouterContract(chainId, library, account)
+  const batchContract = useBatchPrecompileContract()
+
   const { address: recipientAddress } = useENS(recipientAddressOrName)
   const recipient = recipientAddressOrName === null ? account : recipientAddress
 
@@ -161,25 +174,32 @@ export function useSwapCallback(
           (el, ix, list): el is SuccessfulCall =>
             'gasEstimate' in el && (ix === list.length - 1 || 'gasEstimate' in list[ix + 1])
         )
+        console.log('successfulEstimation', successfulEstimation)
 
-        if (!successfulEstimation) {
-          const errorCalls = estimatedCalls.filter((call): call is FailedCall => 'error' in call)
-          if (errorCalls.length > 0) throw errorCalls[errorCalls.length - 1].error
-          throw new Error('Unexpected error. Please contact support: none of the calls threw an error')
-        }
-
+        // if (!successfulEstimation) {
+        //   const errorCalls = estimatedCalls.filter((call): call is FailedCall => 'error' in call)
+        //   if (errorCalls.length > 0) throw errorCalls[errorCalls.length - 1].error
+        //   throw new Error('Unexpected error. Please contact support: none of the calls threw an error')
+        // }
+        
         const {
-          call: {
-            contract,
-            parameters: { methodName, args, value }
-          },
-          gasEstimate
-        } = successfulEstimation
+          parameters: { methodName, args, value },
+          contract
+        } = swapCalls[0]
 
-        return contract[methodName](...args, {
-          gasLimit: calculateGasMargin(gasEstimate),
+        const approvalCallData = tokenContract ?
+        tokenContract.interface.encodeFunctionData('approve', [ROUTER_ADDRESS[chainId], BigNumber.from(amountToApprove.raw.toString())]) : undefined
+        const callData = routerContract.interface.encodeFunctionData(methodName, args)
+        return ((chainId === 1285 || chainId === 1287) && tokenContract !== null ?
+        batchContract.batchAll(
+          [tokenContract.address, ROUTER_ADDRESS[chainId]], 
+          ["000000000000000000", value],
+          [approvalCallData, callData],
+          []
+        ) :
+        contract[methodName](...args, {
           ...(value && !isZero(value) ? { value, from: account } : { from: account })
-        })
+        }))
           .then((response: any) => {
             const inputSymbol = trade.inputAmount.currency.symbol
             const outputSymbol = trade.outputAmount.currency.symbol

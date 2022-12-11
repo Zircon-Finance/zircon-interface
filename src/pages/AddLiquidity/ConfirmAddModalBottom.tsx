@@ -9,6 +9,7 @@ import { TYPE } from '../../theme'
 import { Separator } from '../../components/SearchModal/styleds'
 import { AlertTriangle } from 'react-feather'
 import styled, { useTheme } from 'styled-components'
+import { useActiveWeb3React } from '../../hooks'
 
 export const StyledWarningIcon = styled(AlertTriangle)`
   stroke: ${({ theme }) => theme.red1};
@@ -34,19 +35,20 @@ export function ConfirmAddModalBottom({
   errorTx?: string
 }) {
   const theme = useTheme()
+  const {chainId} = useActiveWeb3React()
   return (
     <>
       <RowBetween>
         <TYPE.body>{currencies[Field.CURRENCY_A]?.symbol} Deposited</TYPE.body>
         <RowFixed>
-          <CurrencyLogo currency={currencies[Field.CURRENCY_A]} style={{ marginRight: '8px' }} />
+          <CurrencyLogo currency={currencies[Field.CURRENCY_A]} style={{ marginRight: '8px' }} chainId={chainId} />
           <TYPE.body style={{overflow: 'auto'}}>{parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)}</TYPE.body>
         </RowFixed>
       </RowBetween>
       <RowBetween>
         <TYPE.body>{currencies[Field.CURRENCY_B]?.symbol} Deposited</TYPE.body>
         <RowFixed>
-          <CurrencyLogo currency={currencies[Field.CURRENCY_B]} style={{ marginRight: '8px' }} />
+          <CurrencyLogo currency={currencies[Field.CURRENCY_B]} style={{ marginRight: '8px' }} chainId={chainId} />
           <TYPE.body style={{overflow: 'auto'}}>{parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)}</TYPE.body>
         </RowFixed>
       </RowBetween>

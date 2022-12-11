@@ -112,7 +112,7 @@ export default function CurrencyInputPanel({
 }: CurrencyInputPanelProps) {
 
   const [modalOpen, setModalOpen] = useState(false)
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const [focus, setIsFocus] = useState(false)
 
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
@@ -137,7 +137,7 @@ export default function CurrencyInputPanel({
                 {!hideInput && (
                   <>
                       <span style={{padding: '5px 5px 0px 10px'}}>
-                        <CurrencyLogo currency={currency} size={'30px'} />
+                        <CurrencyLogo currency={currency} size={'30px'} chainId={chainId} />
                         </span>
                       <span style={{fontSize: '16px', alignSelf: 'center', paddingRight: '12px'}}>
                         {(currency && currency.symbol && currency.symbol.length > 20
@@ -199,6 +199,7 @@ export default function CurrencyInputPanel({
       {!disableCurrencySelect && onCurrencySelect && (
         <CurrencySearchModal
           isOpen={modalOpen}
+          chainId={chainId}
           onDismiss={handleDismissSearch}
           onCurrencySelect={onCurrencySelect}
           selectedCurrency={currency}

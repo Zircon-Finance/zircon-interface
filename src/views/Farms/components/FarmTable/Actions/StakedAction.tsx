@@ -67,7 +67,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
                                                              }) => {
   const { t } = useTranslation()
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
-  const { account } = useWeb3React()
+  const { account, chainId } = useWeb3React()
   const { pool } = usePool(sousId)
   const allowance = pool.userData.allowance
   const tokenBalance = pool.userData.stakingTokenBalance
@@ -114,7 +114,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
           },
           receipt.transactionHash
       )
-      dispatch(fetchPoolsUserDataAsync(account))
+      dispatch(fetchPoolsUserDataAsync({chainId, account}))
     }
   }
 
@@ -143,7 +143,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
           },
           receipt.transactionHash
       )
-      dispatch(fetchPoolsUserDataAsync(account))
+      dispatch(fetchPoolsUserDataAsync({chainId, account}))
     }
   }
   const lpContract = useERC20(stakingToken.address)
@@ -176,7 +176,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
           },
           receipt.transactionHash
       )
-      dispatch(fetchPoolsUserDataAsync(account))
+      dispatch(fetchPoolsUserDataAsync({chainId, account}))
     }
   }, [
     dispatch,

@@ -1,5 +1,5 @@
 import {TransactionResponse} from '@ethersproject/providers'
-import {Currency, currencyEquals, DEV, Percent, WDEV} from 'zircon-sdk'
+import {Currency, currencyEquals, NATIVE_TOKEN, Percent, WDEV} from 'zircon-sdk'
 import React, {useCallback, useMemo, useState} from 'react'
 import {ArrowDown, Plus} from 'react-feather'
 import ReactGA from 'react-ga4'
@@ -173,15 +173,15 @@ export default function RemoveProLiquidity({
     const liquidityAmount = parsedAmounts[Field.LIQUIDITY]
     if (!liquidityAmount) throw new Error('missing liquidity amount')
 
-    const currencyBIsETH = currencyB === DEV
-    const oneCurrencyIsETH = currencyA === DEV || currencyBIsETH
+    const currencyBIsETH = currencyB === NATIVE_TOKEN[chainId]
+    const oneCurrencyIsETH = currencyA === NATIVE_TOKEN[chainId] || currencyBIsETH
     const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline
 
     if (!tokenA || !tokenB) throw new Error('could not wrap')
 
     let methodNames: string[], args: (string  | boolean | number)[]
     // we have approval, use normal remove liquidity
-    if (approval === ApprovalState.APPROVED || chainId === 1285) {
+    if (approval === ApprovalState.APPROVED || chainId === 1285 || chainId === 1287) {
       // removeLiquidityETH
       if(sync) {
         if (oneCurrencyIsETH) {
@@ -264,7 +264,7 @@ export default function RemoveProLiquidity({
 
     const approvalCallData = tokenContract.interface.encodeFunctionData('approve', [router.address, MaxUint256])
     const callData = router.interface.encodeFunctionData((
-      sync ? oneCurrencyIsETH ? 'removeLiquiditySyncETH' : 'removeLiquiditySync' : 
+      sync ? oneCurrencyIsETH ? 'removeLiquiditySyncETH' : 'removeLiquiditySync' :
       oneCurrencyIsETH ? 'removeLiquidityAsyncETH' : 'removeLiquidityAsync'), args)
 
     // all estimations failed...
@@ -275,9 +275,9 @@ export default function RemoveProLiquidity({
       const safeGasEstimate = safeGasEstimates[indexOfSuccessfulEstimation]
 
       setAttemptingTxn(true)
-      await (chainId === 1285 ?
+      await ((chainId === 1285 || chainId === 1287) ?
         batchContract.batchAll(
-          [tokenContract.address, router.address], 
+          [tokenContract.address, router.address],
           ["000000000000000000", "000000000000000000"],
           [approvalCallData, callData],
           []
@@ -325,7 +325,7 @@ export default function RemoveProLiquidity({
               {parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)}
             </Text>
             <RowFixed gap="4px">
-              <CurrencyLogo currency={currencyA} size={'24px'} />
+              <CurrencyLogo currency={currencyA} size={'24px'} chainId={chainId} />
               <Text fontSize={24} fontWeight={400} style={{ marginLeft: '10px' }}>
                 {currencyA?.symbol}
               </Text>
@@ -339,7 +339,7 @@ export default function RemoveProLiquidity({
               {parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)}
             </Text>
             <RowFixed gap="4px">
-              <CurrencyLogo currency={currencyB} size={'24px'} />
+              <CurrencyLogo currency={currencyB} size={'24px'} chainId={chainId} />
               <Text fontSize={24} fontWeight={400} style={{ marginLeft: '10px' }}>
                 {currencyB?.symbol}
               </Text>
@@ -404,7 +404,7 @@ export default function RemoveProLiquidity({
             <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{"We estimate a high fee for this transaction. Try in a few minutes"}</span>
           </RowBetween>
           )}
-          <ButtonPrimary disabled={chainId !== 1285 && (!(approval === ApprovalState.APPROVED || signatureData !== null) || burnInfo.blocked || burnInfo.asyncBlocked || burnInfo.deltaApplied)} onClick={onRemove}>
+          <ButtonPrimary disabled={!(chainId === 1285 || chainId === 1287) && (!(approval === ApprovalState.APPROVED || signatureData !== null) || burnInfo.blocked || burnInfo.asyncBlocked || burnInfo.deltaApplied)} onClick={onRemove}>
             <Text fontWeight={400} fontSize={18}>
               Confirm
             </Text>
@@ -424,8 +424,8 @@ export default function RemoveProLiquidity({
       [onUserInput]
   )
 
-  const oneCurrencyIsETH = currencyA === DEV || currencyB === DEV
-  const firstCurrencyIsETH = currencyA === DEV
+  const oneCurrencyIsETH = currencyA === NATIVE_TOKEN[chainId] || currencyB === NATIVE_TOKEN[chainId]
+  const firstCurrencyIsETH = currencyA === NATIVE_TOKEN[chainId]
   const oneCurrencyIsWDEV = Boolean(
       chainId &&
       ((currencyA && currencyEquals(WDEV[chainId], currencyA)) ||
@@ -439,20 +439,20 @@ export default function RemoveProLiquidity({
 
   const handleSelectCurrencyA = useCallback(
       (currency: Currency) => {
-        if (currencyIdB && currencyId(currency) === currencyIdB) {
-          history.push(`/remove-pro/${currencyId(currency)}/${currencyIdA}/${isFloat ? "FLOAT" : "ANCHOR"}`)
+        if (currencyIdB && currencyId(currency, chainId) === currencyIdB) {
+          history.push(`/remove-pro/${currencyId(currency, chainId)}/${currencyIdA}/${isFloat ? "FLOAT" : "ANCHOR"}`)
         } else {
-          history.push(`/remove-pro/${currencyId(currency)}/${currencyIdB}/${isFloat ? "FLOAT" : "ANCHOR"}`)
+          history.push(`/remove-pro/${currencyId(currency, chainId)}/${currencyIdB}/${isFloat ? "FLOAT" : "ANCHOR"}`)
         }
       },
       [currencyIdA, currencyIdB, history, isFloat]
   )
   const handleSelectCurrencyB = useCallback(
       (currency: Currency) => {
-        if (currencyIdA && currencyId(currency) === currencyIdA) {
-          history.push(`/remove-pro/${currencyIdB}/${currencyId(currency)}/${isFloat ? "FLOAT" : "ANCHOR"}`)
+        if (currencyIdA && currencyId(currency, chainId) === currencyIdA) {
+          history.push(`/remove-pro/${currencyIdB}/${currencyId(currency, chainId)}/${isFloat ? "FLOAT" : "ANCHOR"}`)
         } else {
-          history.push(`/remove-pro/${currencyIdA}/${currencyId(currency)}/${isFloat ? "FLOAT" : "ANCHOR"}`)
+          history.push(`/remove-pro/${currencyIdA}/${currencyId(currency, chainId)}/${isFloat ? "FLOAT" : "ANCHOR"}`)
         }
       },
       [currencyIdA, currencyIdB, history, isFloat]
@@ -566,7 +566,7 @@ export default function RemoveProLiquidity({
                         <span style={{width: '100%', fontSize: '13px'}}>{'YOU WILL RECEIVE'}</span>
                         {(!sync || isFloat) && <RowBetween>
                           <RowFixed>
-                            <CurrencyLogo currency={currencyA} style={{ marginRight: '12px' }} />
+                            <CurrencyLogo currency={currencyA} style={{ marginRight: '12px' }} chainId={chainId} />
                             <Text fontSize={16} fontWeight={400} id="remove-liquidity-tokena-symbol">
                               {currencyA?.symbol}
                             </Text>
@@ -578,7 +578,7 @@ export default function RemoveProLiquidity({
                         </RowBetween>}
                         {(!sync || !isFloat) && <RowBetween>
                           <RowFixed>
-                            <CurrencyLogo currency={currencyB} style={{ marginRight: '12px' }} />
+                            <CurrencyLogo currency={currencyB} style={{ marginRight: '12px' }} chainId={chainId} />
                             <Text fontSize={16} fontWeight={400} id="remove-liquidity-tokenb-symbol">
                               {currencyB?.symbol}
                             </Text>
@@ -592,8 +592,8 @@ export default function RemoveProLiquidity({
                             <RowBetween style={{ justifyContent: 'flex-end' }}>
                               {oneCurrencyIsETH ? (
                                   <StyledInternalLink
-                                      to={`/remove-pro/${currencyA === DEV ? WDEV[chainId].address : currencyIdA}/${
-                                          currencyB === DEV ? WDEV[chainId].address : currencyIdB
+                                      to={`/remove-pro/${currencyA === NATIVE_TOKEN[chainId] ? WDEV[chainId].address : currencyIdA}/${
+                                          currencyB === NATIVE_TOKEN[chainId] ? WDEV[chainId].address : currencyIdB
                                       }/${isFloat ? "FLOAT" : "STABLE"}`}
                                   >
                                     Receive wMOVR
@@ -601,8 +601,8 @@ export default function RemoveProLiquidity({
                               ) : oneCurrencyIsWDEV ? (
                                   <StyledInternalLink
                                       to={`/remove-pro/${
-                                          currencyA && currencyEquals(currencyA, WDEV[chainId]) ? 'ETH' : currencyIdA
-                                      }/${currencyB && currencyEquals(currencyB, WDEV[chainId]) ? 'ETH' : currencyIdB}/${isFloat ? "FLOAT" : "STABLE"}`}
+                                          currencyA && currencyEquals(currencyA, WDEV[chainId]) ? NATIVE_TOKEN[chainId].symbol : currencyIdA
+                                      }/${currencyB && currencyEquals(currencyB, WDEV[chainId]) ? NATIVE_TOKEN[chainId].symbol : currencyIdB}/${isFloat ? "FLOAT" : "STABLE"}`}
                                   >
                                     Receive MOVR
                                   </StyledInternalLink>
@@ -690,6 +690,8 @@ export default function RemoveProLiquidity({
                     blocked={burnInfo?.blocked || burnInfo?.asyncBlocked}
                     feePercentage={new BigNumberJs(burnInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
                     isDeltaGamma={burnInfo?.deltaApplied}
+                    slippage={new BigNumberJs((burnInfo?.slippage ?? "0").toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
+                    reservesPTU={new BigNumberJs((burnInfo?.reservesPTU ?? "0").toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
                 />
               </div>
               <div style={{ position: 'relative' }}>
@@ -697,7 +699,7 @@ export default function RemoveProLiquidity({
                     <ButtonLight onClick={toggleWalletModal}>Connect Wallet</ButtonLight>
                 ) : (
                     <RowBetween style={{paddingBottom: '10px'}}>
-                      {chainId !== 1285 && (<ButtonConfirmed
+                      {!(chainId === 1285 || chainId === 1287) && (<ButtonConfirmed
                           onClick={() => approveCallback()}
                           confirmed={approval === ApprovalState.APPROVED || signatureData !== null}
                           disabled={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
@@ -717,7 +719,7 @@ export default function RemoveProLiquidity({
                           onClick={() => {
                             setShowConfirm(true)
                           }}
-                          disabled={chainId !== 1285 ? (!isValid || (signatureData === null && approval !== ApprovalState.APPROVED)) : !isValid}
+                          disabled={!(chainId === 1285 || chainId === 1287) ? (!isValid || (signatureData === null && approval !== ApprovalState.APPROVED)) : !isValid}
                           error={!isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]}
                       >
                         <Text fontSize={16} fontWeight={400}>

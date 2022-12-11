@@ -1,6 +1,6 @@
 import {BigNumber} from "@ethersproject/bignumber";
 import {TransactionResponse} from "@ethersproject/providers";
-import {Currency, currencyEquals, DEV, TokenAmount, WDEV} from "zircon-sdk";
+import {Currency, currencyEquals, NATIVE_TOKEN, TokenAmount, WDEV} from "zircon-sdk";
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import ReactGA from "react-ga4";
 import {RouteComponentProps} from "react-router-dom";
@@ -50,7 +50,7 @@ import RepeatIcon from "../../components/RepeatIcon";
 import {usePool, usePools} from "../../state/pools/hooks";
 import {useERC20, useSousChef} from "../../hooks/useContract";
 import useApprovePool from "../../views/Farms/hooks/useApproveFarm";
-import {fetchPoolsUserDataAsync} from "../../state/pools";
+import {fetchPoolsPublicDataAsync} from "../../state/pools";
 import {useDispatch} from "react-redux";
 import {AddressZero} from "@ethersproject/constants";
 import InfoCircle from "../../components/InfoCircle";
@@ -105,7 +105,7 @@ export default function AddLiquidityPro({
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(fetchPoolsUserDataAsync(account))
+    dispatch(fetchPoolsPublicDataAsync(chainId))
   }, [account, dispatch])
 
   const toggleWalletModal = useWalletModalToggle(); // toggle wallet when disconnected
@@ -186,10 +186,12 @@ export default function AddLiquidityPro({
   const [txHash, setTxHash] = useState<string>("");
 
   const batchContract = useBatchPrecompileContract()
-  const aCurrency = currencyA !== null ? wrappedCurrency(currencyA, chainId)?.address : '0x4545e94974adacb82fc56bcf136b07943e152055'
-  const bCurrency = currencyB !== null ? wrappedCurrency(currencyB, chainId)?.address : '0x4545e94974adacb82fc56bcf136b07943e152055'
-  const token0Contract = useERC20(aCurrency, true)
-  const token1Contract = useERC20(bCurrency ?? aCurrency, true)
+  const aCurrency = currencyA !== null ? wrappedCurrency(currencyA, chainId)?.address : chainId === 1285 ?
+    '0x4545e94974adacb82fc56bcf136b07943e152055' : chainId === 56 && '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c'
+  const bCurrency = currencyB !== null ? wrappedCurrency(currencyB, chainId)?.address : chainId === 1285 ?
+  '0x4545e94974adacb82fc56bcf136b07943e152055' : chainId === 56 && '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c'
+  const token0Contract = useERC20(aCurrency ?? '0x0000000000000000000000000000000000000000', true) ?? undefined
+  const token1Contract = useERC20(bCurrency ?? aCurrency ?? '0x0000000000000000000000000000000000000000', true) ?? undefined
 
   const getField = (shouldSendFloat) => {
     if (isFloat) {
@@ -248,7 +250,7 @@ export default function AddLiquidityPro({
   ].reduce((accumulator, field) => {
     return {
       ...accumulator,
-      [field]: maxAmountSpend(currencyBalances[field]),
+      [field]: maxAmountSpend(chainId, currencyBalances[field]),
     };
   }, {});
 
@@ -305,15 +307,15 @@ export default function AddLiquidityPro({
         args: Array<string | string[] | number | boolean>,
         value: BigNumber | null;
 
-    if (currencyA === DEV || currencyB === DEV) {
-      const tokenBIsETH = currencyB === DEV;
+    if (currencyA === NATIVE_TOKEN[chainId] || currencyB === NATIVE_TOKEN[chainId]) {
+      const tokenBIsETH = currencyB === NATIVE_TOKEN[chainId];
       estimate = pylonRouter.estimateGas.initETH;
       method = pylonRouter.initETH;
       args = [
         wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId)
             ?.address ?? "", // token
         (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
-        currencyA === DEV,
+        currencyA === NATIVE_TOKEN[chainId],
         account,
         deadlineFromNow,
       ];
@@ -394,7 +396,7 @@ export default function AddLiquidityPro({
     //   [Field.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, 0)[0],
     //   [Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, 0)[0]
     // }
-
+    console.log('mintInfo', mintInfo)
     const liquidityMin = calculateSlippageAmount(mintInfo.liquidity, noPylon ? 0 : allowedSlippage)[0]
 
     const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline;
@@ -404,27 +406,27 @@ export default function AddLiquidityPro({
         value: BigNumber | null;
 
 
-    const tokenBIsETH = getCurrency(false) === DEV;
+    const tokenBIsETH = getCurrency(false) === NATIVE_TOKEN[chainId];
 
     console.log('args', [
       wrappedCurrency(
           tokenBIsETH ? getCurrency(true) : getCurrency(false),
           chainId
       )?.address ?? "", // token
-      DEV === currencies[Field.CURRENCY_A], // second option is anchor so it should mint anchor when float.currency a is equal to b
+      NATIVE_TOKEN[chainId] === currencies[Field.CURRENCY_A], // second option is anchor so it should mint anchor when float.currency a is equal to b
       account,
       stake ? contractAddress : AddressZero,
       deadlineFromNow,
     ])
     if (sync === "off") {
-      if (getCurrency(true) === DEV) {
+      if (getCurrency(true) === NATIVE_TOKEN[chainId]) {
         method = router.addSyncLiquidityETH;
         args = [
           wrappedCurrency(
               tokenBIsETH ? getCurrency(true) : getCurrency(false),
               chainId
           )?.address ?? "", // token
-          DEV === currencies[Field.CURRENCY_A], // second option is anchor so it should mint anchor when float.currency a is equal to b
+          NATIVE_TOKEN[chainId] === currencies[Field.CURRENCY_A], // second option is anchor so it should mint anchor when float.currency a is equal to b
           liquidityMin.toString(),
           account,
           stake ? contractAddress : AddressZero,
@@ -457,7 +459,7 @@ export default function AddLiquidityPro({
         value = null;
       }
     } else {
-      if (getCurrency(true) === DEV || getCurrency(false) === DEV) {
+      if (getCurrency(true) === NATIVE_TOKEN[chainId] || getCurrency(false) === NATIVE_TOKEN[chainId]) {
         method = router.addAsyncLiquidityETH;
         console.error([
             tokenBIsETH ? getCurrency(true)?.name : getCurrency(false)?.name,
@@ -470,16 +472,16 @@ export default function AddLiquidityPro({
               tokenBIsETH ? getCurrency(true) : getCurrency(false),
               chainId
           )?.address ?? "", // token
-          (currencies[Field.CURRENCY_A] === DEV ? parsedAmountB : parsedAmountA).raw.toString(),
+          (currencies[Field.CURRENCY_A] === NATIVE_TOKEN[chainId] ? parsedAmountB : parsedAmountA).raw.toString(),
           liquidityMin.toString(),
-          currencies[Field.CURRENCY_A] === DEV,
+          currencies[Field.CURRENCY_A] === NATIVE_TOKEN[chainId],
           !isFloat, // second option is anchor so it should mint anchor when float.currency a is equal to b
           account,
           stake ? contractAddress : AddressZero,
           deadlineFromNow,
         ];
         value = BigNumber.from(
-            (currencies[Field.CURRENCY_A] === DEV ? parsedAmountA : parsedAmountB).raw.toString()
+            (currencies[Field.CURRENCY_A] === NATIVE_TOKEN[chainId] ? parsedAmountA : parsedAmountB).raw.toString()
         );
       } else {
         method = router.addAsyncLiquidity;
@@ -498,19 +500,22 @@ export default function AddLiquidityPro({
       }
     }
 
-    const approvalCallData0 = token0Contract.interface.encodeFunctionData('approve', [router.address, parsedAmounts[getField(true)].raw.toString()])
-    const approvalCallData1 = token1Contract.interface.encodeFunctionData('approve', [router.address, parsedAmounts[getField(false)].raw.toString()])
+    const approvalCallData0 = token0Contract.interface.encodeFunctionData('approve', [router.address, parsedAmounts[Field.CURRENCY_A].raw.toString()])
+    const approvalCallData1 = token1Contract.interface.encodeFunctionData('approve', [router.address, parsedAmounts[Field.CURRENCY_B].raw.toString()])
     const farmApprovalCallData = lpContract.interface.encodeFunctionData('approve', [sousChefContract.address, MaxUint256])
 
-    const callData = router.interface.encodeFunctionData(((sync === "off" ? ((getCurrency(true) === DEV) ? 'addSyncLiquidityETH' : 'addSyncLiquidity') :
-    ((getCurrency(true) === DEV || getCurrency(false) === DEV) ? 'addAsyncLiquidityETH' : 'addAsyncLiquidity'))), args)
+    console.log('dat::1', token1Contract.address, parsedAmounts[Field.CURRENCY_B].raw.toString())
+    const callData = router.interface.encodeFunctionData(((sync === "off" ?
+    ((getCurrency(true) === NATIVE_TOKEN[chainId]) ? 'addSyncLiquidityETH' : 'addSyncLiquidity') :
+    ((getCurrency(true) === NATIVE_TOKEN[chainId] || getCurrency(false) === NATIVE_TOKEN[chainId]) ?
+    'addAsyncLiquidityETH' : 'addAsyncLiquidity'))), args)
 
     console.log('args', args)
     setAttemptingTxn(true);
     await (
-          chainId === 1285 ?
+      (chainId === 1285 || chainId === 1287) ?
             batchContract.batchAll(
-              [lpContract.address, token0Contract.address, token1Contract.address,  router.address], 
+              [lpContract.address, token0Contract.address, token1Contract.address,  router.address],
               ["000000000000000000", "000000000000000000", "000000000000000000", (value !== undefined && value !== null) ? value : "000000000000000000"],
               [farmApprovalCallData, approvalCallData0, approvalCallData1, callData],
               []
@@ -584,8 +589,8 @@ export default function AddLiquidityPro({
         method: (...args: any) => Promise<TransactionResponse>,
         args: Array<string | string[] | number>,
         value: BigNumber | null
-    if (currencyA === DEV || currencyB === DEV) {
-      const tokenBIsETH = currencyB === DEV
+    if (currencyA === NATIVE_TOKEN[chainId] || currencyB === NATIVE_TOKEN[chainId]) {
+      const tokenBIsETH = currencyB === NATIVE_TOKEN[chainId]
       estimate = router.estimateGas.addLiquidityETH
       method = router.addLiquidityETH
       args = [
@@ -786,7 +791,7 @@ export default function AddLiquidityPro({
 
   const handleCurrencyASelect = useCallback(
       (currencyA: Currency) => {
-        const newCurrencyIdA = currencyId(currencyA);
+        const newCurrencyIdA = currencyId(currencyA, chainId);
         // setFloat({
         //   currency_a: currencyA,
         //   field_a: Field.CURRENCY_A,
@@ -809,7 +814,7 @@ export default function AddLiquidityPro({
 
   const handleCurrencyBSelect = useCallback(
       (currencyB: Currency) => {
-        const newCurrencyIdB = currencyId(currencyB);
+        const newCurrencyIdB = currencyId(currencyB, chainId);
         // setFloat({
         //   currency_a: currencies[Field.CURRENCY_A],
         //   field_a: Field.CURRENCY_A,
@@ -824,7 +829,7 @@ export default function AddLiquidityPro({
           }
         } else {
           history.push(
-              `/add-pro/${currencyIdA ? currencyIdA : "ETH"}/${newCurrencyIdB || ''}`
+              `/add-pro/${currencyIdA ? currencyIdA : NATIVE_TOKEN[chainId].symbol}/${newCurrencyIdB || ''}`
           );
         }
       },
@@ -1293,7 +1298,7 @@ isValid
                           </ButtonLight>
                       ) : (
                           <AutoColumn gap={"md"}>
-                            {chainId !== 1285 && showApproveCondition && (
+                            {!(chainId === 1285 || chainId === 1287) && showApproveCondition && (
                                 <RowBetween>
                                   {/* Currency A isn't approved or pylon doesn't exist and A isn't approved */}
                                   {(pylonState === PylonState.NOT_EXISTS ? (approvalAPair !== ApprovalState.APPROVED ? true : false) : (approvalA !== ApprovalState.APPROVED ? true : false))
@@ -1354,7 +1359,7 @@ isValid
                                     !!parsedAmounts[Field.CURRENCY_A] &&
                                     !!parsedAmounts[Field.CURRENCY_B]
                                   }
-                                  disabled={chainId === 1285 ? (error !== undefined ? true :
+                                  disabled={(chainId === 1285 || chainId === 1287) ? (error !== undefined ? true :
                                     !isValid) :
                                     error !== undefined ? true :
                                     !isValid ||
@@ -1387,14 +1392,14 @@ isValid
                                       width={"48%"}
                                       onClick={() =>
                                         farm ?
-                                        (!farmIsApproved() && chainId !== 1285) ?
+                                        (!farmIsApproved() && !(chainId === 1285 || chainId === 1287)) ?
                                         (approveFarm()) :
                                         (setShowConfirm(true), setIsStaking(true)) :
                                         (setShowConfirm(true), setIsStaking(true))
                                       }
                                       disabled={
                                         pendingTx ||
-                                        !isValid || (chainId !== 1285 && (
+                                        !isValid || (!(chainId === 1285 || chainId === 1287) && (
                                         approvalA !== ApprovalState.APPROVED ||
                                         (sync === "half" &&
                                             approvalB !== ApprovalState.APPROVED)))
@@ -1412,10 +1417,10 @@ isValid
                                           fontWeight={400}
                                       >
                                         {error ? 'Add & Farm' :
-                                            (farmIsApproved() || chainId === 1285 ?
+                                            (farmIsApproved() || (chainId === 1285 || chainId === 1287) ?
                                                 "Add & Farm" : "Enable farm contract")}
                                       </Text>
-                                      {(farmIsApproved() || (chainId === 1285 && pool?.apr)) && (
+                                      {(farmIsApproved() || ((chainId === 1285 || chainId === 1287) && pool?.apr)) && (
                                       <Text
                                           fontSize={width > 700 ? 14 : 13}
                                           fontWeight={400}

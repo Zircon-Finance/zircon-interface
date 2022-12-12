@@ -42,6 +42,7 @@ export function usePairs(currencies: [Currency | undefined, Currency | undefined
   return useMemo(() => {
     return results.map((result, i) => {
       const { result: reserves, loading } = result
+
       const tokenA = tokens[i][0]
       const tokenB = tokens[i][1]
 
@@ -57,7 +58,7 @@ export function usePairs(currencies: [Currency | undefined, Currency | undefined
             new TokenAmount(token0, reserve0.toString()),
             new TokenAmount(token1, reserve1.toString()),
             blockTimestampLast.toString(),
-            "15")
+            liquidityFee)
       ]
     })
   }, [results, tokens])

@@ -46,10 +46,13 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
       [tokens]
   )
 
+  console.log("RRR:: pairAd", pairAddresses)
+
   const results = useMultipleContractSingleData(pylonAddresses, PYLON_INTERFACE, 'getSyncReserves')
   const resultsPair = useMultipleContractSingleData(pairAddresses, PAIR_INTERFACE, 'getReserves')
   const liquidityFee = useLiquidityFee()
-
+  console.log("RRR:: resultsP", resultsPair)
+  console.log("RRR:: results", resultsPair)
   return useMemo(() => {
     return results.map((result, i) => {
       const { result: reserves, loading } = result
@@ -58,9 +61,13 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
       const tokenA = tokens[i][0]
       const tokenB = tokens[i][1]
 
+      console.log("result", result)
+
       if (loading || resPair.loading) return [PylonState.LOADING, null]
       if (!tokenA || !tokenB || tokenA.equals(tokenB)) return [PylonState.INVALID, null]
+
       if (!reserves || !resPair.result){
+
         if(resPair.result) {
           // console.log(resPair.result)
           const reserve0 = resPair.result[0]
@@ -75,7 +82,7 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
                     new TokenAmount(token0, reserve0.toString()),
                     new TokenAmount(token1, reserve1.toString()),
                     timestamp.toString(),
-                    "15"
+                    liquidityFee
                 ),
                 new TokenAmount(tokenA, "0"),
                 new TokenAmount(tokenB, "0"))
@@ -96,7 +103,7 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
                 new TokenAmount(token0, reserve0.toString()),
                 new TokenAmount(token1, reserve1.toString()),
                 timestamp.toString(),
-                "15"
+                liquidityFee
             ),
             new TokenAmount(tokenA, _reserve0.toString()),
             new TokenAmount(tokenB, _reserve1.toString()))

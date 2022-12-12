@@ -40,7 +40,7 @@ export function useDerivedPylonMintInfo(
   price?: Price
   noPylon?: boolean
   mintInfo?: {
-    liquidity: TokenAmount;
+    amountOut: TokenAmount;
     blocked: boolean;
     fee: TokenAmount;
     deltaApplied: boolean;

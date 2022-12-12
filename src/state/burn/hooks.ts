@@ -174,9 +174,9 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
                   pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK), energyPT, energyAnchor);
           return {
             ...burnInfo,
-            liquidity: isFloat ? [burnInfo.amount,
+            liquidity: isFloat ? [burnInfo.amountOut,
               new TokenAmount(pylon.token1, BigInt(0))] : [new TokenAmount(pylon.token0, BigInt(0)),
-              burnInfo.amount]}
+              burnInfo.amountOut]}
         }else{
           return undefined
         }
@@ -190,7 +190,7 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
                 pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
                 pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK), energyPT, energyAnchor);
 
-        return {...burnInfo, liquidity: [burnInfo.amountA, burnInfo.amountB], slippage: ZERO, reservesPTU: ZERO}
+        return {...burnInfo, liquidity: [burnInfo.amountOut, burnInfo.amountOut2], slippage: ZERO, reservesPTU: ZERO}
 
 
       }
@@ -220,9 +220,8 @@ export function useDerivedPylonBurnInfo(
   }
   error?: string
   burnInfo?: {
-    amount?: TokenAmount;
-    amountA?: TokenAmount;
-    amountB?: TokenAmount;
+    amountOut?: TokenAmount;
+    amountOut2?: TokenAmount;
     blocked: boolean;
     fee: TokenAmount;
     deltaApplied: boolean;
@@ -389,9 +388,8 @@ export function useDerivedPylonBurnInfoFixedPercentage(
   error?: string
   gamma?: string
   burnInfo?: {
-    amount?: TokenAmount;
-    amountA?: TokenAmount;
-    amountB?: TokenAmount;
+    amountOut?: TokenAmount;
+    amountOut2?: TokenAmount;
     blocked: boolean;
     fee: TokenAmount;
     deltaApplied: boolean;

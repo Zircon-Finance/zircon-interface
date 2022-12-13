@@ -17839,10 +17839,10 @@ yauzl@^2.10.0:
     buffer-crc32 "~0.2.3"
     fd-slicer "~1.1.0"
 
-zircon-sdk@1.0.10-movr-25:
-  version "1.0.10-movr-25"
-  resolved "https://registry.yarnpkg.com/zircon-sdk/-/zircon-sdk-1.0.10-movr-25.tgz#adc85673d34f8ed0f46b342ae5aa4e03161aecaf"
-  integrity sha512-4ZvCGJWWmwsTyN7TDYtSxznOk8itt3IBM6MKdWT56IW538a+KQ4HqKXF/xb3tPlC0cD5yEwd2O+sR0/m8tYZ3w==
+zircon-sdk@1.0.10-movr-28:
+  version "1.0.10-movr-28"
+  resolved "https://registry.yarnpkg.com/zircon-sdk/-/zircon-sdk-1.0.10-movr-28.tgz#f8cd52b75ce79b936253aadc475e0e4a8f3c3b6c"
+  integrity sha512-vzmzQslEHm3Z7O0yfX+3T/bIBOEWuRbAED82BKNTdoTkc2qZ619K14pfNPrJqMxieRkZom+2DH3EpsZLD5T31Q==
   dependencies:
     "@uniswap/v2-core" "^1.0.0"
     big.js "^5.2.2"

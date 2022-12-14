@@ -226,8 +226,6 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   }*/,
 }
 
-export { default as  poolsConfig } from './pools'
-
 export const FAST_INTERVAL = 10000
 export const SLOW_INTERVAL = 60000
 

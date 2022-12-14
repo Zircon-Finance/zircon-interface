@@ -16,7 +16,7 @@ import DaysLeftBar from '../../../../components/DaysLeftBar'
 
 export interface FarmProps {
   label: string
-  pid: number
+  contractAddress: string
   token: SerializedToken
   quoteToken: SerializedToken
   isAnchor: boolean
@@ -86,7 +86,7 @@ const Farm: React.FunctionComponent<FarmProps> = ({ token, isFinished, quoteToke
                     letterSpacing: "0",
                   }}
                 >
-                  {!isClassic && (!isAnchor ? token.symbol : quoteToken.symbol)}{" "}
+                  {!isClassic && (!isAnchor ? token?.symbol : quoteToken?.symbol)}{" "}
                   {isClassic ? "CLASSIC" : !isAnchor ? "Float" : "Stable"}
                 </span>
               </BadgeSmall>
@@ -95,7 +95,7 @@ const Farm: React.FunctionComponent<FarmProps> = ({ token, isFinished, quoteToke
                 style={{ minWidth: "max-content" }}
                 fontWeight={400}
                 fontSize={"13px"}
-              >{`${token.symbol}-${quoteToken.symbol}`}</Text>
+              >{`${token?.symbol}-${quoteToken?.symbol}`}</Text>
             </Flex>
             {!isFinished && <DaysLeftBar viewMode='card' startBlock={startBlock} endBlock={endBlock} currentBlock={currentBlock} />}
           </Flex>

@@ -32,7 +32,7 @@ import { useActiveWeb3React, useWindowDimensions } from '../../../../../hooks'
 import { Flex } from 'rebass'
 import { Token } from 'zircon-sdk'
 import { DeserializedPool } from '../../../../../state/types'
-import { usePool } from '../../../../../state/pools/hooks'
+import { usePool, usePools } from '../../../../../state/pools/hooks'
 import { fetchPoolsUserDataAsync } from '../../../../../state/pools'
 import { useCallWithGasPrice } from '../../../../../hooks/useCallWithGasPrice'
 import { BIG_ZERO } from '../../../../../utils/bigNumber'
@@ -240,12 +240,12 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const lpAddress = farm.stakingToken.address
   const info = CONTRACT_ADDRESS_BASE+farm.lpAddress
   const theme = useTheme()
-
-  const { pool } = usePool(farm.sousId)
+  const {pools} = usePools()
+  const { pool } = usePool(farm.contractAddress)
   const tokenBalance = pool.userData.stakingTokenBalance
   const stakedBalance = pool.userData.stakedBalance
   const [showModal, setShowModal] = useState(false)
-  const { onStake } = useStakeFarms(farm.sousId, farm.stakingToken.address)
+  const { onStake } = useStakeFarms(farm.contractAddress, farm.stakingToken.address)
   const { account } = useWeb3React()
   const dispatch = useDispatch()
   const allowance = farm.userData?.allowance ? new BigNumber(farm.userData.allowance) : BIG_ZERO
@@ -256,7 +256,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const addTransaction = useTransactionAdder()
   const toggleWalletModal = useWalletModalToggle()
   const { width } = useWindowDimensions()
-  const sousChefContract = useSousChef(pool.sousId)
+  const sousChefContract = useSousChef(pool.contractAddress)
   const { callWithGasPrice } = useCallWithGasPrice()
   const [hoverRisk, setHoverRisk] = useState(false)
   const handleApproval = useCallback(async () => {
@@ -281,7 +281,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           },
           receipt.transactionHash
       )
-      dispatch(fetchPoolsUserDataAsync({chainId, account}))
+      dispatch(fetchPoolsUserDataAsync({chainId, account, pools}))
     }
   }, [dispatch,
     account,
@@ -316,7 +316,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           },
           receipt.transactionHash
       )
-      dispatch(fetchPoolsUserDataAsync({chainId, account}))
+      dispatch(fetchPoolsUserDataAsync({chainId, account, pools}))
     }
   }
 

@@ -1,4 +1,4 @@
-import {PoolCategory, SerializedPoolConfig} from './types'
+import {SerializedPoolConfig} from './types'
 import {ChainId, Token} from "zircon-sdk";
 
 const priceHelperLps: SerializedPoolConfig[] = [
@@ -10,7 +10,6 @@ const priceHelperLps: SerializedPoolConfig[] = [
      * Before storing to redux, farms without a PID are filtered out.
      */
     {
-        sousId: 1,
         token1: new Token(ChainId.MOONRIVER, '0x4545E94974AdACb82FC56BCf136B07943e152055', 18, 'ZRG', 'Zircon Gamma'),
         token2: new Token(ChainId.MOONRIVER, '0x98878b06940ae243284ca214f92bb71a2b032b8a', 18, 'MOVR', 'Moonriver'),
         isClassic: false,
@@ -22,9 +21,6 @@ const priceHelperLps: SerializedPoolConfig[] = [
         vaultAddress: '0x77FA7c931d04CA5e8C000D01b6D87380f9C0F3d0',
         lpAddress: "0x89bb1bd89c764e1c2d4aa6469062590732b26323",
         pylonAddress: "0xdbb6e1438a0c48A53D033757fB8a09f5aE879Da8",
-        poolCategory: PoolCategory.CORE,
-        harvest: true,
-        sortOrder: 1,
         isFinished: false,
     },
 ]

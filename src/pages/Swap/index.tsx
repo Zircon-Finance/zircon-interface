@@ -283,8 +283,6 @@ export default function Swap() {
   ])
   const [isChartExpanded, setIsChartExpanded] = useState(false)
   const [isChartDisplayed] = useState(true)
-  console.log('inputCurrency', inputCurrency)
-  console.log('outputCurrency', outputCurrency)
 
   const singleTokenPrice = useSingleTokenSwapInfo(chainId, inputCurrencyId, inputCurrency, outputCurrencyId, outputCurrency)
 

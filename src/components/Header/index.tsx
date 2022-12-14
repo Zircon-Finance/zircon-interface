@@ -171,6 +171,8 @@ export default function Header() {
   const [showClaimTokens, setShowClaimTokens] = React.useState(false);
   const theme = useTheme();
   useFetchPublicPoolsData()
+  const isPoolBlocked = false
+  const isFarmBlocked = false
 
   return (
     <HeaderFrame>
@@ -195,7 +197,8 @@ export default function Header() {
         </HeaderElement>
         {width > 1100 ?
         <>
-        <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : location.pathname === '/farm' ? 'farm' : 'pool'} />
+        <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : location.pathname === '/farm' ? (isFarmBlocked ? 'swap' : 'farm') :
+        (isPoolBlocked ? 'swap' : 'pool')} />
           <HeaderElement style={{height: '50px'}}>
             <button  style={{border: 'none',
               outline: 'none',

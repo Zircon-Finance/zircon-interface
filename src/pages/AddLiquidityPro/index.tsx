@@ -61,6 +61,7 @@ import CapacityIndicator from "../../components/CapacityIndicator";
 import { usePair } from "../../data/Reserves";
 import { Separator } from "../../components/SearchModal/styleds";
 import { useBatchPrecompileContract } from '../../hooks/useContract'
+import { basePool } from "../../state/pools/selectors";
 
 const IconContainer = styled.div`
   display: flex;
@@ -154,7 +155,7 @@ export default function AddLiquidityPro({
           f.isAnchor === !isFloat &&
           f.apr !== 0 && f.isFinished === false
   );
-  const { pool } = usePool(useMemo(() => farm ? farm?.sousId : 1, [farm]));
+  const { pool } = usePool(useMemo(() => farm ? farm?.contractAddress : '0x0f2eacd08e26932d1a74dbcf094d097d827aca3b', [farm]));
   const addTransaction = useTransactionAdder()
   const lpContract = useERC20(pool?.stakingToken.address)
   const farmIsApproved = useCallback(
@@ -162,8 +163,8 @@ export default function AddLiquidityPro({
       , [account, pool])
 
   const [pendingTx, setPendingTx] = useState(false)
-  const {handleApprove} = useApprovePool(farm, lpContract, farm?.sousId ?? 1)
-  const sousChefContract = useSousChef(farm?.sousId ?? 1)
+  const {handleApprove} = useApprovePool(farm ?? basePool, lpContract, farm?.contractAddress ?? 1)
+  const sousChefContract = useSousChef(farm?.contractAddress ?? AddressZero)
   const approveFarm = useCallback(async () => {
     setPendingTx(true)
     try {

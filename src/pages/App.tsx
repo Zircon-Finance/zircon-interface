@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import GoogleAnalyticsReporter from '../components/analytics/GoogleAnalyticsReporter'
 import Header from '../components/Header'
 import Popups from '../components/Popups'
@@ -31,7 +31,10 @@ import Farms from '../views/Farms/Farms'
 import Lottie from "lottie-react-web";
 import animation from '../assets/lotties/0uCdcx9Hn5.json'
 import { useShowBannerManager } from '../state/user/hooks'
-import { PhishingBanner } from '../components/PhishingBanner'
+import { PhishingBanner, PhyshingContainer } from '../components/PhishingBanner'
+import { WarningLight } from '../components/WarningIcon/index.tsx'
+import { Flex, Text } from 'rebass'
+import { CloseIcon } from '../theme'
 
 const AppWrapper = styled.div`
   display: flex;
@@ -93,11 +96,28 @@ export const LottieContainer = styled.div`
 export default function App() {
   const { width } = useWindowDimensions();
   const [opacityDiv, setOpacityDiv] = React.useState(1)
+  const [showBanner, ] = useShowBannerManager()
+  const [showBlockedBanner, setShowBlockedBanner] = React.useState(!showBanner)
+  const theme = useTheme()
+
+  const isPoolBlocked = false
+  const isFarmBlocked = false
+
   const countDown = (opacity) => {
     opacityDiv !== 0 && setTimeout(() => setOpacityDiv(parseFloat((opacity - 0.1).toFixed(1))), 50)
   }
   opacityDiv !== 0 && countDown(opacityDiv)
-  const [showBanner, ] = useShowBannerManager()
+
+  const blockedBanner = <PhyshingContainer>
+  <WarningLight />
+  <Flex flexDirection={width <= 992 ? 'column' : 'row'} py={width <= 992 && '10px'}>
+    <Text color={'#E9D886'}> We are migrating to Binance Smart Chain. </Text>
+    <Text ml={width >= 992 &&'5px'} color={theme.darkMode ? '#CCB6B5' : '#E8E6E6'}>For this reason Pool and Farm sections </Text>
+    <Text ml={width >= 992 &&'5px'} color={theme.darkMode ? '#CCB6B5' : '#E8E6E6'}> are not working for now.</Text>
+  </Flex>
+  <CloseIcon fill={'#fff'} onClick={() => setShowBlockedBanner(false)} />
+</PhyshingContainer>
+  
   return (
     <Suspense fallback={null}>
       <HashRouter>
@@ -110,6 +130,7 @@ export default function App() {
         <Route component={GoogleAnalyticsReporter} />
         <Route component={DarkModeQueryParamReader} />
         <AppWrapper>
+          {showBlockedBanner && isPoolBlocked && isFarmBlocked && blockedBanner}
           {showBanner && <PhishingBanner />}
           {opacityDiv !== 0 && <LottieContainer style={{opacity: opacityDiv}}><Lottie
                 style={{width: "100px"}}
@@ -128,21 +149,21 @@ export default function App() {
                 <Route exact strict path="/swap/:outputCurrency" component={RedirectToSwap} />
                 <Route exact strict path="/send" component={RedirectPathToSwapOnly} />
                 <Route exact strict path="/find" component={PoolFinder} />
-                <Route exact strict path="/pool" component={Pool} />
+                <Route exact strict path="/pool" component={isPoolBlocked ? Swap : Pool} />
                 <Route exact strict path="/create" component={RedirectToAddLiquidityPro} />
                 <Route exact path="/add" component={AddLiquidity} />
                 <Route exact path="/add/:currencyIdA" component={RedirectOldAddLiquidityPathStructure} />
                 <Route exact path="/add/:currencyIdA/:currencyIdB" component={RedirectDuplicateTokenIds} />
-                <Route exact path="/add-pro" component={AddLiquidityPro} />
-                <Route exact path="/add-pro/:currencyIdA" component={RedirectOldAddLiquidityProPathStructure} />
-                <Route exact path="/add-pro/:currencyIdA/:currencyIdB" component={RedirectDuplicateTokenIdsPro} />
-                <Route exact path="/add-pro/:currencyIdA/:currencyIdB/:side" component={RedirectDuplicateTokenIdsProAnchor} />
-                <Route exact path="/farm" component={Farms} />
+                <Route exact path="/add-pro" component={isPoolBlocked ? Swap : AddLiquidityPro} />
+                <Route exact path="/add-pro/:currencyIdA" component={isPoolBlocked ? Swap : RedirectOldAddLiquidityProPathStructure} />
+                <Route exact path="/add-pro/:currencyIdA/:currencyIdB" component={isPoolBlocked ? Swap : RedirectDuplicateTokenIdsPro} />
+                <Route exact path="/add-pro/:currencyIdA/:currencyIdB/:side" component={isPoolBlocked ? Swap : RedirectDuplicateTokenIdsProAnchor} />
+                <Route exact path="/farm" component={isFarmBlocked ? Swap : Farms} />
                 <Route exact strict path="/remove/:tokens" component={RedirectOldRemoveLiquidityPathStructure} />
                 <Route exact strict path="/remove/:currencyIdA/:currencyIdB" component={RemoveLiquidity} />
-                <Route exact strict path="/remove-pro/:tokens" component={RedirectOldRemoveLiquidityProPathStructure} />
-                <Route exact strict path="/remove-pro/:currencyIdA/:currencyIdB" component={RedirectOldRemoveLiquidityProPathStructure} />
-                <Route exact strict path="/remove-pro/:currencyIdA/:currencyIdB/:float" component={RemoveProLiquidity} />
+                <Route exact strict path="/remove-pro/:tokens" component={isPoolBlocked ? Swap : RedirectOldRemoveLiquidityProPathStructure} />
+                <Route exact strict path="/remove-pro/:currencyIdA/:currencyIdB" component={isPoolBlocked ? Swap : RedirectOldRemoveLiquidityProPathStructure} />
+                <Route exact strict path="/remove-pro/:currencyIdA/:currencyIdB/:float" component={isPoolBlocked ? Swap : RemoveProLiquidity} />
                 <Route component={RedirectPathToSwapOnly} />
               </Switch>
             </Web3ReactManager>

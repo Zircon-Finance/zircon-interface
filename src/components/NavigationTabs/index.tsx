@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { darken } from 'polished'
 import { useTranslation } from 'react-i18next'
 import { NavLink, Link as HistoryLink } from 'react-router-dom'
@@ -13,6 +13,8 @@ import { connectNet } from '../WalletModal'
 // import MoonbeamLogo from '../MoonbeamLogo'
 import MoonriverLogo from '../MoonriverLogo'
 import BnbLogo from '../BnbLogo'
+import { DialogContainer } from '../TopTokensRow'
+import { Text } from 'rebass'
 
 const Tabs = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -27,24 +29,24 @@ const activeClassName = 'ACTIVE'
 
 const StyledNavLink = styled(NavLink).attrs({
   activeClassName
-})`
+})<{ disabled?: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
   align-items: center;
   font-weight: 400;
   justify-content: center;
   border-radius: 12px;
   outline: none;
-  cursor: pointer;
   text-decoration: none;
-  color: ${({ theme }) => theme.tabsText};
+  color: ${({ theme, disabled }) => disabled ? theme.opacitySmall : theme.tabsText};
   font-size: 16px;
+  cursor: ${({ disabled }) => disabled ? 'not-allowed' : 'pointer'};
   padding: 9px 13px;
   width: 50%;
 
   &.${activeClassName} {
     border-radius: 12px;
-    color: ${({ theme }) => theme.text1};
-    background-color: ${({ theme }) => theme.navigationTabs};
+    color: ${({ theme, disabled }) => !disabled && theme.text1};
+    background-color: ${({ theme, disabled }) => !disabled && theme.navigationTabs};
   }
 
   :hover,
@@ -78,17 +80,46 @@ svg {
 export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' }) {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
+  const theme = useTheme()
+  const [hoverBlocked, setHoverBlocked] = React.useState(false)
+
+  const isPoolBlocked = false
+  const isFarmBlocked = false
+  const blockReasonTitle = "We are migrating to Binance Smart Chain"
+  const blockReasonDescription = "For this reason Pool and Farm sections are not working for now"
+
+  const hoverContent = (
+    <DialogContainer style={{
+      background: theme.questionMarkBg, 
+      position: 'fixed', 
+      top: width >= 1100 ? '80px' : width >= 700 ? '140px' : '210px', 
+      width: '200px', 
+      right: 'auto', 
+      padding: '15px'}} 
+    show={hoverBlocked}>
+      <Text style={{color: theme.text1}} fontSize='13px' fontWeight={500} mb={'5px'}>
+        {blockReasonTitle}
+      </Text>
+      <Text style={{color: theme.text1}} fontSize='13px' fontWeight={400}>
+        {blockReasonDescription}
+      </Text>
+    </DialogContainer>
+  )
+
   return (
     <Tabs style={{ marginBottom: '10px', width: width >= 700 ? 'auto' : '100%', padding: '5px' }}>
       <StyledNavLink id={`swap-nav-link`} to={'/swap'} isActive={() => active === 'swap'}>
         {t('swap')}
       </StyledNavLink>
-      <StyledNavLink id={`pool-nav-link`} to={'/pool'} isActive={() => active === 'pool'}>
+      <StyledNavLink onMouseEnter={() => setHoverBlocked(true)} onMouseLeave={() => setHoverBlocked(false)}
+       disabled={isPoolBlocked} id={`pool-nav-link`} to={isPoolBlocked ? '#' : '/pool'} isActive={() => active === 'pool'}>
         {t('pool')}
       </StyledNavLink>
-      <StyledNavLink id={`farm-nav-link`} to={'/farm'} isActive={() => active === 'farm'}>
+      <StyledNavLink onMouseEnter={() => setHoverBlocked(true)} onMouseLeave={() => setHoverBlocked(false)}
+      disabled={isFarmBlocked} id={`farm-nav-link`} to={isFarmBlocked ? '#' : '/farm'} isActive={() => active === 'farm'}>
         {t('Farm')}
       </StyledNavLink>
+      {hoverBlocked && isPoolBlocked && isFarmBlocked && hoverContent}
     </Tabs>
   )
 }

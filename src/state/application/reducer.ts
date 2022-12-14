@@ -33,10 +33,10 @@ export default createReducer(initialState, builder =>
   builder
     .addCase(updateTimestamp, (state, action) => {
       const { chainId, timestamp } = action.payload
-      if (typeof state.blockNumber[chainId] !== 'number') {
-        state.blockNumber[chainId] = timestamp
+      if (typeof state.timestamp[chainId] !== 'number') {
+        state.timestamp[chainId] = timestamp
       } else {
-        state.blockNumber[chainId] = Math.max(timestamp, state.timestamp[chainId])
+        state.timestamp[chainId] = Math.max(timestamp, state.timestamp[chainId])
       }
     }).addCase(updateBlockNumber, (state, action) => {
       const { chainId, blockNumber } = action.payload

@@ -136,12 +136,7 @@ export default function AddLiquidityPro({
       isFloat,
       sync
   );
-  // const [float, setFloat] = useState({
-  //   currency_a: currencies[Field.CURRENCY_A],
-  //   field_a: Field.CURRENCY_A,
-  //   currency_b: currencies[Field.CURRENCY_B],
-  //   field_b: Field.CURRENCY_B,
-  // });
+
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noPylon);
   const isValid = !error;
 
@@ -204,35 +199,9 @@ export default function AddLiquidityPro({
     return currencies[getField(shouldSendFloat)]
   }
 
+
   useEffect(() => {
-    if (side !== "float"){
-      // console.log("hello")
-      // console.log("side a", Field.CURRENCY_B)
-      // console.log("side a", currencies[Field.CURRENCY_B])
-      setIsFloat(false);
-      // setFloat({
-      //   currency_b: currencies[Field.CURRENCY_A],
-      //   field_b: Field.CURRENCY_A,
-      //   currency_a: currencies[Field.CURRENCY_B],
-      //   field_a: Field.CURRENCY_B,
-      // });
-
-
-    }else{
-      // console.log("side b", Field.CURRENCY_B)
-      // console.log("side b", currencies[Field.CURRENCY_B])
-
-      // if(float.currency_a !== currencies[Field.CURRENCY_A]) {
-
-      setIsFloat(true);
-      // setFloat({
-      //   currency_a: currencies[Field.CURRENCY_A],
-      //   field_a: Field.CURRENCY_A,
-      //   currency_b: currencies[Field.CURRENCY_B],
-      //   field_b: Field.CURRENCY_B,
-      // });
-    }
-    // }
+    setIsFloat(side === "float");
   }, [side])
 
   // get formatted amounts
@@ -792,12 +761,7 @@ export default function AddLiquidityPro({
   const handleCurrencyASelect = useCallback(
       (currencyA: Currency) => {
         const newCurrencyIdA = currencyId(currencyA, chainId);
-        // setFloat({
-        //   currency_a: currencyA,
-        //   field_a: Field.CURRENCY_A,
-        //   currency_b: currencies[Field.CURRENCY_B],
-        //   field_b: Field.CURRENCY_B,
-        // });
+
         if (newCurrencyIdA === currencyIdB) {
           history.push(`/add-pro/${currencyIdB || ''}/${currencyIdA || ''}`);
         } else {
@@ -815,12 +779,7 @@ export default function AddLiquidityPro({
   const handleCurrencyBSelect = useCallback(
       (currencyB: Currency) => {
         const newCurrencyIdB = currencyId(currencyB, chainId);
-        // setFloat({
-        //   currency_a: currencies[Field.CURRENCY_A],
-        //   field_a: Field.CURRENCY_A,
-        //   currency_b: currencies[Field.CURRENCY_B],
-        //   field_b: Field.CURRENCY_B,
-        // });
+
         if (currencyIdA === newCurrencyIdB) {
           if (currencyIdB) {
             history.push(`/add-pro/${currencyIdB}/${newCurrencyIdB || ''}`);
@@ -862,12 +821,8 @@ export default function AddLiquidityPro({
     approvalA === ApprovalState.PENDING ||
     approvalB === ApprovalState.NOT_APPROVED ||
     approvalB === ApprovalState.PENDING) &&
-isValid
+    isValid
 
-  // console.log("currencyA", float.currency_a )
-  // console.log("curremciesA", currencies[Field.CURRENCY_A])
-  // console.log("fee indicator", float.currency_b)
-  // console.log("fee indicator", currencies[Field.CURRENCY_B])
   return (
       <>
         {(pylonState === PylonState.LOADING || account === '0' || currencyA === null || currencyB === null) &&  (
@@ -1001,12 +956,6 @@ isValid
                                   }}
                                   onClick={() => {
                                     setIsFloat(true);
-                                    // setFloat({
-                                    //   currency_a: currencies[Field.CURRENCY_A],
-                                    //   field_a: Field.CURRENCY_A,
-                                    //   currency_b: currencies[Field.CURRENCY_B],
-                                    //   field_b: Field.CURRENCY_B,
-                                    // });
                                   }}
                               >
                                 <CurrencyInputPanelPicOnly
@@ -1040,12 +989,6 @@ isValid
                                   }}
                                   onClick={() => {
                                     setIsFloat(false);
-                                    // setFloat({
-                                    //   currency_b: currencies[Field.CURRENCY_A],
-                                    //   field_b: Field.CURRENCY_A,
-                                    //   currency_a: currencies[Field.CURRENCY_B],
-                                    //   field_a: Field.CURRENCY_B,
-                                    // });
                                   }}
                               >
                                 <CurrencyInputPanelPicOnly
@@ -1161,12 +1104,6 @@ isValid
                                     }}
                                     onClick={() => {
                                       setSync("half");
-                                      // setFloat({
-                                      //   currency_a: currencies[Field.CURRENCY_A],
-                                      //   field_a: Field.CURRENCY_A,
-                                      //   currency_b: currencies[Field.CURRENCY_B],
-                                      //   field_b: Field.CURRENCY_B,
-                                      // });
                                     }}
                                 >
                                   ON

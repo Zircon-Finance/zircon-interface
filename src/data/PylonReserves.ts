@@ -47,6 +47,7 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
   )
 
   console.log("RRR:: pairAd", pairAddresses)
+  console.log("RRR:: pylonAddre", pylonAddresses)
 
   const results = useMultipleContractSingleData(pylonAddresses, PYLON_INTERFACE, 'getSyncReserves')
   const resultsPair = useMultipleContractSingleData(pairAddresses, PAIR_INTERFACE, 'getReserves')

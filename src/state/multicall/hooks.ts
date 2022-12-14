@@ -4,7 +4,7 @@ import { Contract } from '@ethersproject/contracts'
 import { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
-import { useBlockNumber } from '../application/hooks'
+import {useBlockNumber, useBlockTimestamp} from '../application/hooks'
 import { AppDispatch, AppState } from '../index'
 import {
   addMulticallListeners,
@@ -130,8 +130,11 @@ function toCallState(
   if (!callResult) return INVALID_CALL_STATE
   const { valid, data, blockNumber } = callResult
   if (!valid) return INVALID_CALL_STATE
+    console.log("RRR::", valid, blockNumber )
   if (valid && !blockNumber) return LOADING_CALL_STATE
-  if (!contractInterface || !fragment || !latestBlockNumber) return LOADING_CALL_STATE
+    console.log("RRR::", fragment, latestBlockNumber, contractInterface )
+
+    if (!contractInterface || !fragment || !latestBlockNumber) return LOADING_CALL_STATE
   const success = data && data.length > 2
   const syncing = (blockNumber ?? 0) < latestBlockNumber
   let result: Result | undefined = undefined
@@ -226,7 +229,6 @@ export function useMultipleContractSingleData(
   options?: ListenerOptions
 ): CallState[] {
   const fragment = useMemo(() => contractInterface.getFunction(methodName), [contractInterface, methodName])
-
   const callData: string | undefined = useMemo(
     () =>
       fragment && isValidMethodArgs(callInputs)
@@ -234,7 +236,9 @@ export function useMultipleContractSingleData(
         : undefined,
     [callInputs, contractInterface, fragment]
   )
-  const calls = useMemo(
+    console.log("RRR:: ", callData)
+
+    const calls = useMemo(
     () =>
       fragment && addresses && addresses.length > 0 && callData
         ? addresses.map<Call | undefined>(address => {
@@ -250,6 +254,8 @@ export function useMultipleContractSingleData(
   )
 
   const latestBlockNumber = useBlockNumber()
+  const timestamp = useBlockTimestamp()
+    console.log("RRR::latestBlockNumber ", latestBlockNumber, timestamp)
   const results = useCallsData(calls, options)
 
   return useMemo(() => {

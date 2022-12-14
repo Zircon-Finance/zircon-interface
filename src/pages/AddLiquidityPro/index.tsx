@@ -398,7 +398,7 @@ export default function AddLiquidityPro({
     //   [Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, 0)[0]
     // }
     console.log('mintInfo', mintInfo)
-    const liquidityMin = calculateSlippageAmount(mintInfo.liquidity, noPylon ? 0 : allowedSlippage)[0]
+    const liquidityMin = calculateSlippageAmount(mintInfo.amountOut, noPylon ? 0 : allowedSlippage)[0]
 
     const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline;
 
@@ -659,7 +659,7 @@ export default function AddLiquidityPro({
         })
   }
 
-  const formattedLiquidity = (mintInfo?.liquidity.toSignificant(
+  const formattedLiquidity = (mintInfo?.amountOut.toSignificant(
       6
   ) as unknown) as number;
 

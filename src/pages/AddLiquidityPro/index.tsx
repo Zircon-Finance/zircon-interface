@@ -769,6 +769,7 @@ export default function AddLiquidityPro({
             errorTx={errorTx}
             blocked={mintInfo?.blocked}
             shouldBlock={mintInfo?.shouldBlock || mintInfo?.deltaApplied || mintInfo?.blocked}
+            asyncBlock={(isFloat && sync !== "off")}
         />
     );
   };

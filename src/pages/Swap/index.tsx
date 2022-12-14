@@ -107,6 +107,7 @@ export default function Swap() {
   const [chosenTokens] = useChosenTokens();
   const inputCurrency = useCurrency(inputCurrencyId)
   const outputCurrency = useCurrency(outputCurrencyId)
+  console.log("inputCurrencyId", inputCurrencyId)
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
   const { address: recipientAddress } = useENSAddress(recipient)
   const toggledVersion = useToggledVersion()
@@ -180,6 +181,9 @@ export default function Swap() {
   // mark when a user has submitted an approval, reset onTokenSelection for input field
   useEffect(() => {
     onCurrencySelection(Field.INPUT, NATIVE_TOKEN[chainId])
+  }, [])
+
+  useEffect(() => {
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
     }
@@ -283,8 +287,6 @@ export default function Swap() {
   ])
   const [isChartExpanded, setIsChartExpanded] = useState(false)
   const [isChartDisplayed] = useState(true)
-  console.log('inputCurrency', inputCurrency)
-  console.log('outputCurrency', outputCurrency)
 
   const singleTokenPrice = useSingleTokenSwapInfo(chainId, inputCurrencyId, inputCurrency, outputCurrencyId, outputCurrency)
 
@@ -304,7 +306,7 @@ export default function Swap() {
       case 'price change 24h':
           return orderBy(tokensToSort, (token: any) => {
           const previousToken = topTokensPrevious.find((t) => t.token.id === token.token.id)
-          const changePercent = (((parseFloat(token?.priceUSD) - parseFloat(previousToken?.priceUSD)) / 
+          const changePercent = (((parseFloat(token?.priceUSD) - parseFloat(previousToken?.priceUSD)) /
           parseFloat(previousToken?.priceUSD)) * 100).toFixed(2);
           return changePercent !== 'NaN' ? parseFloat(changePercent) : parseFloat('-100')
         }, 'desc')
@@ -353,7 +355,7 @@ export default function Swap() {
           </AutoColumn>
         </div>
         )}
-        
+
       <AppBody>
 
       {/* <SwapPoolTabs active={'swap'} /> */}
@@ -412,7 +414,6 @@ export default function Swap() {
                     onClick={() => {
                       setApprovalSubmitted(false) // reset 2 step UI for approvals
                       onSwitchTokens()
-
                     }}
                     style={{alignSelf: 'center'}}
                     color={currencies[Field.INPUT] && currencies[Field.OUTPUT] ? theme.primary1 : theme.text2}
@@ -645,7 +646,7 @@ export default function Swap() {
           <TableData style={{cursor:"pointer", width: '10%'}} />
         </tr>
         <Separator />
-        {topTokens.length === 0 ? [...Array(skeletons)].map(() => ( 
+        {topTokens.length === 0 ? [...Array(skeletons)].map(() => (
           <Flex style={{width: '100%', margin: 'auto'}} flexDirection='column'>
             <Row>
               <SkeletonTable style={{width: '35%', marginLeft: '30px'}}><Skeleton width={'80%'} /></SkeletonTable>
@@ -659,9 +660,9 @@ export default function Swap() {
         )) : (
         (topTokensPrevious.length > 0 && topTokens.length > 0) && sortedTokens.map((token, index) => (
           <TopTokensRow
-            key={index} 
-            token={token} 
-            previousToken={topTokensPrevious.find((t) => t.token.id === token.token.id)} 
+            key={index}
+            token={token}
+            previousToken={topTokensPrevious.find((t) => t.token.id === token.token.id)}
             index={index}
             handleInput={handleInputSelect}
             tokens={topTokens}

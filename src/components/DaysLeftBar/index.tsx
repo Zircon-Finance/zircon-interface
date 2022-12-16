@@ -79,6 +79,7 @@ const DaysLeftBar: React.FC<DaysLeftProps> = ({viewMode = 'table', startBlock, e
         {`${(daysLeft || hoursLeft) ? hoursLeft >= 24 ? 
           `~ ${daysLeft} days left` : 
           `~ ${hoursLeft} hours left` : 
+          hoursLeft < 1 ? 'Ending soon!' :
           "Loading..."}`}
         </Text>
         <QuestionMarkContainer

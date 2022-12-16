@@ -212,9 +212,7 @@ const Farms: React.FC = ({ children }) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const { pools, userDataLoaded } = usePools()
-  const [
-    query,
-    setQuery] = useState('')
+  const [query, setQuery] = useState('')
   const [viewMode] = useUserFarmsViewMode()
   const [filter] = useUserFarmsFilterPylonClassic()
   const [filterAnchorFloat] = useUserFarmsFilterAnchorFloat()
@@ -222,19 +220,13 @@ const Farms: React.FC = ({ children }) => {
   const { account, chainId } = useWeb3React()
   const [sortOption, setSortOption] = useState('hot')
   const [pendingTx, setPendingTx] = useState(false)
-  const { observerRef,
-    // isIntersecting
-  } = useIntersectionObserver()
+  const { observerRef, } = useIntersectionObserver()
   const chosenFarmsLength = useRef(0)
   const { width } = useWindowDimensions()
-
   const isInactive = filtedFinishedOnly === FarmFinishedOnly.TRUE
   const isActive = !filtedFinishedOnly
 
   usePoolsPageFetch()
-  if(account) {
-    fetchPoolsUserDataAsync({chainId, account})
-  }
 
   const [numberOfFarmsVisible, setNumberOfFarmsVisible] = useState(NUMBER_OF_POOLS_VISIBLE)
 
@@ -265,7 +257,7 @@ const Farms: React.FC = ({ children }) => {
 
   const harvestAllPools = async() => {
     setPendingTx(true)
-    const contracts = stakedOnlyFarms.map((pool) => getSouschefContract(chainId, pool.sousId, library.getSigner()))
+    const contracts = stakedOnlyFarms.map((pool) => getSouschefContract(chainId, pool.contractAddress, library.getSigner()))
     const zeroValues = contracts.map(() => '000000000000000000')
     const callData = stakedOnlyFarms.map((pool, index) => contracts[index].interface.encodeFunctionData('deposit', ['0']))
     const receipt = await fetchWithCatchTxError(() => 
@@ -293,7 +285,7 @@ const Farms: React.FC = ({ children }) => {
         },
         receipt.transactionHash
       )
-      dispatch(fetchPoolsUserDataAsync({chainId, account}))
+      dispatch(fetchPoolsUserDataAsync({chainId, account, pools}))
     }
   }
 
@@ -333,7 +325,7 @@ const Farms: React.FC = ({ children }) => {
       case 'apr':
         return orderBy(poolsToSort, (pool: DeserializedPool) => Math.floor(pool.apr) ?? 0, 'desc')
       case 'latest':
-        return orderBy(poolsToSort, (pool: DeserializedPool) => Number(pool.sousId), 'desc')
+        return orderBy(poolsToSort, (pool: DeserializedPool) => Number(pool.startBlock), 'desc')
       default:
         return poolsToSort
     }
@@ -403,13 +395,13 @@ const Farms: React.FC = ({ children }) => {
   }, [stakedOnlyFarms])
 
   const rowData = chosenPools.map((farm) => {
-    const lpLabel = `${farm.token1.symbol}-${farm.token2.symbol}`
+    const lpLabel = `${farm?.token1?.symbol}-${farm?.token2?.symbol}`
 
     const row: RowProps = {
       apr: {
         value: Math.floor(farm.apr).toString(),
         // getDisplayApr(farm.apr, farm.lpRewardsApr),
-        pid: farm.sousId,
+        contractAddress: farm.contractAddress,
         baseApr: farm.baseApr,
         feesApr: farm.feesApr,
         lpLabel,
@@ -420,7 +412,7 @@ const Farms: React.FC = ({ children }) => {
       farm: {
         earningToken: farm.earningToken,
         label: lpLabel,
-        pid: farm.sousId,
+        contractAddress: farm.contractAddress,
         token: farm.token1,
         quoteToken: farm.token2,
         isAnchor: farm.isAnchor,
@@ -434,7 +426,7 @@ const Farms: React.FC = ({ children }) => {
       earned: {
         earnings: getBalanceNumber(new BigNumber(farm.userData.pendingReward)),
         earningsUSD: getBalanceUSD(new BigNumber(farm.userData.pendingReward), farm.earningTokenInfo?.map(t => t.currentPrice)),
-        pid: farm.sousId,
+        contractAddress: farm.contractAddress,
         hovered: false,
         setHovered: () => {},
       },

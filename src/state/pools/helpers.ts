@@ -6,8 +6,11 @@ import {
   // SerializedCakeVault,
   // DeserializedCakeVault,
 } from '../../state/types'
+import axios from 'axios'
 import { BIG_ZERO } from '../../utils/bigNumber'
 import { deserializeToken } from '../user/hooks'
+import { ChainId, Token } from 'zircon-sdk'
+import {AddressZero} from "@ethersproject/constants";
 // import { convertSharesToCake } from 'views/Pools/helpers'
 
 type UserData =
@@ -28,17 +31,6 @@ export const transformUserData = (userData: UserData) => {
   }
 }
 
-const transformProfileRequirement = (profileRequirement?: { required: boolean; thresholdPoints: string }) => {
-  return profileRequirement
-    ? {
-        required: profileRequirement.required,
-        thresholdPoints: profileRequirement.thresholdPoints
-          ? new BigNumber(profileRequirement.thresholdPoints)
-          : BIG_ZERO,
-      }
-    : undefined
-}
-
 export const transformPool = (pool: SerializedPool): DeserializedPool => {
   const {
     totalStaked,
@@ -47,7 +39,6 @@ export const transformPool = (pool: SerializedPool): DeserializedPool => {
     userData,
     stakingToken,
     earningToken,
-    profileRequirement,
     startBlock,
     staked,
     stakedRatio,
@@ -63,9 +54,9 @@ export const transformPool = (pool: SerializedPool): DeserializedPool => {
     quotingPrice: quotingPrice,
     tokenPrice: tokenPrice,
     startBlock,
-    profileRequirement: transformProfileRequirement(profileRequirement),
-    stakingToken: deserializeToken(stakingToken),
-    earningToken: earningToken.map((token) => deserializeToken(token)),
+    stakingToken: deserializeToken(stakingToken ?? new Token(ChainId.MOONRIVER, AddressZero, 18)),
+    earningToken: earningToken && earningToken.length > 0 ? earningToken.map((token) => deserializeToken(token ?? new Token(ChainId.MOONRIVER, AddressZero, 18)))
+      : [deserializeToken(new Token(ChainId.MOONRIVER, AddressZero, 18))],
     userData: transformUserData(userData),
     totalStaked: new BigNumber(totalStaked),
     stakingLimit: new BigNumber(stakingLimit),
@@ -157,3 +148,5 @@ export const getTokenPricesFromFarm = (farms: SerializedFarm[]) => {
     return prices
   }, {})
 }
+
+export const getApiData = async() => await axios.get('https://edgeapi.zircon.finance/static/yield').then((res) => res.data)

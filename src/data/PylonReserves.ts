@@ -33,7 +33,6 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
   const pylonAddresses = useMemo(
     () =>
       tokens.map(([tokenA, tokenB]) => {
-        console.log('Pylon address is: ', tokenA && tokenB ? Pylon.getAddress(tokenA, tokenB) : undefined, 'from tokens ', tokenA, tokenB)
         return tokenA && tokenB && !tokenA.equals(tokenB) ? Pylon.getAddress(tokenA, tokenB) : undefined
       }),
     [tokens]

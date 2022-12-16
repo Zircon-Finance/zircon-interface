@@ -26,6 +26,7 @@ import {useDerivedPylonMintInfo} from "../../../../state/mint/pylonHooks";
 import CapacityIndicatorSmall from '../../../../components/CapacityIndicatorSmall'
 import { useActiveWeb3React, useWindowDimensions } from '../../../../hooks'
 import { formattedNum } from '../../../../utils/formatBalance'
+import { usePools } from '../../../../state/pools/hooks'
 
 const StyledCard = styled(Card)`
   align-self: baseline;
@@ -71,7 +72,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
   const isPromotedFarm = farm.token1.symbol === 'CAKE'
   const isApproved = account && farm.userData.allowance && farm.userData.allowance.isGreaterThan(0)
   const [showModalDeposit, setShowModalDeposit] = useState(false)
-  const { onStake } = useStakeFarms(farm.sousId, farm.stakingToken.address)
+  const { onStake } = useStakeFarms(farm.contractAddress, farm.stakingToken.address)
   const addPopup = useAddPopup()
   const dispatch = useDispatch()
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
@@ -89,6 +90,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
   const gammaBig = useGamma(pylonPair?.address)
   const gamma = new BigNumber(gammaBig).div(new BigNumber(10).pow(18))
   const {width} = useWindowDimensions()
+  const {pools} = usePools()
 
   const handleStake = async (amount: string) => {
     const receipt = await fetchWithCatchTxError(() => {
@@ -110,7 +112,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
         },
         receipt.transactionHash
       )
-      dispatch(fetchPoolsUserDataAsync({chainId, account}))
+      dispatch(fetchPoolsUserDataAsync({chainId, account, pools}))
     }
   }
   const pairLiquidity = 0 //usePairLiquidity(farm.token1, farm.token2)
@@ -128,7 +130,6 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
           quoteToken={farm.token2}
           gamma={gamma}
           healthFactor={healthFactor}
-          sousId={farm.sousId}
           vaultAddress={farm.vaultAddress}
           isFinished={farm.isFinished}
           endBlock={farm.endBlock}

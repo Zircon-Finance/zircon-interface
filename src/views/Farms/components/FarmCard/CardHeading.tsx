@@ -27,13 +27,12 @@ export interface ExpandableSectionProps {
     earningTokenBlock: EarningTokenInfo[];
     gamma: any;
     healthFactor: string;
-    sousId: number;
+    contractAddress: string;
     vaultAddress: string;
     endBlock: number;
     startBlock: number;
     currentBlock: any;
     lpAddress: string;
-    contractAddress: string;
 }
 
 const Wrapper = styled(Flex)`

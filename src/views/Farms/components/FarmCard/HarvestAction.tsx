@@ -22,13 +22,14 @@ import CurrencyLogo from '../../../../components/CurrencyLogo'
 import { DeserializedPool } from '../../../../state/types'
 import { Text } from 'rebass'
 import ReactGA from 'react-ga4'
+import { usePools } from '../../../../state/pools/hooks'
 
 interface FarmCardActionsProps extends DeserializedPool {
     userDataReady: boolean
 }
 
 
-const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, userData, userDataReady, vaultAddress, earningTokenInfo }) => {
+const HarvestAction: React.FC<FarmCardActionsProps> = ({ contractAddress, earningToken, userData, userDataReady, vaultAddress, earningTokenInfo }) => {
     const { account, chainId } = useWeb3React()
     const earningsBigNumber = new BigNumber(userData.pendingReward)
     let earnings = BIG_ZERO
@@ -40,9 +41,10 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, u
     }
     const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
     const { t } = useTranslation()
-    const { onReward } = useHarvestFarm(sousId, userData.pendingReward.toString())
+    const { onReward } = useHarvestFarm(contractAddress, userData.pendingReward.toString())
     const dispatch = useDispatch()
     const theme = useTheme()
+    const {pools} = usePools()
     const addPopup = useAddPopup()
     const addTransaction = useTransactionAdder()
     const { width } = useWindowDimensions()
@@ -123,7 +125,7 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earningToken ,sousId, u
                                     },
                                     receipt.transactionHash
                                 )
-                                dispatch(fetchPoolsUserDataAsync({chainId, account}))
+                                dispatch(fetchPoolsUserDataAsync({chainId, account, pools}))
                             }
                         }}
                     >

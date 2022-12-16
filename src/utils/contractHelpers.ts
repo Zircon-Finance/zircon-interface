@@ -2,8 +2,6 @@ import type { Signer } from '@ethersproject/abstract-signer'
 import type { Provider } from '@ethersproject/providers'
 import { Contract } from '@ethersproject/contracts'
 import { simpleRpcProvider } from './providers'
-import poolsConfig from '../constants/pools'
-
 
 // Addresses
 import {
@@ -33,9 +31,8 @@ export const getMasterchefContract = (chainId: number, signer?: Signer | Provide
 export const getMulticallContract = (chainId: number) => {
   return getContract(chainId, MultiCallAbi, getAddress(getMulticallAddress()), simpleRpcProvider(chainId))
 }
-export const getSouschefContract = (chainId: number, id: number, signer?: Signer | Provider) => {
-  const config = poolsConfig.find((pool) => pool.sousId === id)
-  return getContract(chainId, psionicFarm, getAddress(config.contractAddress), signer)
+export const getSouschefContract = (chainId: number, contractAddress: string, signer?: Signer | Provider) => {
+  return getContract(chainId, psionicFarm, getAddress(contractAddress), signer)
 }
 
 export async function useBatchTransactions(addressList: string[], values: any[], transactionsData: any[], gasPrices: any[]){

@@ -29,7 +29,7 @@ import { ModalContainer } from '../../../Farms'
 import { Flex } from 'rebass'
 import { DeserializedPool } from '../../../../../state/types'
 import { Token } from 'zircon-sdk'
-import { usePool } from '../../../../../state/pools/hooks'
+import { usePool, usePools } from '../../../../../state/pools/hooks'
 import { fetchPoolsUserDataAsync } from '../../../../../state/pools'
 import { useCallWithGasPrice } from '../../../../../hooks/useCallWithGasPrice'
 import { deserializeToken } from '../../../../../state/user/hooks'
@@ -51,7 +51,6 @@ interface StackedActionProps extends DeserializedPool {
 }
 
 const Staked: React.FunctionComponent<StackedActionProps> = ({
-                                                               sousId,
                                                                isClassic,
                                                                isAnchor,
                                                                token1,
@@ -68,12 +67,13 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
   const { t } = useTranslation()
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
   const { account, chainId } = useWeb3React()
-  const { pool } = usePool(sousId)
+  const { pool } = usePool(contractAddress)
+  const {pools} = usePools()
   const allowance = pool.userData.allowance
   const tokenBalance = pool.userData.stakingTokenBalance
   const stakedBalance = pool.userData.stakedBalance
-  const { onStake } = useStakeFarms(sousId, stakingToken.address)
-  const { onUnstake } = useUnstakeFarms(sousId)
+  const { onStake } = useStakeFarms(contractAddress, stakingToken.address)
+  const { onUnstake } = useUnstakeFarms(contractAddress)
   // const router = useRouter()
   const [showModalDeposit, setshowModalDeposit] = useState(false)
   const [showModalWithdraw, setshowModalWithdraw] = useState(false)
@@ -114,7 +114,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
           },
           receipt.transactionHash
       )
-      dispatch(fetchPoolsUserDataAsync({chainId, account}))
+      dispatch(fetchPoolsUserDataAsync({chainId, account, pools}))
     }
   }
 
@@ -143,12 +143,12 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
           },
           receipt.transactionHash
       )
-      dispatch(fetchPoolsUserDataAsync({chainId, account}))
+      dispatch(fetchPoolsUserDataAsync({chainId, account, pools}))
     }
   }
   const lpContract = useERC20(stakingToken.address)
   const dispatch = useDispatch()
-  const sousChefContract = useSousChef(sousId)
+  const sousChefContract = useSousChef(contractAddress)
 
   const { callWithGasPrice } = useCallWithGasPrice()
   const staked = parseFloat(getBalanceAmount(stakedBalance).toFixed(6))
@@ -176,7 +176,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
           },
           receipt.transactionHash
       )
-      dispatch(fetchPoolsUserDataAsync({chainId, account}))
+      dispatch(fetchPoolsUserDataAsync({chainId, account, pools}))
     }
   }, [
     dispatch,

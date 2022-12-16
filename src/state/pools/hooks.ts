@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { batch, useDispatch, useSelector } from 'react-redux'
 import { useFastRefreshEffect, useSlowRefreshEffect } from '../../hooks/useRefreshEffect'
@@ -58,8 +58,8 @@ export const usePools = (): { pools: DeserializedPool[]; userDataLoaded: boolean
   return useSelector(poolsWithUserDataLoadingSelector)
 }
 
-export const usePool = (sousId: number): { pool: DeserializedPool; userDataLoaded: boolean } => {
-  const poolWithUserDataLoadingSelector = useMemo(() => makePoolWithUserDataLoadingSelector(sousId), [sousId])
+export const usePool = (contractAddress: string): { pool: DeserializedPool; userDataLoaded: boolean } => {
+  const poolWithUserDataLoadingSelector = useMemo(() => makePoolWithUserDataLoadingSelector(contractAddress), [contractAddress])
   return useSelector(poolWithUserDataLoadingSelector)
 }
 
@@ -86,42 +86,15 @@ export const usePairLiquidity = (token1, token2) => {
 
 export const usePoolsPageFetch = () => {
   const { account, chainId } = useWeb3React()
+  const {pools} = usePools()
   const dispatch = useDispatch()
   useFetchPublicPoolsData()
 
   useFastRefreshEffect(() => {
     batch(() => {
-      // dispatch(fetchCakeVaultPublicData())
-      if (account) {
-        dispatch(fetchPoolsUserDataAsync({chainId,account}))
-        // dispatch(fetchCakeVaultUserData({ account }))
+      if (account && pools.length > 0) {
+        dispatch(fetchPoolsUserDataAsync({chainId,account, pools}))
       }
     })
-  }, [account, dispatch])
-
-  useEffect(() => {
-    batch(() => {
-      // dispatch(fetchCakeVaultFees())
-    })
-  }, [dispatch])
+  }, [account, dispatch, pools.length])
 }
-
-// export const useCakeVault = () => {
-//   return useVaultPoolByKey(VaultKey.CakeVault)
-// }
-
-// export const useVaultPools = () => {
-//   const cakeVault = useVaultPoolByKey(VaultKey.CakeVault)
-//   const vaults = useMemo(() => {
-//     return {
-//       [VaultKey.CakeVault]: cakeVault,
-//     }
-//   }, [cakeVault])
-//   return vaults
-// }
-
-// export const useVaultPoolByKey = (key: VaultKey) => {
-//   const vaultPoolByKey = useMemo(() => makeVaultPoolByKey(key), [key])
-
-//   return useSelector(vaultPoolByKey)
-// }

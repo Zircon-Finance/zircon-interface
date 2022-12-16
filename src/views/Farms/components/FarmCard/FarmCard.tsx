@@ -21,7 +21,6 @@ import { DeserializedPool } from '../../../../state/types'
 import { fetchPoolsUserDataAsync } from '../../../../state/pools'
 // import { usePairLiquidity } from '../../../../state/pools/hooks'
 import { useCurrency } from '../../../../hooks/Tokens'
-import { useGamma } from '../../../../data/PylonData'
 import {useDerivedPylonMintInfo} from "../../../../state/mint/pylonHooks";
 import CapacityIndicatorSmall from '../../../../components/CapacityIndicatorSmall'
 import { useActiveWeb3React, useWindowDimensions } from '../../../../hooks'
@@ -79,7 +78,6 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
   const addTransaction = useTransactionAdder()
   const [currency1,currency2] = [useCurrency(farm.token1.address),useCurrency(farm.token2.address)]
   const {
-    pylonPair,
     healthFactor
   } = useDerivedPylonMintInfo(
       currency1 ?? undefined,
@@ -87,7 +85,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
       false,
       "off"
   );
-  const gammaBig = useGamma(pylonPair?.address)
+  const gammaBig = farm?.gamma
   const gamma = new BigNumber(gammaBig).div(new BigNumber(10).pow(18))
   const {width} = useWindowDimensions()
   const {pools} = usePools()

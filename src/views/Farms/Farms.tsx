@@ -226,7 +226,7 @@ const Farms: React.FC = ({ children }) => {
   const isInactive = filtedFinishedOnly === FarmFinishedOnly.TRUE
   const isActive = !filtedFinishedOnly
 
-  usePoolsPageFetch()
+  usePoolsPageFetch(isInactive)
 
   const [numberOfFarmsVisible, setNumberOfFarmsVisible] = useState(NUMBER_OF_POOLS_VISIBLE)
 

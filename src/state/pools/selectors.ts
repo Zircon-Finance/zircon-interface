@@ -27,7 +27,6 @@ const selectUserDataLoaded = (state: State) => state.pools.userDataLoaded
 
 export const makePoolWithUserDataLoadingSelector = (contractAddress) =>
   createSelector([selectPoolData(contractAddress), selectUserDataLoaded], (pool, userDataLoaded) => {
-    // console.log('Transforming pool: ', pool)
     return { pool: transformPool(pool ?? basePool), userDataLoaded }
   })
 

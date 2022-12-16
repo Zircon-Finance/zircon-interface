@@ -39,6 +39,7 @@ export const transformPool = (pool: SerializedPool): DeserializedPool => {
     userData,
     stakingToken,
     earningToken,
+    gamma,
     startBlock,
     staked,
     stakedRatio,
@@ -62,6 +63,7 @@ export const transformPool = (pool: SerializedPool): DeserializedPool => {
     stakingLimit: new BigNumber(stakingLimit),
     stakingLimitEndBlock: numberBlocksForUserLimit + startBlock,
     stakedRatio: parseFloat(stakedRatio ?? ""),
+    gamma: new BigNumber(gamma),
   }
 }
 

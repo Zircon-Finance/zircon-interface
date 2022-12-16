@@ -30,7 +30,6 @@ import { useCallWithGasPrice } from '../../../../hooks/useCallWithGasPrice'
 import { useCurrency } from '../../../../hooks/Tokens'
 import {useDerivedPylonMintInfo} from "../../../../state/mint/pylonHooks";
 import BigNumberJs from "bignumber.js";
-import {useGamma} from "../../../../data/PylonData";
 import CapacityIndicatorSmall from "../../../../components/CapacityIndicatorSmall";
 import { fetchPoolsUserDataAsync } from '../../../../state/pools'
 import { RewardPerBlock } from '../../Farms'
@@ -177,7 +176,6 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   // const gamma = new BigNumber(gammaBig).div(new BigNumber(10).pow(18))
   // const healthFactor = useHealthFactor(currency1, currency2)
   const {
-    pylonPair,
     healthFactor
   } = useDerivedPylonMintInfo(
       currency1 ?? undefined,
@@ -186,8 +184,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
       "off"
   );
   const pool = usePool(details.contractAddress).pool
-  const gamma = useGamma(pylonPair?.address)//TODO: change with pool?.gamma
-
+  const gamma = pool?.gamma
   const hasStakedAmount = !!pool.userData.stakedBalance.toNumber()
   const [actionPanelExpanded, setActionPanelExpanded] = useState(false)
   const [hovered, setHovered] = useState(false)

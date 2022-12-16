@@ -54,7 +54,7 @@ import {fetchPoolsPublicDataAsync} from "../../state/pools";
 import {useDispatch} from "react-redux";
 import {AddressZero} from "@ethersproject/constants";
 import InfoCircle from "../../components/InfoCircle";
-import {useGamma, usePylonConstants} from "../../data/PylonData";
+import {usePylonConstants} from "../../data/PylonData";
 import Lottie from "lottie-react-web";
 import animation from '../../assets/lotties/0uCdcx9Hn5.json'
 import CapacityIndicator from "../../components/CapacityIndicator";
@@ -852,7 +852,7 @@ export default function AddLiquidityPro({
   const { width } = useWindowDimensions();
   const pylonConstants = usePylonConstants()
   const blockNumber = useBlockNumber()
-  const gammaBig = useGamma(pylonPair?.address)
+  const gammaBig = pool?.gamma
   const gammaAdjusted = new BigNumberJs(gammaBig).div(new BigNumberJs(10).pow(18))
   const feePercentage = new BigNumberJs(mintInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18))
   const health = healthFactor?.toLowerCase()

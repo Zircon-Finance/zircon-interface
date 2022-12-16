@@ -84,9 +84,12 @@ export const usePairLiquidity = (token1, token2) => {
 //   return useSelector(poolsWithVaultSelector)
 // }
 
-export const usePoolsPageFetch = () => {
+export const usePoolsPageFetch = (showFinished: boolean) => {
   const { account, chainId } = useWeb3React()
-  const {pools} = usePools()
+  let {pools} = usePools()
+  const finishedPools = pools.filter(pool => pool.isFinished === true)
+  const livePools = pools.filter(pool => pool.isFinished === false)
+  pools = showFinished ? finishedPools : livePools
   const dispatch = useDispatch()
   useFetchPublicPoolsData()
 

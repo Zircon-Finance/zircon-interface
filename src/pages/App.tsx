@@ -26,7 +26,7 @@ import { RedirectPathToSwapOnly, RedirectToSwap } from './Swap/redirects'
 import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
 import {RedirectOldRemoveLiquidityProPathStructure} from "./RemoveProLiquidity/redirects";
 import RemoveProLiquidity from "./RemoveProLiquidity";
-import { useWindowDimensions } from '../hooks'
+import { useBlockedApiData, useWindowDimensions } from '../hooks'
 import Farms from '../views/Farms/Farms'
 import Lottie from "lottie-react-web";
 import animation from '../assets/lotties/0uCdcx9Hn5.json'
@@ -100,8 +100,9 @@ export default function App() {
   const [showBlockedBanner, setShowBlockedBanner] = React.useState(!showBanner)
   const theme = useTheme()
 
-  const isPoolBlocked = false
-  const isFarmBlocked = false
+  const blockedApiData = useBlockedApiData();
+  const isPoolBlocked = blockedApiData?.isPoolBlocked
+  const isFarmBlocked = blockedApiData?.isFarmBlocked
 
   const countDown = (opacity) => {
     opacityDiv !== 0 && setTimeout(() => setOpacityDiv(parseFloat((opacity - 0.1).toFixed(1))), 50)

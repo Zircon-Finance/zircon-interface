@@ -7,7 +7,7 @@ import { useLocation } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components'
 import DarkLogo from '../../assets/images/mainlogo-dark.png'
 import WhiteLogo from '../../assets/images/mainlogo-white.png'
-import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
+import { useActiveWeb3React, useBlockedApiData, useWindowDimensions } from '../../hooks'
 //import { useDarkModeManager } from '../../state/user/hooks'
 import { useETHBalances } from '../../state/wallet/hooks'
 import {
@@ -169,8 +169,9 @@ export default function Header() {
   const [darkMode, toggleSetDarkMode] = useDarkModeManager();
   const [showClaimTokens, setShowClaimTokens] = React.useState(false);
   const theme = useTheme();
-  const isPoolBlocked = false
-  const isFarmBlocked = false
+  const blockedApiData = useBlockedApiData();
+  const isPoolBlocked = blockedApiData?.isPoolBlocked
+  const isFarmBlocked = blockedApiData?.isFarmBlocked
 
   return (
     <HeaderFrame>

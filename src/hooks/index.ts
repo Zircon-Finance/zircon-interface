@@ -109,3 +109,18 @@ export const useWindowDimensions = () => {
   return windowDimensions;
 }
 
+export const useBlockedApiData = () => {
+  const [blockedApiData, setBlockedApiData] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await fetch('https://edgeapi.zircon.finance/static/paused');
+      const data = await result.json();
+      setBlockedApiData(data);
+    };
+    fetchData();
+  }, []);
+
+  return blockedApiData;
+}
+

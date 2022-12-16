@@ -6,7 +6,7 @@ import {
     toggleWalletModal,
     toggleSettingsMenu,
     toggleTransactionsMenu,
-    updateBlockNumber, updateTimestamp
+    updateBlockNumber
 } from './actions'
 
 type PopupList = Array<{ key: string; show: boolean; content: PopupContent; removeAfterMs: number | null }>
@@ -31,19 +31,17 @@ const initialState: ApplicationState = {
 
 export default createReducer(initialState, builder =>
   builder
-    .addCase(updateTimestamp, (state, action) => {
-      const { chainId, timestamp } = action.payload
-      if (typeof state.timestamp[chainId] !== 'number') {
-        state.timestamp[chainId] = timestamp
-      } else {
-        state.timestamp[chainId] = Math.max(timestamp, state.timestamp[chainId])
-      }
-    }).addCase(updateBlockNumber, (state, action) => {
-      const { chainId, blockNumber } = action.payload
+      .addCase(updateBlockNumber, (state, action) => {
+      const { chainId, blockNumber, timestamp } = action.payload
       if (typeof state.blockNumber[chainId] !== 'number') {
         state.blockNumber[chainId] = blockNumber
       } else {
         state.blockNumber[chainId] = Math.max(blockNumber, state.blockNumber[chainId])
+      }
+      if (typeof state.timestamp[chainId] !== 'number') {
+          state.timestamp[chainId] = timestamp
+      } else {
+          state.timestamp[chainId] = Math.max(timestamp, state.timestamp[chainId])
       }
     })
     .addCase(toggleWalletModal, state => {

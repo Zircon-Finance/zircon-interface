@@ -54,7 +54,7 @@ import {fetchPoolsPublicDataAsync} from "../../state/pools";
 import {useDispatch} from "react-redux";
 import {AddressZero} from "@ethersproject/constants";
 import InfoCircle from "../../components/InfoCircle";
-import {useGamma, usePylonConstants} from "../../data/PylonData";
+import {usePylonConstants} from "../../data/PylonData";
 import Lottie from "lottie-react-web";
 import animation from '../../assets/lotties/0uCdcx9Hn5.json'
 import CapacityIndicator from "../../components/CapacityIndicator";
@@ -127,7 +127,7 @@ export default function AddLiquidityPro({
     price,
     noPylon,
     mintInfo,
-    //poolTokenPercentage,
+    gamma,
     error,
     healthFactor,
   } = useDerivedPylonMintInfo(
@@ -137,6 +137,7 @@ export default function AddLiquidityPro({
       sync
   );
 
+  console.log("FF:: mintInfo", mintInfo);
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noPylon);
   const isValid = !error;
 
@@ -366,7 +367,7 @@ export default function AddLiquidityPro({
     //   [Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, 0)[0]
     // }
     console.log('mintInfo', mintInfo)
-    const liquidityMin = calculateSlippageAmount(mintInfo.liquidity, noPylon ? 0 : allowedSlippage)[0]
+    const liquidityMin = calculateSlippageAmount(mintInfo.amountOut, noPylon ? 0 : allowedSlippage)[0]
 
     const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline;
 
@@ -627,7 +628,7 @@ export default function AddLiquidityPro({
         })
   }
 
-  const formattedLiquidity = (mintInfo?.liquidity.toSignificant(
+  const formattedLiquidity = (mintInfo?.amountOut.toSignificant(
       6
   ) as unknown) as number;
 
@@ -809,8 +810,8 @@ export default function AddLiquidityPro({
   const { width } = useWindowDimensions();
   const pylonConstants = usePylonConstants()
   const blockNumber = useBlockNumber()
-  const gammaBig = useGamma(pylonPair?.address)
-  const gammaAdjusted = new BigNumberJs(gammaBig).div(new BigNumberJs(10).pow(18))
+  // const gammaBig = useGamma(pylonPair?.address)
+  const gammaAdjusted = new BigNumberJs(gamma? gamma?.toString() : "0").div(new BigNumberJs(10).pow(18))
   const feePercentage = new BigNumberJs(mintInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18))
   const health = healthFactor?.toLowerCase()
 

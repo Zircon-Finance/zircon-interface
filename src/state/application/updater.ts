@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useActiveWeb3React } from '../../hooks'
 import useDebounce from '../../hooks/useDebounce'
 import useIsWindowVisible from '../../hooks/useIsWindowVisible'
-import {updateBlockNumber, updateTimestamp} from './actions'
+import {updateBlockNumber} from './actions'
 import { useDispatch } from 'react-redux'
 import {Block} from "@ethersproject/abstract-provider";
 
@@ -54,8 +54,7 @@ export default function Updater(): null {
   useEffect(() => {
     if (!debouncedState.chainId || !debouncedState.blockNumber || !windowVisible) return
 
-    dispatch(updateBlockNumber({ chainId: debouncedState.chainId, blockNumber: debouncedState.blockNumber }))
-    dispatch(updateTimestamp({ chainId: debouncedState.chainId, timestamp: debouncedState.timestamp }))
+    dispatch(updateBlockNumber({ chainId: debouncedState.chainId, blockNumber: debouncedState.blockNumber, timestamp: debouncedState.timestamp }))
 
   }, [windowVisible, dispatch, debouncedState.blockNumber, debouncedState.chainId])
 

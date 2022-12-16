@@ -1,4 +1,4 @@
-import {Currency, CurrencyAmount, JSBI, NATIVE_TOKEN, Pair, Percent, Price, Pylon, TokenAmount} from 'zircon-sdk'
+import {Currency, CurrencyAmount, JSBI, NATIVE_TOKEN, Pair, Percent, Price, Pylon} from 'zircon-sdk'
 import {useCallback, useEffect, useMemo, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {useTotalSupply} from '../../data/TotalSupply'
@@ -17,11 +17,17 @@ import {usePylonFactoryContract} from '../../hooks/useContract'
 import axios from 'axios'
 import {PRICE_API} from '../../constants/lists'
 import {PairState} from '../../data/Reserves'
+import {MintSyncParams} from "zircon-sdk/dist/interfaces/pylonInterface";
 
 const ZERO = JSBI.BigInt(0)
 
 export function useMintState(): AppState['mint'] {
   return useSelector<AppState, AppState['mint']>(state => state.mint)
+}
+
+interface MintInfo extends MintSyncParams {
+  extraFeeTreshold: JSBI;
+  shouldBlock: boolean;
 }
 
 
@@ -39,21 +45,8 @@ export function useDerivedPylonMintInfo(
   parsedAmounts: { [field in Field]?: CurrencyAmount }
   price?: Price
   noPylon?: boolean
-  mintInfo?: {
-    liquidity: TokenAmount;
-    blocked: boolean;
-    fee: TokenAmount;
-    deltaApplied: boolean;
-    amountsToInvest?: {
-      sync: JSBI;
-      async: JSBI;
-    };
-    extraSlippagePercentage?: JSBI;
-    extraFeeTreshold?: JSBI;
-    shouldBlock?: boolean;
-    feePercentage: JSBI;
-    isDerivedVFB?: boolean;
-  }
+  mintInfo?: MintInfo
+  gamma?: string | undefined
   poolTokenPercentage?: Percent
   error?: string,
   healthFactor?: string,
@@ -76,6 +69,7 @@ export function useDerivedPylonMintInfo(
 
   // Pylon
   const [pylonState, pylonPair] = usePylon(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B])
+  console.log("FF:: pylonPair", pylonPair)
   const pylonInfo = usePylonInfo(pylonPair?.address)
   const pylonConstants = usePylonConstants()
   const blockNumber = useBlockNumber()
@@ -113,7 +107,7 @@ export function useDerivedPylonMintInfo(
               pylonInfo[12]
           ).toString() : undefined
     }catch (e) {
-      console.error(e)
+      console.error("INTERFACE:: error health factor", e)
       return undefined
     }
 
@@ -183,8 +177,10 @@ export function useDerivedPylonMintInfo(
       wrappedCurrencyAmount(currencyBAmount, chainId)
     ]
     try{
-      if (pylonState === PylonState.EXISTS && pylonPair && pylonSupply && tokenAmountA && tokenAmountB && totalSupply && ptTotalSupply && userLiquidity && pylonPoolBalance && pylonInfo.length > 8 && pylonConstants) {
+      if (pylonState === PylonState.EXISTS && pylonPair && pylonSupply && tokenAmountA && tokenAmountB
+          && totalSupply && ptTotalSupply && userLiquidity && pylonPoolBalance && pylonInfo.length > 8 && pylonConstants) {
         if (sync === "off") {
+          console.log("FF:: pp")
           let syncMintInfo;
           let extraFeeTreshold = ZERO;
           let shouldBlock = false;
@@ -204,7 +200,7 @@ export function useDerivedPylonMintInfo(
                 pylonInfo[11],
                 pylonInfo[12],
                 )
-            // console.log("syncMintInfo", syncMintInfo)
+            console.log("syncMintInfo", syncMintInfo)
             if (JSBI.greaterThan(syncMintInfo?.amountsToInvest?.sync, ZERO) && JSBI.greaterThan(syncMintInfo?.amountsToInvest?.async, ZERO)) {
               extraFeeTreshold = syncMintInfo?.amountsToInvest?.sync
             }
@@ -254,7 +250,7 @@ export function useDerivedPylonMintInfo(
                 pairInfo[0],
                 pairInfo[1],
                 pylonInfo[11],
-                pylonInfo[12],)
+                pylonInfo[12])
           }else{
             asyncMintInfo = pylonPair.getAnchorAsyncLiquidityMinted(
                 totalSupply, ptTotalSupply, tokenAmountA, tokenAmountB,
@@ -267,18 +263,26 @@ export function useDerivedPylonMintInfo(
                 pairInfo[0],
                 pairInfo[1],
                 pylonInfo[11],
-                pylonInfo[12],)
+                pylonInfo[12])
           }
           return {...asyncMintInfo, extraFeeTreshold: ZERO, extraSlippagePercentage: ZERO, shouldBlock: false}
         }
       } else {
+        console.error("INTERFACE:: error missing data")
+        console.log("INTERFACE:: pylonInfo", pylonInfo)
+        console.log("INTERFACE:: pylonPoolBalance", pylonPoolBalance)
+        console.log("INTERFACE:: lastK", lastK)
+        console.log("INTERFACE:: blockNumber", blockNumber)
+        console.log("INTERFACE:: blockNumber", blockNumber)
+        console.log("INTERFACE:: tkA tkB", tokenAmountA, tokenAmountB)
         return undefined
       }
     }catch (e) {
+      console.error("INTERFACE:: Crash in the SDK", e)
       console.log("INTERFACE:: isFloat", isFloat)
-      console.log("INTERFACE:: pairRes, pylonRes", pylonPair.pair.reserve0.raw.toString(), pylonPair.pair.reserve1.raw.toString(), pylonPair.reserve0.raw.toString(), pylonPair.reserve1.raw.toString() )
-      console.log("INTERFACE:: totalSupply, ptTotalSupply, tokenAmountA, tokenAmountA", totalSupply.raw.toString(), ptTotalSupply.raw.toString(), tokenAmountA.raw.toString(), tokenAmountB.raw.toString())
-      console.log("INTERFACE:: ptb, lastk, blockNumber", pylonPoolBalance.raw.toString(),  BigInt(lastK).toString(), BigInt(blockNumber))
+      console.log("INTERFACE:: pairRes, pylonRes", pylonPair?.pair.reserve0.raw.toString(), pylonPair?.pair.reserve1.raw.toString(), pylonPair?.reserve0.raw.toString(), pylonPair?.reserve1.raw.toString() )
+      console.log("INTERFACE:: totalSupply, ptTotalSupply, tokenAmountA, tokenAmountA", totalSupply?.raw.toString(), ptTotalSupply?.raw.toString(), tokenAmountA?.raw.toString(), tokenAmountB?.raw.toString())
+      console.log("INTERFACE:: ptb, lastk, blockNumber", pylonPoolBalance?.raw.toString(),  BigInt(lastK).toString(), BigInt(blockNumber))
       console.log("INTERFACE:: virtualAnchorBalance, muMulDecimals, gammaMulDecimals", pylonInfo[0].toString(), pylonInfo[1].toString(), pylonInfo[2].toString())
       console.log("INTERFACE:: strikeBlock, EMABlockNumber, gammaEMA", pylonInfo[3].toString(), pylonInfo[4].toString(), pylonInfo[5].toString())
       console.log("INTERFACE:: thisBlockEMA, lastRootKTranslated, anchorKFactor, formulaSwitch", pylonInfo[6].toString(), pylonInfo[7].toString(), pylonInfo[8].toString(), pylonInfo[9].toString())
@@ -334,6 +338,7 @@ export function useDerivedPylonMintInfo(
     price,
     noPylon,
     mintInfo,
+    gamma: pylonInfo ? pylonInfo[2] : undefined,
     //poolTokenPercentage,
     error,
     healthFactor

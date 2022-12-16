@@ -1299,13 +1299,13 @@ isValid
                           </ButtonLight>
                       ) : (
                           <AutoColumn gap={"md"}>
-                            {!(chainId === 1285 || chainId === 1287) && showApproveCondition && (
+                            {(!(chainId === 1285 || chainId === 1287) || ((chainId === 1285 || chainId === 1287) && pylonState !== PylonState.EXISTS)) && showApproveCondition && (
                                 <RowBetween>
                                   {/* Currency A isn't approved or pylon doesn't exist and A isn't approved */}
                                   {(pylonState === PylonState.NOT_EXISTS ? (approvalAPair !== ApprovalState.APPROVED ? true : false) : (approvalA !== ApprovalState.APPROVED ? true : false))
                                   && (
                                       <ButtonPrimary
-                                          onClick={(pylonState === PylonState.ONLY_PAIR || pylonState === PylonState.EXISTS) ?
+                                          onClick={(pylonState === PylonState.ONLY_PAIR) ?
                                               approveACallback
                                               : approveACallbackPair}
                                           disabled={approvalA === ApprovalState.PENDING

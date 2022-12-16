@@ -26,6 +26,7 @@ export function ConfirmAddModalBottom({
   blocked,
   shouldBlock,
   formattedLiquidity,
+    asyncBlock
 }: {
   pylonState?: PylonState
   price?: Fraction
@@ -40,6 +41,7 @@ export function ConfirmAddModalBottom({
   shouldBlock?: boolean
   isStaking?: boolean
   formattedLiquidity?: number
+  asyncBlock?: boolean
 }) {
   const theme = useTheme()
   const {chainId} = useActiveWeb3React()
@@ -95,11 +97,18 @@ export function ConfirmAddModalBottom({
         </RowBetween>
       )}
 
+      {asyncBlock && (
+        <RowBetween mt={10}>
+          <StyledWarningIcon style={{stroke: '#a68305'}} />
+          <span style={{ color: '#a68305', width: '100%', fontSize: '13px' }}>{'Mint Async Float is currently disabled'}</span>
+        </RowBetween>
+      )}
+
       {/*<RowBetween>*/}
       {/*  <TYPE.smallerBody>Share of Pool:</TYPE.smallerBody>*/}
       {/*  <TYPE.smallerBody>{noLiquidity ? '100' : poolTokenPercentage?.toSignificant(4)}%</TYPE.smallerBody>*/}
       {/*</RowBetween>*/}
-      <ButtonPrimary disabled={shouldBlock} style={{ margin: '20px 0 0 0' }} onClick={() => shouldBlock ? console.log("nop") : onAdd()}>
+      <ButtonPrimary disabled={shouldBlock || asyncBlock } style={{ margin: '20px 0 0 0' }} onClick={() => shouldBlock ? console.log("nop") : onAdd()}>
         <Text fontWeight={400} fontSize={16}>
           {pylonState === PylonState.EXISTS ? isStaking ? 'Add & Farm' : 'Confirm Supply' : pylonState === PylonState.ONLY_PAIR ? 'Create Pylon & Supply' : 'Create Pair' }
         </Text>

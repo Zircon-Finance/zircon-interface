@@ -103,6 +103,8 @@ export default function App() {
   const blockedApiData = useBlockedApiData();
   const isPoolBlocked = blockedApiData?.isPoolBlocked
   const isFarmBlocked = blockedApiData?.isFarmBlocked
+  const blockReasonTitle = blockedApiData?.blockReasonTitle
+  const blockReasonDescription = blockedApiData?.blockReasonDescription
 
   const countDown = (opacity) => {
     opacityDiv !== 0 && setTimeout(() => setOpacityDiv(parseFloat((opacity - 0.1).toFixed(1))), 50)
@@ -112,9 +114,8 @@ export default function App() {
   const blockedBanner = <PhyshingContainer>
   <WarningLight />
   <Flex flexDirection={width <= 992 ? 'column' : 'row'} py={width <= 992 && '10px'}>
-    <Text color={'#E9D886'}> We are migrating to Binance Smart Chain. </Text>
-    <Text ml={width >= 992 &&'5px'} color={theme.darkMode ? '#CCB6B5' : '#E8E6E6'}>For this reason Pool and Farm sections </Text>
-    <Text ml={width >= 992 &&'5px'} color={theme.darkMode ? '#CCB6B5' : '#E8E6E6'}> are not working for now.</Text>
+    <Text color={'#E9D886'}> {blockReasonTitle} </Text>
+    <Text ml={width >= 992 &&'5px'} color={theme.darkMode ? '#CCB6B5' : '#E8E6E6'}> {blockReasonDescription} </Text>
   </Flex>
   <CloseIcon fill={'#fff'} onClick={() => setShowBlockedBanner(false)} />
 </PhyshingContainer>

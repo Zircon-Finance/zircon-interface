@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber'
-import poolsConfig from '../../constants/pools'
 import chunk from 'lodash/chunk'
 import sousChefV2 from '../../constants/abi/psionicFarmABI.json'
 // import sousChefV3 from '../../config/abi/sousChefV3.json'
@@ -10,11 +9,10 @@ import multicall from '../../utils/multicall'
 
 export const fetchPoolsStakingLimits = async (
   chainId: number,
-  poolsWithStakingLimit: number[],
+  pools: any[],
 ): Promise<{ [key: string]: { stakingLimit: BigNumber; numberBlocksForUserLimit: number } }> => {
-  const validPools = poolsConfig
+  const validPools = pools
     .filter((p) => p.stakingToken.symbol !== 'BNB' && !p.isFinished)
-    .filter((p) => !poolsWithStakingLimit.includes(p.sousId))
 
   // Get the staking limit for each valid pool
   const poolStakingCalls = validPools
@@ -36,43 +34,7 @@ export const fetchPoolsStakingLimits = async (
     const numberBlocksForUserLimit = stakingLimitRaw[2] ? (stakingLimitRaw[2] as EthersBigNumber).toNumber() : 0
     return {
       ...accum,
-      [validPools[index].sousId]: { stakingLimit, numberBlocksForUserLimit },
+      [validPools[index].contractAddress]: { stakingLimit, numberBlocksForUserLimit },
     }
   }, {})
 }
-
-// const poolsWithV3 = poolsConfig.filter((pool) => pool?.version === 3)
-
-// export const fetchPoolsProfileRequirement = async (): Promise<{
-//   [key: string]: {
-//     required: boolean
-//     thresholdPoints: BigNumber
-//   }
-// }> => {
-//   const poolProfileRequireCalls = poolsWithV3
-//     .map((validPool) => {
-//       const contractAddress = getAddress(validPool.contractAddress)
-//       return ['pancakeProfileIsRequested', 'pancakeProfileThresholdPoints'].map((method) => ({
-//         address: contractAddress,
-//         name: method,
-//       }))
-//     })
-//     .flat()
-
-//   const poolProfileRequireResultRaw = await multicallv2(sousChefV3, poolProfileRequireCalls, { requireSuccess: false })
-//   const chunkSize = poolProfileRequireCalls.length / poolsWithV3.length
-//   const poolStakingChunkedResultRaw = chunk(poolProfileRequireResultRaw.flat(), chunkSize)
-//   return poolStakingChunkedResultRaw.reduce((accum, poolProfileRequireRaw, index) => {
-//     const hasProfileRequired = poolProfileRequireRaw[0]
-//     const profileThresholdPoints = poolProfileRequireRaw[1]
-//       ? new BigNumber(poolProfileRequireRaw[1].toString())
-//       : BIG_ZERO
-//     return {
-//       ...accum,
-//       [poolsWithV3[index].sousId]: {
-//         required: hasProfileRequired,
-//         thresholdPoints: profileThresholdPoints.toJSON(),
-//       },
-//     }
-//   }, {})
-// }

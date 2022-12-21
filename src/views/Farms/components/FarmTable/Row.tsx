@@ -25,12 +25,11 @@ import { useERC20, useSousChef } from '../../../../hooks/useContract'
 import useCatchTxError from '../../../../hooks/useCatchTxError'
 import { useTransactionAdder } from '../../../../state/transactions/hooks'
 import { useDispatch } from 'react-redux'
-import { usePool } from '../../../../state/pools/hooks'
+import { usePool, usePools } from '../../../../state/pools/hooks'
 import { useCallWithGasPrice } from '../../../../hooks/useCallWithGasPrice'
 import { useCurrency } from '../../../../hooks/Tokens'
 import {useDerivedPylonMintInfo} from "../../../../state/mint/pylonHooks";
 import BigNumberJs from "bignumber.js";
-import {useGamma} from "../../../../data/PylonData";
 import CapacityIndicatorSmall from "../../../../components/CapacityIndicatorSmall";
 import { fetchPoolsUserDataAsync } from '../../../../state/pools'
 import { RewardPerBlock } from '../../Farms'
@@ -171,13 +170,12 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     details,
     userDataReady,
   } = props
-  const [currency1, currency2] = [useCurrency(details.token1.address),useCurrency(details.token2.address)]
+  const [currency1, currency2] = [useCurrency(details?.token1?.address),useCurrency(details?.token2?.address)]
   // const [, pylonPair] = usePylon(currency1, currency2)
 
   // const gamma = new BigNumber(gammaBig).div(new BigNumber(10).pow(18))
   // const healthFactor = useHealthFactor(currency1, currency2)
   const {
-    pylonPair,
     healthFactor
   } = useDerivedPylonMintInfo(
       currency1 ?? undefined,
@@ -185,9 +183,8 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
       false,
       "off"
   );
-  const pool = usePool(details.sousId).pool
-  const gamma = useGamma(pylonPair?.address)//TODO: change with pool?.gamma
-
+  const pool = usePool(details.contractAddress).pool
+  const gamma = pool?.gamma
   const hasStakedAmount = !!pool.userData.stakedBalance.toNumber()
   const [actionPanelExpanded, setActionPanelExpanded] = useState(false)
   const [hovered, setHovered] = useState(false)
@@ -221,8 +218,9 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const addTransaction = useTransactionAdder()
   const addPopup = useAddPopup()
   const dispatch = useDispatch()
-  const sousChefContract = useSousChef(details.sousId)
+  const sousChefContract = useSousChef(pool.contractAddress)
   const { callWithGasPrice } = useCallWithGasPrice()
+  const {pools} = usePools()
   const [pendingTx, setPendingTx] = useState(false)
 
   const handleApproval = useCallback(async () => {
@@ -230,7 +228,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
       return callWithGasPrice(lpContract, 'approve', [sousChefContract.address, MaxUint256]).then(response => {
         setPendingTx(true)
         addTransaction(response, {
-          summary:  `Enable ${details.token1.symbol}-${details.token2.symbol} stake contract`
+          summary:  `Enable ${details?.token1?.symbol}-${details?.token2?.symbol} stake contract`
         })
         return response
       })
@@ -247,7 +245,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
         receipt.transactionHash
       )
       setPendingTx(false)
-      dispatch(fetchPoolsUserDataAsync({chainId, account}))
+      dispatch(fetchPoolsUserDataAsync({chainId, account, pools}))
     }
   },
   [
@@ -256,9 +254,9 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     addPopup,
     addTransaction,
     account,
-    details.sousId,
-    details.token1.symbol,
-    details.token2.symbol,
+    details.contractAddress,
+    details?.token1?.symbol,
+    details?.token2?.symbol,
     lpContract,
     sousChefContract.address,
     callWithGasPrice,
@@ -270,7 +268,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const tableSchema = isSmallerScreen ? MobileColumnSchema : DesktopColumnSchema
   const columnNames = tableSchema.map((column) => column.name)
   const isApproved = account && details.userData.allowance && details.userData.allowance.isGreaterThan(0)
-  const stakedAmount = usePool(details.sousId).pool.userData.stakedBalance.toNumber()
+  const stakedAmount = usePool(details.contractAddress).pool.userData.stakedBalance.toNumber()
   const toggleWalletModal = useWalletModalToggle()
   // const [rewardTokens, setRewardTokens] = useState("")
   // useEffect(() => {

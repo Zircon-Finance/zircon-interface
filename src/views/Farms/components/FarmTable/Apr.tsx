@@ -15,7 +15,7 @@ export interface AprProps {
   value: string
   baseApr?: number
   feesApr?: number
-  pid: number
+  contractAddress: string
   lpLabel: string
   lpSymbol: string
   cakePrice: BigNumber
@@ -45,7 +45,7 @@ const Container = styled.div`
 
 const Apr: React.FC<AprProps> = ({
   value,
-  pid,
+  contractAddress,
   lpLabel,
   lpSymbol,
   cakePrice,
@@ -64,7 +64,7 @@ const Apr: React.FC<AprProps> = ({
     <Container onMouseEnter={() => setHoverApr(true)} onMouseLeave={() => setHoverApr(false)}>
         <ApyButton
           variant={hideButton ? 'text' : 'text-and-button'}
-          pid={pid}
+          contractAddress={contractAddress}
           lpSymbol={lpSymbol}
           lpLabel={lpLabel}
           cakePrice={cakePrice}

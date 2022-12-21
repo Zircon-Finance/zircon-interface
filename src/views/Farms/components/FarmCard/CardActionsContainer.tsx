@@ -60,16 +60,16 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
   const {chainId} = useActiveWeb3React()
   const theme = useTheme()
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
-  const { sousId, stakingToken } = farm
+  const { stakingToken, contractAddress } = farm
   const { allowance } = farm.userData || {}
   const isApproved = account && allowance && allowance.isGreaterThan(0)
   const dispatch = useDispatch()
   const addPopup = useAddPopup()
   const addTransaction = useTransactionAdder()
   const toggleWalletModal = useWalletModalToggle()
-  const sousChefContract = useSousChef(sousId)
+  const sousChefContract = useSousChef(contractAddress)
   const { callWithGasPrice } = useCallWithGasPrice()
-  const { userDataLoaded } = usePools()
+  const { pools, userDataLoaded } = usePools()
   const userDataReady = !!account || (!!account && !userDataLoaded)
 
   
@@ -97,13 +97,13 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
         },
         receipt.transactionHash
       )
-      dispatch(fetchPoolsUserDataAsync({chainId, account}))
-      dispatch(updateUserAllowance({ sousId, account, chainId }))
+      dispatch(fetchPoolsUserDataAsync({chainId, account, pools}))
+      dispatch(updateUserAllowance({ contractAddress, account, chainId, pools }))
     }
   }, [ 
       dispatch, 
       account, 
-      sousId, 
+      contractAddress, 
       fetchWithCatchTxError, 
       addPopup, 
       addTransaction, 

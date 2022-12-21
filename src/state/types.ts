@@ -90,11 +90,8 @@ export interface DeserializedPool extends DeserializedPoolConfig, CorePoolProps 
   quotingPrice?: string
   tokenPrice?: string
   stakingLimit?: BigNumber
+  gamma?: BigNumber
   stakingLimitEndBlock?: number
-  profileRequirement?: {
-    required: boolean
-    thresholdPoints: BigNumber
-  }
   userData?: {
     allowance: BigNumber
     stakingTokenBalance: BigNumber
@@ -108,10 +105,6 @@ export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
   stakingLimit?: SerializedBigNumber
   quotingPrice?: SerializedBigNumber
   numberBlocksForUserLimit?: number
-  profileRequirement?: {
-    required: boolean
-    thresholdPoints: SerializedBigNumber
-  }
   userData?: {
     allowance: SerializedBigNumber
     stakingTokenBalance: SerializedBigNumber
@@ -275,10 +268,6 @@ export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
   quotingPrice?: SerializedBigNumber
   tokenPrice?: SerializedBigNumber
   numberBlocksForUserLimit?: number
-  profileRequirement?: {
-    required: boolean
-    thresholdPoints: SerializedBigNumber
-  }
   userData?: {
     allowance: SerializedBigNumber
     stakingTokenBalance: SerializedBigNumber

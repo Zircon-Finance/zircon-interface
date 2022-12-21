@@ -88,20 +88,12 @@ export interface PoolDeployedBlockNumber {
 }
 
 interface PoolConfigBaseProps {
-  sousId: number
   contractAddress: string
   vaultAddress: string
   lpAddress: string
   pylonAddress: string
-  poolCategory: PoolCategory
-  sortOrder?: number
-  harvest?: boolean
   isFinished?: boolean
-  enableEmergencyWithdraw?: boolean
-  deployedBlockNumber?: number
-  version?: number
   isAnchor? : boolean
-
 }
 
 export interface SerializedPoolConfig extends PoolConfigBaseProps {

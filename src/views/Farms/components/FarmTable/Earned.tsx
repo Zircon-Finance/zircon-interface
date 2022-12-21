@@ -10,7 +10,7 @@ import Balance from '../../../../components/Balance'
 export interface EarnedProps {
   earnings: number
   earningsUSD: number
-  pid: number
+  contractAddress: string
   hovered: boolean
   setHovered: Dispatch<SetStateAction<boolean>>
 }
@@ -56,7 +56,7 @@ const AbsContainer = styled.div`
   }
 `
 
-const Earned: React.FunctionComponent<EarnedPropsWithLoading> = ({ pid, earnings, userDataReady, hovered, setHovered, earningsUSD }) => {
+const Earned: React.FunctionComponent<EarnedPropsWithLoading> = ({ contractAddress, earnings, userDataReady, hovered, setHovered, earningsUSD }) => {
   const [hoverMinus, setHoverMinus] = React.useState(false)
   const { width } = useWindowDimensions()
 

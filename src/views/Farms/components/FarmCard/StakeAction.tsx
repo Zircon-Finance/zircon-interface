@@ -16,7 +16,7 @@ import { useAddPopup } from '../../../../state/application/hooks'
 import { ModalContainer } from '../../Farms'
 import StakeAdd from './StakeAdd'
 import { useTransactionAdder } from '../../../../state/transactions/hooks'
-import { usePool } from '../../../../state/pools/hooks'
+import { usePool, usePools } from '../../../../state/pools/hooks'
 import { DeserializedPool } from '../../../../state/types'
 import { fetchPoolsUserDataAsync } from '../../../../state/pools'
 import BigNumber from 'bignumber.js'
@@ -46,15 +46,16 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
                                                          token2,
                                                          earningToken,
                                                          stakingToken,
-                                                         sousId,
+                                                         contractAddress,
                                                          apr,
                                                          displayApr,
                                                          addLiquidityUrl,
                                                          lpLabel,
                                                      }) => {
-    const { onStake } = useStakeFarms(sousId, stakingToken.address)
-    const { onUnstake } = useUnstakeFarms(sousId)
-    const { pool } = usePool(sousId)
+    const { onStake } = useStakeFarms(contractAddress, stakingToken.address)
+    const { onUnstake } = useUnstakeFarms(contractAddress)
+    const { pool } = usePool(contractAddress)
+    const {pools} = usePools()
     const {chainId} = useActiveWeb3React()
     const tokenBalance = pool.userData.stakingTokenBalance
     const stakedBalance = pool.userData.stakedBalance
@@ -92,7 +93,7 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
                 },
                 receipt.transactionHash
             )
-            dispatch(fetchPoolsUserDataAsync({chainId, account}))
+            dispatch(fetchPoolsUserDataAsync({chainId, account, pools}))
         }
     }
 
@@ -121,7 +122,7 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
                 },
                 receipt.transactionHash
             )
-            dispatch(fetchPoolsUserDataAsync({chainId, account}))
+            dispatch(fetchPoolsUserDataAsync({chainId, account, pools}))
         }
     }
     const staked = parseFloat(getBalanceAmount(stakedBalance).toFixed(6))

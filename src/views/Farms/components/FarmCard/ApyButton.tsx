@@ -19,7 +19,7 @@ const ApyLabelContainer = styled(Flex)<{ white: boolean }>`
 
 export interface ApyButtonProps {
   variant: 'text' | 'text-and-button'
-  pid: number
+  contractAddress: string
   lpSymbol: string
   lpLabel?: string
   multiplier?: string
@@ -32,7 +32,7 @@ export interface ApyButtonProps {
 
 const ApyButton: React.FC<ApyButtonProps> = ({
   variant,
-  pid,
+  contractAddress,
   lpLabel,
   lpSymbol,
   cakePrice,
@@ -43,7 +43,7 @@ const ApyButton: React.FC<ApyButtonProps> = ({
   white,
 }) => {
   const { t } = useTranslation()
-  const { pool } = usePool(pid)
+  const { pool } = usePool(contractAddress)
   const tokenBalance = pool.userData.stakingTokenBalance
   const stakedBalance = pool.userData.stakedBalance
   const [onPresentApyModal] = useModal(

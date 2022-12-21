@@ -96,7 +96,7 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
   const [hoverPlus, setHoverPlus] = React.useState(false)
   const pylonLiquidity = new BigNumberJs(farm?.liquidity?.pair + farm?.liquidity?.pylon).toFixed(2)
     // console.log("chapo", farm.liquidity)
-  const pairLiquidity = usePairLiquidity(farm.token1, farm.token2)
+  const pairLiquidity = usePairLiquidity(farm?.token1, farm?.token2)
   const plusContent = (
       <DialogContainer show={hoverPlus}>
         <Text style={{color: '#FFF'}} fontSize='13px'>

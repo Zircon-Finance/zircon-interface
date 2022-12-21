@@ -1,6 +1,6 @@
 // the DCTDEX Default token list lives here
-export const DEFAULT_TOKEN_LIST_URL =
-  'https://gist.githubusercontent.com/ReshyResh/ab941fa23ceada76ce4756f94730d2d8/raw/45189893133c8a4566b85ab58b9edbd8ed1f21cf/BSC_MB_MR_Tokenlist.json'
+export const DEFAULT_TOKEN_LIST_URL = 'https://gist.githubusercontent.com/ReshyResh/ab941fa23ceada76ce4756f94730d2d8/raw/45189893133c8a4566b85ab58b9edbd8ed1f21cf/BSC_MB_MR_Tokenlist.json'
+    //'https://gist.githubusercontent.com/VittoriDavide/4f3129eb8f189be24548fbeba8f23a1f/raw/813702e5725692f0beccecf198fa7b2c9032b821/tokens.json'
 
 export const INFO_CLIENT = 'https://api.thegraph.com/subgraphs/name/reshyresh/zircon-gamma'
 export const BLOCKS_CLIENT = 'https://api.thegraph.com/subgraphs/name/rebase-agency/moonriver-blocks'

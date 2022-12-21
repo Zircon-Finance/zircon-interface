@@ -130,7 +130,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
                                     },
                                     receipt.transactionHash
                                 )
-                                dispatch(fetchPoolsUserDataAsync(account))
+                                dispatch(fetchPoolsUserDataAsync({chainId, account}))
                             }
                         }}
                     >
@@ -164,7 +164,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
                                     },
                                     receipt.transactionHash
                                 )
-                                dispatch(fetchPoolsUserDataAsync(account))
+                                dispatch(fetchPoolsUserDataAsync({chainId, account}))
                             }
                         }}
                     >

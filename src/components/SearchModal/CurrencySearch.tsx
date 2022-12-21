@@ -1,4 +1,4 @@
-import { Currency, DEV, NATIVE_TOKEN, Token } from 'zircon-sdk'
+import { Currency, NATIVE_TOKEN, Token } from 'zircon-sdk'
 import React, { KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import ReactGA from 'react-ga4'
 import { useTranslation } from 'react-i18next'
@@ -56,9 +56,11 @@ interface CurrencySearchProps {
   showCommonBases?: boolean
   onChangeList: () => void
   isFloat: boolean
+  chainId: number
 }
 
 export function CurrencySearch({
+  chainId,
   selectedCurrency,
   onCurrencySelect,
   otherSelectedCurrency,
@@ -154,7 +156,7 @@ export function CurrencySearch({
       if (e.key === 'Enter') {
         const s = searchQuery.toLowerCase().trim()
         if (s === 'dev') {
-          handleCurrencySelect(DEV)
+          handleCurrencySelect(NATIVE_TOKEN[chainId])
         } else if (filteredSortedTokens.length > 0) {
           if (
             filteredSortedTokens[0].symbol?.toLowerCase() === searchQuery.trim().toLowerCase() ||
@@ -171,10 +173,7 @@ export function CurrencySearch({
   const selectedListInfo = useSelectedListInfo()
   const [hover, setHover] = useState(false)
   const [chosenTokens] = useChosenTokens();
-  console.log('object keys: ', Object.keys(allTokens))
-  console.log('chosen tokens: ', chosenTokens)
   const tokensToShow = chosenTokens.filter(token => Object.keys(allTokens).map(token => token.toLowerCase()).includes(token.toLowerCase()))
-  console.log('tokensToShow', tokensToShow)
 
   const SmallToken = ({ token, index }: { token: any, index: number }) => {
     const currency = useToken(token)

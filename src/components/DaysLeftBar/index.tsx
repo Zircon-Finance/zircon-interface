@@ -35,6 +35,7 @@ const PercentageBar = styled.div<{ percentage: number, show: boolean }>`
     position: relative;
     max-width: 300px;
     display: flex;
+    max-width: 300px;
     justify-content: flex-start;
     animation: ${({ show, percentage }) =>
     show
@@ -57,7 +58,6 @@ const DaysLeftBar: React.FC<DaysLeftProps> = ({viewMode = 'table', startBlock, e
   const blocksLeft = endBlock - currentBlock
   const daysLeft = parseInt((blocksLeft / 6500).toFixed(0))
   const hoursLeft = parseInt(((blocksLeft / 6500) * 24).toFixed(0))
-  console.log('hoursLeft', hoursLeft)
   const percentageRemaining = daysLeft * 100 / ((endBlock - startBlock) / 6500)
   const theme = useTheme()
 
@@ -79,6 +79,7 @@ const DaysLeftBar: React.FC<DaysLeftProps> = ({viewMode = 'table', startBlock, e
         {`${(daysLeft || hoursLeft) ? hoursLeft >= 24 ? 
           `~ ${daysLeft} days left` : 
           `~ ${hoursLeft} hours left` : 
+          hoursLeft < 1 ? 'Ending soon!' :
           "Loading..."}`}
         </Text>
         <QuestionMarkContainer
@@ -92,7 +93,7 @@ const DaysLeftBar: React.FC<DaysLeftProps> = ({viewMode = 'table', startBlock, e
         </QuestionMarkContainer>
       </Flex>
       <BarContainer>
-        {<PercentageBar show={daysLeft !== 0} percentage={percentageRemaining}>
+        {daysLeft <= 35 && <PercentageBar show={daysLeft !== 0} percentage={percentageRemaining}>
             <Marker percentage={percentageRemaining} />
         </PercentageBar>}
       </BarContainer>

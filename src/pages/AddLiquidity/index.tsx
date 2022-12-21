@@ -194,7 +194,7 @@ export default function AddLiquidity({
 
     setAttemptingTxn(true)
     await (
-        chainId === 1285 ?
+      (chainId === 1285 || chainId === 1287) ?
           batchContract.batchAll(
             [token0Contract.address, token1Contract.address, router.address], 
             ["000000000000000000", "000000000000000000", "000000000000000000"],
@@ -319,7 +319,7 @@ export default function AddLiquidity({
           history.push(`/add/${newCurrencyIdB  || ''}`)
         }
       } else {
-        history.push(`/add/${currencyIdA ? currencyIdA : 'ETH'}/${newCurrencyIdB  || ''}`)
+        history.push(`/add/${currencyIdA ? currencyIdA : NATIVE_TOKEN[chainId].symbol}/${newCurrencyIdB  || ''}`)
       }
     },
     [currencyIdA, history, currencyIdB]
@@ -424,7 +424,7 @@ export default function AddLiquidity({
                     <ButtonLight onClick={toggleWalletModal}>Connect Wallet</ButtonLight>
                     ) : (
                     <AutoColumn gap={'md'}>
-                      {chainId !== 1285 && ((approvalA === ApprovalState.NOT_APPROVED ||
+                      {!(chainId === 1285 || chainId === 1287) && ((approvalA === ApprovalState.NOT_APPROVED ||
                         approvalA === ApprovalState.PENDING ||
                         approvalB === ApprovalState.NOT_APPROVED ||
                         approvalB === ApprovalState.PENDING) &&

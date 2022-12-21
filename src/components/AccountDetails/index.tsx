@@ -413,7 +413,7 @@ export default function AccountDetails({
                             href={getEtherscanLink(chainId, account, "address")}
                           >
                             <span style={{ marginLeft: "5px" }}>
-                              View on Moonriver ↗
+                              View on {chainId === 1285 ? 'Moonriver' : chainId === 1287 ? 'Moonbase' : 'BSC'} ↗
                             </span>
                           </AddressLink>
                         )}

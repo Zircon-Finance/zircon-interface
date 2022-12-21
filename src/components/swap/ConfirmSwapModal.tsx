@@ -1,4 +1,4 @@
-import { currencyEquals, Trade } from 'zircon-sdk'
+import { currencyEquals, NATIVE_TOKEN, Trade } from 'zircon-sdk'
 import React, { useCallback, useMemo } from 'react'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
@@ -6,6 +6,7 @@ import TransactionConfirmationModal, {
 } from '../TransactionConfirmationModal'
 import SwapModalFooter from './SwapModalFooter'
 import SwapModalHeader from './SwapModalHeader'
+import { useActiveWeb3React } from '../../hooks'
 
 /**
  * Returns true if the trade requires a confirmation of details before we can submit it
@@ -49,6 +50,7 @@ export default function ConfirmSwapModal({
   onDismiss: () => void
   outputCurrency: string | undefined
 }) {
+  const {chainId} = useActiveWeb3React()
   const showAcceptChanges = useMemo(
     () => Boolean(trade && originalTrade && tradeMeaningfullyDiffers(trade, originalTrade)),
     [originalTrade, trade]
@@ -107,7 +109,7 @@ export default function ConfirmSwapModal({
       content={confirmationContent}
       pendingText={pendingText}
       outputCurrency={outputCurrency}
-      smallClose={outputCurrency !== 'ETH'}
+      smallClose={outputCurrency !== NATIVE_TOKEN[chainId].symbol}
     />
   )
 }

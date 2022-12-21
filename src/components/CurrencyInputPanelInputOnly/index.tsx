@@ -242,6 +242,7 @@ export default function CurrencyInputPanel({
       {!disableCurrencySelect && onCurrencySelect && (
         <CurrencySearchModal
           isOpen={modalOpen}
+          chainId={chainId}
           onDismiss={handleDismissSearch}
           onCurrencySelect={onCurrencySelect}
           selectedCurrency={currency}

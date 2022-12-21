@@ -17,7 +17,7 @@ import WDEV_ABI from '../constants/abis/weth.json'
 import { MULTICALL_ABI, MULTICALL_NETWORKS } from '../constants/multicall'
 import { getContract, getProviderOrSigner } from '../utils'
 import { useActiveWeb3React } from './index'
-import { getBep20Contract, getCakeContract, getMasterchefContract, getSouschefContract } from '../utils/contractHelpers'
+import { getBep20Contract, getMasterchefContract, getSouschefContract } from '../utils/contractHelpers'
 
 // returns null on errors
 function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
@@ -35,32 +35,21 @@ function useContract(address: string | undefined, ABI: any, withSignerIfPossible
 }
 
 export const useERC20 = (address: string, withSignerIfPossible = true) => {
-  const { library, account } = useActiveWeb3React()
+  const { library, account, chainId } = useActiveWeb3React()
   return useMemo(
-    () => getBep20Contract(address, withSignerIfPossible ? getProviderOrSigner(library, account) : null),
+    () => getBep20Contract(chainId, address, withSignerIfPossible ? getProviderOrSigner(library, account) : null),
     [account, address, library, withSignerIfPossible],
   )
 }
 
 export const useMasterchef = () => {
-  const { library } = useActiveWeb3React()
-  return useMemo(() => getMasterchefContract(library.getSigner()), [library])
+  const { library, chainId } = useActiveWeb3React()
+  return useMemo(() => getMasterchefContract(chainId, library.getSigner()), [library])
 }
 
 export const useSousChef = (id) => {
-  const { library } = useActiveWeb3React()
-  return useMemo(() => getSouschefContract(id, library.getSigner()), [id, library])
-}
-
-export const useCake = (): { reader; signer } => {
-  const { account, library } = useActiveWeb3React()
-  return useMemo(
-    () => ({
-      reader: getCakeContract(null),
-      signer: getCakeContract(getProviderOrSigner(library, account)),
-    }),
-    [account, library],
-  )
+  const { library, chainId } = useActiveWeb3React()
+  return useMemo(() => getSouschefContract(chainId, id, library.getSigner()), [id, library])
 }
 
 export function useV2MigratorContract(): Contract | null {

@@ -17,6 +17,7 @@ import { AutoRow, RowBetween, RowFixed } from '../Row'
 import FormattedPriceImpact from './FormattedPriceImpact'
 import { StyledBalanceMaxMini, SwapCallbackError } from './styleds'
 import RepeatIcon from '../RepeatIcon'
+import { useActiveWeb3React } from '../../hooks'
 
 export default function SwapModalFooter({
   trade,
@@ -33,11 +34,12 @@ export default function SwapModalFooter({
 }) {
   const [showInverted, setShowInverted] = useState<boolean>(false)
   const theme = useTheme()
-  const slippageAdjustedAmounts = useMemo(() => computeSlippageAdjustedAmounts(trade, allowedSlippage), [
+  const {chainId} = useActiveWeb3React()
+  const slippageAdjustedAmounts = useMemo(() => computeSlippageAdjustedAmounts(chainId, trade, allowedSlippage), [
     allowedSlippage,
     trade
   ])
-  const { priceImpactWithoutFee, realizedLPFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
+  const { priceImpactWithoutFee, realizedLPFee } = useMemo(() => computeTradePriceBreakdown(chainId, trade), [trade])
   const severity = warningSeverity(priceImpactWithoutFee)
 
   return (

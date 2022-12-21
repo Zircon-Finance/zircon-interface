@@ -1,4 +1,4 @@
-import {Currency, CurrencyAmount, JSBI, Pair, Percent, Pylon, PylonFactory, TokenAmount} from 'zircon-sdk'
+import {Currency, CurrencyAmount, JSBI, Pair, Percent, Pylon, PylonFactory, TokenAmount, ZERO} from 'zircon-sdk'
 import {useCallback, useMemo} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { usePair } from '../../data/Reserves'
@@ -85,7 +85,7 @@ export function useDerivedBurnInfo(
   // user specified a specific amount of liquidity tokens
   else if (independentField === Field.LIQUIDITY) {
     if (pair?.liquidityToken) {
-      const independentAmount = tryParseAmount(typedValue, pair.liquidityToken)
+      const independentAmount = tryParseAmount(chainId, typedValue, pair.liquidityToken)
       if (independentAmount && userLiquidity && !independentAmount.greaterThan(userLiquidity)) {
         percentToRemove = new Percent(independentAmount.raw, userLiquidity.raw)
       }
@@ -94,7 +94,7 @@ export function useDerivedBurnInfo(
   // user specified a specific amount of token a or b
   else {
     if (tokens[independentField]) {
-      const independentAmount = tryParseAmount(typedValue, tokens[independentField])
+      const independentAmount = tryParseAmount(chainId, typedValue, tokens[independentField])
       const liquidityValue = liquidityValues[independentField]
       if (independentAmount && liquidityValue && !independentAmount.greaterThan(liquidityValue)) {
         percentToRemove = new Percent(independentAmount.raw, liquidityValue.raw)
@@ -149,6 +149,7 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
   asyncBlocked?: boolean;
   liquidity?: [TokenAmount, TokenAmount];
   omegaSlashingPercentage?: JSBI;
+  slippage?: JSBI;
 } {
 
   if(!ptTotalSupply || !userLiquidity || !pylonPoolBalance || !totalSupply || !pylonInfo || !pylonConstants || !lastK || !blockNumber || !pylonInfo[0]) {
@@ -170,8 +171,12 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
                   pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK)) :
               pylon.burnAnchor(totalSupply, ptTotalSupply, userLiquidity,
                   pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-                  pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK));
-          return {...burnInfo, liquidity: isFloat ? [burnInfo.amount, new TokenAmount(pylon.token1, BigInt(0))] : [new TokenAmount(pylon.token0, BigInt(0)), burnInfo.amount]}
+                  pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK), energyPT, energyAnchor);
+          return {
+            ...burnInfo,
+            liquidity: isFloat ? [burnInfo.amountOut,
+              new TokenAmount(pylon.token1, BigInt(0))] : [new TokenAmount(pylon.token0, BigInt(0)),
+              burnInfo.amountOut]}
         }else{
           return undefined
         }
@@ -183,9 +188,9 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
             :
             pylon.burnAsyncAnchor(totalSupply, ptTotalSupply, userLiquidity,
                 pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK));
+                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK), energyPT, energyAnchor);
 
-        return {...burnInfo, liquidity: [burnInfo.amountA, burnInfo.amountB]}
+        return {...burnInfo, liquidity: [burnInfo.amountOut, burnInfo.amountOut2], slippage: ZERO, reservesPTU: ZERO}
 
 
       }
@@ -215,9 +220,8 @@ export function useDerivedPylonBurnInfo(
   }
   error?: string
   burnInfo?: {
-    amount?: TokenAmount;
-    amountA?: TokenAmount;
-    amountB?: TokenAmount;
+    amountOut?: TokenAmount;
+    amountOut2?: TokenAmount;
     blocked: boolean;
     fee: TokenAmount;
     deltaApplied: boolean;
@@ -225,6 +229,8 @@ export function useDerivedPylonBurnInfo(
     asyncBlocked?: boolean;
     liquidity?: [TokenAmount, TokenAmount];
     omegaSlashingPercentage?: JSBI;
+    slippage?: JSBI;
+    reservesPTU?: JSBI
   }
   healthFactor?: string;
   gamma?: string;
@@ -314,7 +320,7 @@ export function useDerivedPylonBurnInfo(
   else if (independentField === Field.LIQUIDITY) {
     let liquidityToken = isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken
     if (liquidityToken) {
-      const independentAmount = tryParseAmount(typedValue, liquidityToken)
+      const independentAmount = tryParseAmount(chainId, typedValue, liquidityToken)
       if (independentAmount && userLiquidity && !independentAmount.greaterThan(userLiquidity)) {
         percentToRemove = new Percent(independentAmount.raw, userLiquidity.raw)
       }
@@ -323,7 +329,7 @@ export function useDerivedPylonBurnInfo(
   // user specified a specific amount of token a or b
   else {
     if (tokens[independentField]) {
-      const independentAmount = tryParseAmount(typedValue, tokens[independentField])
+      const independentAmount = tryParseAmount(chainId, typedValue, tokens[independentField])
       const liquidityValue = liquidityValues[independentField]
       if (independentAmount && liquidityValue && !independentAmount.greaterThan(liquidityValue)) {
         percentToRemove = new Percent(independentAmount.raw, liquidityValue.raw)
@@ -382,9 +388,8 @@ export function useDerivedPylonBurnInfoFixedPercentage(
   error?: string
   gamma?: string
   burnInfo?: {
-    amount?: TokenAmount;
-    amountA?: TokenAmount;
-    amountB?: TokenAmount;
+    amountOut?: TokenAmount;
+    amountOut2?: TokenAmount;
     blocked: boolean;
     fee: TokenAmount;
     deltaApplied: boolean;

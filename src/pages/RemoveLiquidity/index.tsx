@@ -154,7 +154,7 @@ export default function RemoveLiquidity({
 
     let methodNames: string[], args: Array<string | string[] | number | boolean>
     // we have approval, use normal remove liquidity
-    if (approval === ApprovalState.APPROVED || chainId === 1285) {
+    if (approval === ApprovalState.APPROVED || chainId === 1285 || chainId === 1287) {
       // removeLiquidityETH
       if (oneCurrencyIsETH) {
         methodNames = ['removeLiquidityETH', 'removeLiquidityETHSupportingFeeOnTransferTokens']
@@ -197,7 +197,7 @@ export default function RemoveLiquidity({
       const safeGasEstimate = safeGasEstimates[indexOfSuccessfulEstimation]
 
       setAttemptingTxn(true)
-      await (chainId === 1285 ?
+      await ((chainId === 1285 || chainId === 1287) ?
         batchContract.batchAll(
           [tokenContract.address, router.address], 
           ["000000000000000000", "000000000000000000"],
@@ -314,7 +314,7 @@ export default function RemoveLiquidity({
           <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{errorTx}</span>
         </RowBetween>
         )}
-        <ButtonPrimary disabled={chainId !== 1285 && (!(approval === ApprovalState.APPROVED || signatureData !== null))} onClick={ ()=> onRemove()}>
+        <ButtonPrimary disabled={!(chainId === 1285 || chainId === 1287) && (!(approval === ApprovalState.APPROVED || signatureData !== null))} onClick={ ()=> onRemove()}>
           <Text fontWeight={400} fontSize={18}>
             Confirm
           </Text>
@@ -484,8 +484,8 @@ export default function RemoveLiquidity({
                         ) : oneCurrencyIsWDEV ? (
                           <StyledInternalLink
                             to={`/remove/${
-                              currencyA && currencyEquals(currencyA, WDEV[chainId]) ? 'ETH' : currencyIdA
-                            }/${currencyB && currencyEquals(currencyB, WDEV[chainId]) ? 'ETH' : currencyIdB}`}
+                              currencyA && currencyEquals(currencyA, WDEV[chainId]) ? NATIVE_TOKEN[chainId].symbol : currencyIdA
+                            }/${currencyB && currencyEquals(currencyB, WDEV[chainId]) ? NATIVE_TOKEN[chainId].symbol : currencyIdB}`}
                           >
                             Receive MOVR
                           </StyledInternalLink>
@@ -568,7 +568,7 @@ export default function RemoveLiquidity({
                 <ButtonLight onClick={toggleWalletModal}>Connect Wallet</ButtonLight>
               ) : (
                 <RowBetween style={{paddingBottom: '10px'}}>
-                  {chainId !== 1285 && (<ButtonConfirmed
+                  {!(chainId === 1285 || chainId === 1287) && (<ButtonConfirmed
                     onClick={() => approveCallback()}
                     confirmed={approval === ApprovalState.APPROVED }
                     disabled={approval !== ApprovalState.NOT_APPROVED }
@@ -588,7 +588,7 @@ export default function RemoveLiquidity({
                     onClick={() => {
                       setShowConfirm(true)
                     }}
-                    disabled={chainId !== 1285 ? (!isValid || (approval !== ApprovalState.APPROVED)) : !isValid}
+                    disabled={!(chainId === 1285 || chainId === 1287) ? (!isValid || (approval !== ApprovalState.APPROVED)) : !isValid}
                     error={!isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]}
                   >
                     <Text fontSize={16} fontWeight={400}>

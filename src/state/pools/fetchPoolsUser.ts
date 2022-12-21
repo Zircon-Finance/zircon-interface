@@ -6,7 +6,7 @@ import uniq from 'lodash/uniq'
 import { getAddress } from '../../utils/addressHelpers'
 import multicall from '../../utils/multicall'
 
-export const fetchPoolsAllowance = async (account) => {
+export const fetchPoolsAllowance = async (account, chainId) => {
     if (!account ) return {};
 
     const calls = poolsConfig.map((pool) => ({
@@ -15,7 +15,7 @@ export const fetchPoolsAllowance = async (account) => {
         params: [account, getAddress(pool.contractAddress)],
     }))
 
-    const allowances = await multicall(erc20ABI, calls)
+    const allowances = await multicall(chainId, erc20ABI, calls)
 
     return poolsConfig.reduce(
         (acc, pool, index) => ({ ...acc, [pool.sousId]: new BigNumber(allowances[index]).toJSON() }),
@@ -25,7 +25,7 @@ export const fetchPoolsAllowance = async (account) => {
 
 
 
-export const fetchUserBalances = async (account) => {
+export const fetchUserBalances = async (account, chainId) => {
     if (!account ) return {};
     const tokens = uniq(poolsConfig.map((pool) => pool.stakingToken.address))
     const calls = tokens.map((token) => ({
@@ -34,7 +34,7 @@ export const fetchUserBalances = async (account) => {
         params: [account],
     }))
 
-    const tokenBalancesRaw = await multicall(erc20ABI, calls)
+    const tokenBalancesRaw = await multicall(chainId, erc20ABI, calls)
     const tokenBalances = tokens.reduce((acc, token, index) => ({ ...acc, [token]: tokenBalancesRaw[index] }), {})
     const poolTokenBalances = poolsConfig.reduce(
         (acc, pool) => ({
@@ -49,13 +49,13 @@ export const fetchUserBalances = async (account) => {
     return poolTokenBalances
 }
 
-export const fetchUserStakeBalances = async (account) => {
+export const fetchUserStakeBalances = async (account, chainId) => {
     const calls = poolsConfig.map((p) => ({
         address: getAddress(p.contractAddress),
         name: 'userInfo',
         params: [account],
     }))
-    const userInfo = await multicall(psionicFarmABI, calls)
+    const userInfo = await multicall(chainId, psionicFarmABI, calls)
     return poolsConfig.reduce(
         (acc, pool, index) => ({
             ...acc,
@@ -65,13 +65,13 @@ export const fetchUserStakeBalances = async (account) => {
     )
 }
 
-export const fetchUserPendingRewards = async (account) => {
+export const fetchUserPendingRewards = async (account, chainId) => {
     const calls = poolsConfig.map((p) => ({
         address: getAddress(p.contractAddress),
         name: 'pendingReward',
         params: [account],
     }))
-    const res = await multicall(psionicFarmABI, calls)
+    const res = await multicall(chainId, psionicFarmABI, calls)
     return poolsConfig.reduce(
         (acc, pool, index) => ({
             ...acc,

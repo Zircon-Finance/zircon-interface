@@ -17,7 +17,7 @@ const useApprovePool = (pool, lpContract: Contract, sousId) => {
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
   const { callWithGasPrice } = useCallWithGasPrice()
   const dispatch = useDispatch()
-  const { account } = useWeb3React()
+  const { account, chainId } = useWeb3React()
   const addPopup = useAddPopup()
   const addTransaction = useTransactionAdder()
   const sousChefContract = useSousChef(sousId)
@@ -43,7 +43,7 @@ const useApprovePool = (pool, lpContract: Contract, sousId) => {
         },
         receipt.transactionHash
       )
-      dispatch(fetchPoolsUserDataAsync(account))
+      dispatch(fetchPoolsUserDataAsync({chainId, account}))
     }
   }
   , [account, addPopup, addTransaction, dispatch, lpContract, pool, sousChefContract, fetchWithCatchTxError, callWithGasPrice])

@@ -10,6 +10,8 @@ export const getTokenLogoURL = (symbol: string) =>
 
 const getTokenLogoURL2 = (adddress: string) =>
     `https://raw.githubusercontent.com/solarbeamio/solarbeam-tokenlist/main/assets/moonriver/${adddress}/logo.png`
+const getTokenLogoURL3 = (adddress: string) =>
+    `https://raw.githubusercontent.com/PureStake/moonbase-mintableERC20/main/mintableERC20-interface/public/logos/${adddress}.svg`
 
 
 const StyledLogo = styled(Logo)<{ size: string }>`
@@ -30,7 +32,9 @@ export default function CurrencyLogo({
 }) {
   // const uriLocations = useHttpLocations(currency instanceof WrappedTokenInfo ? currency.logoURI : undefined)
   const srcs: string[] = useMemo(() => {
-    return [getTokenLogoURL(currency?.symbol as string), getTokenLogoURL2(currency instanceof Token ? currency?.address as string : "")]
+    return [getTokenLogoURL(currency?.symbol as string), 
+            getTokenLogoURL2(currency instanceof Token ? currency?.address as string : ""),
+            getTokenLogoURL3((currency?.name)?.toLowerCase() as string)]
     //return [getTokenLogoURL(currency.address)]
   }, [currency])
 

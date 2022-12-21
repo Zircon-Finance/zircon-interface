@@ -1,11 +1,12 @@
-import { TokenAmount, Pair, Currency, Pylon } from 'zircon-sdk'
+import {TokenAmount, Pair, Currency, Pylon} from 'zircon-sdk'
 import { useMemo } from 'react'
 import { abi as ZirconPylonABI } from '../constants/abi/ZirconPylon.json'
 import { Interface } from '@ethersproject/abi'
 import { useActiveWeb3React } from '../hooks'
 import { abi as ZirconPairABI } from '../constants/abi/ZirconPair.json'
-import { useMultipleContractSingleData } from '../state/multicall/hooks'
+import {useMultipleContractSingleData} from '../state/multicall/hooks'
 import { wrappedCurrency } from '../utils/wrappedCurrency'
+import {useLiquidityFee} from "./PylonData";
 const PAIR_INTERFACE = new Interface(ZirconPairABI)
 const PYLON_INTERFACE = new Interface(ZirconPylonABI)
 
@@ -46,9 +47,9 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
   )
 
   const results = useMultipleContractSingleData(pylonAddresses, PYLON_INTERFACE, 'getSyncReserves')
-  console.log('Calling getSyncReserves on pylonAddresses', pylonAddresses)
-  console.log('results', results)
   const resultsPair = useMultipleContractSingleData(pairAddresses, PAIR_INTERFACE, 'getReserves')
+  const liquidityFee = useLiquidityFee()
+
   return useMemo(() => {
     return results.map((result, i) => {
       const { result: reserves, loading } = result
@@ -69,7 +70,7 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
           const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA]
           return [
             PylonState.ONLY_PAIR,
-            new Pylon(new Pair(new TokenAmount(token0, reserve0.toString()), new TokenAmount(token1, reserve1.toString())),new TokenAmount(tokenA, "0"), new TokenAmount(tokenB, "0"))
+            new Pylon(new Pair(new TokenAmount(token0, reserve0.toString()), new TokenAmount(token1, reserve1.toString()), liquidityFee),new TokenAmount(tokenA, "0"), new TokenAmount(tokenB, "0"))
           ]
         }else{
           return [PylonState.NOT_EXISTS, null]
@@ -81,7 +82,7 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
       const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA]
       return [
         PylonState.EXISTS,
-        new Pylon(new Pair(new TokenAmount(token0, reserve0.toString()), new TokenAmount(token1, reserve1.toString())),new TokenAmount(tokenA, _reserve0.toString()), new TokenAmount(tokenB, _reserve1.toString()))
+        new Pylon(new Pair(new TokenAmount(token0, reserve0.toString()), new TokenAmount(token1, reserve1.toString()), liquidityFee),new TokenAmount(tokenA, _reserve0.toString()), new TokenAmount(tokenB, _reserve1.toString()))
       ]
     })
   }, [results, tokens, resultsPair])

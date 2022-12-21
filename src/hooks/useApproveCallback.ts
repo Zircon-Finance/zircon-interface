@@ -102,7 +102,7 @@ export function useApproveCallback(
 export function useApproveCallbackFromTrade(trade?: Trade, allowedSlippage = 0) {
   const { chainId } = useActiveWeb3React()
   const amountToApprove = useMemo(
-    () => (trade ? computeSlippageAdjustedAmounts(trade, allowedSlippage)[Field.INPUT] : undefined),
+    () => (trade ? computeSlippageAdjustedAmounts(chainId, trade, allowedSlippage)[Field.INPUT] : undefined),
     [trade, allowedSlippage]
   )
   return useApproveCallback(amountToApprove, ROUTER_ADDRESS[chainId ? chainId : ''])

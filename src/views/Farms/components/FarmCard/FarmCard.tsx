@@ -65,6 +65,7 @@ interface FarmCardProps {
 const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePrice, account, currentBlock }) => {
   const { t } = useTranslation()
   const theme = useTheme()
+  const {chainId} = useActiveWeb3React()
   const lpLabel = `${farm.token1.symbol}-${farm.token2.symbol}`
   const addLiquidityUrl = '#/add-pro/' + farm.token1.address+'/' + farm.token2.address + '/' + farm.isAnchor ? "stable":"float"
   const isPromotedFarm = farm.token1.symbol === 'CAKE'
@@ -109,11 +110,10 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
         },
         receipt.transactionHash
       )
-      dispatch(fetchPoolsUserDataAsync(account))
+      dispatch(fetchPoolsUserDataAsync({chainId, account}))
     }
   }
   const pairLiquidity = 0 //usePairLiquidity(farm.token1, farm.token2)
-  const {chainId} = useActiveWeb3React()
 
   return (
     <StyledCard isActive={isPromotedFarm}>

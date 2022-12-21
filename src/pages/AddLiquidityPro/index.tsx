@@ -50,7 +50,7 @@ import RepeatIcon from "../../components/RepeatIcon";
 import {usePool, usePools} from "../../state/pools/hooks";
 import {useERC20, useSousChef} from "../../hooks/useContract";
 import useApprovePool from "../../views/Farms/hooks/useApproveFarm";
-import {fetchPoolsUserDataAsync} from "../../state/pools";
+import {fetchPoolsPublicDataAsync} from "../../state/pools";
 import {useDispatch} from "react-redux";
 import {AddressZero} from "@ethersproject/constants";
 import InfoCircle from "../../components/InfoCircle";
@@ -105,7 +105,7 @@ export default function AddLiquidityPro({
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(fetchPoolsUserDataAsync(account))
+    dispatch(fetchPoolsPublicDataAsync(chainId))
   }, [account, dispatch])
 
   const toggleWalletModal = useWalletModalToggle(); // toggle wallet when disconnected
@@ -144,12 +144,6 @@ export default function AddLiquidityPro({
   // });
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noPylon);
   const isValid = !error;
-  console.log('currencyA', currencyA)
-  console.log('currencyB', currencyB)
-  console.log('Is valid', isValid)
-  console.log('mintinfo', mintInfo)
-  console.log('is valid error', error)
-  console.log('pylonstate', pylonState)
 
   // handle pool button values
   const {pools} = usePools();
@@ -402,8 +396,8 @@ export default function AddLiquidityPro({
     //   [Field.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, 0)[0],
     //   [Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, 0)[0]
     // }
-
-    const liquidityMin = calculateSlippageAmount(mintInfo.liquidity, noPylon ? 0 : allowedSlippage)[0]
+    console.log('mintInfo', mintInfo)
+    const liquidityMin = calculateSlippageAmount(mintInfo.amountOut, noPylon ? 0 : allowedSlippage)[0]
 
     const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline;
 
@@ -461,7 +455,7 @@ export default function AddLiquidityPro({
           stake ? contractAddress : AddressZero,
           deadlineFromNow,
         ];
-        console.log("args", args);
+
         value = null;
       }
     } else {
@@ -506,10 +500,11 @@ export default function AddLiquidityPro({
       }
     }
 
-    const approvalCallData0 = token0Contract.interface.encodeFunctionData('approve', [router.address, parsedAmounts[getField(true)].raw.toString()])
-    const approvalCallData1 = token1Contract.interface.encodeFunctionData('approve', [router.address, parsedAmounts[getField(false)].raw.toString()])
+    const approvalCallData0 = token0Contract.interface.encodeFunctionData('approve', [router.address, parsedAmounts[Field.CURRENCY_A].raw.toString()])
+    const approvalCallData1 = token1Contract.interface.encodeFunctionData('approve', [router.address, parsedAmounts[Field.CURRENCY_B].raw.toString()])
     const farmApprovalCallData = lpContract.interface.encodeFunctionData('approve', [sousChefContract.address, MaxUint256])
 
+    console.log('dat::1', token1Contract.address, parsedAmounts[Field.CURRENCY_B].raw.toString())
     const callData = router.interface.encodeFunctionData(((sync === "off" ?
     ((getCurrency(true) === NATIVE_TOKEN[chainId]) ? 'addSyncLiquidityETH' : 'addSyncLiquidity') :
     ((getCurrency(true) === NATIVE_TOKEN[chainId] || getCurrency(false) === NATIVE_TOKEN[chainId]) ?
@@ -518,7 +513,7 @@ export default function AddLiquidityPro({
     console.log('args', args)
     setAttemptingTxn(true);
     await (
-          chainId === 1285 ?
+      (chainId === 1285 || chainId === 1287) ?
             batchContract.batchAll(
               [lpContract.address, token0Contract.address, token1Contract.address,  router.address],
               ["000000000000000000", "000000000000000000", "000000000000000000", (value !== undefined && value !== null) ? value : "000000000000000000"],
@@ -663,7 +658,7 @@ export default function AddLiquidityPro({
         })
   }
 
-  const formattedLiquidity = (mintInfo?.liquidity.toSignificant(
+  const formattedLiquidity = (mintInfo?.amountOut.toSignificant(
       6
   ) as unknown) as number;
 
@@ -774,6 +769,7 @@ export default function AddLiquidityPro({
             errorTx={errorTx}
             blocked={mintInfo?.blocked}
             shouldBlock={mintInfo?.shouldBlock || mintInfo?.deltaApplied || mintInfo?.blocked}
+            asyncBlock={(isFloat && sync !== "off")}
         />
     );
   };
@@ -834,7 +830,7 @@ export default function AddLiquidityPro({
           }
         } else {
           history.push(
-              `/add-pro/${currencyIdA ? currencyIdA : "ETH"}/${newCurrencyIdB || ''}`
+              `/add-pro/${currencyIdA ? currencyIdA : NATIVE_TOKEN[chainId].symbol}/${newCurrencyIdB || ''}`
           );
         }
       },
@@ -1303,7 +1299,7 @@ isValid
                           </ButtonLight>
                       ) : (
                           <AutoColumn gap={"md"}>
-                            {chainId !== 1285 && showApproveCondition && (
+                            {!(chainId === 1285 || chainId === 1287) && showApproveCondition && (
                                 <RowBetween>
                                   {/* Currency A isn't approved or pylon doesn't exist and A isn't approved */}
                                   {(pylonState === PylonState.NOT_EXISTS ? (approvalAPair !== ApprovalState.APPROVED ? true : false) : (approvalA !== ApprovalState.APPROVED ? true : false))
@@ -1364,7 +1360,7 @@ isValid
                                     !!parsedAmounts[Field.CURRENCY_A] &&
                                     !!parsedAmounts[Field.CURRENCY_B]
                                   }
-                                  disabled={chainId === 1285 ? (error !== undefined ? true :
+                                  disabled={(chainId === 1285 || chainId === 1287) ? (error !== undefined ? true :
                                     !isValid) :
                                     error !== undefined ? true :
                                     !isValid ||
@@ -1397,14 +1393,14 @@ isValid
                                       width={"48%"}
                                       onClick={() =>
                                         farm ?
-                                        (!farmIsApproved() && chainId !== 1285) ?
+                                        (!farmIsApproved() && !(chainId === 1285 || chainId === 1287)) ?
                                         (approveFarm()) :
                                         (setShowConfirm(true), setIsStaking(true)) :
                                         (setShowConfirm(true), setIsStaking(true))
                                       }
                                       disabled={
                                         pendingTx ||
-                                        !isValid || (chainId !== 1285 && (
+                                        !isValid || (!(chainId === 1285 || chainId === 1287) && (
                                         approvalA !== ApprovalState.APPROVED ||
                                         (sync === "half" &&
                                             approvalB !== ApprovalState.APPROVED)))
@@ -1422,10 +1418,10 @@ isValid
                                           fontWeight={400}
                                       >
                                         {error ? 'Add & Farm' :
-                                            (farmIsApproved() || chainId === 1285 ?
+                                            (farmIsApproved() || (chainId === 1285 || chainId === 1287) ?
                                                 "Add & Farm" : "Enable farm contract")}
                                       </Text>
-                                      {(farmIsApproved() || (chainId === 1285 && pool?.apr)) && (
+                                      {(farmIsApproved() || ((chainId === 1285 || chainId === 1287) && pool?.apr)) && (
                                       <Text
                                           fontSize={width > 700 ? 14 : 13}
                                           fontWeight={400}

@@ -4,8 +4,8 @@ import {fetchGammas} from './fetchPublicPoolsData'
 import { SerializedPool} from '../types'
 
 
-const fetchPools = async (poolsToFetch: SerializedPoolConfig[]): Promise<SerializedPool[]> => {
-    const gammas = await fetchGammas(poolsToFetch)
+const fetchPools = async (chainId: number, poolsToFetch: SerializedPoolConfig[]): Promise<SerializedPool[]> => {
+    const gammas = await fetchGammas(chainId, poolsToFetch)
 
     return poolsToFetch.map((pool, index) => {
         const [gamma] = gammas[index]

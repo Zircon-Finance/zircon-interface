@@ -1,4 +1,4 @@
-import { CurrencyAmount, JSBI, Token, Trade } from 'zircon-sdk'
+import { CurrencyAmount, JSBI, NATIVE_TOKEN, Token, Trade } from 'zircon-sdk'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { ArrowDown } from 'react-feather'
 import ReactGA from 'react-ga4'
@@ -79,7 +79,7 @@ export default function Swap() {
   }, [])
 
   const skeletons = 5;
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const theme = useTheme()
 
   // toggle wallet when disconnected
@@ -107,6 +107,7 @@ export default function Swap() {
   const [chosenTokens] = useChosenTokens();
   const inputCurrency = useCurrency(inputCurrencyId)
   const outputCurrency = useCurrency(outputCurrencyId)
+  console.log("inputCurrencyId", inputCurrencyId)
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
   const { address: recipientAddress } = useENSAddress(recipient)
   const toggledVersion = useToggledVersion()
@@ -179,6 +180,10 @@ export default function Swap() {
 
   // mark when a user has submitted an approval, reset onTokenSelection for input field
   useEffect(() => {
+    onCurrencySelection(Field.INPUT, NATIVE_TOKEN[chainId])
+  }, [])
+
+  useEffect(() => {
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
     }
@@ -187,7 +192,6 @@ export default function Swap() {
       setTopTokensPrevious(res.oneDayAgoQueryData)
     })
   }, [approval, approvalSubmitted])
-  const {chainId} = useActiveWeb3React()
 
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(chainId, currencyBalances[Field.INPUT])
   const atMaxAmountInput = Boolean(maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput))
@@ -200,7 +204,7 @@ export default function Swap() {
     recipient
   )
 
-  const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
+  const { priceImpactWithoutFee } = computeTradePriceBreakdown(chainId, trade)
 
   const handleSwap = useCallback(() => {
     if (priceImpactWithoutFee && !confirmPriceImpactWithoutFee(priceImpactWithoutFee)) {
@@ -245,11 +249,12 @@ export default function Swap() {
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
   // never show if price impact is above threshold in non expert mode
   const showApproveFlow =
+    chainId !== 1285 && (
     !swapInputError &&
     (approval === ApprovalState.NOT_APPROVED ||
       approval === ApprovalState.PENDING ||
       (approvalSubmitted && approval === ApprovalState.APPROVED)) &&
-    !(priceImpactSeverity > 3 && !isExpertMode)
+    !(priceImpactSeverity > 3 && !isExpertMode))
 
   const handleConfirmDismiss = useCallback(() => {
     setSwapState({ showConfirm: false, tradeToConfirm, attemptingTxn, swapErrorMessage, txHash })
@@ -283,7 +288,7 @@ export default function Swap() {
   const [isChartExpanded, setIsChartExpanded] = useState(false)
   const [isChartDisplayed] = useState(true)
 
-  const singleTokenPrice = useSingleTokenSwapInfo(inputCurrencyId, inputCurrency, outputCurrencyId, outputCurrency)
+  const singleTokenPrice = useSingleTokenSwapInfo(chainId, inputCurrencyId, inputCurrency, outputCurrencyId, outputCurrency)
 
   const [pairState,pair] = usePair(currencies[Field.INPUT], currencies[Field.OUTPUT])
   const prices = usePairPrices(currencies[Field.INPUT], currencies[Field.OUTPUT], pair, pairState)
@@ -301,7 +306,7 @@ export default function Swap() {
       case 'price change 24h':
           return orderBy(tokensToSort, (token: any) => {
           const previousToken = topTokensPrevious.find((t) => t.token.id === token.token.id)
-          const changePercent = (((parseFloat(token?.priceUSD) - parseFloat(previousToken?.priceUSD)) / 
+          const changePercent = (((parseFloat(token?.priceUSD) - parseFloat(previousToken?.priceUSD)) /
           parseFloat(previousToken?.priceUSD)) * 100).toFixed(2);
           return changePercent !== 'NaN' ? parseFloat(changePercent) : parseFloat('-100')
         }, 'desc')
@@ -332,9 +337,9 @@ export default function Swap() {
         <div style={{alignSelf: 'center'}}>
         { outputCurrency ? (
             <PriceChartContainer
-                inputCurrencyId={inputCurrencyId === 'ETH' ? '0x98878b06940ae243284ca214f92bb71a2b032b8a' : inputCurrencyId}
+                inputCurrencyId={inputCurrencyId === NATIVE_TOKEN[chainId].symbol ? '0x98878b06940ae243284ca214f92bb71a2b032b8a' : inputCurrencyId}
                 inputCurrency={currencies[Field.INPUT]}
-                outputCurrencyId={outputCurrencyId === 'ETH' ? '0x98878b06940ae243284ca214f92bb71a2b032b8a' : outputCurrencyId}
+                outputCurrencyId={outputCurrencyId === NATIVE_TOKEN[chainId].symbol ? '0x98878b06940ae243284ca214f92bb71a2b032b8a' : outputCurrencyId}
                 outputCurrency={currencies[Field.OUTPUT]}
                 isChartExpanded={isChartExpanded}
                 setIsChartExpanded={setIsChartExpanded}
@@ -350,7 +355,7 @@ export default function Swap() {
           </AutoColumn>
         </div>
         )}
-        
+
       <AppBody>
 
       {/* <SwapPoolTabs active={'swap'} /> */}
@@ -409,7 +414,6 @@ export default function Swap() {
                     onClick={() => {
                       setApprovalSubmitted(false) // reset 2 step UI for approvals
                       onSwitchTokens()
-
                     }}
                     style={{alignSelf: 'center'}}
                     color={currencies[Field.INPUT] && currencies[Field.OUTPUT] ? theme.primary1 : theme.text2}
@@ -642,7 +646,7 @@ export default function Swap() {
           <TableData style={{cursor:"pointer", width: '10%'}} />
         </tr>
         <Separator />
-        {topTokens.length === 0 ? [...Array(skeletons)].map(() => ( 
+        {topTokens.length === 0 ? [...Array(skeletons)].map(() => (
           <Flex style={{width: '100%', margin: 'auto'}} flexDirection='column'>
             <Row>
               <SkeletonTable style={{width: '35%', marginLeft: '30px'}}><Skeleton width={'80%'} /></SkeletonTable>
@@ -656,9 +660,9 @@ export default function Swap() {
         )) : (
         (topTokensPrevious.length > 0 && topTokens.length > 0) && sortedTokens.map((token, index) => (
           <TopTokensRow
-            key={index} 
-            token={token} 
-            previousToken={topTokensPrevious.find((t) => t.token.id === token.token.id)} 
+            key={index}
+            token={token}
+            previousToken={topTokensPrevious.find((t) => t.token.id === token.token.id)}
             index={index}
             handleInput={handleInputSelect}
             tokens={topTokens}

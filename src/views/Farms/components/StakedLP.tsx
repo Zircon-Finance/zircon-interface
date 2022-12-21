@@ -10,6 +10,7 @@ import { Token } from 'zircon-sdk'
 import { Field } from '../../../state/burn/actions'
 import { useUserFarmsViewMode } from '../../../state/user/hooks'
 import { ViewMode } from '../../../state/user/actions'
+import { useWindowDimensions } from '../../../hooks'
 // import { usePair } from '../../../data/Reserves'
 
 interface StackedLPProps {
@@ -60,11 +61,12 @@ const StakedLP: React.FunctionComponent<StackedLPProps> = ({
   }, [stakedBalance])
 
   const theme = useTheme()
+  const {width} = useWindowDimensions()
   const [viewMode, ] = useUserFarmsViewMode();
 
   return (
       <Flex flexDirection="column" alignItems="flex-start" justifyContent={'space-between'} style={{height: '100%'}}>
-        <Heading style={{color: theme.text1, fontWeight: 400, fontSize: '24px', marginBottom: '18px', marginTop: viewMode === ViewMode.TABLE && '35px'}}>{displayBalance() + " ZPT"}</Heading>
+        <Heading style={{color: theme.text1, fontWeight: 400, fontSize: '24px', marginBottom: '18px', marginTop: viewMode === ViewMode.TABLE && width >= 800 && '35px'}}>{displayBalance() + " ZPT"}</Heading>
         {stakedBalance.gt(0) && !isClassic && (
             <>
               <Balance

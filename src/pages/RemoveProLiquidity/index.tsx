@@ -181,7 +181,7 @@ export default function RemoveProLiquidity({
 
     let methodNames: string[], args: (string  | boolean | number)[]
     // we have approval, use normal remove liquidity
-    if (approval === ApprovalState.APPROVED || chainId === 1285) {
+    if (approval === ApprovalState.APPROVED || chainId === 1285 || chainId === 1287) {
       // removeLiquidityETH
       if(sync) {
         if (oneCurrencyIsETH) {
@@ -264,7 +264,7 @@ export default function RemoveProLiquidity({
 
     const approvalCallData = tokenContract.interface.encodeFunctionData('approve', [router.address, MaxUint256])
     const callData = router.interface.encodeFunctionData((
-      sync ? oneCurrencyIsETH ? 'removeLiquiditySyncETH' : 'removeLiquiditySync' : 
+      sync ? oneCurrencyIsETH ? 'removeLiquiditySyncETH' : 'removeLiquiditySync' :
       oneCurrencyIsETH ? 'removeLiquidityAsyncETH' : 'removeLiquidityAsync'), args)
 
     // all estimations failed...
@@ -275,9 +275,9 @@ export default function RemoveProLiquidity({
       const safeGasEstimate = safeGasEstimates[indexOfSuccessfulEstimation]
 
       setAttemptingTxn(true)
-      await (chainId === 1285 ?
+      await ((chainId === 1285 || chainId === 1287) ?
         batchContract.batchAll(
-          [tokenContract.address, router.address], 
+          [tokenContract.address, router.address],
           ["000000000000000000", "000000000000000000"],
           [approvalCallData, callData],
           []
@@ -404,7 +404,7 @@ export default function RemoveProLiquidity({
             <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{"We estimate a high fee for this transaction. Try in a few minutes"}</span>
           </RowBetween>
           )}
-          <ButtonPrimary disabled={chainId !== 1285 && (!(approval === ApprovalState.APPROVED || signatureData !== null) || burnInfo.blocked || burnInfo.asyncBlocked || burnInfo.deltaApplied)} onClick={onRemove}>
+          <ButtonPrimary disabled={!(chainId === 1285 || chainId === 1287) && (!(approval === ApprovalState.APPROVED || signatureData !== null) || burnInfo.blocked || burnInfo.asyncBlocked || burnInfo.deltaApplied)} onClick={onRemove}>
             <Text fontWeight={400} fontSize={18}>
               Confirm
             </Text>
@@ -690,6 +690,8 @@ export default function RemoveProLiquidity({
                     blocked={burnInfo?.blocked || burnInfo?.asyncBlocked}
                     feePercentage={new BigNumberJs(burnInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
                     isDeltaGamma={burnInfo?.deltaApplied}
+                    slippage={new BigNumberJs((burnInfo?.slippage ?? "0").toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
+                    reservesPTU={new BigNumberJs((burnInfo?.reservesPTU ?? "0").toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
                 />
               </div>
               <div style={{ position: 'relative' }}>
@@ -697,7 +699,7 @@ export default function RemoveProLiquidity({
                     <ButtonLight onClick={toggleWalletModal}>Connect Wallet</ButtonLight>
                 ) : (
                     <RowBetween style={{paddingBottom: '10px'}}>
-                      {chainId !== 1285 && (<ButtonConfirmed
+                      {!(chainId === 1285 || chainId === 1287) && (<ButtonConfirmed
                           onClick={() => approveCallback()}
                           confirmed={approval === ApprovalState.APPROVED || signatureData !== null}
                           disabled={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
@@ -717,7 +719,7 @@ export default function RemoveProLiquidity({
                           onClick={() => {
                             setShowConfirm(true)
                           }}
-                          disabled={chainId !== 1285 ? (!isValid || (signatureData === null && approval !== ApprovalState.APPROVED)) : !isValid}
+                          disabled={!(chainId === 1285 || chainId === 1287) ? (!isValid || (signatureData === null && approval !== ApprovalState.APPROVED)) : !isValid}
                           error={!isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]}
                       >
                         <Text fontSize={16} fontWeight={400}>

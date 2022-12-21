@@ -23,6 +23,7 @@ import BigNumber from 'bignumber.js'
 import { deserializeToken } from '../../../../state/user/hooks'
 import { getBalanceAmount } from '../../../../utils/formatBalance'
 import { Field } from '../../../../state/burn/actions'
+import { useActiveWeb3React } from '../../../../hooks'
 
 interface FarmCardActionsProps extends DeserializedPool {
     lpLabel?: string
@@ -54,6 +55,7 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
     const { onStake } = useStakeFarms(sousId, stakingToken.address)
     const { onUnstake } = useUnstakeFarms(sousId)
     const { pool } = usePool(sousId)
+    const {chainId} = useActiveWeb3React()
     const tokenBalance = pool.userData.stakingTokenBalance
     const stakedBalance = pool.userData.stakedBalance
     const dispatch = useDispatch()
@@ -90,7 +92,7 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
                 },
                 receipt.transactionHash
             )
-            dispatch(fetchPoolsUserDataAsync(account))
+            dispatch(fetchPoolsUserDataAsync({chainId, account}))
         }
     }
 
@@ -119,7 +121,7 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
                 },
                 receipt.transactionHash
             )
-            dispatch(fetchPoolsUserDataAsync(account))
+            dispatch(fetchPoolsUserDataAsync({chainId, account}))
         }
     }
     const staked = parseFloat(getBalanceAmount(stakedBalance).toFixed(6))

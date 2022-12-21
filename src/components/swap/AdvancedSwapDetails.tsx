@@ -11,12 +11,14 @@ import { RowBetween, RowFixed } from '../Row'
 import FormattedPriceImpact from './FormattedPriceImpact'
 import { SectionBreak } from './styleds'
 import SwapRoute from './SwapRoute'
+import { useActiveWeb3React } from '../../hooks'
 
 function TradeSummary({ trade, allowedSlippage }: { trade: Trade; allowedSlippage: number }) {
   const theme = useTheme()
-  const { priceImpactWithoutFee, realizedLPFee } = computeTradePriceBreakdown(trade)
+  const { chainId } = useActiveWeb3React()
+  const { priceImpactWithoutFee, realizedLPFee } = computeTradePriceBreakdown(chainId, trade)
   const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
-  const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade, allowedSlippage)
+  const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(chainId, trade, allowedSlippage)
 
   return (
     <>

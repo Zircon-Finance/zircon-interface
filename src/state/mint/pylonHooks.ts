@@ -78,6 +78,9 @@ export function useDerivedPylonMintInfo(
   // Pylon
   const [pylonState, pylonPair] = usePylon(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B])
   const pylonInfo = usePylonInfo(pylonPair?.address)
+
+  console.log('pylonInfo... ', pylonPair?.address, pylonInfo)
+
   const pylonConstants = usePylonConstants()
   const blockNumber = useBlockNumber()
   const userLiquidity = useTokenBalance(account ?? undefined, isFloat ? pylonPair?.floatLiquidityToken : pylonPair?.anchorLiquidityToken)
@@ -89,6 +92,8 @@ export function useDerivedPylonMintInfo(
   const energyAddress = Pylon.getEnergyAddress(pylonPair?.token0, pylonPair?.token1) //useEnergyAddress(pylonPair?.token0, pylonPair?.token1)
   const ptbEnergy = useTokenBalance(energyAddress, pylonPair?.pair.liquidityToken)
   const reserveAnchor = useTokenBalance(energyAddress, pylonPair?.anchorLiquidityToken)
+
+  console.log("pairAdd ", pylonPair ? Pair.getAddress(pylonPair.token0, pylonPair.token1) : "")
   const healthFactor = useMemo(() => {
     try {
       return pylonInfo && pylonInfo[0] && pylonState === PylonState.EXISTS && pylonPair && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && lastK && pylonConstants && pylonState === PylonState.EXISTS?
@@ -111,6 +116,7 @@ export function useDerivedPylonMintInfo(
     }
 
   }, [pylonInfo, pylonPair, ptbEnergy, reserveAnchor, pylonPoolBalance, totalSupply, lastK, pylonConstants,pylonState])
+  console.log("healthFactor", typeof healthFactor)
   const noPylon: boolean =
       pylonState === PylonState.NOT_EXISTS || Boolean(pylonSupply && JSBI.equal(pylonSupply.raw, ZERO))
 

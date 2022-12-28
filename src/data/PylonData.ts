@@ -9,6 +9,7 @@ import {
 import {useSingleCallResult, useSingleContractMultipleMethods} from '../state/multicall/hooks'
 import {EN_FACTORY_ADDRESS, FACTORY_ADDRESS, PYLON_FACTORY_ADDRESS, PylonFactory} from "zircon-sdk";
 import {useActiveWeb3React} from "../hooks";
+import {PairInfo, PylonInfo} from "zircon-sdk/dist/interfaces/pylonInterface";
 
 // returns undefined if input token is undefined, or fails to get token contract,
 // or contract total supply cannot be fetched
@@ -48,7 +49,7 @@ export function useLiquidityFee(): string | undefined {
     return liquidityFee ? liquidityFee.toString() : undefined
 }
 
-export function usePylonInfo(address?: string): (any)[] | undefined {
+export function usePylonInfo(address?: string): PylonInfo | undefined {
     const contract = usePylonContract(address, false)
     const result = useSingleContractMultipleMethods(contract, [
         "virtualAnchorBalance",
@@ -65,17 +66,35 @@ export function usePylonInfo(address?: string): (any)[] | undefined {
         "lastOracleTimestamp",
         "lastPrice"
     ])?.map<any>((res => res?.result?.[0]))
-    return address && result ? result : undefined
+    return address && result ? {
+        virtualAnchorBalance: result[0].toString(),
+        muMulDecimals: result[1].toString(),
+        gammaMulDecimals: result[2].toString(),
+        strikeBlock: result[3].toString(),
+        EMABlockNumber: result[4].toString(),
+        gammaEMA: result[5].toString(),
+        thisBlockEMA: result[6].toString(),
+        lastRootKTranslated: result[7].toString(),
+        anchorKFactor: result[8].toString(),
+        formulaSwitch: result[9].toString(),
+        lastFloatAccumulator: result[10].toString(),
+        lastOracleTimestamp: result[11].toString(),
+        lastPrice: result[12].toString(),
+    } : undefined
 }
 
-export function usePairInfo(address?: string): (any)[] | undefined {
+export function usePairInfo(address?: string): PairInfo | undefined {
     const contract = usePairContract(address, false)
     const result = useSingleContractMultipleMethods(contract, [
         "price0CumulativeLast",
         "price1CumulativeLast",
         "kLast"
     ])?.map<any>((res => res?.result?.[0]))
-    return address && result ? result : undefined
+    return address && result ? {
+        price0CumulativeLast: result[0].toString(),
+        price1CumulativeLast: result[1].toString(),
+        kLast: result[2].toString(),
+    } : undefined
 }
 
 

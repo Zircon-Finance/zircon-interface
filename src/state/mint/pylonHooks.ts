@@ -79,39 +79,31 @@ export function useDerivedPylonMintInfo(
   const pylonPoolBalance = useTokenBalance(pylonPair?.address, pylonPair?.pair.liquidityToken)
   const ptTotalSupply = useTotalSupply(isFloat ? pylonPair?.floatLiquidityToken : pylonPair?.anchorLiquidityToken)
   const totalSupply = useTotalSupply(pylonPair?.pair.liquidityToken)
-  const lastK = useLastK(pylonPair ? Pair.getAddress(pylonPair.token0, pylonPair.token1) : "");
+  // const lastK = useLastK(pylonPair ? Pair.getAddress(pylonPair.token0, pylonPair.token1) : "");
   const pylonSupply = useTotalSupply(pylonPair?.pair.liquidityToken)
   const energyAddress = Pylon.getEnergyAddress(pylonPair?.token0, pylonPair?.token1) //useEnergyAddress(pylonPair?.token0, pylonPair?.token1)
   const ptbEnergy = useTokenBalance(energyAddress, pylonPair?.pair.liquidityToken)
   const reserveAnchor = useTokenBalance(energyAddress, pylonPair?.anchorLiquidityToken)
   const healthFactor = useMemo(() => {
     try {
-      return pylonInfo && pylonInfo[0] && pylonState === PylonState.EXISTS && pylonPair && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && lastK && pylonConstants && pylonState === PylonState.EXISTS?
+      return pylonInfo && pylonState === PylonState.EXISTS && pylonPair && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && pylonConstants && pylonState === PylonState.EXISTS?
           pylonPair.getHealthFactor(
-              pylonInfo[0],
-              pylonPoolBalance,
+              pylonInfo,
+              pairInfo,
               totalSupply,
-              reserveAnchor.raw,
-              ptbEnergy.raw,
-              pylonInfo[9],
-              pylonInfo[1],
-              pylonInfo[7],
-              pylonInfo[8],
-              JSBI.BigInt(lastK),
+              pylonPoolBalance,
+              BigInt(blockNumber),
               pylonConstants,
               BigInt(timestamp),
-              pylonInfo[10],
-              pairInfo[0],
-              pairInfo[1],
-              pylonInfo[11],
-              pylonInfo[12]
+              ptbEnergy.raw,
+              reserveAnchor.raw
           ).toString() : undefined
     }catch (e) {
       console.error("INTERFACE:: error health factor", e)
       return undefined
     }
 
-  }, [pylonInfo, pylonPair, ptbEnergy, reserveAnchor, pylonPoolBalance, totalSupply, lastK, pylonConstants,pylonState])
+  }, [pylonInfo, pairInfo, pylonPair, ptbEnergy, reserveAnchor, pylonPoolBalance, totalSupply, pylonConstants,pylonState])
   const noPylon: boolean =
       pylonState === PylonState.NOT_EXISTS || Boolean(pylonSupply && JSBI.equal(pylonSupply.raw, ZERO))
 
@@ -178,7 +170,7 @@ export function useDerivedPylonMintInfo(
     ]
     try{
       if (pylonState === PylonState.EXISTS && pylonPair && pylonSupply && tokenAmountA && tokenAmountB
-          && totalSupply && ptTotalSupply && userLiquidity && pylonPoolBalance && pylonInfo.length > 8 && pylonConstants) {
+          && totalSupply && ptTotalSupply && userLiquidity && pylonPoolBalance && pylonInfo && pairInfo && pylonConstants) {
         if (sync === "off") {
           console.log("FF:: pp")
           let syncMintInfo;
@@ -186,19 +178,15 @@ export function useDerivedPylonMintInfo(
           let shouldBlock = false;
           if (isFloat) {
             syncMintInfo = pylonPair.getFloatSyncLiquidityMinted(
-                totalSupply, ptTotalSupply, tokenAmountA,
-                pylonInfo[0], pylonInfo[1], pylonInfo[2],
-                pylonPoolBalance, pylonInfo[3], BigInt(blockNumber),
+                pylonInfo,
+                pairInfo,
+                totalSupply,
+                ptTotalSupply,
+                tokenAmountA,
+                pylonPoolBalance,
+                BigInt(blockNumber),
                 pylonConstants,
-                pylonInfo[4], pylonInfo[5], pylonInfo[6],
-                pylonInfo[7], pylonInfo[8], pylonInfo[9],
-                pairInfo[2],
-                BigInt(timestamp),
-                pylonInfo[10],
-                pairInfo[0],
-                pairInfo[1],
-                pylonInfo[11],
-                pylonInfo[12],
+                BigInt(timestamp)
                 )
             console.log("syncMintInfo", syncMintInfo)
             if (JSBI.greaterThan(syncMintInfo?.amountsToInvest?.sync, ZERO) && JSBI.greaterThan(syncMintInfo?.amountsToInvest?.async, ZERO)) {
@@ -210,19 +198,16 @@ export function useDerivedPylonMintInfo(
 
           }else{
             syncMintInfo = pylonPair.getAnchorSyncLiquidityMinted(
-                totalSupply, ptTotalSupply, tokenAmountB,
-                pylonInfo[0], pylonInfo[1], pylonInfo[2],
-                pylonPoolBalance, pylonInfo[3], BigInt(blockNumber),
+                pylonInfo,
+                pairInfo,
+                totalSupply,
+                ptTotalSupply,
+                tokenAmountB,
+                pylonPoolBalance,
+                BigInt(blockNumber),
                 pylonConstants,
-                pylonInfo[4], pylonInfo[5], pylonInfo[6],
-                pylonInfo[7], pylonInfo[8], pylonInfo[9],
-                pairInfo[2],
                 BigInt(timestamp),
-                pylonInfo[10],
-                pairInfo[0],
-                pairInfo[1],
-                pylonInfo[11],
-                pylonInfo[12])
+            )
             if (JSBI.greaterThan(syncMintInfo?.amountsToInvest?.sync, ZERO) && JSBI.greaterThan(syncMintInfo?.amountsToInvest?.async, ZERO)) {
 
               extraFeeTreshold = syncMintInfo?.amountsToInvest?.sync
@@ -239,31 +224,22 @@ export function useDerivedPylonMintInfo(
 
           if (isFloat) {
             asyncMintInfo = pylonPair.getFloatAsyncLiquidityMinted(
+                pylonInfo,
+                pairInfo,
                 totalSupply, ptTotalSupply, tokenAmountA, tokenAmountB,
-                pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance,
-                pylonInfo[3], BigInt(blockNumber), pylonConstants,
-                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7],
-                pylonInfo[8], pylonInfo[9],
-                pairInfo[2],
+                 pylonPoolBalance,
+                BigInt(blockNumber), pylonConstants,
                 BigInt(timestamp),
-                pylonInfo[10],
-                pairInfo[0],
-                pairInfo[1],
-                pylonInfo[11],
-                pylonInfo[12])
+             )
           }else{
             asyncMintInfo = pylonPair.getAnchorAsyncLiquidityMinted(
+                pylonInfo,
+                pairInfo,
                 totalSupply, ptTotalSupply, tokenAmountA, tokenAmountB,
-                pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance,
-                pylonInfo[3], BigInt(blockNumber), pylonConstants,
-                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7],
-                pylonInfo[8], pylonInfo[9],         pairInfo[2],
+                 pylonPoolBalance,
+                BigInt(blockNumber), pylonConstants,
                 BigInt(timestamp),
-                pylonInfo[10],
-                pairInfo[0],
-                pairInfo[1],
-                pylonInfo[11],
-                pylonInfo[12])
+               )
           }
           return {...asyncMintInfo, extraFeeTreshold: ZERO, extraSlippagePercentage: ZERO, shouldBlock: false}
         }
@@ -271,7 +247,6 @@ export function useDerivedPylonMintInfo(
         console.error("INTERFACE:: error missing data")
         console.log("INTERFACE:: pylonInfo", pylonInfo)
         console.log("INTERFACE:: pylonPoolBalance", pylonPoolBalance)
-        console.log("INTERFACE:: lastK", lastK)
         console.log("INTERFACE:: blockNumber", blockNumber)
         console.log("INTERFACE:: blockNumber", blockNumber)
         console.log("INTERFACE:: tkA tkB", tokenAmountA, tokenAmountB)
@@ -282,15 +257,15 @@ export function useDerivedPylonMintInfo(
       console.log("INTERFACE:: isFloat", isFloat)
       console.log("INTERFACE:: pairRes, pylonRes", pylonPair?.pair.reserve0.raw.toString(), pylonPair?.pair.reserve1.raw.toString(), pylonPair?.reserve0.raw.toString(), pylonPair?.reserve1.raw.toString() )
       console.log("INTERFACE:: totalSupply, ptTotalSupply, tokenAmountA, tokenAmountA", totalSupply?.raw.toString(), ptTotalSupply?.raw.toString(), tokenAmountA?.raw.toString(), tokenAmountB?.raw.toString())
-      console.log("INTERFACE:: ptb, lastk, blockNumber", pylonPoolBalance?.raw.toString(),  BigInt(lastK).toString(), BigInt(blockNumber))
-      console.log("INTERFACE:: virtualAnchorBalance, muMulDecimals, gammaMulDecimals", pylonInfo[0].toString(), pylonInfo[1].toString(), pylonInfo[2].toString())
-      console.log("INTERFACE:: strikeBlock, EMABlockNumber, gammaEMA", pylonInfo[3].toString(), pylonInfo[4].toString(), pylonInfo[5].toString())
-      console.log("INTERFACE:: thisBlockEMA, lastRootKTranslated, anchorKFactor, formulaSwitch", pylonInfo[6].toString(), pylonInfo[7].toString(), pylonInfo[8].toString(), pylonInfo[9].toString())
+      console.log("INTERFACE:: ptb, lastk, blockNumber", pylonPoolBalance?.raw.toString(),  BigInt(blockNumber))
+      console.log("INTERFACE:: pylonConstants", pylonConstants)
+        console.log("INTERFACE:: timestamp", timestamp)
+        console.log("INTERFACE:: pylonInfo", pylonInfo)
 
       return undefined
     }
 
-  }, [parsedAmounts, chainId, pylonPair, pylonSupply, totalSupply, ptTotalSupply,lastK, pylonPoolBalance, isFloat, sync, userLiquidity, pylonInfo, pylonConstants])
+  }, [parsedAmounts, chainId, pylonPair, pylonSupply, totalSupply, ptTotalSupply, pylonPoolBalance, isFloat, sync, userLiquidity, pylonInfo, pylonConstants])
 
   // const poolTokenPercentage = useMemo(() => {
   //   if (liquidityMinted && pylonSupply) {
@@ -338,7 +313,7 @@ export function useDerivedPylonMintInfo(
     price,
     noPylon,
     mintInfo,
-    gamma: pylonInfo ? pylonInfo[2] : undefined,
+    gamma: pylonInfo ? pylonInfo.gammaMulDecimals ? pylonInfo.gammaMulDecimals.toString() : undefined : undefined,
     //poolTokenPercentage,
     error,
     healthFactor
@@ -395,28 +370,21 @@ export const useHealthFactor = (  currencyA: Currency | undefined,
   const lastK = useLastK(pylonPair?.address)
   const pylonFactory = usePylonFactoryContract()
   const timestamp = useBlockTimestamp()
+  const blockNumber = useBlockNumber()
   const pairInfo = usePairInfo(pylonPair ? Pair.getAddress(pylonPair.token0, pylonPair.token1) : "")
 
   const healthFactorResult = useMemo(() => {
-    return pylonInfo && pylonPair &&  pylonInfo[0] && ptbEnergy && reserveAnchor && ptb && ptt && lastK && pylonFactory ?
+    return pylonInfo && pylonPair && ptbEnergy && reserveAnchor && ptb && ptt && lastK && pylonFactory ?
         pylonPair.getHealthFactor(
-            pylonInfo[0],
-            ptb,
+            pylonInfo,
+            pairInfo,
             ptt,
-            reserveAnchor.raw,
-            ptbEnergy.raw,
-            pylonInfo[9],
-            pylonInfo[1],
-            pylonInfo[7],
-            pylonInfo[8],
-            JSBI.BigInt(lastK),
+            ptb,
+            BigInt(blockNumber),
             pylonFactory,
             BigInt(timestamp),
-            pylonInfo[10],
-            pairInfo[0],
-            pairInfo[1],
-            pylonInfo[11],
-            pylonInfo[12],
+            ptbEnergy.raw,
+            reserveAnchor.raw
         ) : 'Loading...'
   }, [pylonInfo, pylonPair, ptbEnergy, reserveAnchor, ptb, ptt, lastK, pylonFactory])
   return healthFactorResult

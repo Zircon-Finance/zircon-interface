@@ -65,6 +65,7 @@ export const fetchPoolsPublicDataAsync = (chainId: number, currentBlockNumber?: 
       }) || []
 
       return {
+        ...pool,
         token1: new Token(ChainId.MOONRIVER, apiPool[0]?.underlyingTokens[0], 18, 
           apiPool[0]?.underlyingTokensSymbol[0] === 'WMOVR' ? 'MOVR' : apiPool[0]?.underlyingTokensSymbol[0],
           apiPool[0]?.underlyingTokensSymbol[0] === 'WMOVR' ? 'MOVR' : apiPool[0]?.underlyingTokensSymbol[0]),
@@ -145,8 +146,6 @@ export const fetchPoolsUserDataAsync = createAsyncThunk<
       fetchUserStakeBalances(account, chainId, pools),
       fetchUserPendingRewards(account, chainId, pools),
     ])
-
-    console.log('Checking user data for pools: ', pools)
 
     const userData = pools.map((pool) => ({
       contractAddress: pool.contractAddress,

@@ -8,7 +8,7 @@ import { ArrowLeft } from 'react-feather'
 import { RowBetween } from '../Row'
 import QuestionHelper from '../QuestionHelper'
 import Settings from '../Settings'
-import { useWindowDimensions } from '../../hooks'
+import { useBlockedApiData, useWindowDimensions } from '../../hooks'
 import { connectNet } from '../WalletModal'
 // import MoonbeamLogo from '../MoonbeamLogo'
 import MoonriverLogo from '../MoonriverLogo'
@@ -83,10 +83,11 @@ export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' }) {
   const theme = useTheme()
   const [hoverBlocked, setHoverBlocked] = React.useState(false)
 
-  const isPoolBlocked = false
-  const isFarmBlocked = false
-  const blockReasonTitle = "We are migrating to Binance Smart Chain"
-  const blockReasonDescription = "For this reason Pool and Farm sections are not working for now"
+  const blockedApiData = useBlockedApiData();
+  const isPoolBlocked = blockedApiData?.isPoolBlocked
+  const isFarmBlocked = blockedApiData?.isFarmBlocked
+  const blockReasonTitle = blockedApiData?.blockReasonTitle
+  const blockReasonDescription = blockedApiData?.blockReasonDescription
 
   const hoverContent = (
     <DialogContainer style={{

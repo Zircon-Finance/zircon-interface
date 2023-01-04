@@ -90,6 +90,7 @@ export interface DeserializedPool extends DeserializedPoolConfig, CorePoolProps 
   quotingPrice?: string
   tokenPrice?: string
   stakingLimit?: BigNumber
+  gamma?: BigNumber
   stakingLimitEndBlock?: number
   userData?: {
     allowance: BigNumber

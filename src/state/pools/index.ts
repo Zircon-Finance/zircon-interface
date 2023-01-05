@@ -53,8 +53,8 @@ export const fetchPoolsPublicDataAsync = (chainId: number, currentBlockNumber?: 
       // Checking if pool is finished, either by the value on the files or because the block limit has been reached
       const isPoolEndBlockExceeded = currentBlock > 0 && blockLimit ? currentBlock > Number(blockLimit.endBlock) : false
       const isPoolFinished = isPoolEndBlockExceeded || !apiPool[0]
-      const isPoolFinishedRecently = isPoolFinished && currentBlock - Number(blockLimit.endBlock) <= 45000
-      const isPoolArchived = isPoolFinished && currentBlock - Number(blockLimit.endBlock) >= 45000
+      const isPoolFinishedRecently = isPoolFinished && currentBlock - Number(blockLimit.endBlock) <= 195000
+      const isPoolArchived = isPoolFinished && currentBlock - Number(blockLimit.endBlock) >= 195000
       
       let earningTokenInfo: EarningTokenInfo[] = apiPool[0]?.earningTokenInfo?.filter((entry) => entry.blockReward !== '0').map((earningInfo,index) => {
         return {

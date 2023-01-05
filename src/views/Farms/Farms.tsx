@@ -231,6 +231,10 @@ const Farms: React.FC = ({ children }) => {
 
   const [numberOfFarmsVisible, setNumberOfFarmsVisible] = useState(NUMBER_OF_POOLS_VISIBLE)
 
+  useEffect(() => {
+    setNumberOfFarmsVisible(NUMBER_OF_POOLS_VISIBLE)
+  }, [filtedFinishedOnly])
+
   // Users with no wallet connected should see 0 as Earned amount
   // Connected users should see loading indicator until first userData has loaded
   const userDataReady = !!account || (!!account && !userDataLoaded)
@@ -358,10 +362,10 @@ const Farms: React.FC = ({ children }) => {
     }
 
     if (isInactive) {
-      sortedPools = inactiveFarms
+      sortedPools = inactiveFarms.slice(0, numberOfFarmsVisible)
     }
     if (isArchived) {
-      sortedPools = archivedPools
+      sortedPools = archivedPools.slice(0, numberOfFarmsVisible)
     }
 
     sortedPools =

@@ -23,6 +23,8 @@ export interface FarmProps {
   isClassic: boolean
   earningToken: SerializedToken[]
   isFinished: boolean
+  isArchived: boolean
+  isFinishedRecently: boolean
   endBlock: number
   startBlock: number
   currentBlock: any

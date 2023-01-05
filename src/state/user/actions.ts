@@ -22,6 +22,7 @@ export enum FarmStakedOnly {
 export enum FarmFinishedOnly {
   TRUE = 'true',
   FALSE = 'false',
+  ARCHIVED = 'archived',
 }
 
 export enum ViewMode {

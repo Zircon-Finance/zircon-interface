@@ -93,6 +93,8 @@ interface PoolConfigBaseProps {
   lpAddress: string
   pylonAddress: string
   isFinished?: boolean
+  isArchived?: boolean
+  isFinishedRecently?: boolean
   isAnchor? : boolean
 }
 

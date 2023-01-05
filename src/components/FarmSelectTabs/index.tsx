@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled, { useTheme } from "styled-components";
 import { darken } from "polished";
 import { useTranslation } from "react-i18next";
@@ -51,6 +51,7 @@ const StyledNavLink = styled(NavLink).attrs({
 
   &.${activeClassName} {
     border-radius: 7px;
+    z-index: 1;
     color: ${({ theme }) => theme.text1};
     background-color: ${({ theme }) => theme.darkMode ? 'rgba(213, 174, 175, 0.3)' : '#FCFBFC'};
     box-shadow: ${({ theme }) => theme.darkMode ? '0px 1px 1px rgba(58, 28, 41, 0.25), inset 0px 1px 1px rgba(213, 174, 175, 0.25)' : 
@@ -70,6 +71,24 @@ const StyledNavLink = styled(NavLink).attrs({
   @media (min-width: 700px) {
     width: auto;
   }
+`;
+
+// DropDown menu is a menu that appears with an animation when the user hovers over the tab
+const DropdownMenu = styled.div<{active}>`
+  position: absolute;
+  top: 45px;
+  z-index: 0;
+  width: 90px;
+  background: ${({ theme }) => theme.darkMode ? '#5a3934' : '#E9E5E5'};
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  padding: 5px 0;
+  margin-left: 66px;
+  opacity: ${({ active }) => (active ? 1 : 0)};
+  visibility: ${({ active }) => (active ? "visible" : "hidden")};
+  transform: ${({ active }) => (active ? "translateY(0)" : "translateY(-10px)")};
+  transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out,
+    visibility 0.2s ease-in-out;
 `;
 
 export function PylonClassicTab({ active }: { active: "PYLON" | "CLASSIC" }) {
@@ -202,6 +221,7 @@ export function FarmTabButtons({ active }: { active: "Active" | "Finished" }) {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const [finished, setFinished] = useUserFarmsFinishedOnly();
+  const [hovered, setHovered] = useState(false);
 
   return (
     <Tabs style={{ padding: "5px", width: width >= 700 ? "auto" : "100%" }}>
@@ -217,14 +237,31 @@ export function FarmTabButtons({ active }: { active: "Active" | "Finished" }) {
       </StyledNavLink>
       <StyledNavLink
         id={`finished-farms-select`}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
         to={"/farm"}
         onClick={() => {
           setFinished(FarmFinishedOnly.TRUE);
         }}
-        isActive={() => finished === FarmFinishedOnly.TRUE}
+        isActive={() => finished === FarmFinishedOnly.TRUE ? true : finished === FarmFinishedOnly.ARCHIVED ? true : false}
       >
-        {t("FINISHED")}
+        {finished === FarmFinishedOnly.TRUE ? 'FINISHED' : finished === FarmFinishedOnly.ARCHIVED ? 'ARCHIVED' : 'FINISHED'}
       </StyledNavLink>
+      <DropdownMenu active={hovered}>
+        <StyledNavLink
+          id={`archived-farms-select`}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          to={"/farm"}
+          onClick={() => {
+            setFinished(finished === FarmFinishedOnly.ARCHIVED ? FarmFinishedOnly.TRUE : FarmFinishedOnly.ARCHIVED);
+          }}
+          isActive={() => false}
+          style={{width: '100%'}}
+        >
+          {finished === FarmFinishedOnly.ARCHIVED ? 'FINISHED' : finished === FarmFinishedOnly.TRUE ? 'ARCHIVED' : 'ARCHIVED'}
+        </StyledNavLink>
+      </DropdownMenu>
     </Tabs>
   );
 }

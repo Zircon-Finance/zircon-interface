@@ -224,7 +224,8 @@ const Farms: React.FC = ({ children }) => {
   const chosenFarmsLength = useRef(0)
   const { width } = useWindowDimensions()
   const isInactive = filtedFinishedOnly === FarmFinishedOnly.TRUE
-  const isActive = !filtedFinishedOnly
+  const isActive = filtedFinishedOnly === FarmFinishedOnly.FALSE
+  const isArchived = filtedFinishedOnly === FarmFinishedOnly.ARCHIVED
 
   usePoolsPageFetch(isInactive)
 
@@ -237,7 +238,8 @@ const Farms: React.FC = ({ children }) => {
   const [stakedOnly, setStakedOnly] = useUserFarmStakedOnly(isActive)
 
   let activeFarms = pools.filter((farm) => !farm.isFinished)
-  let inactiveFarms = pools.filter((farm) => farm.isFinished)
+  let inactiveFarms = pools.filter((farm) => farm.isFinishedRecently)
+  let archivedPools = pools.filter((farm) => farm.isArchived)
 
   const stakedOnlyFarms = activeFarms.filter(
       (farm) => farm.userData && new BigNumber(farm.userData.stakedBalance).gt(0),
@@ -358,6 +360,9 @@ const Farms: React.FC = ({ children }) => {
     if (isInactive) {
       sortedPools = inactiveFarms
     }
+    if (isArchived) {
+      sortedPools = archivedPools
+    }
 
     sortedPools =
         filterAnchorFloat === FarmFilterAnchorFloat.ANCHOR ?
@@ -418,6 +423,8 @@ const Farms: React.FC = ({ children }) => {
         isAnchor: farm.isAnchor,
         isClassic: farm.isClassic,
         isFinished: farm.isFinished,
+        isArchived: farm.isArchived,
+        isFinishedRecently: farm.isFinishedRecently,
         endBlock: farm.endBlock,
         startBlock: farm.startBlock,
         currentBlock: currentBlock === 0 ? null : currentBlock,

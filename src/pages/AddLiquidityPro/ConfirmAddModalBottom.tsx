@@ -26,7 +26,8 @@ export function ConfirmAddModalBottom({
   blocked,
   shouldBlock,
   formattedLiquidity,
-    asyncBlock
+  asyncBlock,
+  disabledConfirmation,
 }: {
   pylonState?: PylonState
   price?: Fraction
@@ -42,6 +43,7 @@ export function ConfirmAddModalBottom({
   isStaking?: boolean
   formattedLiquidity?: number
   asyncBlock?: boolean
+  disabledConfirmation?: boolean
 }) {
   const theme = useTheme()
   const {chainId} = useActiveWeb3React()
@@ -108,7 +110,7 @@ export function ConfirmAddModalBottom({
       {/*  <TYPE.smallerBody>Share of Pool:</TYPE.smallerBody>*/}
       {/*  <TYPE.smallerBody>{noLiquidity ? '100' : poolTokenPercentage?.toSignificant(4)}%</TYPE.smallerBody>*/}
       {/*</RowBetween>*/}
-      <ButtonPrimary disabled={shouldBlock || asyncBlock } style={{ margin: '20px 0 0 0' }} onClick={() => shouldBlock ? console.log("nop") : onAdd()}>
+      <ButtonPrimary disabled={shouldBlock || asyncBlock || disabledConfirmation } style={{ margin: '20px 0 0 0' }} onClick={() => shouldBlock ? console.log("nop") : onAdd()}>
         <Text fontWeight={400} fontSize={16}>
           {pylonState === PylonState.EXISTS ? isStaking ? 'Add & Farm' : 'Confirm Supply' : pylonState === PylonState.ONLY_PAIR ? 'Create Pylon & Supply' : 'Create Pair' }
         </Text>

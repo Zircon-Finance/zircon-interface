@@ -1,6 +1,6 @@
 import {TransactionResponse} from '@ethersproject/providers'
 import {Currency, currencyEquals, NATIVE_TOKEN, Percent, WDEV} from 'zircon-sdk'
-import React, {useCallback, useMemo, useState} from 'react'
+import React, {useCallback, useEffect, useMemo, useState} from 'react'
 import {ArrowDown, Plus} from 'react-feather'
 import ReactGA from 'react-ga4'
 import {Flex, Text} from 'rebass'
@@ -317,8 +317,50 @@ export default function RemoveProLiquidity({
           })
     }
   }
+
+ // logic for modal for too high fees
+ const [originalValue, setOriginalValue] = useState('')
+
+ const feeNumber = parseFloat(new BigNumberJs(burnInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18)).toString())
+ const slippageNumber = parseFloat(new BigNumberJs(burnInfo?.slippage.toString()).div(new BigNumberJs(10).pow(18)).toString())
+ const feeIsTooHigh = feeNumber + slippageNumber >= 0
+ const differencePercentage = new BigNumberJs(burnInfo?.amountOut2?.toSignificant(8) || 0).times(
+  new BigNumberJs(!isFloat ? pylon?.pair?.priceOf(tokenA).toSignificant(6) : pylon?.pair?.priceOf(tokenB).toSignificant(6))).minus(
+    new BigNumberJs(originalValue)).div(
+      new BigNumberJs(originalValue).times(
+        new BigNumberJs(100))).toString()
+  
+ const setCustom = () => {
+  setOriginalValue(parsedAmounts[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.toSignificant(6));
+  setSync(false);
+}
+
+ useEffect(() => {
+  if (showConfirm && feeIsTooHigh) {
+    setCustom();
+  }
+  else if (!showConfirm ) {
+    setOriginalValue('');
+  }
+}, [showConfirm])
+
+
   function modalHeader() {
     return (
+      feeIsTooHigh ? (
+        <>
+          <Text>{'By withdrawing in sync, you will get'}</Text>
+          <Text mb='10px'>{`${originalValue} ${!isFloat ? currencyB?.symbol : currencyA?.symbol} `}</Text>
+          <Text>{'By withdrawing in async, you will get'}</Text>
+          <Text>{`${burnInfo?.amountOut.toSignificant(8)} ${!isFloat ? currencyB?.symbol : currencyA?.symbol} `}</Text>
+          <Text>{'and'}</Text>
+          <Text mb='10px'>{`${burnInfo?.amountOut2.toSignificant(8)} ${isFloat ? currencyB?.symbol : currencyA?.symbol} `}</Text>
+          <Text>{'Which is'}</Text>
+          <Text>{`${differencePercentage}%`}</Text>
+          <Text>{`${parseFloat(differencePercentage) >= 0 ? 'more' : 'less'} than the original value`}</Text>
+
+        </>
+      ) : (
         <AutoColumn gap={'md'} style={{ marginTop: '20px' }}>
           <RowBetween align="flex-end">
             <Text fontSize={24} fontWeight={400}>
@@ -351,6 +393,7 @@ export default function RemoveProLiquidity({
             100}% your transaction will revert.`}
           </Text>
         </AutoColumn>
+      )
     )
   }
 

@@ -62,6 +62,44 @@ import { usePair } from "../../data/Reserves";
 import { Separator } from "../../components/SearchModal/styleds";
 import { useBatchPrecompileContract } from '../../hooks/useContract'
 import { basePool } from "../../state/pools/selectors";
+import PlusIcon from "../../views/Farms/components/PlusIcon";
+
+const RadioContainer = styled.div<{ active: boolean, second: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  width: 30px;
+  border: ${({ theme, second }) => second ? 'none' : `1px solid ${theme.darkMode ? '#733751' : '#534A4A'}`};
+  height: 30px;
+  background: ${({ theme, second }) => second ? theme.darkMode ? '#52273A' : '#403A3A' : 'none'};
+  align-self: center;
+  cursor: pointer;
+`
+
+const RadioButton = styled.div<{ active: boolean }>`
+  width: 20px;
+  height: 20px;
+  border-radius: 100%;
+  background: ${({ active }) => (active ? '#B05D98' : 'none' )};
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+  &:hover {
+    background: ${({ theme }) => theme.maxButtonHover};
+  }
+`
+
+const InputContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 5px;
+  height: 60px;
+  border-radius: 17px;
+  background: #EFEAEC;
+`
 
 const IconContainer = styled.div`
   display: flex;
@@ -81,6 +119,20 @@ const IconContainer = styled.div`
       stroke: ${({ theme }) => theme.pinkGamma} !important;
     }
   }
+`
+
+const PinkContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top-left-radius: 17px;
+  border-top-right-radius: 17px;
+  background: ${({ theme }) => theme.pinkGamma};
+  width: 100%;
+  height: 30px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
 `
 
 export default function AddLiquidityPro({
@@ -145,6 +197,7 @@ export default function AddLiquidityPro({
   // });
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noPylon);
   const isValid = !error;
+
 
   // handle pool button values
   const {pools} = usePools();
@@ -663,37 +716,8 @@ export default function AddLiquidityPro({
       6
   ) as unknown) as number;
 
-  const modalHeader = () => {
-    return noPylon ? (
-        <AutoColumn gap="20px">
-          <LightCard
-              mt="20px"
-              borderRadius="27px"
-              style={{ backgroundColor: theme.bg14 }}
-          >
-            <RowFlat style={{ flexFlow: "column", alignItems: "center" }}>
-              <Text
-                  fontSize="36px"
-                  fontWeight={300}
-                  lineHeight="42px"
-                  style={{ margin: "auto" }}
-              >
-                {currencies[Field.CURRENCY_A]?.symbol +
-                "/" +
-                currencies[Field.CURRENCY_B]?.symbol}
-              </Text>
-              <div style={{ margin: "20px auto auto auto" }}>
-                <DoubleCurrencyLogo
-                    currency0={currencies[Field.CURRENCY_A]}
-                    currency1={currencies[Field.CURRENCY_B]}
-                    size={30}
-                />
-              </div>
-            </RowFlat>
-          </LightCard>
-        </AutoColumn>
-    ) : (
-        <AutoColumn gap="20px">
+  const NoSlippageModalHeader = () => (
+    <AutoColumn gap="20px">
           <RowFlat
               style={{
                 marginTop: "20px",
@@ -750,6 +774,201 @@ export default function AddLiquidityPro({
           </Text>
           <Separator />
         </AutoColumn>
+  )
+
+  // logic for the blocked modal for high fees
+  const [rememberedSlippage, setRememberedSlippage] = useState(0)
+  const [originalValue, setOriginalValue] = useState('')
+  const [customValue1, setCustomValue1] = useState('')
+  const [customValue2, setCustomValue2] = useState('')
+  const [amountOut, setAmountOut] = useState('')
+  const [hasSetAsync, setHasSetAsync] = useState(false)
+  const [confirmationSlippage, setConfirmationSlippage] = useState(false)
+  const [confirmedString, setConfirmedString] = useState(false)
+  const [hasConfirmed, setHasConfirmed] = useState(false)
+  const [chosenOption, setChosenOption] = useState(0)
+
+  const feeIsTooHigh = rememberedSlippage >= 5
+  const floatTokenHalf = parseFloat(parsedAmounts[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.toSignificant(6)) / 2
+  const anchorTokenMultiplied = parseFloat(parsedAmounts[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.toSignificant(6)) / 2 * 
+  parseFloat(
+    !isFloat ? price?.invert().toSignificant(4) : price?.toSignificant(4)
+  )
+  const percentageDifference = parseFloat((new BigNumberJs(mintInfo?.amountOut.toSignificant(6)).minus(
+    new BigNumberJs(amountOut))).div(
+      new BigNumberJs(amountOut)).times(
+        new BigNumberJs(100)).toFixed(2).toString())
+      
+  const setAsyncCustom = () => {
+    setOriginalValue(parsedAmounts[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.toSignificant(6));
+    setCustomValue1(floatTokenHalf.toString());
+    setCustomValue2(anchorTokenMultiplied.toString());
+    setSync('half');
+    (isFloat 
+      ? onFieldAInput(isFloat ? floatTokenHalf.toString() : anchorTokenMultiplied.toString())
+      : onFieldBInput(!isFloat ? floatTokenHalf.toString() : anchorTokenMultiplied.toString())
+    )
+  }
+
+  const handleChangeConfirmation = (typedValue: string) => {
+    setConfirmedString(typedValue.toLowerCase() === 'confirm');
+  }
+
+  const backToOriginalValue = () => {
+    setHasSetAsync(false);
+    (isFloat 
+      ? onFieldAInput(originalValue)
+      : onFieldBInput(originalValue)
+    )
+    setSync('off');
+  }
+
+  useEffect(() => {
+    if (hasConfirmed) {
+      backToOriginalValue();
+    }
+  }, [hasConfirmed])
+
+  useEffect(() => {
+    if (showConfirm && feeIsTooHigh) {
+      setAmountOut(mintInfo?.amountOut.toSignificant(6));
+      setAsyncCustom();
+    }
+    else if (!showConfirm ) {
+      setChosenOption(0);
+      setHasSetAsync(false);
+      setHasConfirmed(false);
+      setAmountOut('');
+      setOriginalValue('');
+      setCustomValue1('');
+      setCustomValue2('');
+      setConfirmationSlippage(false);
+      setConfirmedString(false);
+      (isFloat 
+        ? onFieldAInput(originalValue)
+        : onFieldBInput(originalValue)
+      )
+    }
+  }, [showConfirm])
+
+  const SlippageWarningModal = () => (
+    <Flex flexDirection={'column'} style={{background: theme.darkMode ? '#52273A' : '#403A3A'}}>
+        <Text mt='20px' style={{lineHeight: '160%'}} textAlign='center'>{'You can reduce slippage and get more'}</Text>
+        <Text mb='10px' textAlign='center'>{`LP tokens using the Smart Add method`}</Text>
+        <Flex mt='20px' mb='30px' mx='auto' style={{gap: '10px', textAlign: 'center'}}>
+          <Flex onClick={() => [setChosenOption(1), setConfirmationSlippage(true)]} flexDirection={'column'} 
+          style={{
+            border: `${(chosenOption === 1) ? `2px solid ${theme.pinkGamma}` :
+              theme.darkMode ? '2px solid rgba(98, 47, 69, 0.5)' : '2px solid #473F3F'}` ,
+               borderRadius: '17px', cursor: 'pointer', marginTop: '30px'}}>
+            <Text fontSize='14px' fontWeight={500} p='20px 10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#473F3F'}`}}>{'CURRENT POSITION'}</Text>
+            <Text my='10px'>{'You add'}</Text>
+            <Text fontSize='18px' pb='54px' fontWeight={500} style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#473F3F'}`}}>
+              {`${originalValue} ${currencies[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.symbol} `}
+            </Text>
+            <Text fontSize='14px' mt='10px'>{'You get'}</Text>
+            <Text fontSize='18px' mb='20px' fontWeight={500}>{`${amountOut} LP`}</Text>
+            <RadioContainer style={{marginTop: '5px'}} active={chosenOption === 1} second={false}>
+              <RadioButton active={chosenOption === 1} />
+            </RadioContainer>
+          </Flex>
+          <Flex flexDirection={'column'}><PinkContainer><Text>{'Lower slippage'}</Text></PinkContainer>
+            <Flex onClick={() => [setChosenOption(2), setConfirmationSlippage(false)]} flexDirection={'column'} 
+              style={{border: `${(chosenOption === 2) ? `2px solid ${theme.pinkGamma}` : '2px solid transparent'}` , 
+              borderBottomLeftRadius: '17px', 
+              borderBottomRightRadius: '17px',
+              backgroundColor: theme.darkMode ? '#622F45' : 'rgba(89, 81, 81, 0.5)', 
+              cursor: 'pointer'}}
+            >
+              <Text fontSize='14px' fontWeight={500} p='20px 10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#473F3F'}`}}>{'WITH SMART ADD'}</Text>
+              <Text fontSize='14px' my='10px'>{'You add'}</Text>
+              <Text fontSize='18px' fontWeight={500}>
+                {`${customValue1} ${currencies[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.symbol} `}
+              </Text>
+              <Flex style={{width: '100%', justifyContent: 'center', alignItems:'center'}}><PlusIcon /></Flex>
+              <Text fontSize='18px' pb='10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#473F3F'}`}} fontWeight={500}>
+                {`${customValue2} ${currencies[isFloat ? Field.CURRENCY_B : Field.CURRENCY_A]?.symbol} `}
+              </Text>
+              <Text fontSize='14px' mt='10px'>{'You get'}</Text>
+              <Text fontSize='18px' fontWeight={500}>{`${mintInfo?.amountOut.toSignificant(6)} LP`}</Text>
+              <Text fontSize='14px' pb='10px' color={percentageDifference >= 0 ? theme.percentageGreen : theme.percentageRed} fontWeight={500}>
+                {`${percentageDifference >= 0 ? '+' : ''} ${percentageDifference}%`}
+              </Text>
+              <RadioContainer style={{marginBottom: '20px'}} active={chosenOption === 2} second={true}>
+                <RadioButton active={chosenOption === 2} />
+              </RadioContainer>
+            </Flex>
+          </Flex>
+        </Flex>
+        {chosenOption === 0 && <Text mb='10px' textAlign='center'>{`Please select an option`}</Text>}
+        {chosenOption === 2 && <ButtonPrimary onClick={() => setHasSetAsync(true)} style={{ margin: 'auto' }}>{'Add liquidity with Smart Add'}</ButtonPrimary>}
+        {(confirmationSlippage && chosenOption === 1) && <ConfirmationInputModal />}
+      </Flex>
+  )
+
+  const ConfirmationInputModal = () => (
+    <Flex flexDirection={'column'}>
+      <Flex justifyContent={'center'}><Text mr='5px'>{`Type`}</Text><Text mr='5px' style={{fontWeight: 500, color: theme.pinkGamma}}>{'Confirm '}</Text><Text> {' if you are sure'}</Text></Flex>
+      <Flex justifyContent={'center'} mb='10px'><Text mr='5px'>{`you want`}</Text><Text mr='5px' style={{fontWeight: 500, color: theme.pinkGamma}}>
+        {`to lose ${Math.abs(percentageDifference)}`}
+        </Text><Text>{'of your position'}</Text>
+      </Flex>
+      <InputContainer style={{background: confirmedString && 'transparent'}}>
+        {!confirmedString && <input style={{border: 'none', background: '#efeaec', height: '40px'}} 
+          type="text" onChange={e => handleChangeConfirmation(e.target.value)} />}
+        <ButtonPrimary disabled={!confirmedString} onClick={() => (setHasConfirmed(true),setConfirmationSlippage(false))} 
+        style={{ margin: 'auto', padding: '12px', height: 'auto', borderRadius: '12px' }}>{'Proceed'}</ButtonPrimary>
+      </InputContainer>
+    </Flex>
+  )
+
+  console.log('Am I showing the modal?', (feeIsTooHigh && (sync !== 'half' && !(hasConfirmed || hasSetAsync))))
+
+  //REMEMBER TO SET THE DISABLED BUTTON ADD LIQ
+
+  const modalHeader = () => {
+    return noPylon ? (
+        <AutoColumn gap="20px">
+          <LightCard
+              mt="20px"
+              borderRadius="27px"
+              style={{ backgroundColor: theme.bg14 }}
+          >
+            <RowFlat style={{ flexFlow: "column", alignItems: "center" }}>
+              <Text
+                  fontSize="36px"
+                  fontWeight={300}
+                  lineHeight="42px"
+                  style={{ margin: "auto" }}
+              >
+                {currencies[Field.CURRENCY_A]?.symbol +
+                "/" +
+                currencies[Field.CURRENCY_B]?.symbol}
+              </Text>
+              <div style={{ margin: "20px auto auto auto" }}>
+                <DoubleCurrencyLogo
+                    currency0={currencies[Field.CURRENCY_A]}
+                    currency1={currencies[Field.CURRENCY_B]}
+                    size={30}
+                />
+              </div>
+            </RowFlat>
+          </LightCard>
+        </AutoColumn>        
+        ) : feeIsTooHigh ? 
+          sync === 'half' ? 
+            (hasSetAsync || hasConfirmed) ? (
+              <NoSlippageModalHeader />
+            ) : (
+              <SlippageWarningModal />
+            ) : 
+              hasConfirmed ? (
+                <NoSlippageModalHeader />
+              ) : (
+        <SlippageWarningModal />
+      )
+      : (
+      <NoSlippageModalHeader />
     );
   };
 
@@ -771,6 +990,7 @@ export default function AddLiquidityPro({
             blocked={mintInfo?.blocked}
             shouldBlock={mintInfo?.shouldBlock || mintInfo?.deltaApplied || mintInfo?.blocked}
             asyncBlock={(isFloat && sync !== "off")}
+            disabledConfirmation={feeIsTooHigh && (!hasConfirmed && !hasSetAsync)}
         />
     );
   };
@@ -840,6 +1060,11 @@ export default function AddLiquidityPro({
 
   const handleDismissConfirmation = useCallback(() => {
     setShowConfirm(false);
+    setOriginalValue(undefined);
+    setCustomValue1("");
+    setCustomValue2("");
+    setHasConfirmed(false);
+    setHasSetAsync(false);
     setIsStaking(false);
     setErrorTx('')
     // if there was a tx hash, we want to clear the input
@@ -884,6 +1109,7 @@ isValid
           <AddRemoveTabs adding={true} />
           <Wrapper>
             <TransactionConfirmationModal
+                width={feeIsTooHigh && '360'}
                 isOpen={showConfirm}
                 onDismiss={handleDismissConfirmation}
                 attemptingTxn={attemptingTxn}
@@ -893,14 +1119,15 @@ isValid
                         title={
                           isStaking ? '' :
                           pylonState === PylonState.EXISTS
-                              ? "You will receive"
+                              ? (feeIsTooHigh && (hasConfirmed===false && hasSetAsync===false)) ? 'High slippage warning' : "You will receive"
                               : pylonState === PylonState.ONLY_PAIR
                                   ? "You are creating a pylon"
                                   : "You are creating a pair"
                         }
                         onDismiss={handleDismissConfirmation}
                         topContent={modalHeader}
-                        bottomContent={modalBottom}
+                        bottomContent={feeIsTooHigh ? (feeIsTooHigh && (hasConfirmed===false && hasSetAsync===false) ? (() => <></>) : modalBottom) : modalBottom}
+                        feeTooHigh={feeIsTooHigh && (hasConfirmed===false && hasSetAsync===false)}
                     />
                 )}
                 pendingText={pendingText()}
@@ -1190,7 +1417,7 @@ isValid
 
                       <div style={{ display: "grid", gridGap: "5px" }}>
                         <CurrencyInputPanelBalOnly
-                            value={formattedAmounts[getField(true)]}
+                            value={customValue1 !== '' ? customValue1 : formattedAmounts[getField(true)]}
                             onUserInput={
                               isFloat
                                   ? onFieldAInput
@@ -1218,7 +1445,7 @@ isValid
                         />
                         {sync === "half" || pylonState !== PylonState.EXISTS ? (
                             <CurrencyInputPanelBalOnly
-                                value={formattedAmounts[getField(false)]}
+                                value={customValue2 !== '' ? customValue2 : formattedAmounts[getField(false)]}
                                 onUserInput={onFieldBInput}
                                 onCurrencySelect={handleCurrencyBSelect}
                                 onMax={() => {
@@ -1353,7 +1580,10 @@ isValid
                                     pylonState === PylonState.EXISTS ? farm ? "48%" : '100%' : "100%"
                                   }
                                   onClick={() => {
-                                    expertMode ? onAdd() : setShowConfirm(true);
+                                    expertMode ? onAdd() : setShowConfirm(true); setRememberedSlippage(
+                                      (parseFloat(new BigNumberJs(mintInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18)).toString()) +
+                                      parseFloat(new BigNumberJs(mintInfo?.extraSlippagePercentage.toString()).div(new BigNumberJs(10).pow(18)).toString()))
+                                    );
                                   }}
                                   error={
                                     sync === "half" &&

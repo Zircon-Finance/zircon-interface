@@ -786,7 +786,7 @@ export default function AddLiquidityPro({
   const [confirmationSlippage, setConfirmationSlippage] = useState(false)
   const [confirmedString, setConfirmedString] = useState(false)
   const [hasConfirmed, setHasConfirmed] = useState(false)
-  const [chosenOption, setChosenOption] = useState(0)
+  const [chosenOption, setChosenOption] = useState(2)
 
   const feeIsTooHigh = rememberedSlippage >= 5
   const floatTokenHalf = parseFloat(parsedAmounts[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.toSignificant(6)) / 2
@@ -835,24 +835,23 @@ export default function AddLiquidityPro({
       setAsyncCustom();
     }
     else if (!showConfirm ) {
-      setChosenOption(0);
+      onFieldBInput('')
+      onFieldAInput('')
+      setChosenOption(2);
       setHasSetAsync(false);
       setHasConfirmed(false);
       setAmountOut('');
-      setOriginalValue('');
       setCustomValue1('');
       setCustomValue2('');
+      setSync('off');
       setConfirmationSlippage(false);
       setConfirmedString(false);
-      (isFloat 
-        ? onFieldAInput(originalValue)
-        : onFieldBInput(originalValue)
-      )
+      setOriginalValue('');
     }
   }, [showConfirm])
 
   const SlippageWarningModal = () => (
-    <Flex flexDirection={'column'} style={{background: theme.darkMode ? '#52273A' : '#403A3A'}}>
+    <Flex flexDirection={'column'} style={{background: theme.darkMode ? '#52273A' : 'transparent'}}>
         <Text mt='20px' style={{lineHeight: '160%'}} textAlign='center'>{'You can reduce slippage and get more'}</Text>
         <Text mb='10px' textAlign='center'>{`LP tokens using the Smart Add method`}</Text>
         <Flex mt='20px' mb='30px' mx='auto' style={{gap: '10px', textAlign: 'center'}}>
@@ -913,9 +912,9 @@ export default function AddLiquidityPro({
         {`to lose ${Math.abs(percentageDifference)}`}
         </Text><Text>{'of your position'}</Text>
       </Flex>
-      <InputContainer style={{background: confirmedString && 'transparent'}}>
-        {!confirmedString && <input style={{border: 'none', background: '#efeaec', height: '40px'}} 
-          type="text" onChange={e => handleChangeConfirmation(e.target.value)} />}
+      <InputContainer>
+        <input disabled={confirmedString} style={{border: 'none', background: '#efeaec', height: '40px'}} 
+          type="text" onChange={e => handleChangeConfirmation(e.target.value)} />
         <ButtonPrimary disabled={!confirmedString} onClick={() => (setHasConfirmed(true),setConfirmationSlippage(false))} 
         style={{ margin: 'auto', padding: '12px', height: 'auto', borderRadius: '12px' }}>{'Proceed'}</ButtonPrimary>
       </InputContainer>

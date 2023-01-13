@@ -35,14 +35,6 @@ const ConfirmedIcon = styled(ColumnCenter)`
   padding: 60px 0;
 `
 
-const WarningSmall = () => (
-  <svg width="28" height="24" viewBox="0 0 28 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M0.266012 21.2114L12.4508 0.883072C13.1565 -0.294357 14.8435 -0.294358 15.5492 0.883072L27.734 21.2114C28.4673 22.4349 27.5978 24 26.1848 24H1.81523C0.40222 24 -0.467312 22.4349 0.266012 21.2114Z" fill="#E9D886" fill-opacity="0.25"/>
-  <rect x="13" y="7" width="2" height="9" rx="1" fill="#E9D886"/>
-  <rect x="13" y="18" width="2" height="2" rx="1" fill="#E9D886"/>
-  </svg>
-)
-
 // const CustomLightSpinner = styled(Spinner)<{ size: string }>`
 //   height: ${({ size }) => size};
 //   width: ${({ size }) => size};
@@ -167,12 +159,20 @@ export function ConfirmationModalContent({
   bottomContent: () => React.ReactNode
   feeTooHigh?: boolean
 }) {
+  const theme = useTheme()
+  const WarningSmall = () => (
+    <svg width="28" height="24" viewBox="0 0 28 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.266012 21.2114L12.4508 0.883072C13.1565 -0.294357 14.8435 -0.294358 15.5492 0.883072L27.734 21.2114C28.4673 22.4349 27.5978 24 26.1848 24H1.81523C0.40222 24 -0.467312 22.4349 0.266012 21.2114Z" fill={theme.darkMode ? '#E9D886' : '#836D0B'} fill-opacity="0.25"/>
+    <rect x="13" y="7" width="2" height="9" rx="1" fill={theme.darkMode ? '#E9D886' : '#836D0B'}/>
+    <rect x="13" y="18" width="2" height="2" rx="1" fill={theme.darkMode ? '#E9D886' : '#836D0B'}/>
+    </svg>
+  )
   return (
       <Wrapper>
         <Section style={{padding: '24px 24px 0 24px'}}>
           <RowBetween>
-            <Flex style={{gap: '10px'}}>{feeTooHigh && <WarningSmall/>}
-            <Text fontWeight={400} fontSize={16} color={feeTooHigh && '#E9D886'}>
+            <Flex style={{gap: '10px'}}>{feeTooHigh && <WarningSmall />}
+            <Text fontWeight={400} fontSize={16} color={feeTooHigh && theme.darkMode ? '#E9D886' : '#836D0B'}>
               {title}
             </Text></Flex>
             <CloseIcon onClick={onDismiss} strokeWidth={1} />

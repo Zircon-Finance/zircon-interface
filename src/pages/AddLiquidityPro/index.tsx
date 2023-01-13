@@ -70,9 +70,9 @@ const RadioContainer = styled.div<{ active: boolean, second: boolean }>`
   justify-content: center;
   border-radius: 100%;
   width: 30px;
-  border: ${({ theme, second }) => second ? 'none' : `1px solid ${theme.darkMode ? '#733751' : '#534A4A'}`};
+  border: ${({ theme, second }) => second ? 'none' : `1px solid ${theme.darkMode ? '#733751' : '#EEEAEC'}`};
   height: 30px;
-  background: ${({ theme, second }) => second ? theme.darkMode ? '#52273A' : '#403A3A' : 'none'};
+  background: ${({ theme, second }) => second ? theme.darkMode ? '#52273A' : '#FCFBFC' : 'none'};
   align-self: center;
   cursor: pointer;
 `
@@ -133,6 +133,16 @@ const PinkContainer = styled.div`
   color: #fff;
   font-size: 14px;
   font-weight: 500;
+`
+
+const ConfirmationInput = styled.input`
+  border: none;
+  background: #efeaec;
+  height: 30px;
+  font-size: 14px;
+  &:focus {
+    outline: none;
+  }
 `
 
 export default function AddLiquidityPro({
@@ -858,11 +868,11 @@ export default function AddLiquidityPro({
           <Flex onClick={() => [setChosenOption(1), setConfirmationSlippage(true)]} flexDirection={'column'} 
           style={{
             border: `${(chosenOption === 1) ? `2px solid ${theme.pinkGamma}` :
-              theme.darkMode ? '2px solid rgba(98, 47, 69, 0.5)' : '2px solid #473F3F'}` ,
+              theme.darkMode ? '2px solid rgba(98, 47, 69, 0.5)' : '2px solid #F5F3F4'}` ,
                borderRadius: '17px', cursor: 'pointer', marginTop: '30px'}}>
-            <Text fontSize='14px' fontWeight={500} p='20px 10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#473F3F'}`}}>{'CURRENT POSITION'}</Text>
+            <Text fontSize='14px' fontWeight={500} p='20px 10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#F5F3F4'}`}}>{'CURRENT POSITION'}</Text>
             <Text my='10px'>{'You add'}</Text>
-            <Text fontSize='18px' pb='54px' fontWeight={500} style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#473F3F'}`}}>
+            <Text fontSize='18px' pb='54px' fontWeight={500} style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#F5F3F4'}`}}>
               {`${originalValue} ${currencies[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.symbol} `}
             </Text>
             <Text fontSize='14px' mt='10px'>{'You get'}</Text>
@@ -876,16 +886,16 @@ export default function AddLiquidityPro({
               style={{border: `${(chosenOption === 2) ? `2px solid ${theme.pinkGamma}` : '2px solid transparent'}` , 
               borderBottomLeftRadius: '17px', 
               borderBottomRightRadius: '17px',
-              backgroundColor: theme.darkMode ? '#622F45' : 'rgba(89, 81, 81, 0.5)', 
+              backgroundColor: theme.darkMode ? '#622F45' : '#EEEAEC', 
               cursor: 'pointer'}}
             >
-              <Text fontSize='14px' fontWeight={500} p='20px 10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#473F3F'}`}}>{'WITH SMART ADD'}</Text>
+              <Text fontSize='14px' fontWeight={500} p='20px 10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#E4E0E3'}`}}>{'WITH SMART ADD'}</Text>
               <Text fontSize='14px' my='10px'>{'You add'}</Text>
               <Text fontSize='18px' fontWeight={500}>
                 {`${customValue1} ${currencies[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.symbol} `}
               </Text>
               <Flex style={{width: '100%', justifyContent: 'center', alignItems:'center'}}><PlusIcon /></Flex>
-              <Text fontSize='18px' pb='10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#473F3F'}`}} fontWeight={500}>
+              <Text fontSize='18px' pb='10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#E4E0E3'}`}} fontWeight={500}>
                 {`${customValue2} ${currencies[isFloat ? Field.CURRENCY_B : Field.CURRENCY_A]?.symbol} `}
               </Text>
               <Text fontSize='14px' mt='10px'>{'You get'}</Text>
@@ -913,8 +923,7 @@ export default function AddLiquidityPro({
         </Text><Text>{'of your position'}</Text>
       </Flex>
       <InputContainer>
-        <input disabled={confirmedString} style={{border: 'none', background: '#efeaec', height: '40px'}} 
-          type="text" onChange={e => handleChangeConfirmation(e.target.value)} />
+        <ConfirmationInput disabled={confirmedString} type="text" onChange={e => handleChangeConfirmation(e.target.value)} />
         <ButtonPrimary disabled={!confirmedString} onClick={() => (setHasConfirmed(true),setConfirmationSlippage(false))} 
         style={{ margin: 'auto', padding: '12px', height: 'auto', borderRadius: '12px' }}>{'Proceed'}</ButtonPrimary>
       </InputContainer>

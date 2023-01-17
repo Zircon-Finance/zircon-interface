@@ -64,7 +64,7 @@ import { useBatchPrecompileContract } from '../../hooks/useContract'
 import { basePool } from "../../state/pools/selectors";
 import PlusIcon from "../../views/Farms/components/PlusIcon";
 
-const RadioContainer = styled.div<{ active: boolean, second: boolean }>`
+export const RadioContainer = styled.div<{ active: boolean, second: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -77,7 +77,7 @@ const RadioContainer = styled.div<{ active: boolean, second: boolean }>`
   cursor: pointer;
 `
 
-const RadioButton = styled.div<{ active: boolean }>`
+export const RadioButton = styled.div<{ active: boolean }>`
   width: 20px;
   height: 20px;
   border-radius: 100%;
@@ -89,7 +89,7 @@ const RadioButton = styled.div<{ active: boolean }>`
   }
 `
 
-const InputContainer = styled.div`
+export const InputContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -121,7 +121,7 @@ const IconContainer = styled.div`
   }
 `
 
-const PinkContainer = styled.div`
+export const PinkContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -135,7 +135,7 @@ const PinkContainer = styled.div`
   font-weight: 500;
 `
 
-const ConfirmationInput = styled.input`
+export const ConfirmationInput = styled.input`
   border: none;
   background: #efeaec;
   height: 30px;
@@ -929,10 +929,6 @@ export default function AddLiquidityPro({
       </InputContainer>
     </Flex>
   )
-
-  console.log('Am I showing the modal?', (feeIsTooHigh && (sync !== 'half' && !(hasConfirmed || hasSetAsync))))
-
-  //REMEMBER TO SET THE DISABLED BUTTON ADD LIQ
 
   const modalHeader = () => {
     return noPylon ? (

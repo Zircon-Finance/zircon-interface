@@ -172,7 +172,7 @@ export function ConfirmationModalContent({
         <Section style={{padding: '24px 24px 0 24px'}}>
           <RowBetween>
             <Flex style={{gap: '10px'}}>{feeTooHigh && <WarningSmall />}
-            <Text fontWeight={400} fontSize={16} color={feeTooHigh && theme.darkMode ? '#E9D886' : '#836D0B'}>
+            <Text fontWeight={400} fontSize={16} color={feeTooHigh && (theme.darkMode ? '#E9D886' : '#836D0B')}>
               {title}
             </Text></Flex>
             <CloseIcon onClick={onDismiss} strokeWidth={1} />

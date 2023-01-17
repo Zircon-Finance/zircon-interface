@@ -46,6 +46,8 @@ import BigNumberJs from "bignumber.js";
 import CapacityIndicator from "../../components/CapacityIndicator";
 import { StyledWarningIcon } from '../AddLiquidity/ConfirmAddModalBottom'
 import { useBatchPrecompileContract, useTokenContract } from '../../hooks/useContract'
+import { ConfirmationInput, InputContainer, PinkContainer, RadioButton, RadioContainer } from '../AddLiquidityPro'
+import PlusIcon from '../../views/Farms/components/PlusIcon'
 
 export const PercButton = styled.button<{ width: string }>`
   padding: 0.5rem 1rem;
@@ -84,15 +86,19 @@ export default function RemoveProLiquidity({
   ])
   const theme = useTheme()
 
+  const [percentageUserInput, setPercentageUserInput] = useState('0')
+  console.log("percentageUserInput", percentageUserInput)
+
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle()
 
   // burn state
   const { independentField, typedValue } = useBurnState()
   const { pylon, parsedAmounts, error, healthFactor, gamma, burnInfo } = useDerivedPylonBurnInfo(currencyA ?? undefined, currencyB ?? undefined, isFloat, sync)
+  console.log('percent to remove AAAAAAFEEE', burnInfo?.slippage?.toString())
   const { onUserInput: _onUserInput } = useBurnActionHandlers()
   const isValid = !error
-
+  console.log('burnInfoSomething', burnInfo?.slippage?.toString())
   // modal and loading
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [showDetailed, setShowDetailed] = useState<boolean>(false)
@@ -320,15 +326,20 @@ export default function RemoveProLiquidity({
 
  // logic for modal for too high fees
  const [originalValue, setOriginalValue] = useState('')
+ const [confirmedString, setConfirmedString] = useState(false)
+ const [hasConfirmed, setHasConfirmed] = useState(false)
+ const [hasSetAsync, setHasSetAsync] = useState(false)
+ const [confirmationSlippage, setConfirmationSlippage] = useState(false)
+ const [chosenOption, setChosenOption] = useState(2)
+ const [rememberedSlippage, setRememberedSlippage] = useState(0)
 
- const feeNumber = parseFloat(new BigNumberJs(burnInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18)).toString())
- const slippageNumber = parseFloat(new BigNumberJs(burnInfo?.slippage.toString()).div(new BigNumberJs(10).pow(18)).toString())
- const feeIsTooHigh = feeNumber + slippageNumber >= 0
- const differencePercentage = new BigNumberJs(burnInfo?.amountOut2?.toSignificant(8) || 0).times(
-  new BigNumberJs(!isFloat ? pylon?.pair?.priceOf(tokenA).toSignificant(6) : pylon?.pair?.priceOf(tokenB).toSignificant(6))).minus(
-    new BigNumberJs(originalValue)).div(
-      new BigNumberJs(originalValue).times(
-        new BigNumberJs(100))).toString()
+ const differencePercentage = (new BigNumberJs(formattedAmounts[Field.CURRENCY_A] || 0).times(
+  new BigNumberJs(!isFloat ? pylon?.pair?.priceOf(tokenA).toSignificant(6) : pylon?.pair?.priceOf(tokenB).toSignificant(6))).plus(
+    new BigNumberJs(formattedAmounts[Field.CURRENCY_B] || 0))).minus(
+      new BigNumberJs(originalValue)).div(
+        new BigNumberJs(originalValue).times(
+          new BigNumberJs(100))).toString()
+  const feeIsTooHigh = rememberedSlippage >= 5
   
  const setCustom = () => {
   setOriginalValue(parsedAmounts[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.toSignificant(6));
@@ -340,61 +351,153 @@ export default function RemoveProLiquidity({
     setCustom();
   }
   else if (!showConfirm ) {
+    setConfirmedString(false);
     setOriginalValue('');
+    setHasConfirmed(false);
+    setConfirmationSlippage(false);
+    setChosenOption(2);
+    setHasSetAsync(false);
+    setSync(true);
   }
 }, [showConfirm])
 
+const handleChangeConfirmation = (typedValue: string) => {
+  setConfirmedString(typedValue.toLowerCase() === 'confirm');
+}
+
+const backToOriginalValue = () => {
+  setHasSetAsync(false);
+  onLiquidityInput(originalValue)
+  setSync(true);
+}
+
+useEffect(() => {
+  if (hasConfirmed) {
+    backToOriginalValue();
+  }
+}, [hasConfirmed])
+
+console.log('Slippage: ', rememberedSlippage)
+
+const NoSlippageModalHeader = () => (
+  <AutoColumn gap={'md'} style={{ marginTop: '20px' }}>
+    <RowBetween align="flex-end">
+      <Text fontSize={24} fontWeight={400}>
+        {parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)}
+      </Text>
+      <RowFixed gap="4px">
+        <CurrencyLogo currency={currencyA} size={'24px'} chainId={chainId} />
+        <Text fontSize={24} fontWeight={400} style={{ marginLeft: '10px' }}>
+          {currencyA?.symbol}
+        </Text>
+      </RowFixed>
+    </RowBetween>
+    <RowFixed>
+      <Plus size="16" color={theme.text2} />
+    </RowFixed>
+    <RowBetween align="flex-end">
+      <Text fontSize={24} fontWeight={400}>
+        {parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)}
+      </Text>
+      <RowFixed gap="4px">
+        <CurrencyLogo currency={currencyB} size={'24px'} chainId={chainId} />
+        <Text fontSize={24} fontWeight={400} style={{ marginLeft: '10px' }}>
+          {currencyB?.symbol}
+        </Text>
+      </RowFixed>
+    </RowBetween>
+
+    <Text fontSize={12} textAlign="left" padding={"12px 0 0 0 "} color={theme.whiteHalf}>
+      {`Output is estimated. If the price changes by more than ${allowedSlippage /
+      100}% your transaction will revert.`}
+    </Text>
+  </AutoColumn>
+)
+
+const ConfirmationInputModal = () => (
+  <Flex flexDirection={'column'}>
+    <Flex justifyContent={'center'}><Text mr='5px'>{`Type`}</Text><Text mr='5px' style={{fontWeight: 500, color: theme.pinkGamma}}>{'Confirm '}</Text><Text> {' if you are sure'}</Text></Flex>
+    <Flex justifyContent={'center'} mb='10px'><Text mr='5px'>{`you want`}</Text><Text mr='5px' style={{fontWeight: 500, color: theme.pinkGamma}}>
+      {`to lose ${Math.abs(parseFloat(differencePercentage)).toFixed(2)}`}
+      </Text><Text>{'of your position'}</Text>
+    </Flex>
+    <InputContainer>
+      <ConfirmationInput disabled={confirmedString} type="text" onChange={e => handleChangeConfirmation(e.target.value)} />
+      <ButtonPrimary disabled={!confirmedString} onClick={() => (setHasConfirmed(true),setConfirmationSlippage(false))} 
+      style={{ margin: 'auto', padding: '12px', height: 'auto', borderRadius: '12px' }}>{'Proceed'}</ButtonPrimary>
+    </InputContainer>
+  </Flex>
+)
+
+const SlippageWarningModal = () => (
+<Flex flexDirection={'column'} style={{background: theme.darkMode ? '#52273A' : 'transparent'}}>
+        <Text mt='20px' style={{lineHeight: '160%'}} textAlign='center'>{'You can reduce slippage and get more'}</Text>
+        <Text mb='10px' textAlign='center'>{`tokens using the Smart Remove method`}</Text>
+        <Flex mt='20px' mb='30px' mx='auto' style={{gap: '10px', textAlign: 'center'}}>
+          <Flex onClick={() => [setChosenOption(1), setConfirmationSlippage(true)]} flexDirection={'column'} 
+          style={{
+            border: `${(chosenOption === 1) ? `2px solid ${theme.pinkGamma}` :
+              theme.darkMode ? '2px solid rgba(98, 47, 69, 0.5)' : '2px solid #F5F3F4'}` ,
+               borderRadius: '17px', cursor: 'pointer', marginTop: '30px'}}>
+            <Text fontSize='14px' fontWeight={500} p='20px 10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#F5F3F4'}`}}>{'CURRENT POSITION'}</Text>
+            <Text my='10px'>{'You get'}</Text>
+            <Text fontSize='18px' pb='77px' fontWeight={500}>
+              {`${originalValue} ${!isFloat ? currencyB?.symbol : currencyA?.symbol} `}
+            </Text>
+            <RadioContainer style={{marginTop: '5px'}} active={chosenOption === 1} second={false}>
+              <RadioButton active={chosenOption === 1} />
+            </RadioContainer>
+          </Flex>
+          <Flex flexDirection={'column'}><PinkContainer><Text>{'Lower slippage'}</Text></PinkContainer>
+            <Flex onClick={() => [setChosenOption(2), setConfirmationSlippage(false)]} flexDirection={'column'} 
+              style={{border: `${(chosenOption === 2) ? `2px solid ${theme.pinkGamma}` : '2px solid transparent'}` , 
+              borderBottomLeftRadius: '17px', 
+              borderBottomRightRadius: '17px',
+              backgroundColor: theme.darkMode ? '#622F45' : '#EEEAEC', 
+              cursor: 'pointer'}}
+            >
+              <Text fontSize='14px' fontWeight={500} p='20px 10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#E4E0E3'}`}}>{'WITH SMART REMOVE'}</Text>
+              <Text fontSize='14px' my='10px'>{'You get'}</Text>
+              <Text fontSize='18px' fontWeight={500}>
+                {`${formattedAmounts[Field.CURRENCY_A]} ${isFloat ? currencyB?.symbol : currencyA?.symbol} `}
+              </Text>
+              <Flex style={{width: '100%', justifyContent: 'center', alignItems:'center'}}><PlusIcon /></Flex>
+              <Text fontSize='18px' pb='10px' fontWeight={500}>
+                {`${formattedAmounts[Field.CURRENCY_B]} ${!isFloat ? currencyB?.symbol : currencyA?.symbol} `}
+              </Text>
+              <Text fontSize='14px' pb='10px' color={parseFloat(differencePercentage) >= 0 ? theme.percentageGreen : theme.percentageRed} fontWeight={500}>
+                {`${parseFloat(differencePercentage) >= 0 ? '+' : ''} ${parseFloat(differencePercentage).toFixed(2)}%`}
+              </Text>
+              <RadioContainer style={{marginBottom: '20px'}} active={chosenOption === 2} second={true}>
+                <RadioButton active={chosenOption === 2} />
+              </RadioContainer>
+            </Flex>
+          </Flex>
+        </Flex>
+        {chosenOption === 0 && <Text mb='10px' textAlign='center'>{`Please select an option`}</Text>}
+        {chosenOption === 2 && <ButtonPrimary onClick={() => setHasSetAsync(true)} style={{ margin: 'auto' }}>{'Remove with Smart Remove'}</ButtonPrimary>}
+        {(confirmationSlippage && chosenOption === 1) && <ConfirmationInputModal />}
+      </Flex>
+)
 
   function modalHeader() {
     return (
-      feeIsTooHigh ? (
-        <>
-          <Text>{'By withdrawing in sync, you will get'}</Text>
-          <Text mb='10px'>{`${originalValue} ${!isFloat ? currencyB?.symbol : currencyA?.symbol} `}</Text>
-          <Text>{'By withdrawing in async, you will get'}</Text>
-          <Text>{`${burnInfo?.amountOut.toSignificant(8)} ${!isFloat ? currencyB?.symbol : currencyA?.symbol} `}</Text>
-          <Text>{'and'}</Text>
-          <Text mb='10px'>{`${burnInfo?.amountOut2.toSignificant(8)} ${isFloat ? currencyB?.symbol : currencyA?.symbol} `}</Text>
-          <Text>{'Which is'}</Text>
-          <Text>{`${differencePercentage}%`}</Text>
-          <Text>{`${parseFloat(differencePercentage) >= 0 ? 'more' : 'less'} than the original value`}</Text>
-
-        </>
+      feeIsTooHigh ? 
+      !sync ? 
+      (hasSetAsync || hasConfirmed) ? (
+        <NoSlippageModalHeader />
       ) : (
-        <AutoColumn gap={'md'} style={{ marginTop: '20px' }}>
-          <RowBetween align="flex-end">
-            <Text fontSize={24} fontWeight={400}>
-              {parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)}
-            </Text>
-            <RowFixed gap="4px">
-              <CurrencyLogo currency={currencyA} size={'24px'} chainId={chainId} />
-              <Text fontSize={24} fontWeight={400} style={{ marginLeft: '10px' }}>
-                {currencyA?.symbol}
-              </Text>
-            </RowFixed>
-          </RowBetween>
-          <RowFixed>
-            <Plus size="16" color={theme.text2} />
-          </RowFixed>
-          <RowBetween align="flex-end">
-            <Text fontSize={24} fontWeight={400}>
-              {parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)}
-            </Text>
-            <RowFixed gap="4px">
-              <CurrencyLogo currency={currencyB} size={'24px'} chainId={chainId} />
-              <Text fontSize={24} fontWeight={400} style={{ marginLeft: '10px' }}>
-                {currencyB?.symbol}
-              </Text>
-            </RowFixed>
-          </RowBetween>
-
-          <Text fontSize={12} textAlign="left" padding={"12px 0 0 0 "} color={theme.whiteHalf}>
-            {`Output is estimated. If the price changes by more than ${allowedSlippage /
-            100}% your transaction will revert.`}
-          </Text>
-        </AutoColumn>
+        <SlippageWarningModal />
+      ) : 
+        hasConfirmed ? (
+          <NoSlippageModalHeader />
+        ) : (
+      <SlippageWarningModal />
       )
+    : (
+    <NoSlippageModalHeader />
     )
+  )
   }
 
   function modalBottom() {
@@ -447,7 +550,7 @@ export default function RemoveProLiquidity({
             <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{"We estimate a high fee for this transaction. Try in a few minutes"}</span>
           </RowBetween>
           )}
-          <ButtonPrimary disabled={!(chainId === 1285 || chainId === 1287) && (!(approval === ApprovalState.APPROVED || signatureData !== null) || burnInfo.blocked || burnInfo.asyncBlocked || burnInfo.deltaApplied)} onClick={onRemove}>
+          <ButtonPrimary disabled={!(chainId === 1285 || chainId === 1287) && (!(approval === ApprovalState.APPROVED || signatureData !== null) || burnInfo.blocked || burnInfo.asyncBlocked || burnInfo.deltaApplied || (feeIsTooHigh && (!hasConfirmed && !hasSetAsync)))} onClick={onRemove}>
             <Text fontWeight={400} fontSize={18}>
               Confirm
             </Text>
@@ -463,6 +566,7 @@ export default function RemoveProLiquidity({
   const liquidityPercentChangeCallback = useCallback(
       (value: number) => {
         onUserInput(Field.LIQUIDITY_PERCENT, value.toString())
+        setPercentageUserInput(value.toString())
       },
       [onUserInput]
   )
@@ -504,6 +608,12 @@ export default function RemoveProLiquidity({
   const handleDismissConfirmation = useCallback(() => {
     setShowConfirm(false)
     setErrorTx('')
+    setConfirmedString(false);
+    setOriginalValue('');
+    setHasConfirmed(false);
+    setConfirmationSlippage(false);
+    setChosenOption(2);
+    setHasSetAsync(false);
     setSignatureData(null) // important that we clear signature data to avoid bad sigs
     // if there was a tx hash, we want to clear the input
     if (txHash) {
@@ -522,16 +632,18 @@ export default function RemoveProLiquidity({
           <AddRemoveTabs adding={false} />
           <WrapperWithPadding>
             <TransactionConfirmationModal
+                width={feeIsTooHigh && '390'}
                 isOpen={showConfirm}
                 onDismiss={handleDismissConfirmation}
                 attemptingTxn={attemptingTxn}
                 hash={txHash ? txHash : ''}
                 content={() => (
                     <ConfirmationModalContent
-                        title={'You will receive'}
+                        title={(feeIsTooHigh && (hasConfirmed===false && hasSetAsync===false)) ? 'High slippage warning' : "You will receive"}
                         onDismiss={handleDismissConfirmation}
                         topContent={modalHeader}
-                        bottomContent={modalBottom}
+                        bottomContent={feeIsTooHigh ? (feeIsTooHigh && (hasConfirmed===false && hasSetAsync===false) ? (() => <></>) : modalBottom) : modalBottom}
+                        feeTooHigh={feeIsTooHigh && (hasConfirmed===false && hasSetAsync===false)}
                     />
                 )}
                 pendingText={pendingText}
@@ -760,7 +872,10 @@ export default function RemoveProLiquidity({
                       </ButtonConfirmed>)}
                       <ButtonError
                           onClick={() => {
-                            setShowConfirm(true)
+                            setShowConfirm(true); setRememberedSlippage(
+                              parseFloat(new BigNumberJs(burnInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18)).toString()) +
+                              parseFloat(new BigNumberJs(burnInfo?.slippage.toString()).div(new BigNumberJs(10).pow(18)).toString())
+                            )
                           }}
                           disabled={!(chainId === 1285 || chainId === 1287) ? (!isValid || (signatureData === null && approval !== ApprovalState.APPROVED)) : !isValid}
                           error={!isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]}

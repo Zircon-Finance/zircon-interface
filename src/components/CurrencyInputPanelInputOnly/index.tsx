@@ -1,27 +1,20 @@
 import { Currency, Pair } from 'zircon-sdk'
 import React, { useState, useCallback } from 'react'
 import styled, { useTheme } from 'styled-components'
-
 import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
 import CurrencyLogo from '../CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
-// import { RowBetween } from '../Row'
-
-import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
 import { useTranslation } from 'react-i18next'
 import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
-import { useIsDarkMode } from '../../state/user/hooks'
-
-
+import { ReactComponent as DropDown } from '../../assets/images/dropdown_new.svg'
 
 const CurrencySelect = styled.button<{ selected: boolean }>`
   align-items: center;
   font-size: 16px;
   font-weight: 200;
-  background-color: ${({ selected, theme }) => (selected ? theme.badgeSmall : theme.inputSelect1)};
+  background-color: transparent;
   color: ${({ selected, theme }) => (selected ? theme.text1 : theme.blackBrown)};
   border-radius: 17px;
-  box-shadow: ${({ selected }) => (selected ? 'none' : '0px 6px 10px rgba(0, 0, 0, 0.075)')};
   outline: none;
   cursor: pointer;
   user-select: none;
@@ -29,13 +22,10 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
   width: 100%;
   padding-left: 10px;
   height: 100%;
-
   :focus,
   :hover {
-    background-color: ${({ theme, selected }) => !selected ? theme.poolPinkButton : theme.darkMode ? '#513642' : '#E5D9DB'};
-    color: '${({ theme, selected }) => !selected ? '#fff' : theme.darkMode ? '#fff' : theme.blackBrown}';
     path {
-      stroke: #fff;
+      stroke: ${({ theme }) => theme.text1};
     }
   }
 `
@@ -68,7 +58,7 @@ const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
   }
 
   path {
-    stroke: ${({ selected, theme }) => (selected ? theme.whiteHalf : theme.blackBrown)};
+    stroke: ${({ selected, theme }) => (selected ? theme.whiteHalf : theme.meatPink)};
     stroke-width: 1.5px;
   }
 `
@@ -84,7 +74,7 @@ const InputPanel = styled.div<{ hideInput?: boolean }>`
 
 const Container = styled.div<{ hideInput: boolean }>`
   border-radius: ${({ hideInput }) => (hideInput ? '8px' : '17px')};
-  background-color: ${({ theme }) => theme.anchorFloatBadge};
+  background-color: transparent;
   height: 100%;
   width: 100%;
 `
@@ -146,7 +136,6 @@ export default function CurrencyInputPanel({
   }, [setModalOpen])
   const theme = useTheme()
   const { width } = useWindowDimensions()
-  const darkMode = useIsDarkMode()
   const [hovered, setHovered] = useState(false)
   const {chainId} = useActiveWeb3React()
 
@@ -161,7 +150,7 @@ export default function CurrencyInputPanel({
             <CurrencySelect
               onMouseEnter={() => setHovered(true)}
               onMouseLeave={() => setHovered(false)}
-              style={{border: !darkMode ? !currency ? `1px solid ${theme.bg8}` : `1px solid rgba(0,0,0,0.2)` : 'none'}}
+              style={{border: `1px solid ${theme.darkMode ? hovered ? currency ? '#61414A' : theme.meatPink : currency ? '#492B36' : '#87656C' : hovered ? currency ? '#DFCFD2' : theme.bg8 : !currency ? 'rgba(135, 73, 85, 0.5)' : '#F4EFF0' }`}}
               selected={!!currency}
               className="open-currency-select-button"
               onClick={() => {
@@ -201,27 +190,28 @@ export default function CurrencyInputPanel({
                           currency.symbol.length
                         )
                       ) : (
-                        <>
-                          <p
-                            style={{
-                              margin: width >= 500 ? "10px 0" : "0 0 0 0",
-                              width: '100%',
-                              alignSelf: 'center',
-                              display: 'flex',
-                              alignItems: 'center',
-                            }}
-                          >
-                            {currency?.symbol}
-                          </p>
+                        <>{currency && 
+                            <p
+                              style={{
+                                margin: width >= 500 ? "10px 0" : "0 0 0 0",
+                                width: '100%',
+                                alignSelf: 'center',
+                                display: 'flex',
+                                alignItems: 'center',
+                              }}
+                            >
+                              {currency?.symbol}
+                            </p>
+                          }
                           <span
                             style={{
                               width: '100%',
-                              color: hovered ? theme.darkMode ? theme.cardLightBorder : currency ? theme.blackBrown : theme.cardLightBorder : !currency ? theme.blackBrown : theme.whiteHalf,
+                              color: theme.darkMode ? hovered ? currency ? theme.text1 : theme.meatPink : currency ? theme.text1 : theme.meatPink : hovered ? currency ? theme.text1 : theme.bg8 : currency ? '#080506' : theme.bg8,
                               marginLeft: width <= 500 ? '0' : "5px",
                               fontSize: width > 500 ? "16px" : "13px",
                             }}
                           >
-                            {anchor ? "STABLE" : "FLOAT"}
+                            {anchor ? currency ? "Stable" : 'Select a stable' : currency ? 'Float' : "Select a float"}
                           </span>
                         </>
                       )) || <p>{t("selectToken")}</p>}

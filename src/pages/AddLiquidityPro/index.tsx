@@ -12,7 +12,7 @@ import {AutoColumn, ColumnCenter} from "../../components/Column";
 import TransactionConfirmationModal, {ConfirmationModalContent,} from "../../components/TransactionConfirmationModal";
 import BigNumberJs from 'bignumber.js';
 import { MaxUint256 } from '@ethersproject/constants'
-
+import { ReactComponent as SmartAddImage } from '../../assets/images/smart_add.svg'
 import CurrencyInputPanelInputOnly from "../../components/CurrencyInputPanelInputOnly";
 import CurrencyInputPanelPicOnly from "../../components/CurrencyInputPanelPicOnly";
 import CurrencyInputPanelBalOnly from "../../components/CurrencyInputPanelBalOnly";
@@ -798,6 +798,10 @@ export default function AddLiquidityPro({
   const [hasConfirmed, setHasConfirmed] = useState(false)
   const [chosenOption, setChosenOption] = useState(2)
 
+  const selectedBoxShadow = theme.darkMode ? 
+   '0px 1px 2px rgba(13, 6, 9, 0.15), inset 0px -1px 1px rgba(13, 6, 9, 0.15), inset 0px 1px 1px rgba(237, 223, 229, 0.1)' : 
+   '0px 1px 2px rgba(0, 0, 0, 0.15);'
+
   const feeIsTooHigh = rememberedSlippage >= 5
   const floatTokenHalf = parseFloat(parsedAmounts[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.toSignificant(6)) / 2
   const anchorTokenMultiplied = parseFloat(parsedAmounts[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.toSignificant(6)) / 2 * 
@@ -1144,14 +1148,13 @@ isValid
 
               {(pylonState !== PylonState.LOADING) && (
                   <ColumnCenter style={{padding: '10px'}}>
-                    <BlueCard style={{background: 'transparent', border: `1px solid ${theme.anchorFloatBadge}`}}>
+                    <BlueCard style={{background: 'transparent', border: `1px solid ${theme.anchorFloatBadge}`, padding: '20px 40px'}}>
                       <InfoCircle />
                       <AutoColumn
-                          gap="10px"
                           style={{ fontSize: width > 700 ? "16px" : "15px" }}
                       >
                         <TYPE.link fontWeight={500} fontSize={'18px'} textAlign={'center'} color={theme.text1} my={'10px'}>
-                          {pylonState === PylonState.ONLY_PAIR ?  "PYLON CREATION" : (pylonState === PylonState.NOT_EXISTS ? "PAIR CREATION" : "SELECT TOKEN & PAIR")}
+                          {pylonState === PylonState.ONLY_PAIR ?  "PYLON CREATION" : (pylonState === PylonState.NOT_EXISTS ? "Pair creation" : "Select token & pair")}
                         </TYPE.link>
                         <TYPE.link fontWeight={400} color={theme.whiteHalf} textAlign={'center'}>
                           {pylonState === PylonState.ONLY_PAIR ?  "This Pylon has not been created yet, be the first liquidity provider to initialize it" :
@@ -1227,6 +1230,7 @@ isValid
                                   style={{
                                     padding: "1px",
                                     width: "50%",
+                                    boxShadow: isFloat && selectedBoxShadow,
                                     backgroundColor:
                                         isFloat
                                             ? theme.badgeSmall
@@ -1266,6 +1270,7 @@ isValid
                                   style={{
                                     width: "50%",
                                     padding: "1px",
+                                    boxShadow: !isFloat && selectedBoxShadow,
                                     backgroundColor:
                                         !isFloat
                                             ? theme.badgeSmall
@@ -1327,30 +1332,39 @@ isValid
                     {currencies[Field.CURRENCY_B] !== undefined &&
                     pylonState === PylonState.EXISTS && width >= 700 && (
                         <div style={{ padding: "0 10px 0 10px" }}>
-                          <div
+                          <Flex
                               style={{
-                                display: "flex",
                                 borderRadius: "17px",
                                 justifyContent: "space-between",
+                                background: theme.liquidityBg,
+                                flexDirection: 'column',
+                                padding: '5px',
                               }}
                           >
-                            <>
-                            <span
-                            id='swap-and-add'
+                            <Flex justifyContent={'space-between'}>
+                              <Flex alignItems={'center'}>
+                              <span
+                              id='swap-and-add'
                                 style={{
-                                  display: "inline",
+                                  display: "flex",
+                                  gap: '10px',
                                   alignSelf: "center",
-                                  fontSize: "13px",
+                                  fontSize: "16px",
                                   padding: "0 0 0 10px",
                                   letterSpacing: "0.05em",
+                                  fontWeight: 500,
                                 }}
                             >
-                              {"SWAP AND ADD"}
+                              <SmartAddImage />
+                              {"Smart add"}
                             </span>
+                              </Flex>
+                            
                               <div
                                   style={{
                                     display: "flex",
-                                    borderRadius: "17px",
+                                    border: `1px solid ${theme.anchorFloatBadge}`,
+                                    borderRadius: "12px",
                                     padding: "5px",
                                     fontSize: "13px",
                                     width: width >= 700 ? "inherit" : "100%",
@@ -1358,9 +1372,10 @@ isValid
                                   }}
                               >
                                 <ButtonAnchor
-                                    borderRadius={"12px"}
-                                    padding={"10px"}
+                                    borderRadius={"7px"}
+                                    padding={"4px 8px"}
                                     style={{
+                                      boxShadow: sync === 'off' && selectedBoxShadow,
                                       backgroundColor:
                                           sync === "off"
                                               ? theme.badgeSmall
@@ -1379,9 +1394,10 @@ isValid
                                 </ButtonAnchor>
 
                                 <ButtonAnchor
-                                    borderRadius={"12px"}
-                                    padding={"10px"}
+                                    borderRadius={"7px"}
+                                    padding={"4px 8px"}
                                     style={{
+                                      boxShadow: sync === 'half' && selectedBoxShadow,
                                       backgroundColor:
                                           sync === "half"
                                               ? theme.badgeSmall
@@ -1405,8 +1421,11 @@ isValid
                                   ON
                                 </ButtonAnchor>
                               </div>
-                            </>
-                          </div>
+                            </Flex>
+                            <span style={{color: '#9C8F95', fontSize: '13px', paddingLeft: '40px', paddingBottom: '10px'}}>
+                              {'Reduce slippage with a virtual swap for high amounts'}
+                            </span>
+                          </Flex>
                         </div>
                     )}
 

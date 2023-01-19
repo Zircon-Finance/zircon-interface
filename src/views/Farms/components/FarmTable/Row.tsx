@@ -73,7 +73,7 @@ const CellInner = styled.div`
 
 export const QuestionMarkContainer = styled.div`
   position: relative;
-  margin-left: 10px;
+  margin-left: 5px;
   margin-top: 5px;
   svg {
     pointer-events: none;

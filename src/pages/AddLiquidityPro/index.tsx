@@ -800,7 +800,7 @@ export default function AddLiquidityPro({
 
   const selectedBoxShadow = theme.darkMode ? 
    '0px 1px 2px rgba(13, 6, 9, 0.15), inset 0px -1px 1px rgba(13, 6, 9, 0.15), inset 0px 1px 1px rgba(237, 223, 229, 0.1)' : 
-   '0px 1px 2px rgba(0, 0, 0, 0.15);'
+   '0px 1px 2px rgba(0, 0, 0, 0.15)';
 
   const feeIsTooHigh = rememberedSlippage >= 5
   const floatTokenHalf = parseFloat(parsedAmounts[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.toSignificant(6)) / 2
@@ -1147,8 +1147,8 @@ isValid
               {/* Pylon condition, previously noPylon && */}
 
               {(pylonState !== PylonState.LOADING) && (
-                  <ColumnCenter style={{padding: '10px'}}>
-                    <BlueCard style={{background: 'transparent', border: `1px solid ${theme.anchorFloatBadge}`, padding: '20px 40px'}}>
+                  <ColumnCenter style={{padding: '0 10px'}}>
+                    <BlueCard style={{borderRadius: '17px', background: 'transparent', border: `1px solid ${theme.anchorFloatBadge}`, padding: '20px 40px'}}>
                       <InfoCircle />
                       <AutoColumn
                           style={{ fontSize: width > 700 ? "16px" : "15px" }}
@@ -1156,7 +1156,7 @@ isValid
                         <TYPE.link fontWeight={500} fontSize={'18px'} textAlign={'center'} color={theme.text1} my={'10px'}>
                           {pylonState === PylonState.ONLY_PAIR ?  "PYLON CREATION" : (pylonState === PylonState.NOT_EXISTS ? "Pair creation" : "Select token & pair")}
                         </TYPE.link>
-                        <TYPE.link fontWeight={400} color={theme.whiteHalf} textAlign={'center'}>
+                        <TYPE.link fontWeight={400} color={theme.darkMode ? '#9C8F95' : '#6A6768'} textAlign={'center'}>
                           {pylonState === PylonState.ONLY_PAIR ?  "This Pylon has not been created yet, be the first liquidity provider to initialize it" :
                               pylonState !== PylonState.NOT_EXISTS ? "Stable is designed for stablecoins and L1 network tokens. Float is for all others, and it's always the more volatile in the pair." :
                                   "This pair has not been created yet, be the first liquidity provider to initialize it"}<br/>
@@ -1217,11 +1217,10 @@ isValid
                             <div
                                 style={{
                                   display: "flex",
-                                  background: theme.liquidityBg,
+                                  background: theme.darkMode ? theme.liquidityBg : '#F5F3F3',
                                   borderRadius: "17px",
                                   padding: "5px",
                                   width: "100%",
-                                  marginTop: "10px",
                                 }}
                             >
                               <ButtonAnchor
@@ -1256,11 +1255,12 @@ isValid
                                     style={{
                                       color: isFloat ? theme.text1 : theme.tabsText,
                                       marginLeft: "5px",
-                                      fontSize: "13px",
+                                      fontSize: "16px",
                                       letterSpacing: "0.05em",
+                                      fontWeight: 500,
                                     }}
                                 >
-                            {"FLOAT"}
+                            {"Float"}
                           </span>
                               </ButtonAnchor>
 
@@ -1296,11 +1296,12 @@ isValid
                                     style={{
                                       color: !isFloat ? theme.text1 : theme.tabsText,
                                       marginLeft: "5px",
-                                      fontSize: "13px",
+                                      fontSize: "16px",
                                       letterSpacing: "0.05em",
+                                      fontWeight: 500,
                                     }}
                                 >
-                            {"STABLE"}
+                            {"Stable"}
                           </span>
                               </ButtonAnchor>
                             </div>
@@ -1351,7 +1352,6 @@ isValid
                                   alignSelf: "center",
                                   fontSize: "16px",
                                   padding: "0 0 0 10px",
-                                  letterSpacing: "0.05em",
                                   fontWeight: 500,
                                 }}
                             >
@@ -1368,12 +1368,12 @@ isValid
                                     padding: "5px",
                                     fontSize: "13px",
                                     width: width >= 700 ? "inherit" : "100%",
-                                    background: theme.liquidityBg,
+                                    background: theme.darkMode ? theme.liquidityBg : '#F5F3F3',
                                   }}
                               >
                                 <ButtonAnchor
                                     borderRadius={"7px"}
-                                    padding={"4px 8px"}
+                                    padding={"5px 8px 4px 8px"}
                                     style={{
                                       boxShadow: sync === 'off' && selectedBoxShadow,
                                       backgroundColor:
@@ -1422,7 +1422,7 @@ isValid
                                 </ButtonAnchor>
                               </div>
                             </Flex>
-                            <span style={{color: '#9C8F95', fontSize: '13px', paddingLeft: '40px', paddingBottom: '10px'}}>
+                            <span style={{color: theme.darkMode ? '#9C8F95' : '#6A6768', fontSize: '13px', paddingLeft: '41px', paddingBottom: '10px'}}>
                               {'Reduce slippage with a virtual swap for high amounts'}
                             </span>
                           </Flex>
@@ -1432,7 +1432,7 @@ isValid
                     <div
                         style={{
                           backgroundColor: theme.bg1,
-                          padding: "10px",
+                          padding: "0 10px 10px",
                           borderRadius: "27px",
                         }}
                     >
@@ -1545,7 +1545,7 @@ isValid
                     </div> */}
 
                       {!account ? (
-                          <ButtonLight onClick={toggleWalletModal}>
+                          <ButtonLight style={{fontWeight: 500}} onClick={toggleWalletModal}>
                             Connect Wallet
                           </ButtonLight>
                       ) : (

@@ -80,7 +80,7 @@ const Container = styled.div<{ hideInput: boolean }>`
 `
 
 const StyledTokenName = styled.span<{ active?: boolean }>`
-  ${({ active }) => (active ? '  margin: 0 0 0 0.25rem;' : '  margin: 0 0.25rem 0 0.25rem')}
+  ${({ active }) => (active ? '  margin: 0 0 0 0.5rem;' : '  margin: 0 0.25rem 0 0.25rem')}
   font-size:  13px;
   align-self: center;
   text-align: left;
@@ -198,6 +198,7 @@ export default function CurrencyInputPanel({
                                 alignSelf: 'center',
                                 display: 'flex',
                                 alignItems: 'center',
+                                fontWeight: 500,
                               }}
                             >
                               {currency?.symbol}
@@ -209,6 +210,7 @@ export default function CurrencyInputPanel({
                               color: theme.darkMode ? hovered ? currency ? theme.text1 : theme.meatPink : currency ? theme.text1 : theme.meatPink : hovered ? currency ? theme.text1 : theme.bg8 : currency ? '#080506' : theme.bg8,
                               marginLeft: width <= 500 ? '0' : "5px",
                               fontSize: width > 500 ? "16px" : "13px",
+                              fontWeight: 500,
                             }}
                           >
                             {anchor ? currency ? "Stable" : 'Select a stable' : currency ? 'Float' : "Select a float"}

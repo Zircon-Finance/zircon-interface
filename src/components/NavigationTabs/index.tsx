@@ -142,7 +142,7 @@ export function ChainPoolTab({ active }: { active: 'bsc' | 'moonriver' }) {
 export function FindPoolTabs() {
   return (
     <Tabs style={{border: 'none'}}>
-      <RowBetween style={{ padding: '11px 16px' }}>
+      <RowBetween style={{ padding: '11px 25px' }}>
         <HistoryLink to="/pool">
           <StyledArrowLeft strokeWidth={1} />
         </HistoryLink>
@@ -156,7 +156,7 @@ export function FindPoolTabs() {
 export function AddRemoveTabs({ adding }: { adding: boolean }) {
   return (
     <Tabs style={{border: 'none'}}>
-      <RowBetween style={{ padding: '11px 16px' }}>
+      <RowBetween style={{ padding: '11px 25px' }}>
         <HistoryLink to="/pool">
           <StyledArrowLeft strokeWidth={1} />
         </HistoryLink>
@@ -177,7 +177,7 @@ export function AddRemoveTabs({ adding }: { adding: boolean }) {
 export function AddRemoveTabsClassic({ adding }: { adding: boolean }) {
   return (
     <Tabs style={{border: 'none'}}>
-      <RowBetween style={{ padding: '11px 16px' }}>
+      <RowBetween style={{ padding: '11px 25px' }}>
         <HistoryLink to="/pool">
           <StyledArrowLeft strokeWidth={1} />
         </HistoryLink>

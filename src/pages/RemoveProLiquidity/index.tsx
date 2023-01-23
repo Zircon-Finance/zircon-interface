@@ -48,6 +48,7 @@ import { StyledWarningIcon } from '../AddLiquidity/ConfirmAddModalBottom'
 import { useBatchPrecompileContract, useTokenContract } from '../../hooks/useContract'
 import { ConfirmationInput, InputContainer, PinkContainer, RadioButton, RadioContainer } from '../AddLiquidityPro'
 import PlusIcon from '../../views/Farms/components/PlusIcon'
+import ErrorTxContainer from '../../components/ErrorTxContainer'
 
 export const PercButton = styled.button<{ width: string }>`
   padding: 0.5rem 1rem;
@@ -380,7 +381,7 @@ useEffect(() => {
 console.log('Slippage: ', rememberedSlippage)
 
 const NoSlippageModalHeader = () => (
-  <AutoColumn gap={'md'} style={{ marginTop: '20px' }}>
+  <AutoColumn gap={'5px'} style={{ marginTop: '15px' }}>
     <RowBetween align="flex-end">
       <Text fontSize={24} fontWeight={400}>
         {parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)}
@@ -407,7 +408,7 @@ const NoSlippageModalHeader = () => (
       </RowFixed>
     </RowBetween>
 
-    <Text fontSize={12} textAlign="left" padding={"12px 0 0 0 "} color={theme.whiteHalf}>
+    <Text fontSize={12} textAlign="left" padding={"20px 0 0 0 "} color={theme.whiteHalf}>
       {`Output is estimated. If the price changes by more than ${allowedSlippage /
       100}% your transaction will revert.`}
     </Text>
@@ -502,9 +503,9 @@ const SlippageWarningModal = () => (
 
   function modalBottom() {
     return (
-        <>
+        <div>
           <RowBetween>
-            <Text color={theme.text2} fontWeight={400} fontSize={16}>
+            <Text color={theme.text2} fontWeight={400} fontSize={16} mb='15px'>
               {'ZPT ' + currencyA?.symbol + '/' + currencyB?.symbol} Burned
             </Text>
             <RowFixed>
@@ -516,7 +517,7 @@ const SlippageWarningModal = () => (
           </RowBetween>
           {pylon?.pair && (
               <>
-                <RowBetween>
+                <RowBetween style={{marginBottom: '5px'}}>
                   <Text color={theme.text2} fontWeight={400} fontSize={16}>
                     Price
                   </Text>
@@ -524,7 +525,7 @@ const SlippageWarningModal = () => (
                     1 {currencyA?.symbol} = {tokenA ? pylon?.pair.priceOf(tokenA).toSignificant(6) : '-'} {currencyB?.symbol}
                   </Text>
                 </RowBetween>
-                <RowBetween>
+                <RowBetween style={{marginBottom: '10px'}}>
                   <div />
                   <Text fontWeight={400} fontSize={16} color={theme.text1}>
                     1 {currencyB?.symbol} = {tokenB ? pylon?.pair.priceOf(tokenB).toSignificant(6) : '-'} {currencyA?.symbol}
@@ -533,10 +534,7 @@ const SlippageWarningModal = () => (
               </>
           )}
           {errorTx && (
-          <RowBetween mt={10}>
-            <StyledWarningIcon />
-            <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{errorTx}</span>
-          </RowBetween>
+           <ErrorTxContainer errorTx={errorTx} />
           )}
           {(burnInfo.blocked || burnInfo.asyncBlocked) && (
           <RowBetween mt={10}>
@@ -555,7 +553,7 @@ const SlippageWarningModal = () => (
               Confirm
             </Text>
           </ButtonPrimary>
-        </>
+        </div>
     )
   }
 

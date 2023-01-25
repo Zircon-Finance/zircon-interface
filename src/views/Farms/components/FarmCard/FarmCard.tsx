@@ -26,6 +26,7 @@ import CapacityIndicatorSmall from '../../../../components/CapacityIndicatorSmal
 import { useActiveWeb3React, useWindowDimensions } from '../../../../hooks'
 import { formattedNum } from '../../../../utils/formatBalance'
 import { usePools } from '../../../../state/pools/hooks'
+import { ethers } from 'ethers'
 
 const StyledCard = styled(Card)`
   align-self: baseline;
@@ -57,12 +58,12 @@ interface FarmCardProps {
   farm: DeserializedPool
   displayApr: string
   removed: boolean
-  cakePrice?: BigNumber
   account?: string
   currentBlock: any
+  isFloat: boolean
 }
 
-const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePrice, account, currentBlock }) => {
+const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, account, currentBlock, isFloat }) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const {chainId} = useActiveWeb3React()
@@ -77,13 +78,18 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
   const addTransaction = useTransactionAdder()
   const [currency1,currency2] = [useCurrency(farm.token1.address),useCurrency(farm.token2.address)]
+  const decimals = {
+    float: ethers.BigNumber.from(10).pow(currency1 && currency2 ? (isFloat ? currency1?.decimals : currency2?.decimals) : 18).toString(),
+    anchor: ethers.BigNumber.from(10).pow(currency1 && currency2 ? (isFloat ? currency2?.decimals : currency1?.decimals) : 18).toString(),
+  }
   const {
     healthFactor
   } = useDerivedPylonMintInfo(
       currency1 ?? undefined,
       currency2 ?? undefined,
-      false,
-      "off"
+      isFloat,
+      "off",
+      decimals
   );
   const gammaBig = farm?.gamma
   const gamma = new BigNumber(gammaBig).div(new BigNumber(10).pow(18))
@@ -164,7 +170,6 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, cakePric
                           farm.token2.address
                         }/${farm.isAnchor ? "stable" : "float"}`
                   }
-                  cakePrice={(112 as unknown) as BigNumber}
                   token={farm.stakingToken}
                   pool={farm}
                 />

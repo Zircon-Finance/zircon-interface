@@ -49,6 +49,7 @@ import { useBatchPrecompileContract, useTokenContract } from '../../hooks/useCon
 import { ConfirmationInput, InputContainer, PinkContainer, RadioButton, RadioContainer } from '../AddLiquidityPro'
 import PlusIcon from '../../views/Farms/components/PlusIcon'
 import ErrorTxContainer from '../../components/ErrorTxContainer'
+import { ethers } from 'ethers'
 
 export const PercButton = styled.button<{ width: string }>`
   padding: 0.5rem 1rem;
@@ -89,17 +90,17 @@ export default function RemoveProLiquidity({
 
   const [percentageUserInput, setPercentageUserInput] = useState('0')
   console.log("percentageUserInput", percentageUserInput)
-
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle()
 
   // burn state
   const { independentField, typedValue } = useBurnState()
-  const { pylon, parsedAmounts, error, healthFactor, gamma, burnInfo } = useDerivedPylonBurnInfo(currencyA ?? undefined, currencyB ?? undefined, isFloat, sync)
-  console.log('percent to remove AAAAAAFEEE', burnInfo?.slippage?.toString())
+  const { pylon, parsedAmounts, error, healthFactor, gamma, burnInfo } = useDerivedPylonBurnInfo(currencyA ?? undefined, currencyB ?? undefined, isFloat, sync, {
+    float: ethers.BigNumber.from(10).pow(currencyA && currencyB ? (isFloat ? currencyA?.decimals : currencyB?.decimals) : 18).toString(),
+        anchor: ethers.BigNumber.from(10).pow(currencyA && currencyB ? (isFloat ? currencyB?.decimals : currencyA?.decimals) : 18 ).toString(),
+  })
   const { onUserInput: _onUserInput } = useBurnActionHandlers()
   const isValid = !error
-  console.log('burnInfoSomething', burnInfo?.slippage?.toString())
   // modal and loading
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [showDetailed, setShowDetailed] = useState<boolean>(false)

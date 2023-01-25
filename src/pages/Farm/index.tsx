@@ -5,7 +5,6 @@ import { getDisplayApr } from '../../views/Farms/Farms'
 import { useWeb3React } from '@web3-react/core'
 import Lottie from "lottie-react-web";
 import animation from "../../assets/lotties/farming_lottie.json";
-import BigNumber from 'bignumber.js'
 import { usePools } from '../../state/pools/hooks'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
@@ -28,7 +27,6 @@ const Row = styled.tr`
 const FarmsPage = ({currentBlock}) => {
   const { account } = useWeb3React()
   const { activeFarms } = useContext(FarmsContext)
-  const cakePrice = new BigNumber(1)
   const {userDataLoaded, pools} = usePools()
   const skeletons = 6
 
@@ -39,10 +37,10 @@ const FarmsPage = ({currentBlock}) => {
           key={farm.contractAddress}
           farm={farm}
           displayApr={getDisplayApr(farm.apr, farm.lpRewardsApr)}
-          cakePrice={cakePrice}
           account={account}
           removed={false}
           currentBlock={currentBlock}
+          isFloat={farm?.isFloat}
         />
       )) : (!userDataLoaded && pools.filter(pool=>pool.isFinished === true).length === 0) ?
       ([...Array(skeletons)].map(() => ( 

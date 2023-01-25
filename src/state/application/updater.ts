@@ -2,8 +2,9 @@ import { useCallback, useEffect, useState } from 'react'
 import { useActiveWeb3React } from '../../hooks'
 import useDebounce from '../../hooks/useDebounce'
 import useIsWindowVisible from '../../hooks/useIsWindowVisible'
-import { updateBlockNumber } from './actions'
+import {updateBlockNumber} from './actions'
 import { useDispatch } from 'react-redux'
+import {Block} from "@ethersproject/abstract-provider";
 
 export default function Updater(): null {
   const { library, chainId } = useActiveWeb3React()
@@ -11,17 +12,18 @@ export default function Updater(): null {
 
   const windowVisible = useIsWindowVisible()
 
-  const [state, setState] = useState<{ chainId: number | undefined; blockNumber: number | null }>({
+  const [state, setState] = useState<{ chainId: number | undefined; blockNumber: number | null; timestamp: number | null }>({
     chainId,
-    blockNumber: null
+    blockNumber: null,
+    timestamp: null,
   })
 
   const blockNumberCallback = useCallback(
-    (blockNumber: number) => {
+    (block: Block) => {
       setState(state => {
         if (chainId === state.chainId) {
-          if (typeof state.blockNumber !== 'number') return { chainId, blockNumber }
-          return { chainId, blockNumber: Math.max(blockNumber, state.blockNumber) }
+          if (typeof state.blockNumber !== 'number') return { chainId, blockNumber: block.number, timestamp: block.timestamp }
+          return { chainId, blockNumber: Math.max(block.number, state.blockNumber), timestamp: block.timestamp }
         }
         return state
       })
@@ -33,10 +35,11 @@ export default function Updater(): null {
   useEffect(() => {
     if (!library || !chainId || !windowVisible) return undefined
 
-    setState({ chainId, blockNumber: null })
+    setState({ chainId, blockNumber: null, timestamp: null })
+
 
     library
-      .getBlockNumber()
+      .getBlock('latest')
       .then(blockNumberCallback)
       .catch(error => console.error(`Failed to get block number for chainId: ${chainId}`, error))
 
@@ -50,7 +53,9 @@ export default function Updater(): null {
 
   useEffect(() => {
     if (!debouncedState.chainId || !debouncedState.blockNumber || !windowVisible) return
-    dispatch(updateBlockNumber({ chainId: debouncedState.chainId, blockNumber: debouncedState.blockNumber }))
+
+    dispatch(updateBlockNumber({ chainId: debouncedState.chainId, blockNumber: debouncedState.blockNumber, timestamp: debouncedState.timestamp }))
+
   }, [windowVisible, dispatch, debouncedState.blockNumber, debouncedState.chainId])
 
   return null

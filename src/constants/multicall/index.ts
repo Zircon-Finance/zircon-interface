@@ -1,4 +1,4 @@
-import {BSC_ADDRESSES, ChainId, MOONBASE_ADDRESSES, MOONRIVER_ADDRESSES} from 'zircon-sdk'
+import {BSCT_ADDRESSES, BSC_ADDRESSES, ChainId, MOONBASE_ADDRESSES, MOONRIVER_ADDRESSES} from 'zircon-sdk'
 import MULTICALL_ABI from './abi.json'
 
 const MULTICALL_NETWORKS: { [chainId in ChainId]: string } = {
@@ -8,7 +8,8 @@ const MULTICALL_NETWORKS: { [chainId in ChainId]: string } = {
   [ChainId.MOONROCK]: MOONBASE_ADDRESSES.multicall,
   [ChainId.MOONBASE]: MOONBASE_ADDRESSES.multicall,
   [ChainId.MOONSHADOW]: MOONBASE_ADDRESSES.multicall,
-  [ChainId.BSC]: BSC_ADDRESSES.multicall
+  [ChainId.BSC]: BSC_ADDRESSES.multicall,
+  [ChainId.BSCT]: BSCT_ADDRESSES.multicall,
 }
 
 export { MULTICALL_ABI, MULTICALL_NETWORKS }

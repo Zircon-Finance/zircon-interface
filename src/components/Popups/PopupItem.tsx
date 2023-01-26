@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { X } from 'react-feather'
 import { useSpring } from 'react-spring/web'
 import styled, { useTheme } from 'styled-components'
@@ -39,7 +39,6 @@ const Fader = styled.div`
   left: 0px;
   width: 100%;
   height: 2px;
-  background-color: ${({ theme }) => theme.bg3};
 `
 
 const AnimatedFader = animated(Fader)
@@ -87,12 +86,25 @@ export default function PopupItem({
     to: { width: '0%' },
     config: { duration: removeAfterMs ?? undefined }
   })
+  const [successfulTx, setSuccessfulTx] = useState(false)
+  useEffect(() => {
+    if('txn' in content) {
+      const {
+        txn: { success }
+      } = content
+      setSuccessfulTx(success)
+    }
+  }, [content])
 
   return (
-    <Popup>
+    <Popup style={{background: theme.darkMode ? successfulTx ? 'rgba(92, 179, 118, 0.05)' : 'rgba(230, 112, 102, 0.05)' :
+    successfulTx ? 'rgba(40, 116, 56, 0.05)' : 'rgba(211, 53, 53, 0.05)',
+    border: `1px solid ${theme.darkMode ? successfulTx ? 'rgba(92, 179, 118, 0.1)' : 'rgba(230, 112, 102, 0.1)' : 
+    successfulTx ? 'rgba(40, 116, 56, 0.1)' : 'rgba(211, 53, 53, 0.1)' }`}}>
       <StyledClose color={theme.text2} onClick={removeThisPopup} />
       {popupContent}
-      {removeAfterMs !== null ? <AnimatedFader style={faderStyle} /> : null}
+      {removeAfterMs !== null ? <AnimatedFader style={{...faderStyle, backgroundColor: theme.darkMode ? successfulTx ? '#5CB376' : '#E67066' : 
+      successfulTx ? '#287438' : '#D33535'}} /> : null}
     </Popup>
   )
 }

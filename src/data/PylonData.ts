@@ -50,7 +50,9 @@ export function useLiquidityFee(): string | undefined {
 }
 
 export function usePylonInfo(address?: string): PylonInfo | undefined {
+    console.log('AAAaddress', address)
     const contract = usePylonContract(address, false)
+    console.log('AAAcontract', contract)
     const result = useSingleContractMultipleMethods(contract, [
         "virtualAnchorBalance",
         "virtualFloatBalance",

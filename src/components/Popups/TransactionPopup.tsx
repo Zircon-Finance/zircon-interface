@@ -31,7 +31,7 @@ export default function TransactionPopup({
         <TYPE.body fontWeight={400}>{summary ?? 'Hash: ' + hash.slice(0, 8) + '...' + hash.slice(58, 65)}</TYPE.body>
         {chainId && (
           <ExternalLink href={getEtherscanLink(chainId, hash, 'transaction')}>
-            View on {chainId === 1285 ? 'Moonriver' : chainId === 1287 ? 'Moonbase' : 'BSC'} explorer
+            View on {chainId === 1285 ? 'Moonriver' : chainId === 1287 ? 'Moonbase' : chainId === 56 ? 'BSC' : 'block'} explorer
           </ExternalLink>
         )}
       </AutoColumn>

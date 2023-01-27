@@ -1,4 +1,4 @@
-import {ChainId, JSBI, Percent, Token, WDEV, MOONBASE_ADDRESSES, MOONRIVER_ADDRESSES, BSC_ADDRESSES, BSCT_ADDRESSES} from 'zircon-sdk'
+import {ChainId, JSBI, Percent, Token, WDEV, MOONBASE_ADDRESSES, MOONRIVER_ADDRESSES, BSC_ADDRESSES, BSCT_ADDRESSES, ARBGOERLY_ADDRESSES} from 'zircon-sdk'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { injected, talisman, walletconnect } from '../connectors'
 // fortmatic, portis, walletconnect, walletlink, lattice
@@ -9,6 +9,7 @@ export const ROUTER_ADDRESS: { [key: string]: string } = {
   [ChainId.MOONSHADOW]: MOONBASE_ADDRESSES.router,
   [ChainId.BSC]: BSC_ADDRESSES.router,
   [ChainId.BSCT]: BSCT_ADDRESSES.router,
+  [ChainId.ARBGOERLY] : ARBGOERLY_ADDRESSES.router
 }
 export const PYLON_ROUTER_ADDRESS: { [key: string]: string } = {
   [ChainId.STANDALONE]: '0x42e2EE7Ba8975c473157634Ac2AF4098190fc741',
@@ -17,6 +18,7 @@ export const PYLON_ROUTER_ADDRESS: { [key: string]: string } = {
   [ChainId.MOONSHADOW]: MOONBASE_ADDRESSES.pylonRouter,
   [ChainId.BSC]: BSC_ADDRESSES.pylonRouter,
   [ChainId.BSCT]: BSCT_ADDRESSES.pylonRouter,
+  [ChainId.ARBGOERLY] : ARBGOERLY_ADDRESSES.pylonRouter
 }
 // a list of tokens by chain
 type ChainTokenList = {
@@ -55,6 +57,7 @@ const WDEV_ONLY: ChainTokenList = {
   [ChainId.MOONSHADOW]: [WDEV[ChainId.MOONSHADOW]],
   [ChainId.BSC]: [WDEV[ChainId.BSC]],
   [ChainId.BSCT]: [WDEV[ChainId.BSCT]],
+  [ChainId.ARBGOERLY]: [WDEV[ChainId.ARBGOERLY]],
 }
 
 // used to construct intermediary pairs for trading

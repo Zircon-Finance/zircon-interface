@@ -198,7 +198,7 @@ function Web3StatusInner() {
   const hasSocks = useHasSocks()
   const toggleWalletModal = useWalletModalToggle()
 
-  if (account && (chainId === 1285 || chainId === 56 || chainId === 1287 || chainId === 97)) {
+  if (account && (chainId === 1285 || chainId === 56 || chainId === 1287 || chainId === 97 || chainId === 421613)) {
     return (
       <Web3StatusConnected id="web3-status-connected" onClick={toggleWalletModal} pending={hasPendingTransactions}>
         {hasPendingTransactions ? (
@@ -214,7 +214,7 @@ function Web3StatusInner() {
         {!hasPendingTransactions && connector && <StatusIcon connector={connector} />}
       </Web3StatusConnected>
     )
-  } else if (error || !(chainId === 1285 || chainId === 56 || chainId === 1287 || chainId === 97)) {
+  } else if (error || !(chainId === 1285 || chainId === 56 || chainId === 1287 || chainId === 97 || chainId === 421613)) {
     return (
       <Web3StatusError onClick={toggleWalletModal}>
         <NetworkIcon />

@@ -252,9 +252,9 @@ export default function AddLiquidityPro({
 
   const batchContract = useBatchPrecompileContract()
   const aCurrency = currencyA !== null ? wrappedCurrency(currencyA, chainId)?.address : chainId === 1285 ?
-    '0x4545e94974adacb82fc56bcf136b07943e152055' : chainId === 56 && '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c'
+    '0x4545e94974adacb82fc56bcf136b07943e152055' : chainId === 56 ? '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c' : '0x680Faf7f226324F8ECdA0c5ba17c9bee2E8534C7'
   const bCurrency = currencyB !== null ? wrappedCurrency(currencyB, chainId)?.address : chainId === 1285 ?
-  '0x4545e94974adacb82fc56bcf136b07943e152055' : chainId === 56 && '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c'
+  '0x4545e94974adacb82fc56bcf136b07943e152055' : chainId === 56 ? '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c' : '0x680Faf7f226324F8ECdA0c5ba17c9bee2E8534C7'
   const token0Contract = useERC20(aCurrency ?? '0x0000000000000000000000000000000000000000', true) ?? undefined
   const token1Contract = useERC20(bCurrency ?? aCurrency ?? '0x0000000000000000000000000000000000000000', true) ?? undefined
 
@@ -308,6 +308,7 @@ export default function AddLiquidityPro({
       parsedAmounts[getField(true)],
       PYLON_ROUTER_ADDRESS[chainId ? chainId : ""]
   );
+  console.log('approvalA: ', approvalA)
   const [approvalB, approveBCallback] = useApproveCallback(
       parsedAmounts[getField(false)],
       PYLON_ROUTER_ADDRESS[chainId ? chainId : ""]
@@ -1064,6 +1065,10 @@ export default function AddLiquidityPro({
     approvalB === ApprovalState.PENDING) &&
     isValid
 
+  const showApproveACondition = pylonState === PylonState.NOT_EXISTS ? 
+    (approvalAPair !== ApprovalState.APPROVED ? true : false) : 
+    (approvalA !== ApprovalState.APPROVED ? true : false)
+
   return (
       <>
         {(pylonState === PylonState.LOADING || account === '0' || currencyA === null || currencyB === null) &&  (
@@ -1496,10 +1501,9 @@ export default function AddLiquidityPro({
                             {(!(chainId === 1285 || chainId === 1287) || ((chainId === 1285 || chainId === 1287) && pylonState !== PylonState.EXISTS)) && showApproveCondition && (
                                 <RowBetween>
                                   {/* Currency A isn't approved or pylon doesn't exist and A isn't approved */}
-                                  {(pylonState === PylonState.NOT_EXISTS ? (approvalAPair !== ApprovalState.APPROVED ? true : false) : (approvalA !== ApprovalState.APPROVED ? true : false))
-                                  && (
+                                  {showApproveACondition && (
                                       <ButtonPrimary
-                                          onClick={(pylonState === PylonState.ONLY_PAIR) ?
+                                          onClick={pylonState === PylonState.EXISTS ?
                                               approveACallback
                                               : approveACallbackPair}
                                           disabled={approvalA === ApprovalState.PENDING

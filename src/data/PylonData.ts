@@ -71,21 +71,21 @@ export function usePylonInfo(address?: string): PylonInfo | undefined {
         "p2y"
     ])?.map<any>((res => res?.result?.[0]))
     return address && result ? {
-        virtualAnchorBalance: result[0].toString(),
-        virtualFloatBalance: result[1].toString(),
-        muMulDecimals: result[2].toString(),
-        gammaMulDecimals: result[3].toString(),
-        strikeBlock: result[4].toString(),
-        EMABlockNumber: result[5].toString(),
-        gammaEMA: result[6].toString(),
-        thisBlockEMA: result[7].toString(),
-        lastRootKTranslated: result[8].toString(),
-        formulaSwitch: result[9].toString(),
-        lastFloatAccumulator: result[10].toString(),
-        lastOracleTimestamp: result[11].toString(),
-        lastPrice: result[12].toString(),
-        p2x: result[13].toString(),
-        p2y: result[14].toString(),
+        virtualAnchorBalance: result?.[0]?.toString(),
+        virtualFloatBalance: result?.[1]?.toString(),
+        muMulDecimals: result?.[2]?.toString(),
+        gammaMulDecimals: result?.[3]?.toString(),
+        strikeBlock: result?.[4]?.toString(),
+        EMABlockNumber: result?.[5]?.toString(),
+        gammaEMA: result?.[6]?.toString(),
+        thisBlockEMA: result?.[7]?.toString(),
+        lastRootKTranslated: result?.[8]?.toString(),
+        formulaSwitch: result?.[9]?.toString(),
+        lastFloatAccumulator: result?.[10]?.toString(),
+        lastOracleTimestamp: result?.[11]?.toString(),
+        lastPrice: result?.[12]?.toString(),
+        p2x: result?.[13]?.toString(),
+        p2y: result?.[14]?.toString(),
     } : undefined
 }
 
@@ -97,9 +97,9 @@ export function usePairInfo(address?: string): PairInfo | undefined {
         "kLast"
     ])?.map<any>((res => res?.result?.[0]))
     return address && result ? {
-        price0CumulativeLast: result[0].toString(),
-        price1CumulativeLast: result[1].toString(),
-        kLast: result[2].toString(),
+        price0CumulativeLast: result?.[0]?.toString(),
+        price1CumulativeLast: result?.[1]?.toString(),
+        kLast: result?.[2]?.toString(),
     } : undefined
 }
 

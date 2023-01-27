@@ -210,7 +210,6 @@ export default function AddLiquidityPro({
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noPylon);
   const isValid = !error;
 
-
   // handle pool button values
   const {pools} = usePools();
   const farm = pools.find(

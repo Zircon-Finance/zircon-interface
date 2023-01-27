@@ -52,6 +52,7 @@ export const NEVER_RELOAD: ListenerOptions = {
 function useCallsData(calls: (Call | undefined)[], options?: ListenerOptions): CallResult[] {
   const { chainId } = useActiveWeb3React()
   const callResults = useSelector<AppState, AppState['multicall']['callResults']>(state => state.multicall.callResults)
+  console.log('useCallsData: callResults', callResults)
   const dispatch = useDispatch<AppDispatch>()
 
   const serializedCallKeys: string = useMemo(
@@ -199,7 +200,6 @@ export function useSingleContractMultipleMethods(
 ): CallState[] {
 
   const fragments = useMemo(() => methodNames ? methodNames.map<FunctionFragment>(methodName => contract?.interface?.getFunction(methodName))  : [], [contract, methodNames])
-
   const calls = useMemo(
     () =>
       contract && fragments && fragments.length > 0
@@ -213,6 +213,7 @@ export function useSingleContractMultipleMethods(
     [callInput, contract, fragments]
   )
   const results = useCallsData(calls, options)
+  console.log('RRRRR:: res', results)
 
   const latestBlockNumber = useBlockNumber()
 
@@ -236,7 +237,7 @@ export function useMultipleContractSingleData(
         : undefined,
     [callInputs, contractInterface, fragment]
   )
-    console.log("RRR:: ", callData)
+    console.log("RRR:: callData", callData)
 
     const calls = useMemo(
     () =>
@@ -257,6 +258,7 @@ export function useMultipleContractSingleData(
   const timestamp = useBlockTimestamp()
     console.log("RRR::latestBlockNumber ", latestBlockNumber, timestamp)
   const results = useCallsData(calls, options)
+  console.log('RRRRRRResults', results)
 
   return useMemo(() => {
     return results.map(result => toCallState(result, contractInterface, fragment, latestBlockNumber))

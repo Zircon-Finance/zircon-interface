@@ -52,7 +52,7 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
   const resultsPair = useMultipleContractSingleData(pairAddresses, PAIR_INTERFACE, 'getReserves')
   const liquidityFee = useLiquidityFee()
   console.log("RRR:: resultsP", resultsPair)
-  console.log("RRR:: results", resultsPair)
+  console.log("RRR:: results", results)
   return useMemo(() => {
     return results.map((result, i) => {
       const { result: reserves, loading } = result

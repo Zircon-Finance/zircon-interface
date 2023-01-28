@@ -12,15 +12,17 @@ import { useDispatch } from 'react-redux'
 import { fetchPoolsUserDataAsync } from '../../../state/pools'
 import { useAddPopup } from '../../../state/application/hooks'
 import { useTransactionAdder } from '../../../state/transactions/hooks'
+import { usePools } from '../../../state/pools/hooks'
 
-const useApprovePool = (pool, lpContract: Contract, sousId) => {
+const useApprovePool = (pool, lpContract: Contract, contractAddress) => {
   const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
   const { callWithGasPrice } = useCallWithGasPrice()
   const dispatch = useDispatch()
+  const {pools} = usePools()
   const { account, chainId } = useWeb3React()
   const addPopup = useAddPopup()
   const addTransaction = useTransactionAdder()
-  const sousChefContract = useSousChef(sousId)
+  const sousChefContract = useSousChef(pool.contractAddress)
 
   const handleApprove = useCallback(async () => {
     const receipt = await fetchWithCatchTxError(() => {
@@ -43,7 +45,7 @@ const useApprovePool = (pool, lpContract: Contract, sousId) => {
         },
         receipt.transactionHash
       )
-      dispatch(fetchPoolsUserDataAsync({chainId, account}))
+      dispatch(fetchPoolsUserDataAsync({chainId, account, pools}))
     }
   }
   , [account, addPopup, addTransaction, dispatch, lpContract, pool, sousChefContract, fetchWithCatchTxError, callWithGasPrice])

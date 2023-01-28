@@ -20,9 +20,8 @@ const sousEmergencyUnstake = (sousChefContract: any) => {
   return sousChefContract.emergencyWithdraw({ gasPrice })
 }
 
-const useUnstakePool = (sousId: number, enableEmergencyWithdraw = false) => {
-  const sousChefContract = useSousChef(sousId)
-
+const useUnstakePool = (contractAddress: string, enableEmergencyWithdraw = false) => {
+  const sousChefContract = useSousChef(contractAddress)
   const handleUnstake = useCallback(
     async (amount: string, decimals: number) => {
       if (enableEmergencyWithdraw) {

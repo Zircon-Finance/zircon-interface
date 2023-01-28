@@ -12,8 +12,6 @@ const fetchPools = async (chainId: number, poolsToFetch: SerializedPoolConfig[])
 
         return {
             ...pool,
-            token1: pool.token1,
-            token2: pool.token2,
             gamma: new BigNumber(gamma).toJSON(),
         }
     })

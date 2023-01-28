@@ -47,9 +47,9 @@ export const useMasterchef = () => {
   return useMemo(() => getMasterchefContract(chainId, library.getSigner()), [library])
 }
 
-export const useSousChef = (id) => {
+export const useSousChef = (contractAddress: string) => {
   const { library, chainId } = useActiveWeb3React()
-  return useMemo(() => getSouschefContract(chainId, id, library.getSigner()), [id, library])
+  return useMemo(() => getSouschefContract(chainId, contractAddress, library.getSigner()), [contractAddress, library])
 }
 
 export function useV2MigratorContract(): Contract | null {

@@ -10,8 +10,6 @@ import {
 
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, State, unknown, AnyAction>
 
-export type DeserializedPoolVault = DeserializedPool & (DeserializedCakeVault | DeserializedIfoCakeVault)
-
 export interface BigNumberToJson {
   type: 'BigNumber'
   hex: string
@@ -90,11 +88,8 @@ export interface DeserializedPool extends DeserializedPoolConfig, CorePoolProps 
   quotingPrice?: string
   tokenPrice?: string
   stakingLimit?: BigNumber
+  gamma?: BigNumber
   stakingLimitEndBlock?: number
-  profileRequirement?: {
-    required: boolean
-    thresholdPoints: BigNumber
-  }
   userData?: {
     allowance: BigNumber
     stakingTokenBalance: BigNumber
@@ -108,10 +103,6 @@ export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
   stakingLimit?: SerializedBigNumber
   quotingPrice?: SerializedBigNumber
   numberBlocksForUserLimit?: number
-  profileRequirement?: {
-    required: boolean
-    thresholdPoints: SerializedBigNumber
-  }
   userData?: {
     allowance: SerializedBigNumber
     stakingTokenBalance: SerializedBigNumber
@@ -148,73 +139,6 @@ export interface DeserializedFarmsState {
   loadArchivedFarmsData: boolean
   userDataLoaded: boolean
   poolLength?: number
-}
-
-export interface SerializedVaultFees {
-  performanceFee: number
-  callFee: number
-  withdrawalFee: number
-  withdrawalFeePeriod: number
-}
-
-export interface DeserializedVaultFees extends SerializedVaultFees {
-  performanceFeeAsDecimal: number
-}
-
-export interface SerializedVaultUser {
-  isLoading: boolean
-  userShares: SerializedBigNumber
-  cakeAtLastUserAction: SerializedBigNumber
-  lastDepositedTime: string
-  lastUserActionTime: string
-}
-
-export interface DeserializedVaultUser {
-  isLoading: boolean
-  userShares: BigNumber
-  cakeAtLastUserAction: BigNumber
-  lastDepositedTime: string
-  lastUserActionTime: string
-}
-
-export interface DeserializedIfoVaultUser extends DeserializedVaultUser {
-  credit: string
-}
-
-export interface SerializedIfoVaultUser extends SerializedVaultUser {
-  credit: string
-}
-
-export interface DeserializedCakeVault {
-  totalShares?: BigNumber
-  pricePerFullShare?: BigNumber
-  totalCakeInVault?: BigNumber
-  estimatedCakeBountyReward?: BigNumber
-  totalPendingCakeHarvest?: BigNumber
-  fees?: DeserializedVaultFees
-  userData?: DeserializedVaultUser
-}
-
-export interface SerializedCakeVault {
-  totalShares?: SerializedBigNumber
-  pricePerFullShare?: SerializedBigNumber
-  totalCakeInVault?: SerializedBigNumber
-  estimatedCakeBountyReward?: SerializedBigNumber
-  totalPendingCakeHarvest?: SerializedBigNumber
-  fees?: SerializedVaultFees
-  userData?: SerializedVaultUser
-}
-
-export interface SerializedIfoCakeVault extends Omit<SerializedCakeVault, 'userData'> {
-  userData?: SerializedIfoVaultUser
-  creditStartBlock?: number
-  creditEndBlock?: number
-}
-
-export interface DeserializedIfoCakeVault extends Omit<DeserializedCakeVault, 'userData'> {
-  userData?: DeserializedIfoVaultUser
-  creditStartBlock?: number
-  creditEndBlock?: number
 }
 
 export interface PoolsState {
@@ -275,10 +199,6 @@ export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
   quotingPrice?: SerializedBigNumber
   tokenPrice?: SerializedBigNumber
   numberBlocksForUserLimit?: number
-  profileRequirement?: {
-    required: boolean
-    thresholdPoints: SerializedBigNumber
-  }
   userData?: {
     allowance: SerializedBigNumber
     stakingTokenBalance: SerializedBigNumber

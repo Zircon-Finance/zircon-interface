@@ -72,7 +72,7 @@ const DaysLeftBar: React.FC<DaysLeftProps> = ({viewMode = 'table', startBlock, e
   )}
 
   return (
-    <Flex flexDirection={"column"} alignItems={"center"} mt={"10px"} style={{width: '100%',minWidth: viewMode === 'card' && '200px'}}>
+    <Flex flexDirection={"column"} alignItems={"center"} mt={"10px"} style={{width: '100%', minWidth: viewMode === 'card' && '200px'}}>
       <Flex alignItems={"center"} justifyContent={'space-between'} style={{width: '100%'}}>
       <Text style={{ width: "100%", marginBottom: '5px' }} textAlign={"left"} fontSize={13}
       color = {daysLeft <= 3 ? theme.percentageRed : theme.text1}>

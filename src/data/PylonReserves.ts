@@ -38,17 +38,22 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
     [tokens]
   )
   const pairAddresses = useMemo(
-    () =>
-      tokens.map(([tokenA, tokenB]) => {
-        return tokenA && tokenB && !tokenA.equals(tokenB) ? Pair.getAddress(tokenA, tokenB) : undefined
-      }),
-    [tokens]
+      () =>
+          tokens.map(([tokenA, tokenB]) => {
+            return tokenA && tokenB && !tokenA.equals(tokenB) ? Pair.getAddress(tokenA, tokenB) : undefined
+          }),
+      [tokens]
   )
+
+  console.log("RRR:: tokenA", tokens)
+  console.log("RRR:: pairAd", pairAddresses)
+  console.log("RRR:: pylonAddress", pylonAddresses)
 
   const results = useMultipleContractSingleData(pylonAddresses, PYLON_INTERFACE, 'getSyncReserves')
   const resultsPair = useMultipleContractSingleData(pairAddresses, PAIR_INTERFACE, 'getReserves')
   const liquidityFee = useLiquidityFee()
-
+  console.log("RRR:: resultsP", resultsPair)
+  console.log("RRR:: results", results)
   return useMemo(() => {
     return results.map((result, i) => {
       const { result: reserves, loading } = result
@@ -57,19 +62,31 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
       const tokenA = tokens[i][0]
       const tokenB = tokens[i][1]
 
+      console.log("result", result)
+
       if (loading || resPair.loading) return [PylonState.LOADING, null]
       if (!tokenA || !tokenB || tokenA.equals(tokenB)) return [PylonState.INVALID, null]
+
       if (!reserves || !resPair.result){
+
         if(resPair.result) {
           // console.log(resPair.result)
           const reserve0 = resPair.result[0]
           const reserve1 = resPair.result[1]
+          const timestamp = resPair.result[2]
           // const { _reserve0, reserve1 } = resPair.result;
           // console.log(reserve0, reserve1)
           const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA]
           return [
             PylonState.ONLY_PAIR,
-            new Pylon(new Pair(new TokenAmount(token0, reserve0.toString()), new TokenAmount(token1, reserve1.toString()), liquidityFee),new TokenAmount(tokenA, "0"), new TokenAmount(tokenB, "0"))
+            new Pylon(new Pair(
+                    new TokenAmount(token0, reserve0.toString()),
+                    new TokenAmount(token1, reserve1.toString()),
+                    timestamp.toString(),
+                    liquidityFee
+                ),
+                new TokenAmount(tokenA, "0"),
+                new TokenAmount(tokenB, "0"))
           ]
         }else{
           return [PylonState.NOT_EXISTS, null]
@@ -78,10 +95,19 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
       const { _reserve0, _reserve1 } = reserves
       const reserve0 = resPair.result[0]
       const reserve1 = resPair.result[1]
+      const timestamp = resPair.result[2]
+
       const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA]
       return [
         PylonState.EXISTS,
-        new Pylon(new Pair(new TokenAmount(token0, reserve0.toString()), new TokenAmount(token1, reserve1.toString()), liquidityFee),new TokenAmount(tokenA, _reserve0.toString()), new TokenAmount(tokenB, _reserve1.toString()))
+        new Pylon(new Pair(
+                new TokenAmount(token0, reserve0.toString()),
+                new TokenAmount(token1, reserve1.toString()),
+                timestamp.toString(),
+                liquidityFee
+            ),
+            new TokenAmount(tokenA, _reserve0.toString()),
+            new TokenAmount(tokenB, _reserve1.toString()))
       ]
     })
   }, [results, tokens, resultsPair])

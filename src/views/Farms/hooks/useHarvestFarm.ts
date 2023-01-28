@@ -1,7 +1,4 @@
 import { useCallback } from 'react'
-import { DEFAULT_GAS_LIMIT, 
-  // harvestFarm 
-} from '../../../utils/calls'
 import { 
   useBatchPrecompileContract,
   // useMasterchef,
@@ -12,6 +9,7 @@ import { DeserializedPool } from '../../../state/types'
 import { useUserDeadline } from '../../../state/user/hooks'
 import { useActiveWeb3React } from '../../../hooks'
 import { getPylonRouterContract } from '../../../utils'
+import { DEFAULT_GAS_LIMIT } from './useStakeFarms'
 
 const options = {
   gasLimit: DEFAULT_GAS_LIMIT,
@@ -46,11 +44,11 @@ const compoundPool = async (sousChefContract, batchContract, earnings, pool: Des
   )
 }
 
-const useHarvestFarm = (sousId, earnings) => {
-  const sousChefContract = useSousChef(sousId)
+const useHarvestFarm = (contractAddress, earnings) => {
+  const {pool} = usePool(contractAddress)
+  const sousChefContract = useSousChef(contractAddress)
   const batchContract = useBatchPrecompileContract()
   const [deadline] = useUserDeadline();
-  const {pool} = usePool(sousId)
   const {account, chainId, library} = useActiveWeb3React()
   const router = getPylonRouterContract(chainId, library, account);
 

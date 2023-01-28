@@ -5,13 +5,10 @@ import React, { useCallback } from 'react'
 import { getBalanceAmount } from '../../../utils/formatBalance'
 import { useTheme } from 'styled-components'
 import { Token } from 'zircon-sdk'
-// import { useToken } from '../../../hooks/Tokens'
-// import { useDerivedPylonBurnInfoFixedPercentage } from '../../../state/burn/hooks'
 import { Field } from '../../../state/burn/actions'
 import { useUserFarmsViewMode } from '../../../state/user/hooks'
 import { ViewMode } from '../../../state/user/actions'
 import { useWindowDimensions } from '../../../hooks'
-// import { usePair } from '../../../data/Reserves'
 
 interface StackedLPProps {
   stakedBalance: BigNumber

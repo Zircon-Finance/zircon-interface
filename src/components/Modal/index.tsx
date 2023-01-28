@@ -25,7 +25,7 @@ const StyledDialogOverlay = styled(AnimatedDialogOverlay)`
 const AnimatedDialogContent = animated(DialogContent)
 // destructure to not pass custom props to Dialog DOM element
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, ...rest }) => (
+const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, width, ...rest }) => (
   <AnimatedDialogContent {...rest} />
 )).attrs({ //width 300 px is width of wallet modal
   'aria-label': 'dialog'
@@ -35,7 +35,7 @@ const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, ...r
     background-color: ${({ theme }) => theme.walletModal};
     box-shadow: 0 4px 8px 0 ${({ theme }) => transparentize(0.95, theme.shadow1)};
     padding: 0px;
-    width: 350px;
+    width: ${({ width }) => width || 350}px;
     overflow: hidden;
 
     #claim_modal {
@@ -93,6 +93,7 @@ interface ModalProps {
   maxHeight?: number
   initialFocusRef?: React.RefObject<any>
   children?: React.ReactNode
+  width?: string
 }
 
 export default function Modal({
@@ -101,7 +102,8 @@ export default function Modal({
   minHeight = false,
   maxHeight = 50,
   initialFocusRef,
-  children
+  children,
+  width
 }: ModalProps) {
   const fadeTransition = useTransition(isOpen, null, {
     config: { duration: 200 },
@@ -139,6 +141,7 @@ export default function Modal({
                 minHeight={minHeight}
                 maxHeight={maxHeight}
                 mobile={isMobile}
+                width={width}
               >
                 {/* prevents the automatic focusing of inputs on mobile by the reach dialog */}
                 {!initialFocusRef && isMobile ? <div tabIndex={1} /> : null}

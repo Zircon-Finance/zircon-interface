@@ -1,5 +1,7 @@
 import React from 'react'
-import { Redirect, RouteComponentProps } from 'react-router-dom'
+import { Redirect, RouteComponentProps, useParams } from 'react-router-dom'
+import { connectNet } from '../../components/WalletModal'
+import { useActiveWeb3React } from '../../hooks'
 
 // Redirects to swap but only replace the pathname
 export function RedirectPathToSwapOnly({ location }: RouteComponentProps) {
@@ -14,6 +16,7 @@ export function RedirectToSwap(props: RouteComponentProps<{ outputCurrency: stri
       params: { outputCurrency }
     }
   } = props
+  console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAA')
 
   return (
     <Redirect
@@ -27,4 +30,15 @@ export function RedirectToSwap(props: RouteComponentProps<{ outputCurrency: stri
       }}
     />
   )
+}
+
+// function that checks if the url contains a property named network and returns the value
+export function GetNetworkFromUrl() {
+  const {account, chainId} = useActiveWeb3React()
+  //eslint-disable-next-line
+  const { network } = useParams();
+  account && network === 'movr' && chainId !== 1285 ? connectNet('moonriver') : 
+    network === 'bsc' && chainId !== 56 ? connectNet('bsc') :
+    console.log('no network')
+  return <Redirect to={{ pathname: '/swap' }} />
 }

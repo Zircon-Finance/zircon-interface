@@ -41,7 +41,7 @@ const InputPanel = styled.div<{ hideInput?: boolean }>`
 
 const Container = styled.div<{ hideInput: boolean }>`
   border-radius: ${({ hideInput }) => (hideInput ? '8px' : '17px')};
-  background-color: ${({ theme }) => theme.liquidityBg};
+  background-color: ${({ theme }) => theme.darkMode ? theme.liquidityBg : '#F5F3F3'};
 `
 
 const StyledBalanceMax = styled.button`
@@ -60,7 +60,7 @@ const StyledBalanceMax = styled.button`
   font-weight: 500;
   cursor: pointer;
   margin-right: 0.5rem;
-  color: ${({ theme }) => theme.pinkGamma};
+  color: ${({ theme }) => theme.darkMode ? '#CA90BB' : '#9E4D86'};
 
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     margin-right: 0.5rem;
@@ -136,17 +136,19 @@ export default function CurrencyInputPanel({
                 <InputRow style={hideInput ? { alignItems: 'center', padding: '0', borderRadius: '8px' } : {alignItems: 'center'}} selected={disableCurrencySelect}>
                 {!hideInput && (
                   <>
-                      <span style={{padding: '5px 5px 0px 10px'}}>
+                      <span style={{padding: '5px 10px 0px 5px'}}>
                         <CurrencyLogo currency={currency} size={'30px'} chainId={chainId} />
                         </span>
-                      <span style={{fontSize: '16px', alignSelf: 'center', paddingRight: '12px'}}>
+                      <span style={{fontSize: '16px', alignSelf: 'center', paddingRight: '5px', fontWeight: 500}}>
                         {(currency && currency.symbol && currency.symbol.length > 20
                           ? currency.symbol.slice(0, 4) +
                           '...' +
                           currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
                           : currency?.symbol) || t('selectToken')}
                       </span>
-                      <span style={{fontSize: width < 700 ? '13px' : '16px', color: theme.whiteHalf}}>{isFloat ? 'FLOAT' : 'STABLE'}</span>
+                      <span style={{fontSize: width < 700 ? '13px' : '16px', color: theme.darkMode ? 'rgba(255, 255, 255, 0.9' : '#080506', fontWeight: 500}}>
+                        {isFloat ? 'Float' : 'Stable'}
+                      </span>
 
                     <NumericalInput
                       currency={currency}
@@ -179,7 +181,7 @@ export default function CurrencyInputPanel({
                   {account && currency && showMaxButton && label !== 'To' && (
                   <StyledBalanceMax onClick={onMax} style={{cursor: 'pointer'}}>MAX</StyledBalanceMax>
                   )}
-                  <Text color={theme.whiteHalf}>
+                  <Text color={theme.darkMode ? '#9C8F95' : '#6A6768'}>
                     {!hideBalance && !!currency && selectedCurrencyBalance
                     ? 'Balance: ' + selectedCurrencyBalance?.toSignificant(6)
                     : ' -'}

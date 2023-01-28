@@ -12,10 +12,10 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  width: 80%;
-  color: ${({ theme }) => theme.darkMode ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)'};
-  border: 1px solid ${({ theme }) => theme.darkMode ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)'};
-  border-radius: 12px;
+  width: 90%;
+  color: ${({ theme }) => theme.darkMode ? '#9C8F95' : '#6A6768'};
+  border-top: 1px solid ${({ theme }) => theme.darkMode ? '#492B36' : '#F4EFF0'};
+  border-bottom: 1px solid ${({ theme }) => theme.darkMode ? '#492B36' : '#F4EFF0'};
   font-size: 16px;
   margin: 8px auto 8px auto;
   border-bottom: none;
@@ -27,7 +27,7 @@ const RowContainer = styled.div`
   justify-content: space-between;
   width: 100%;
   padding: 8px;
-  border-bottom: 1px solid ${({ theme }) => theme.darkMode ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)'};
+  border-bottom: 1px solid ${({ theme }) => theme.darkMode ? '#492B36' : '#F4EFF0'};
 `
 const SmallContainer = styled.div`
   display: flex;
@@ -50,13 +50,20 @@ interface Props {
     hoverPage?: string
     slippage?: BigNumber
     reservesPTU?: BigNumber
+    tokenSymbol?: string
 }
 
 interface ToolTipProps {
     option: string
   }
 
-const CapacityIndicator: React.FC<Props> = ({gamma, hoverPage, health, isFloat, noSpan, blocked, feePercentage,extraFee = new BigNumberJs(0), extraFeeTreshold = new BigNumberJs(0), isDeltaGamma, slashingOmega= new BigNumberJs(0), slippage = new BigNumberJs(0), reservesPTU = new BigNumberJs(0)}) => {
+const CapacityIndicator: React.FC<Props> = ({gamma,
+                                                hoverPage, health, isFloat,
+                                                noSpan, blocked, feePercentage,
+                                                extraFee = new BigNumberJs(0), extraFeeTreshold = new BigNumberJs(0),
+                                                isDeltaGamma, slashingOmega= new BigNumberJs(0),
+                                                slippage = new BigNumberJs(0), reservesPTU = new BigNumberJs(0),
+                                                tokenSymbol}) => {
     const theme = useTheme();
     const [hoverRisk, setHoverRisk] = React.useState(false);
     const [hoverFee, setHoverFee] = React.useState(false);
@@ -114,7 +121,7 @@ const CapacityIndicator: React.FC<Props> = ({gamma, hoverPage, health, isFloat, 
             </RowContainer>}
             {!blocked && slippage.gt(0) && <RowContainer>
                 <SmallContainer>
-                    {!noSpan && <span style={{marginLeft: 8}}>{'Slippage > ' + reservesPTU.toFixed(0)}</span>}
+                    {!noSpan && <span style={{marginLeft: 8}}>{'Slippage For ' + reservesPTU.toFixed(0) + " " + tokenSymbol}</span>}
                     <QuestionMarkContainer
                         onMouseEnter={() => setHoverSlippage(true)}
                         onMouseLeave={() => setHoverSlippage(false)}
@@ -144,7 +151,7 @@ const CapacityIndicator: React.FC<Props> = ({gamma, hoverPage, health, isFloat, 
                 <span style={{marginRight: 8}}>{slashingOmega?.toFixed(2)}%</span>
             </RowContainer>}
 
-            <RowContainer style={{borderBottomLeftRadius: '12px', borderBottomRightRadius: '12px'}}>
+            <RowContainer>
                 <SmallContainer>
 
                     {!noSpan && <span style={{marginLeft: 8, color: blocked ? '#E67066' : undefined}}>{blocked ? "Tx likely to fail" : isFloat ? 'Divergence' : 'Health factor'}</span>}

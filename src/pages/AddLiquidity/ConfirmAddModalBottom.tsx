@@ -8,8 +8,9 @@ import { Field } from '../../state/mint/actions'
 import { TYPE } from '../../theme'
 import { Separator } from '../../components/SearchModal/styleds'
 import { AlertTriangle } from 'react-feather'
-import styled, { useTheme } from 'styled-components'
+import styled from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
+import ErrorTxContainer from '../../components/ErrorTxContainer'
 
 export const StyledWarningIcon = styled(AlertTriangle)`
   stroke: ${({ theme }) => theme.red1};
@@ -34,18 +35,17 @@ export function ConfirmAddModalBottom({
   onAdd: () => void
   errorTx?: string
 }) {
-  const theme = useTheme()
   const {chainId} = useActiveWeb3React()
   return (
     <>
-      <RowBetween>
+      <RowBetween style={{marginBottom: '10px', marginTop: '-5px'}}>
         <TYPE.body>{currencies[Field.CURRENCY_A]?.symbol} Deposited</TYPE.body>
         <RowFixed>
           <CurrencyLogo currency={currencies[Field.CURRENCY_A]} style={{ marginRight: '8px' }} chainId={chainId} />
           <TYPE.body style={{overflow: 'auto'}}>{parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)}</TYPE.body>
         </RowFixed>
       </RowBetween>
-      <RowBetween>
+      <RowBetween style={{marginBottom: '10px'}}>
         <TYPE.body>{currencies[Field.CURRENCY_B]?.symbol} Deposited</TYPE.body>
         <RowFixed>
           <CurrencyLogo currency={currencies[Field.CURRENCY_B]} style={{ marginRight: '8px' }} chainId={chainId} />
@@ -53,7 +53,7 @@ export function ConfirmAddModalBottom({
         </RowFixed>
       </RowBetween>
       <Separator />
-      <RowBetween>
+      <RowBetween style={{marginTop: '5px'}}>
         <TYPE.smallerBody>Rates</TYPE.smallerBody>
         <TYPE.smallerBody>
           {`1 ${currencies[Field.CURRENCY_A]?.symbol} = ${price?.toSignificant(4)} ${
@@ -61,7 +61,7 @@ export function ConfirmAddModalBottom({
           }`}
         </TYPE.smallerBody>
       </RowBetween>
-      <RowBetween style={{ justifyContent: 'flex-end' }}>
+      <RowBetween style={{ justifyContent: 'flex-end', marginBottom: '10px' }}>
         <TYPE.smallerBody>
           {`1 ${currencies[Field.CURRENCY_B]?.symbol} = ${price?.invert().toSignificant(4)} ${
             currencies[Field.CURRENCY_A]?.symbol
@@ -73,12 +73,9 @@ export function ConfirmAddModalBottom({
         <TYPE.smallerBody>{noLiquidity ? '100' : poolTokenPercentage?.toSignificant(4)}%</TYPE.smallerBody>
       </RowBetween>
       {errorTx && (
-        <RowBetween mt={10}>
-          <StyledWarningIcon />
-          <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{errorTx}</span>
-        </RowBetween>
+        <ErrorTxContainer errorTx={errorTx} />
       )}
-      <ButtonPrimary style={{ margin: '20px 0 0 0' }} onClick={onAdd}>
+      <ButtonPrimary onClick={onAdd}>
         <Text fontWeight={400} fontSize={16}>
           {noLiquidity ? 'Create Pool & Supply' : 'Confirm Supply'}
         </Text>

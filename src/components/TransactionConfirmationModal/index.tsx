@@ -3,7 +3,7 @@ import React  from 'react'
 import styled, { useTheme } from 'styled-components'
 import Modal from '../Modal'
 import { ExternalLink } from '../../theme'
-import { Text } from 'rebass'
+import { Flex, Text } from 'rebass'
 import { CloseIcon } from '../../theme/components'
 import { RowBetween, RowFixed } from '../Row'
 import { AlertTriangle, ArrowUpCircle } from 'react-feather'
@@ -116,7 +116,7 @@ function TransactionSubmittedContent({
             {chainId && hash && (
                 <ExternalLink href={getEtherscanLink(chainId, hash, 'transaction')}>
                   <Text fontWeight={400} fontSize={14} color={theme.meatPink}>
-                    View on {chainId === 1285 ? 'Moonriver' : chainId === 1287 ? 'Moonbase' : 'BSC'} explorer ↗
+                    View on {chainId === 1285 ? 'Moonriver' : chainId === 1287 ? 'Moonbase' : chainId === 56 ? 'BSC' : 'block'} explorer ↗
                   </Text>
                 </ExternalLink>
             )}
@@ -150,25 +150,36 @@ export function ConfirmationModalContent({
                                            title,
                                            bottomContent,
                                            onDismiss,
-                                           topContent
+                                           topContent,
+                                           feeTooHigh
                                          }: {
   title: string
   onDismiss: () => void
   topContent: () => React.ReactNode
   bottomContent: () => React.ReactNode
+  feeTooHigh?: boolean
 }) {
+  const theme = useTheme()
+  const WarningSmall = () => (
+    <svg width="28" height="24" viewBox="0 0 28 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.266012 21.2114L12.4508 0.883072C13.1565 -0.294357 14.8435 -0.294358 15.5492 0.883072L27.734 21.2114C28.4673 22.4349 27.5978 24 26.1848 24H1.81523C0.40222 24 -0.467312 22.4349 0.266012 21.2114Z" fill={theme.darkMode ? '#E9D886' : '#836D0B'} fill-opacity="0.25"/>
+    <rect x="13" y="7" width="2" height="9" rx="1" fill={theme.darkMode ? '#E9D886' : '#836D0B'}/>
+    <rect x="13" y="18" width="2" height="2" rx="1" fill={theme.darkMode ? '#E9D886' : '#836D0B'}/>
+    </svg>
+  )
   return (
       <Wrapper>
         <Section style={{padding: '24px 24px 0 24px'}}>
           <RowBetween>
-            <Text fontWeight={400} fontSize={16}>
+            <Flex style={{gap: '10px'}}>{feeTooHigh && <WarningSmall />}
+            <Text fontWeight={400} fontSize={16} color={feeTooHigh && (theme.darkMode ? '#E9D886' : '#836D0B')}>
               {title}
-            </Text>
+            </Text></Flex>
             <CloseIcon onClick={onDismiss} strokeWidth={1} />
           </RowBetween>
           {topContent()}
         </Section>
-        <BottomSection gap="12px">{bottomContent()}</BottomSection>
+        <BottomSection style={{padding: feeTooHigh ? '0 20px 10px 20px' : '20px'}} gap="12px">{bottomContent()}</BottomSection>
       </Wrapper>
   )
 }
@@ -207,6 +218,7 @@ interface ConfirmationModalProps {
   pendingText: string
   outputCurrency?: string | undefined
   smallClose? : boolean
+  width?: string
 }
 
 export default function TransactionConfirmationModal({
@@ -217,7 +229,8 @@ export default function TransactionConfirmationModal({
                                                        pendingText,
                                                        content,
                                                        outputCurrency,
-                                                       smallClose=false
+                                                       smallClose=false,
+                                                       width
                                                      }: ConfirmationModalProps) {
   const { chainId } = useActiveWeb3React()
 
@@ -225,7 +238,7 @@ export default function TransactionConfirmationModal({
 
   // confirmation screen
   return (
-      <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90}>
+      <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} width={width}>
         {attemptingTxn ? (
             <ConfirmationPendingContent onDismiss={onDismiss} pendingText={pendingText} />
         ) : hash ? (

@@ -1,4 +1,4 @@
-import {ChainId, JSBI, Percent, Token, WDEV, MOONBASE_ADDRESSES, MOONRIVER_ADDRESSES, BSC_ADDRESSES} from 'zircon-sdk'
+import {ChainId, JSBI, Percent, Token, WDEV, MOONBASE_ADDRESSES, MOONRIVER_ADDRESSES, BSC_ADDRESSES, BSCT_ADDRESSES, ARBGOERLY_ADDRESSES} from 'zircon-sdk'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { injected, talisman, walletconnect } from '../connectors'
 // fortmatic, portis, walletconnect, walletlink, lattice
@@ -8,6 +8,8 @@ export const ROUTER_ADDRESS: { [key: string]: string } = {
   [ChainId.MOONBASE]: MOONBASE_ADDRESSES.router,
   [ChainId.MOONSHADOW]: MOONBASE_ADDRESSES.router,
   [ChainId.BSC]: BSC_ADDRESSES.router,
+  [ChainId.BSCT]: BSCT_ADDRESSES.router,
+  [ChainId.ARBGOERLY] : ARBGOERLY_ADDRESSES.router
 }
 export const PYLON_ROUTER_ADDRESS: { [key: string]: string } = {
   [ChainId.STANDALONE]: '0x42e2EE7Ba8975c473157634Ac2AF4098190fc741',
@@ -15,6 +17,8 @@ export const PYLON_ROUTER_ADDRESS: { [key: string]: string } = {
   [ChainId.MOONBASE]: MOONBASE_ADDRESSES.pylonRouter,
   [ChainId.MOONSHADOW]: MOONBASE_ADDRESSES.pylonRouter,
   [ChainId.BSC]: BSC_ADDRESSES.pylonRouter,
+  [ChainId.BSCT]: BSCT_ADDRESSES.pylonRouter,
+  [ChainId.ARBGOERLY] : ARBGOERLY_ADDRESSES.pylonRouter
 }
 // a list of tokens by chain
 type ChainTokenList = {
@@ -52,6 +56,8 @@ const WDEV_ONLY: ChainTokenList = {
   [ChainId.MOONBASE]: [WDEV[ChainId.MOONBASE]],
   [ChainId.MOONSHADOW]: [WDEV[ChainId.MOONSHADOW]],
   [ChainId.BSC]: [WDEV[ChainId.BSC]],
+  [ChainId.BSCT]: [WDEV[ChainId.BSCT]],
+  [ChainId.ARBGOERLY]: [WDEV[ChainId.ARBGOERLY]],
 }
 
 // used to construct intermediary pairs for trading
@@ -116,7 +122,11 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
   [ChainId.BSC]: [
       new Token(ChainId.BSC, '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82', 18, 'CAKE', 'PancakeSwap Token'),
       new Token(ChainId.BSC, '0xe9e7cea3dedca5984780bafc599bd69add087d56', 18, 'BUSD', 'BUSD Token'),
-  ]
+  ],
+  [ChainId.ARBGOERLY]: [
+      new Token(ChainId.ARBGOERLY, '0x680Faf7f226324F8ECdA0c5ba17c9bee2E8534C7', 18, 'ZRG', 'Zircon Gamma'),
+      new Token(ChainId.ARBGOERLY, '0x723ac13403f6Ac850B921532e7CD6EF56bC1C0f4', 18, 'WMOVR', 'WMOVR Token'),
+  ],
 }
 
 export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } = {
@@ -225,8 +235,6 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     mobile: true
   }*/,
 }
-
-export { default as  poolsConfig } from './pools'
 
 export const FAST_INTERVAL = 10000
 export const SLOW_INTERVAL = 60000

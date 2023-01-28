@@ -22,13 +22,13 @@ import { Flex } from 'rebass'
 import { useWindowDimensions } from '../../../../../hooks'
 import { Token } from 'zircon-sdk'
 import CurrencyLogo from '../../../../../components/CurrencyLogo'
-import { usePool } from '../../../../../state/pools/hooks'
+import { usePool, usePools } from '../../../../../state/pools/hooks'
 
 interface HarvestActionProps extends DeserializedPool {
     userDataReady: boolean
 }
 
-const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningToken ,sousId, userData, userDataReady, vaultAddress, earningTokenInfo }) => {
+const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningToken ,contractAddress, userData, userDataReady, vaultAddress, earningTokenInfo }) => {
     const { fetchWithCatchTxError, loading: pendingTx } = useCatchTxError()
     const earningsBigNumber = new BigNumber(userData.pendingReward)
     let earnings = BIG_ZERO
@@ -39,8 +39,9 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
         earnings = getBalanceAmount(earningsBigNumber)
     }
 
-    const {pool} = usePool(sousId)
-    const { onReward, onCompound } = useHarvestFarm(sousId, userData.pendingReward.toFixed(0))
+    const {pool} = usePool(contractAddress)
+    const {pools} = usePools()
+    const { onReward, onCompound } = useHarvestFarm(contractAddress, userData.pendingReward.toFixed(0))
     const { t } = useTranslation()
     const dispatch = useDispatch()
     const { account, chainId } = useWeb3React()
@@ -130,7 +131,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
                                     },
                                     receipt.transactionHash
                                 )
-                                dispatch(fetchPoolsUserDataAsync({chainId, account}))
+                                dispatch(fetchPoolsUserDataAsync({chainId, account, pools}))
                             }
                         }}
                     >
@@ -164,7 +165,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
                                     },
                                     receipt.transactionHash
                                 )
-                                dispatch(fetchPoolsUserDataAsync({chainId, account}))
+                                dispatch(fetchPoolsUserDataAsync({chainId, account, pools}))
                             }
                         }}
                     >

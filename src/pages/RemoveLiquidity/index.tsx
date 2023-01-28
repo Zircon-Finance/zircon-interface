@@ -41,12 +41,12 @@ import { useUserDeadline, useUserSlippageTolerance } from '../../state/user/hook
 import { BigNumber } from '@ethersproject/bignumber'
 import LearnIcon from '../../components/LearnIcon'
 import { PercButton } from '../RemoveProLiquidity'
-import { StyledWarningIcon } from '../AddLiquidity/ConfirmAddModalBottom'
 import {useTransactionAdder} from "../../state/transactions/hooks";
 import {calculateSlippageAmount, getRouterContract} from "../../utils";
 import {TransactionResponse} from "@ethersproject/providers";
 import ReactGA from "react-ga4";
 import { useBatchPrecompileContract, useTokenContract } from '../../hooks/useContract'
+import ErrorTxContainer from '../../components/ErrorTxContainer'
 
 export default function RemoveLiquidity({
   history,
@@ -241,7 +241,7 @@ export default function RemoveLiquidity({
 
   function modalHeader() {
     return (
-      <AutoColumn gap={'md'} style={{ marginTop: '20px' }}>
+      <AutoColumn gap={'5px'} style={{ marginTop: '15px' }}>
         <RowBetween align="flex-end">
           <Text fontSize={24} fontWeight={400}>
             {parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)}
@@ -268,7 +268,7 @@ export default function RemoveLiquidity({
           </RowFixed>
         </RowBetween>
 
-        <Text fontSize={12} textAlign="left" padding={"12px 0 0 0 "} color={theme.whiteHalf}>
+        <Text fontSize={12} textAlign="left" padding={"20px 0 0 0 "} color={theme.whiteHalf}>
             {`Output is estimated. If the price changes by more than ${allowedSlippage /
             100}% your transaction will revert.`}
           </Text>
@@ -278,9 +278,9 @@ export default function RemoveLiquidity({
 
   function modalBottom() {
     return (
-      <>
+      <div>
         <RowBetween>
-          <Text color={theme.text2} fontWeight={400} fontSize={16}>
+          <Text color={theme.text2} fontWeight={400} fontSize={16} mb='15px'>
             {'ZPT ' + currencyA?.symbol + '/' + currencyB?.symbol} Burned
           </Text>
           <RowFixed>
@@ -292,7 +292,7 @@ export default function RemoveLiquidity({
         </RowBetween>
         {pair && (
           <>
-            <RowBetween>
+            <RowBetween style={{marginBottom: '5px'}}>
               <Text color={theme.text2} fontWeight={400} fontSize={16}>
                 Price
               </Text>
@@ -309,17 +309,14 @@ export default function RemoveLiquidity({
           </>
         )}
         {errorTx && (
-        <RowBetween mt={10}>
-          <StyledWarningIcon />
-          <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{errorTx}</span>
-        </RowBetween>
+          <ErrorTxContainer errorTx={errorTx} />
         )}
         <ButtonPrimary disabled={!(chainId === 1285 || chainId === 1287) && (!(approval === ApprovalState.APPROVED || signatureData !== null))} onClick={ ()=> onRemove()}>
           <Text fontWeight={400} fontSize={18}>
             Confirm
           </Text>
         </ButtonPrimary>
-      </>
+      </div>
     )
   }
 

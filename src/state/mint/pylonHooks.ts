@@ -1,4 +1,4 @@
-import {Currency, CurrencyAmount, JSBI, NATIVE_TOKEN, Pair, Percent, Price, Pylon, TokenAmount} from 'zircon-sdk'
+import {Currency, CurrencyAmount, JSBI, NATIVE_TOKEN, Pair, Percent, Price, Pylon} from 'zircon-sdk'
 import {useCallback, useEffect, useMemo, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {useTotalSupply} from '../../data/TotalSupply'
@@ -11,12 +11,14 @@ import {tryParseAmount} from '../swap/hooks'
 import {useCurrencyBalances, useTokenBalance} from '../wallet/hooks'
 import {Field, typeInput} from './actions'
 import {PylonState, usePylon} from '../../data/PylonReserves'
-import {useLastK, usePylonConstants, usePylonInfo,} from "../../data/PylonData";
-import {useBlockNumber} from "../application/hooks";
+import {useLastK, usePairInfo, usePylonConstants, usePylonInfo,} from "../../data/PylonData";
+import {useBlockNumber, useBlockTimestamp} from "../application/hooks";
 import {usePylonFactoryContract} from '../../hooks/useContract'
 import axios from 'axios'
 import {PRICE_API} from '../../constants/lists'
 import {PairState} from '../../data/Reserves'
+import {Decimals, MintSyncParams} from "zircon-sdk/dist/interfaces/pylonInterface";
+import { ethers } from 'ethers'
 
 const ZERO = JSBI.BigInt(0)
 
@@ -24,12 +26,18 @@ export function useMintState(): AppState['mint'] {
   return useSelector<AppState, AppState['mint']>(state => state.mint)
 }
 
+interface MintInfo extends MintSyncParams {
+  extraFeeTreshold: JSBI;
+  shouldBlock: boolean;
+}
+
 
 export function useDerivedPylonMintInfo(
     currencyA: Currency | undefined,
     currencyB: Currency | undefined,
     isFloat: boolean,
-    sync: string
+    sync: string,
+    decimals: Decimals
 ): {
   dependentField: Field
   currencies: { [field in Field]?: Currency }
@@ -39,27 +47,13 @@ export function useDerivedPylonMintInfo(
   parsedAmounts: { [field in Field]?: CurrencyAmount }
   price?: Price
   noPylon?: boolean
-  mintInfo?: {
-    amountOut: TokenAmount;
-    blocked: boolean;
-    fee: TokenAmount;
-    deltaApplied: boolean;
-    amountsToInvest?: {
-      sync: JSBI;
-      async: JSBI;
-    };
-    extraSlippagePercentage?: JSBI;
-    extraFeeTreshold?: JSBI;
-    shouldBlock?: boolean;
-    feePercentage: JSBI;
-    isDerivedVFB?: boolean;
-  }
+  mintInfo?: MintInfo
+  gamma?: string | undefined
   poolTokenPercentage?: Percent
   error?: string,
   healthFactor?: string,
 } {
   const { account, chainId } = useActiveWeb3React()
-
   const { t } = useTranslation()
 
   const { independentField, typedValue, otherTypedValue } = useMintState()
@@ -77,46 +71,42 @@ export function useDerivedPylonMintInfo(
 
   // Pylon
   const [pylonState, pylonPair] = usePylon(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B])
+  console.log("FF:: pylonPair", pylonPair)
   const pylonInfo = usePylonInfo(pylonPair?.address)
-
-  console.log('pylonInfo... ', pylonPair?.address, pylonInfo)
-
   const pylonConstants = usePylonConstants()
   const blockNumber = useBlockNumber()
+  const timestamp = useBlockTimestamp()
+  const pairInfo = usePairInfo(pylonPair ? Pair.getAddress(pylonPair.token0, pylonPair.token1) : "")
   const userLiquidity = useTokenBalance(account ?? undefined, isFloat ? pylonPair?.floatLiquidityToken : pylonPair?.anchorLiquidityToken)
   const pylonPoolBalance = useTokenBalance(pylonPair?.address, pylonPair?.pair.liquidityToken)
   const ptTotalSupply = useTotalSupply(isFloat ? pylonPair?.floatLiquidityToken : pylonPair?.anchorLiquidityToken)
   const totalSupply = useTotalSupply(pylonPair?.pair.liquidityToken)
-  const lastK = useLastK(pylonPair ? Pair.getAddress(pylonPair.token0, pylonPair.token1) : "");
+  // const lastK = useLastK(pylonPair ? Pair.getAddress(pylonPair.token0, pylonPair.token1) : "");
   const pylonSupply = useTotalSupply(pylonPair?.pair.liquidityToken)
   const energyAddress = Pylon.getEnergyAddress(pylonPair?.token0, pylonPair?.token1) //useEnergyAddress(pylonPair?.token0, pylonPair?.token1)
   const ptbEnergy = useTokenBalance(energyAddress, pylonPair?.pair.liquidityToken)
   const reserveAnchor = useTokenBalance(energyAddress, pylonPair?.anchorLiquidityToken)
-
-  console.log("pairAdd ", pylonPair ? Pair.getAddress(pylonPair.token0, pylonPair.token1) : "")
   const healthFactor = useMemo(() => {
     try {
-      return pylonInfo && pylonInfo[0] && pylonState === PylonState.EXISTS && pylonPair && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && lastK && pylonConstants && pylonState === PylonState.EXISTS?
+      return pylonInfo && pylonState === PylonState.EXISTS && pylonPair && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && pylonConstants && pylonState === PylonState.EXISTS?
           pylonPair.getHealthFactor(
-              pylonInfo[0],
-              pylonPoolBalance,
+              pylonInfo,
+              pairInfo,
+              decimals,
               totalSupply,
-              reserveAnchor.raw,
+              pylonPoolBalance,
+              BigInt(blockNumber),
+              pylonConstants,
+              BigInt(timestamp),
               ptbEnergy.raw,
-              pylonInfo[9],
-              pylonInfo[1],
-              pylonInfo[7],
-              pylonInfo[8],
-              JSBI.BigInt(lastK),
-              pylonConstants
+              reserveAnchor.raw
           ).toString() : undefined
     }catch (e) {
-      console.error(e)
+      console.error("INTERFACE:: error health factor", e)
       return undefined
     }
 
-  }, [pylonInfo, pylonPair, ptbEnergy, reserveAnchor, pylonPoolBalance, totalSupply, lastK, pylonConstants,pylonState])
-  console.log("healthFactor", typeof healthFactor)
+  }, [pylonInfo, pairInfo, pylonPair, ptbEnergy, reserveAnchor, pylonPoolBalance, totalSupply, pylonConstants,pylonState])
   const noPylon: boolean =
       pylonState === PylonState.NOT_EXISTS || Boolean(pylonSupply && JSBI.equal(pylonSupply.raw, ZERO))
 
@@ -182,72 +172,82 @@ export function useDerivedPylonMintInfo(
       wrappedCurrencyAmount(currencyBAmount, chainId)
     ]
     try{
-      if (pylonState === PylonState.EXISTS && pylonPair && pylonSupply && tokenAmountA && tokenAmountB && totalSupply && ptTotalSupply && userLiquidity && pylonPoolBalance && pylonInfo.length > 8 && pylonConstants) {
+      if (pylonState === PylonState.EXISTS && pylonPair && pylonSupply && tokenAmountA && tokenAmountB
+          && totalSupply && ptTotalSupply && userLiquidity && pylonPoolBalance && pylonInfo && pairInfo && pylonConstants) {
         if (sync === "off") {
+          console.log("FF:: pp")
           let syncMintInfo;
           let extraFeeTreshold = ZERO;
           let shouldBlock = false;
-          if (isFloat) {
-            syncMintInfo = pylonPair.getFloatSyncLiquidityMinted(
-                totalSupply, ptTotalSupply, tokenAmountA,
-                pylonInfo[0], pylonInfo[1], pylonInfo[2],
-                pylonPoolBalance, pylonInfo[3], BigInt(blockNumber),
-                pylonConstants, pylonInfo[4], pylonInfo[5],
-                pylonInfo[6], pylonInfo[7], pylonInfo[8],
-                pylonInfo[9], BigInt(lastK))
-            // console.log("syncMintInfo", syncMintInfo)
-            if (JSBI.greaterThan(syncMintInfo?.amountsToInvest?.sync, ZERO) && JSBI.greaterThan(syncMintInfo?.amountsToInvest?.async, ZERO)) {
-              extraFeeTreshold = syncMintInfo?.amountsToInvest?.sync
-            }
-            if (JSBI.greaterThan(syncMintInfo?.amountsToInvest?.async, ZERO)) {
-              shouldBlock = true
-            }
-
-          }else{
-            syncMintInfo = pylonPair.getAnchorSyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountB,
-                pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK))
-            if (JSBI.greaterThan(syncMintInfo?.amountsToInvest?.sync, ZERO) && JSBI.greaterThan(syncMintInfo?.amountsToInvest?.async, ZERO)) {
-
-              extraFeeTreshold = syncMintInfo?.amountsToInvest?.sync
-            }
-            if (JSBI.greaterThan(syncMintInfo?.amountsToInvest?.async, ZERO)) {
-              shouldBlock = true
-            }
-
+          syncMintInfo = pylonPair.mintSync(
+              pylonInfo,
+              pairInfo,
+              decimals,
+              totalSupply,
+              ptTotalSupply,
+              isFloat ? tokenAmountA : tokenAmountB,
+              pylonPoolBalance,
+              BigInt(blockNumber),
+              pylonConstants,
+              BigInt(timestamp),
+              !isFloat,
+              true
+          )
+          if (JSBI.greaterThan(syncMintInfo?.amountsToInvest?.sync, ZERO) && JSBI.greaterThan(syncMintInfo?.amountsToInvest?.async, ZERO)) {
+            extraFeeTreshold = syncMintInfo?.amountsToInvest?.sync
           }
-
           return {...syncMintInfo, extraFeeTreshold: extraFeeTreshold, shouldBlock}
         }else {
           let asyncMintInfo;
 
           if (isFloat) {
-            asyncMintInfo = pylonPair.getFloatAsyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA, tokenAmountB,
-                pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK))
+            asyncMintInfo = pylonPair.mintAsync(
+                pylonInfo,
+                pairInfo,
+                decimals,
+                totalSupply, ptTotalSupply, tokenAmountA, tokenAmountB,
+                pylonPoolBalance,
+                BigInt(blockNumber), pylonConstants,
+                BigInt(timestamp),
+                !isFloat
+            )
           }else{
-            asyncMintInfo = pylonPair.getAnchorAsyncLiquidityMinted(totalSupply, ptTotalSupply, tokenAmountA, tokenAmountB,
-                pylonInfo[0], pylonInfo[1], pylonInfo[2], pylonPoolBalance, pylonInfo[3], BigInt(blockNumber), pylonConstants,
-                pylonInfo[4], pylonInfo[5], pylonInfo[6], pylonInfo[7], pylonInfo[8], pylonInfo[9], BigInt(lastK))
+            asyncMintInfo = pylonPair.mintAsync(
+                pylonInfo,
+                pairInfo,
+                decimals,
+                totalSupply, ptTotalSupply, tokenAmountA, tokenAmountB,
+                pylonPoolBalance,
+                BigInt(blockNumber), pylonConstants,
+                BigInt(timestamp),
+                !isFloat
+            )
           }
-          return {...asyncMintInfo, extraFeeTreshold: ZERO, extraSlippagePercentage: ZERO, shouldBlock: false}
+          return {...asyncMintInfo, extraFeeTreshold: ZERO, slippage: ZERO, shouldBlock: false}
         }
       } else {
+        console.error("INTERFACE:: error missing data")
+        console.log("INTERFACE:: pylonInfo", pylonInfo)
+        console.log("INTERFACE:: pylonPoolBalance", pylonPoolBalance)
+        console.log("INTERFACE:: blockNumber", blockNumber)
+        console.log("INTERFACE:: blockNumber", blockNumber)
+        console.log("INTERFACE:: tkA tkB", tokenAmountA, tokenAmountB)
         return undefined
       }
     }catch (e) {
+      console.error("INTERFACE:: Crash in the SDK", e)
       console.log("INTERFACE:: isFloat", isFloat)
-      console.log("INTERFACE:: pairRes, pylonRes", pylonPair.pair.reserve0.raw.toString(), pylonPair.pair.reserve1.raw.toString(), pylonPair.reserve0.raw.toString(), pylonPair.reserve1.raw.toString() )
-      console.log("INTERFACE:: totalSupply, ptTotalSupply, tokenAmountA, tokenAmountA", totalSupply.raw.toString(), ptTotalSupply.raw.toString(), tokenAmountA.raw.toString(), tokenAmountB.raw.toString())
-      console.log("INTERFACE:: ptb, lastk, blockNumber", pylonPoolBalance.raw.toString(),  BigInt(lastK).toString(), BigInt(blockNumber))
-      console.log("INTERFACE:: virtualAnchorBalance, muMulDecimals, gammaMulDecimals", pylonInfo[0].toString(), pylonInfo[1].toString(), pylonInfo[2].toString())
-      console.log("INTERFACE:: strikeBlock, EMABlockNumber, gammaEMA", pylonInfo[3].toString(), pylonInfo[4].toString(), pylonInfo[5].toString())
-      console.log("INTERFACE:: thisBlockEMA, lastRootKTranslated, anchorKFactor, formulaSwitch", pylonInfo[6].toString(), pylonInfo[7].toString(), pylonInfo[8].toString(), pylonInfo[9].toString())
+      console.log("INTERFACE:: pairRes, pylonRes", pylonPair?.pair.reserve0.raw.toString(), pylonPair?.pair.reserve1.raw.toString(), pylonPair?.reserve0.raw.toString(), pylonPair?.reserve1.raw.toString() )
+      console.log("INTERFACE:: totalSupply, ptTotalSupply, tokenAmountA, tokenAmountA", totalSupply?.raw.toString(), ptTotalSupply?.raw.toString(), tokenAmountA?.raw.toString(), tokenAmountB?.raw.toString())
+      console.log("INTERFACE:: ptb, lastk, blockNumber", pylonPoolBalance?.raw.toString(),  BigInt(blockNumber))
+      console.log("INTERFACE:: pylonConstants", pylonConstants)
+      console.log("INTERFACE:: timestamp", timestamp)
+      console.log("INTERFACE:: pylonInfo", pylonInfo)
 
       return undefined
     }
 
-  }, [parsedAmounts, chainId, pylonPair, pylonSupply, totalSupply, ptTotalSupply,lastK, pylonPoolBalance, isFloat, sync, userLiquidity, pylonInfo, pylonConstants])
+  }, [parsedAmounts, chainId, pylonPair, pylonSupply, totalSupply, ptTotalSupply, pylonPoolBalance, isFloat, sync, userLiquidity, pylonInfo, pylonConstants])
 
   // const poolTokenPercentage = useMemo(() => {
   //   if (liquidityMinted && pylonSupply) {
@@ -295,6 +295,7 @@ export function useDerivedPylonMintInfo(
     price,
     noPylon,
     mintInfo,
+    gamma: pylonInfo ? pylonInfo.gammaMulDecimals ? pylonInfo.gammaMulDecimals.toString() : undefined : undefined,
     //poolTokenPercentage,
     error,
     healthFactor
@@ -331,8 +332,8 @@ export function useMintActionHandlers(
 }
 
 export const useHealthFactor = (  currencyA: Currency | undefined,
-                                  currencyB: Currency | undefined,) => {
-
+                                  currencyB: Currency | undefined,
+                                  isFloat: boolean) => {
   const currencies: { [field in Field]?: Currency } = useMemo(
       () => ({
         [Field.CURRENCY_A]: currencyA ?? undefined,
@@ -350,21 +351,27 @@ export const useHealthFactor = (  currencyA: Currency | undefined,
   const ptt = useTotalSupply(pylonPair?.anchorLiquidityToken)
   const lastK = useLastK(pylonPair?.address)
   const pylonFactory = usePylonFactoryContract()
+  const timestamp = useBlockTimestamp()
+  const blockNumber = useBlockNumber()
+  const pairInfo = usePairInfo(pylonPair ? Pair.getAddress(pylonPair.token0, pylonPair.token1) : "")
+  const decimals = {
+    float: ethers.BigNumber.from(10).pow(currencyA && currencyB ? (isFloat ? currencyA?.decimals : currencyB?.decimals) : 18).toString(),
+    anchor: ethers.BigNumber.from(10).pow(currencyA && currencyB ? (isFloat ? currencyB?.decimals : currencyA?.decimals) : 18 ).toString(),
+  }
 
   const healthFactorResult = useMemo(() => {
-    return pylonInfo && pylonPair &&  pylonInfo[0] && ptbEnergy && reserveAnchor && ptb && ptt && lastK && pylonFactory ?
+    return pylonInfo && pylonPair && ptbEnergy && reserveAnchor && ptb && ptt && lastK && pylonFactory ?
         pylonPair.getHealthFactor(
-            pylonInfo[0],
-            ptb,
+            pylonInfo,
+            pairInfo,
+            decimals,
             ptt,
-            reserveAnchor.raw,
+            ptb,
+            BigInt(blockNumber),
+            pylonFactory,
+            BigInt(timestamp),
             ptbEnergy.raw,
-            pylonInfo[9],
-            pylonInfo[1],
-            pylonInfo[7],
-            pylonInfo[8],
-            JSBI.BigInt(lastK),
-            pylonFactory
+            reserveAnchor.raw
         ) : 'Loading...'
   }, [pylonInfo, pylonPair, ptbEnergy, reserveAnchor, ptb, ptt, lastK, pylonFactory])
   return healthFactorResult
@@ -377,25 +384,25 @@ export function usePairPrices(token0: Currency, token1: Currency, pair: Pair, pa
     const price1 = token1 && await axios.get(`${PRICE_API+(token1?.symbol === 'wMOVR' ? 'MOVR' : token1?.symbol)}BUSD`).then
     ((res) => res?.data?.price).catch((e) => console.log(e))
     return (price0 !== undefined && price1 !== undefined) ? [price0, price1] :
-    price0 !== undefined
-        ? [
-          price0,
-          (pair?.token0 === token0
-              ? parseFloat(pair?.reserve0?.toFixed(2)) /
-              parseFloat(pair?.reserve1?.toFixed(2))
-              : parseFloat(pair?.reserve1?.toFixed(2)) /
-              parseFloat(pair?.reserve0?.toFixed(2))) * price0,
-        ]
-        : price1 !== undefined
+        price0 !== undefined
             ? [
-              (pair?.token1 === token1
-                  ? parseFloat(pair?.reserve1?.toFixed(2)) /
-                  parseFloat(pair?.reserve0?.toFixed(2))
+              price0,
+              (pair?.token0 === token0
+                  ? parseFloat(pair?.reserve0?.toFixed(2)) /
+                  parseFloat(pair?.reserve1?.toFixed(2))
                   : parseFloat(pair?.reserve1?.toFixed(2)) /
-                  parseFloat(pair?.reserve0?.toFixed(2))) * price1,
-              price1,
+                  parseFloat(pair?.reserve0?.toFixed(2))) * price0,
             ]
-            : [0, 0];
+            : price1 !== undefined
+                ? [
+                  (pair?.token1 === token1
+                      ? parseFloat(pair?.reserve1?.toFixed(2)) /
+                      parseFloat(pair?.reserve0?.toFixed(2))
+                      : parseFloat(pair?.reserve1?.toFixed(2)) /
+                      parseFloat(pair?.reserve0?.toFixed(2))) * price1,
+                  price1,
+                ]
+                : [0, 0];
   }
   const [prices, setPrices] = useState([0,0])
   // console.log('reserves', pair?.reserve0?.toFixed(2), pair?.reserve1?.toFixed(2))

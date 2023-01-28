@@ -12,7 +12,7 @@ import {AutoColumn, ColumnCenter} from "../../components/Column";
 import TransactionConfirmationModal, {ConfirmationModalContent,} from "../../components/TransactionConfirmationModal";
 import BigNumberJs from 'bignumber.js';
 import { MaxUint256 } from '@ethersproject/constants'
-
+import { ReactComponent as SmartAddImage } from '../../assets/images/smart_add.svg'
 import CurrencyInputPanelInputOnly from "../../components/CurrencyInputPanelInputOnly";
 import CurrencyInputPanelPicOnly from "../../components/CurrencyInputPanelPicOnly";
 import CurrencyInputPanelBalOnly from "../../components/CurrencyInputPanelBalOnly";
@@ -54,13 +54,53 @@ import {fetchPoolsPublicDataAsync} from "../../state/pools";
 import {useDispatch} from "react-redux";
 import {AddressZero} from "@ethersproject/constants";
 import InfoCircle from "../../components/InfoCircle";
-import {useGamma, usePylonConstants} from "../../data/PylonData";
+import {usePylonConstants} from "../../data/PylonData";
 import Lottie from "lottie-react-web";
 import animation from '../../assets/lotties/0uCdcx9Hn5.json'
 import CapacityIndicator from "../../components/CapacityIndicator";
 import { usePair } from "../../data/Reserves";
 import { Separator } from "../../components/SearchModal/styleds";
 import { useBatchPrecompileContract } from '../../hooks/useContract'
+import { basePool } from "../../state/pools/selectors";
+import PlusIcon from "../../views/Farms/components/PlusIcon";
+import { ethers } from "ethers";
+
+export const RadioContainer = styled.div<{ active: boolean, second: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  width: 30px;
+  border: ${({ theme, second }) => second ? 'none' : `1px solid ${theme.darkMode ? '#733751' : '#EEEAEC'}`};
+  height: 30px;
+  background: ${({ theme, second }) => second ? theme.darkMode ? '#52273A' : '#FCFBFC' : 'none'};
+  align-self: center;
+  cursor: pointer;
+`
+
+export const RadioButton = styled.div<{ active: boolean }>`
+  width: 20px;
+  height: 20px;
+  border-radius: 100%;
+  background: ${({ active }) => (active ? '#B05D98' : 'none' )};
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+  &:hover {
+    background: ${({ theme }) => theme.maxButtonHover};
+  }
+`
+
+export const InputContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 5px;
+  height: 60px;
+  border-radius: 17px;
+  background: #EFEAEC;
+`
 
 const IconContainer = styled.div`
   display: flex;
@@ -79,6 +119,30 @@ const IconContainer = styled.div`
     path {
       stroke: ${({ theme }) => theme.pinkGamma} !important;
     }
+  }
+`
+
+export const PinkContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top-left-radius: 17px;
+  border-top-right-radius: 17px;
+  background: ${({ theme }) => theme.pinkGamma};
+  width: 100%;
+  height: 30px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+`
+
+export const ConfirmationInput = styled.input`
+  border: none;
+  background: #efeaec;
+  height: 30px;
+  font-size: 14px;
+  &:focus {
+    outline: none;
   }
 `
 
@@ -117,6 +181,10 @@ export default function AddLiquidityPro({
 
   const { independentField, typedValue, otherTypedValue } = useMintState();
   const [isFloat, setIsFloat] = useState(true);
+  const decimals = {
+    float: ethers.BigNumber.from(10).pow(currencyA && currencyB ? (isFloat ? currencyA?.decimals : currencyB?.decimals) : 18).toString(),
+    anchor: ethers.BigNumber.from(10).pow(currencyA && currencyB ? (isFloat ? currencyB?.decimals : currencyA?.decimals) : 18 ).toString(),
+  }
   const {
     dependentField,
     currencies,
@@ -127,21 +195,18 @@ export default function AddLiquidityPro({
     price,
     noPylon,
     mintInfo,
-    //poolTokenPercentage,
+    gamma,
     error,
     healthFactor,
   } = useDerivedPylonMintInfo(
       currencyA ?? undefined,
       currencyB ?? undefined,
       isFloat,
-      sync
+      sync,
+      decimals
   );
-  // const [float, setFloat] = useState({
-  //   currency_a: currencies[Field.CURRENCY_A],
-  //   field_a: Field.CURRENCY_A,
-  //   currency_b: currencies[Field.CURRENCY_B],
-  //   field_b: Field.CURRENCY_B,
-  // });
+
+  console.log("FF:: mintInfo", mintInfo);
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noPylon);
   const isValid = !error;
 
@@ -154,7 +219,7 @@ export default function AddLiquidityPro({
           f.isAnchor === !isFloat &&
           f.apr !== 0 && f.isFinished === false
   );
-  const { pool } = usePool(useMemo(() => farm ? farm?.sousId : 1, [farm]));
+  const { pool } = usePool(useMemo(() => farm ? farm?.contractAddress : '0x0f2eacd08e26932d1a74dbcf094d097d827aca3b', [farm]));
   const addTransaction = useTransactionAdder()
   const lpContract = useERC20(pool?.stakingToken.address)
   const farmIsApproved = useCallback(
@@ -162,8 +227,8 @@ export default function AddLiquidityPro({
       , [account, pool])
 
   const [pendingTx, setPendingTx] = useState(false)
-  const {handleApprove} = useApprovePool(farm, lpContract, farm?.sousId ?? 1)
-  const sousChefContract = useSousChef(farm?.sousId ?? 1)
+  const {handleApprove} = useApprovePool(farm ?? basePool, lpContract, farm?.contractAddress ?? 1)
+  const sousChefContract = useSousChef(farm?.contractAddress ?? AddressZero)
   const approveFarm = useCallback(async () => {
     setPendingTx(true)
     try {
@@ -187,9 +252,9 @@ export default function AddLiquidityPro({
 
   const batchContract = useBatchPrecompileContract()
   const aCurrency = currencyA !== null ? wrappedCurrency(currencyA, chainId)?.address : chainId === 1285 ?
-    '0x4545e94974adacb82fc56bcf136b07943e152055' : chainId === 56 && '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c'
+    '0x4545e94974adacb82fc56bcf136b07943e152055' : chainId === 56 ? '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c' : '0x680Faf7f226324F8ECdA0c5ba17c9bee2E8534C7'
   const bCurrency = currencyB !== null ? wrappedCurrency(currencyB, chainId)?.address : chainId === 1285 ?
-  '0x4545e94974adacb82fc56bcf136b07943e152055' : chainId === 56 && '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c'
+  '0x4545e94974adacb82fc56bcf136b07943e152055' : chainId === 56 ? '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c' : '0x680Faf7f226324F8ECdA0c5ba17c9bee2E8534C7'
   const token0Contract = useERC20(aCurrency ?? '0x0000000000000000000000000000000000000000', true) ?? undefined
   const token1Contract = useERC20(bCurrency ?? aCurrency ?? '0x0000000000000000000000000000000000000000', true) ?? undefined
 
@@ -204,35 +269,9 @@ export default function AddLiquidityPro({
     return currencies[getField(shouldSendFloat)]
   }
 
+
   useEffect(() => {
-    if (side !== "float"){
-      // console.log("hello")
-      // console.log("side a", Field.CURRENCY_B)
-      // console.log("side a", currencies[Field.CURRENCY_B])
-      setIsFloat(false);
-      // setFloat({
-      //   currency_b: currencies[Field.CURRENCY_A],
-      //   field_b: Field.CURRENCY_A,
-      //   currency_a: currencies[Field.CURRENCY_B],
-      //   field_a: Field.CURRENCY_B,
-      // });
-
-
-    }else{
-      // console.log("side b", Field.CURRENCY_B)
-      // console.log("side b", currencies[Field.CURRENCY_B])
-
-      // if(float.currency_a !== currencies[Field.CURRENCY_A]) {
-
-      setIsFloat(true);
-      // setFloat({
-      //   currency_a: currencies[Field.CURRENCY_A],
-      //   field_a: Field.CURRENCY_A,
-      //   currency_b: currencies[Field.CURRENCY_B],
-      //   field_b: Field.CURRENCY_B,
-      // });
-    }
-    // }
+    setIsFloat(side === "float");
   }, [side])
 
   // get formatted amounts
@@ -269,6 +308,7 @@ export default function AddLiquidityPro({
       parsedAmounts[getField(true)],
       PYLON_ROUTER_ADDRESS[chainId ? chainId : ""]
   );
+  console.log('approvalA: ', approvalA)
   const [approvalB, approveBCallback] = useApproveCallback(
       parsedAmounts[getField(false)],
       PYLON_ROUTER_ADDRESS[chainId ? chainId : ""]
@@ -662,37 +702,8 @@ export default function AddLiquidityPro({
       6
   ) as unknown) as number;
 
-  const modalHeader = () => {
-    return noPylon ? (
-        <AutoColumn gap="20px">
-          <LightCard
-              mt="20px"
-              borderRadius="27px"
-              style={{ backgroundColor: theme.bg14 }}
-          >
-            <RowFlat style={{ flexFlow: "column", alignItems: "center" }}>
-              <Text
-                  fontSize="36px"
-                  fontWeight={300}
-                  lineHeight="42px"
-                  style={{ margin: "auto" }}
-              >
-                {currencies[Field.CURRENCY_A]?.symbol +
-                "/" +
-                currencies[Field.CURRENCY_B]?.symbol}
-              </Text>
-              <div style={{ margin: "20px auto auto auto" }}>
-                <DoubleCurrencyLogo
-                    currency0={currencies[Field.CURRENCY_A]}
-                    currency1={currencies[Field.CURRENCY_B]}
-                    size={30}
-                />
-              </div>
-            </RowFlat>
-          </LightCard>
-        </AutoColumn>
-    ) : (
-        <AutoColumn gap="20px">
+  const NoSlippageModalHeader = () => (
+    <AutoColumn gap="20px">
           <RowFlat
               style={{
                 marginTop: "20px",
@@ -749,6 +760,199 @@ export default function AddLiquidityPro({
           </Text>
           <Separator />
         </AutoColumn>
+  )
+
+  // logic for the blocked modal for high fees
+  const [rememberedSlippage, setRememberedSlippage] = useState(0)
+  const [originalValue, setOriginalValue] = useState('')
+  const [customValue1, setCustomValue1] = useState('')
+  const [customValue2, setCustomValue2] = useState('')
+  const [amountOut, setAmountOut] = useState('')
+  const [hasSetAsync, setHasSetAsync] = useState(false)
+  const [confirmationSlippage, setConfirmationSlippage] = useState(false)
+  const [confirmedString, setConfirmedString] = useState(false)
+  const [hasConfirmed, setHasConfirmed] = useState(false)
+  const [chosenOption, setChosenOption] = useState(2)
+
+  const selectedBoxShadow = theme.darkMode ?
+   '0px 1px 2px rgba(13, 6, 9, 0.15), inset 0px -1px 1px rgba(13, 6, 9, 0.15), inset 0px 1px 1px rgba(237, 223, 229, 0.1)' :
+   '0px 1px 2px rgba(0, 0, 0, 0.15)';
+
+  const feeIsTooHigh = rememberedSlippage >= 5
+  const floatTokenHalf = parseFloat(parsedAmounts[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.toSignificant(6)) / 2
+  const anchorTokenMultiplied = parseFloat(parsedAmounts[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.toSignificant(6)) / 2 *
+  parseFloat(
+    !isFloat ? price?.invert().toSignificant(4) : price?.toSignificant(4)
+  )
+  const percentageDifference = parseFloat((new BigNumberJs(mintInfo?.amountOut.toSignificant(6)).minus(
+    new BigNumberJs(amountOut))).div(
+      new BigNumberJs(amountOut)).times(
+        new BigNumberJs(100)).toFixed(2).toString())
+
+  const setAsyncCustom = () => {
+    setOriginalValue(parsedAmounts[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.toSignificant(6));
+    setCustomValue1(floatTokenHalf.toString());
+    setCustomValue2(anchorTokenMultiplied.toString());
+    setSync('half');
+    (isFloat
+      ? onFieldAInput(isFloat ? floatTokenHalf.toString() : anchorTokenMultiplied.toString())
+      : onFieldBInput(!isFloat ? floatTokenHalf.toString() : anchorTokenMultiplied.toString())
+    )
+  }
+
+  const handleChangeConfirmation = (typedValue: string) => {
+    setConfirmedString(typedValue.toLowerCase() === 'confirm');
+  }
+
+  const backToOriginalValue = () => {
+    setHasSetAsync(false);
+    (isFloat
+      ? onFieldAInput(originalValue)
+      : onFieldBInput(originalValue)
+    )
+    setSync('off');
+  }
+
+  useEffect(() => {
+    if (hasConfirmed) {
+      backToOriginalValue();
+    }
+  }, [hasConfirmed])
+
+  useEffect(() => {
+    if (showConfirm && feeIsTooHigh) {
+      setAmountOut(mintInfo?.amountOut.toSignificant(6));
+      setAsyncCustom();
+    }
+    else if (!showConfirm ) {
+      onFieldBInput('')
+      onFieldAInput('')
+      setChosenOption(2);
+      setHasSetAsync(false);
+      setHasConfirmed(false);
+      setAmountOut('');
+      setCustomValue1('');
+      setCustomValue2('');
+      setSync('off');
+      setConfirmationSlippage(false);
+      setConfirmedString(false);
+      setOriginalValue('');
+    }
+  }, [showConfirm])
+
+  const SlippageWarningModal = () => (
+    <Flex flexDirection={'column'} style={{background: theme.darkMode ? '#52273A' : 'transparent'}}>
+        <Text mt='20px' style={{lineHeight: '160%'}} textAlign='center'>{'You can reduce slippage and get more'}</Text>
+        <Text mb='10px' textAlign='center'>{`LP tokens using the Hybrid Add method`}</Text>
+        <Flex mt='20px' mb='30px' mx='auto' style={{gap: '10px', textAlign: 'center'}}>
+          <Flex onClick={() => [setChosenOption(1), setConfirmationSlippage(true)]} flexDirection={'column'}
+          style={{
+            border: `${(chosenOption === 1) ? `2px solid ${theme.pinkGamma}` :
+              theme.darkMode ? '2px solid rgba(98, 47, 69, 0.5)' : '2px solid #F5F3F4'}` ,
+               borderRadius: '17px', cursor: 'pointer', marginTop: '30px'}}>
+            <Text fontSize='14px' fontWeight={500} p='20px 10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#F5F3F4'}`}}>{'CURRENT POSITION'}</Text>
+            <Text my='10px'>{'You add'}</Text>
+            <Text fontSize='18px' pb='54px' fontWeight={500} style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#F5F3F4'}`}}>
+              {`${originalValue} ${currencies[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.symbol} `}
+            </Text>
+            <Text fontSize='14px' mt='10px'>{'You get'}</Text>
+            <Text fontSize='18px' mb='20px' fontWeight={500}>{`${amountOut} LP`}</Text>
+            <RadioContainer style={{marginTop: '5px'}} active={chosenOption === 1} second={false}>
+              <RadioButton active={chosenOption === 1} />
+            </RadioContainer>
+          </Flex>
+          <Flex flexDirection={'column'}><PinkContainer><Text>{'Lower slippage'}</Text></PinkContainer>
+            <Flex onClick={() => [setChosenOption(2), setConfirmationSlippage(false)]} flexDirection={'column'}
+              style={{border: `${(chosenOption === 2) ? `2px solid ${theme.pinkGamma}` : '2px solid transparent'}` ,
+              borderBottomLeftRadius: '17px',
+              borderBottomRightRadius: '17px',
+              backgroundColor: theme.darkMode ? '#622F45' : '#EEEAEC',
+              cursor: 'pointer'}}
+            >
+              <Text fontSize='14px' fontWeight={500} p='20px 10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#E4E0E3'}`}}>{'WITH Hybrid ADD'}</Text>
+              <Text fontSize='14px' my='10px'>{'You add'}</Text>
+              <Text fontSize='18px' fontWeight={500}>
+                {`${customValue1} ${currencies[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.symbol} `}
+              </Text>
+              <Flex style={{width: '100%', justifyContent: 'center', alignItems:'center'}}><PlusIcon /></Flex>
+              <Text fontSize='18px' pb='10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#E4E0E3'}`}} fontWeight={500}>
+                {`${customValue2} ${currencies[isFloat ? Field.CURRENCY_B : Field.CURRENCY_A]?.symbol} `}
+              </Text>
+              <Text fontSize='14px' mt='10px'>{'You get'}</Text>
+              <Text fontSize='18px' fontWeight={500}>{`${mintInfo?.amountOut.toSignificant(6)} LP`}</Text>
+              <Text fontSize='14px' pb='10px' color={percentageDifference >= 0 ? theme.percentageGreen : theme.percentageRed} fontWeight={500}>
+                {`${percentageDifference >= 0 ? '+' : ''} ${percentageDifference}%`}
+              </Text>
+              <RadioContainer style={{marginBottom: '20px'}} active={chosenOption === 2} second={true}>
+                <RadioButton active={chosenOption === 2} />
+              </RadioContainer>
+            </Flex>
+          </Flex>
+        </Flex>
+        {chosenOption === 0 && <Text mb='10px' textAlign='center'>{`Please select an option`}</Text>}
+        {chosenOption === 2 && <ButtonPrimary onClick={() => setHasSetAsync(true)} style={{ margin: 'auto' }}>{'Add liquidity with Hybrid Add'}</ButtonPrimary>}
+        {(confirmationSlippage && chosenOption === 1) && <ConfirmationInputModal />}
+      </Flex>
+  )
+
+  const ConfirmationInputModal = () => (
+    <Flex flexDirection={'column'}>
+      <Flex justifyContent={'center'}><Text mr='5px'>{`Type`}</Text><Text mr='5px' style={{fontWeight: 500, color: theme.pinkGamma}}>{'Confirm '}</Text><Text> {' if you are sure'}</Text></Flex>
+      <Flex justifyContent={'center'} mb='10px'><Text mr='5px'>{`you want`}</Text><Text mr='5px' style={{fontWeight: 500, color: theme.pinkGamma}}>
+        {`to lose ${Math.abs(percentageDifference)}`}
+        </Text><Text>{'of your position'}</Text>
+      </Flex>
+      <InputContainer>
+        <ConfirmationInput disabled={confirmedString} type="text" onChange={e => handleChangeConfirmation(e.target.value)} />
+        <ButtonPrimary disabled={!confirmedString} onClick={() => (setHasConfirmed(true),setConfirmationSlippage(false))}
+        style={{ margin: 'auto', padding: '12px', height: 'auto', borderRadius: '12px' }}>{'Proceed'}</ButtonPrimary>
+      </InputContainer>
+    </Flex>
+  )
+
+  const modalHeader = () => {
+    return noPylon ? (
+        <AutoColumn gap="20px">
+          <LightCard
+              mt="20px"
+              borderRadius="27px"
+              style={{ backgroundColor: theme.bg14 }}
+          >
+            <RowFlat style={{ flexFlow: "column", alignItems: "center" }}>
+              <Text
+                  fontSize="36px"
+                  fontWeight={300}
+                  lineHeight="42px"
+                  style={{ margin: "auto" }}
+              >
+                {currencies[Field.CURRENCY_A]?.symbol +
+                "/" +
+                currencies[Field.CURRENCY_B]?.symbol}
+              </Text>
+              <div style={{ margin: "20px auto auto auto" }}>
+                <DoubleCurrencyLogo
+                    currency0={currencies[Field.CURRENCY_A]}
+                    currency1={currencies[Field.CURRENCY_B]}
+                    size={30}
+                />
+              </div>
+            </RowFlat>
+          </LightCard>
+        </AutoColumn>
+        ) : feeIsTooHigh ?
+          sync === 'half' ?
+            (hasSetAsync || hasConfirmed) ? (
+              <NoSlippageModalHeader />
+            ) : (
+              <SlippageWarningModal />
+            ) :
+              hasConfirmed ? (
+                <NoSlippageModalHeader />
+              ) : (
+        <SlippageWarningModal />
+      )
+      : (
+      <NoSlippageModalHeader />
     );
   };
 
@@ -769,7 +973,8 @@ export default function AddLiquidityPro({
             errorTx={errorTx}
             blocked={mintInfo?.blocked}
             shouldBlock={mintInfo?.shouldBlock || mintInfo?.deltaApplied || mintInfo?.blocked}
-            asyncBlock={(isFloat && sync !== "off")}
+            asyncBlock={false}
+            disabledConfirmation={feeIsTooHigh && (!hasConfirmed && !hasSetAsync)}
         />
     );
   };
@@ -793,12 +998,7 @@ export default function AddLiquidityPro({
   const handleCurrencyASelect = useCallback(
       (currencyA: Currency) => {
         const newCurrencyIdA = currencyId(currencyA, chainId);
-        // setFloat({
-        //   currency_a: currencyA,
-        //   field_a: Field.CURRENCY_A,
-        //   currency_b: currencies[Field.CURRENCY_B],
-        //   field_b: Field.CURRENCY_B,
-        // });
+
         if (newCurrencyIdA === currencyIdB) {
           history.push(`/add-pro/${currencyIdB || ''}/${currencyIdA || ''}`);
         } else {
@@ -816,12 +1016,7 @@ export default function AddLiquidityPro({
   const handleCurrencyBSelect = useCallback(
       (currencyB: Currency) => {
         const newCurrencyIdB = currencyId(currencyB, chainId);
-        // setFloat({
-        //   currency_a: currencies[Field.CURRENCY_A],
-        //   field_a: Field.CURRENCY_A,
-        //   currency_b: currencies[Field.CURRENCY_B],
-        //   field_b: Field.CURRENCY_B,
-        // });
+
         if (currencyIdA === newCurrencyIdB) {
           if (currencyIdB) {
             history.push(`/add-pro/${currencyIdB}/${newCurrencyIdB || ''}`);
@@ -839,6 +1034,11 @@ export default function AddLiquidityPro({
 
   const handleDismissConfirmation = useCallback(() => {
     setShowConfirm(false);
+    setOriginalValue(undefined);
+    setCustomValue1("");
+    setCustomValue2("");
+    setHasConfirmed(false);
+    setHasSetAsync(false);
     setIsStaking(false);
     setErrorTx('')
     // if there was a tx hash, we want to clear the input
@@ -851,8 +1051,8 @@ export default function AddLiquidityPro({
   const { width } = useWindowDimensions();
   const pylonConstants = usePylonConstants()
   const blockNumber = useBlockNumber()
-  const gammaBig = useGamma(pylonPair?.address)
-  const gammaAdjusted = new BigNumberJs(gammaBig).div(new BigNumberJs(10).pow(18))
+  // const gammaBig = useGamma(pylonPair?.address)
+  const gammaAdjusted = new BigNumberJs(gamma? gamma?.toString() : "0").div(new BigNumberJs(10).pow(18))
   const feePercentage = new BigNumberJs(mintInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18))
   const health = healthFactor?.toLowerCase()
 
@@ -863,12 +1063,12 @@ export default function AddLiquidityPro({
     approvalA === ApprovalState.PENDING ||
     approvalB === ApprovalState.NOT_APPROVED ||
     approvalB === ApprovalState.PENDING) &&
-isValid
+    isValid
 
-  // console.log("currencyA", float.currency_a )
-  // console.log("curremciesA", currencies[Field.CURRENCY_A])
-  // console.log("fee indicator", float.currency_b)
-  // console.log("fee indicator", currencies[Field.CURRENCY_B])
+  const showApproveACondition = pylonState === PylonState.NOT_EXISTS ?
+    (approvalAPair !== ApprovalState.APPROVED ? true : false) :
+    (approvalA !== ApprovalState.APPROVED ? true : false)
+
   return (
       <>
         {(pylonState === PylonState.LOADING || account === '0' || currencyA === null || currencyB === null) &&  (
@@ -883,6 +1083,7 @@ isValid
           <AddRemoveTabs adding={true} />
           <Wrapper>
             <TransactionConfirmationModal
+                width={feeIsTooHigh && '360'}
                 isOpen={showConfirm}
                 onDismiss={handleDismissConfirmation}
                 attemptingTxn={attemptingTxn}
@@ -892,14 +1093,15 @@ isValid
                         title={
                           isStaking ? '' :
                           pylonState === PylonState.EXISTS
-                              ? "You will receive"
+                              ? (feeIsTooHigh && (hasConfirmed===false && hasSetAsync===false)) ? 'High slippage warning' : "You will receive"
                               : pylonState === PylonState.ONLY_PAIR
                                   ? "You are creating a pylon"
                                   : "You are creating a pair"
                         }
                         onDismiss={handleDismissConfirmation}
                         topContent={modalHeader}
-                        bottomContent={modalBottom}
+                        bottomContent={feeIsTooHigh ? (feeIsTooHigh && (hasConfirmed===false && hasSetAsync===false) ? (() => <></>) : modalBottom) : modalBottom}
+                        feeTooHigh={feeIsTooHigh && (hasConfirmed===false && hasSetAsync===false)}
                     />
                 )}
                 pendingText={pendingText()}
@@ -911,17 +1113,16 @@ isValid
               {/* Pylon condition, previously noPylon && */}
 
               {(pylonState !== PylonState.LOADING) && (
-                  <ColumnCenter style={{padding: '10px'}}>
-                    <BlueCard style={{background: 'transparent', border: `1px solid ${theme.anchorFloatBadge}`}}>
+                  <ColumnCenter style={{padding: '0 10px'}}>
+                    <BlueCard style={{borderRadius: '17px', background: 'transparent', border: `1px solid ${theme.anchorFloatBadge}`, padding: '20px 40px'}}>
                       <InfoCircle />
                       <AutoColumn
-                          gap="10px"
                           style={{ fontSize: width > 700 ? "16px" : "15px" }}
                       >
                         <TYPE.link fontWeight={500} fontSize={'18px'} textAlign={'center'} color={theme.text1} my={'10px'}>
-                          {pylonState === PylonState.ONLY_PAIR ?  "PYLON CREATION" : (pylonState === PylonState.NOT_EXISTS ? "PAIR CREATION" : "SELECT TOKEN & PAIR")}
+                          {pylonState === PylonState.ONLY_PAIR ?  "PYLON CREATION" : (pylonState === PylonState.NOT_EXISTS ? "Pair creation" : "Select token & pair")}
                         </TYPE.link>
-                        <TYPE.link fontWeight={400} color={theme.whiteHalf} textAlign={'center'}>
+                        <TYPE.link fontWeight={400} color={theme.darkMode ? '#9C8F95' : '#6A6768'} textAlign={'center'}>
                           {pylonState === PylonState.ONLY_PAIR ?  "This Pylon has not been created yet, be the first liquidity provider to initialize it" :
                               pylonState !== PylonState.NOT_EXISTS ? "Stable is designed for stablecoins and L1 network tokens. Float is for all others, and it's always the more volatile in the pair." :
                                   "This pair has not been created yet, be the first liquidity provider to initialize it"}<br/>
@@ -982,11 +1183,10 @@ isValid
                             <div
                                 style={{
                                   display: "flex",
-                                  background: theme.liquidityBg,
+                                  background: theme.darkMode ? theme.liquidityBg : '#F5F3F3',
                                   borderRadius: "17px",
                                   padding: "5px",
                                   width: "100%",
-                                  marginTop: "10px",
                                 }}
                             >
                               <ButtonAnchor
@@ -995,6 +1195,7 @@ isValid
                                   style={{
                                     padding: "1px",
                                     width: "50%",
+                                    boxShadow: isFloat && selectedBoxShadow,
                                     backgroundColor:
                                         isFloat
                                             ? theme.badgeSmall
@@ -1002,12 +1203,6 @@ isValid
                                   }}
                                   onClick={() => {
                                     setIsFloat(true);
-                                    // setFloat({
-                                    //   currency_a: currencies[Field.CURRENCY_A],
-                                    //   field_a: Field.CURRENCY_A,
-                                    //   currency_b: currencies[Field.CURRENCY_B],
-                                    //   field_b: Field.CURRENCY_B,
-                                    // });
                                   }}
                               >
                                 <CurrencyInputPanelPicOnly
@@ -1020,11 +1215,12 @@ isValid
                                     style={{
                                       color: isFloat ? theme.text1 : theme.tabsText,
                                       marginLeft: "5px",
-                                      fontSize: "13px",
+                                      fontSize: "16px",
                                       letterSpacing: "0.05em",
+                                      fontWeight: 500,
                                     }}
                                 >
-                            {"FLOAT"}
+                            {"Float"}
                           </span>
                               </ButtonAnchor>
 
@@ -1034,6 +1230,7 @@ isValid
                                   style={{
                                     width: "50%",
                                     padding: "1px",
+                                    boxShadow: !isFloat && selectedBoxShadow,
                                     backgroundColor:
                                         !isFloat
                                             ? theme.badgeSmall
@@ -1041,12 +1238,6 @@ isValid
                                   }}
                                   onClick={() => {
                                     setIsFloat(false);
-                                    // setFloat({
-                                    //   currency_b: currencies[Field.CURRENCY_A],
-                                    //   field_b: Field.CURRENCY_A,
-                                    //   currency_a: currencies[Field.CURRENCY_B],
-                                    //   field_a: Field.CURRENCY_B,
-                                    // });
                                   }}
                               >
                                 <CurrencyInputPanelPicOnly
@@ -1059,11 +1250,12 @@ isValid
                                     style={{
                                       color: !isFloat ? theme.text1 : theme.tabsText,
                                       marginLeft: "5px",
-                                      fontSize: "13px",
+                                      fontSize: "16px",
                                       letterSpacing: "0.05em",
+                                      fontWeight: 500,
                                     }}
                                 >
-                            {"STABLE"}
+                            {"Stable"}
                           </span>
                               </ButtonAnchor>
                             </div>
@@ -1095,40 +1287,49 @@ isValid
                     {currencies[Field.CURRENCY_B] !== undefined &&
                     pylonState === PylonState.EXISTS && width >= 700 && (
                         <div style={{ padding: "0 10px 0 10px" }}>
-                          <div
+                          <Flex
                               style={{
-                                display: "flex",
                                 borderRadius: "17px",
                                 justifyContent: "space-between",
+                                background: theme.liquidityBg,
+                                flexDirection: 'column',
+                                padding: '5px',
                               }}
                           >
-                            <>
-                            <span
-                            id='swap-and-add'
+                            <Flex justifyContent={'space-between'}>
+                              <Flex alignItems={'center'}>
+                              <span
+                              id='swap-and-add'
                                 style={{
-                                  display: "inline",
+                                  display: "flex",
+                                  gap: '10px',
                                   alignSelf: "center",
-                                  fontSize: "13px",
+                                  fontSize: "16px",
                                   padding: "0 0 0 10px",
-                                  letterSpacing: "0.05em",
+                                  fontWeight: 500,
                                 }}
                             >
-                              {"SWAP AND ADD"}
+                              <SmartAddImage />
+                              {"Hybrid add"}
                             </span>
+                              </Flex>
+
                               <div
                                   style={{
                                     display: "flex",
-                                    borderRadius: "17px",
+                                    border: `1px solid ${theme.anchorFloatBadge}`,
+                                    borderRadius: "12px",
                                     padding: "5px",
                                     fontSize: "13px",
                                     width: width >= 700 ? "inherit" : "100%",
-                                    background: theme.liquidityBg,
+                                    background: theme.darkMode ? theme.liquidityBg : '#F5F3F3',
                                   }}
                               >
                                 <ButtonAnchor
-                                    borderRadius={"12px"}
-                                    padding={"10px"}
+                                    borderRadius={"7px"}
+                                    padding={"5px 8px 4px 8px"}
                                     style={{
+                                      boxShadow: sync === 'off' && selectedBoxShadow,
                                       backgroundColor:
                                           sync === "off"
                                               ? theme.badgeSmall
@@ -1147,9 +1348,10 @@ isValid
                                 </ButtonAnchor>
 
                                 <ButtonAnchor
-                                    borderRadius={"12px"}
-                                    padding={"10px"}
+                                    borderRadius={"7px"}
+                                    padding={"4px 8px"}
                                     style={{
+                                      boxShadow: sync === 'half' && selectedBoxShadow,
                                       backgroundColor:
                                           sync === "half"
                                               ? theme.badgeSmall
@@ -1162,26 +1364,23 @@ isValid
                                     }}
                                     onClick={() => {
                                       setSync("half");
-                                      // setFloat({
-                                      //   currency_a: currencies[Field.CURRENCY_A],
-                                      //   field_a: Field.CURRENCY_A,
-                                      //   currency_b: currencies[Field.CURRENCY_B],
-                                      //   field_b: Field.CURRENCY_B,
-                                      // });
                                     }}
                                 >
                                   ON
                                 </ButtonAnchor>
                               </div>
-                            </>
-                          </div>
+                            </Flex>
+                            <span style={{color: theme.darkMode ? '#9C8F95' : '#6A6768', fontSize: '13px', paddingLeft: '41px', paddingBottom: '10px'}}>
+                              {'Reduce slippage with a virtual swap for high amounts'}
+                            </span>
+                          </Flex>
                         </div>
                     )}
 
                     <div
                         style={{
                           backgroundColor: theme.bg1,
-                          padding: "10px",
+                          padding: "0 10px 10px",
                           borderRadius: "27px",
                         }}
                     >
@@ -1189,7 +1388,7 @@ isValid
 
                       <div style={{ display: "grid", gridGap: "5px" }}>
                         <CurrencyInputPanelBalOnly
-                            value={formattedAmounts[getField(true)]}
+                            value={customValue1 !== '' ? customValue1 : formattedAmounts[getField(true)]}
                             onUserInput={
                               isFloat
                                   ? onFieldAInput
@@ -1217,7 +1416,7 @@ isValid
                         />
                         {sync === "half" || pylonState !== PylonState.EXISTS ? (
                             <CurrencyInputPanelBalOnly
-                                value={formattedAmounts[getField(false)]}
+                                value={customValue2 !== '' ? customValue2 : formattedAmounts[getField(false)]}
                                 onUserInput={onFieldBInput}
                                 onCurrencySelect={handleCurrencyBSelect}
                                 onMax={() => {
@@ -1259,7 +1458,7 @@ isValid
                 isFloat={isFloat}
                 blocked={mintInfo?.blocked}
                 feePercentage={feePercentage}
-                extraFee={new BigNumberJs(mintInfo?.extraSlippagePercentage.toString()).div(new BigNumberJs(10).pow(18))}
+                extraFee={new BigNumberJs(mintInfo?.slippage.toString()).div(new BigNumberJs(10).pow(18))}
                 extraFeeTreshold={new BigNumberJs(mintInfo?.extraFeeTreshold.toString()).div(new BigNumberJs(10).pow(18))}
                 isDeltaGamma={mintInfo?.deltaApplied}
                 hoverPage={'addLiq'}
@@ -1294,18 +1493,17 @@ isValid
                     </div> */}
 
                       {!account ? (
-                          <ButtonLight onClick={toggleWalletModal}>
+                          <ButtonLight style={{fontWeight: 500}} onClick={toggleWalletModal}>
                             Connect Wallet
                           </ButtonLight>
                       ) : (
                           <AutoColumn gap={"md"}>
-                            {!(chainId === 1285 || chainId === 1287) && showApproveCondition && (
+                            {(!(chainId === 1285 || chainId === 1287) || ((chainId === 1285 || chainId === 1287) && pylonState !== PylonState.EXISTS)) && showApproveCondition && (
                                 <RowBetween>
                                   {/* Currency A isn't approved or pylon doesn't exist and A isn't approved */}
-                                  {(pylonState === PylonState.NOT_EXISTS ? (approvalAPair !== ApprovalState.APPROVED ? true : false) : (approvalA !== ApprovalState.APPROVED ? true : false))
-                                  && (
+                                  {showApproveACondition && (
                                       <ButtonPrimary
-                                          onClick={(pylonState === PylonState.ONLY_PAIR || pylonState === PylonState.EXISTS) ?
+                                          onClick={pylonState === PylonState.EXISTS ?
                                               approveACallback
                                               : approveACallbackPair}
                                           disabled={approvalA === ApprovalState.PENDING
@@ -1352,7 +1550,10 @@ isValid
                                     pylonState === PylonState.EXISTS ? farm ? "48%" : '100%' : "100%"
                                   }
                                   onClick={() => {
-                                    expertMode ? onAdd() : setShowConfirm(true);
+                                    expertMode ? onAdd() : setShowConfirm(true); setRememberedSlippage(
+                                      (parseFloat(new BigNumberJs(mintInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18)).toString()) +
+                                      parseFloat(new BigNumberJs(mintInfo?.slippage.toString()).div(new BigNumberJs(10).pow(18)).toString()))
+                                    );
                                   }}
                                   error={
                                     sync === "half" &&

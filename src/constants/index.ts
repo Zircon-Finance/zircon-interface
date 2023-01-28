@@ -122,7 +122,11 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
   [ChainId.BSC]: [
       new Token(ChainId.BSC, '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82', 18, 'CAKE', 'PancakeSwap Token'),
       new Token(ChainId.BSC, '0xe9e7cea3dedca5984780bafc599bd69add087d56', 18, 'BUSD', 'BUSD Token'),
-  ]
+  ],
+  [ChainId.ARBGOERLY]: [
+      new Token(ChainId.ARBGOERLY, '0x680Faf7f226324F8ECdA0c5ba17c9bee2E8534C7', 18, 'ZRG', 'Zircon Gamma'),
+      new Token(ChainId.ARBGOERLY, '0x723ac13403f6Ac850B921532e7CD6EF56bC1C0f4', 18, 'WMOVR', 'WMOVR Token'),
+  ],
 }
 
 export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } = {

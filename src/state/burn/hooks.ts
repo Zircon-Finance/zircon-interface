@@ -179,10 +179,10 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
                   decimals,
                   totalSupply, ptTotalSupply, userLiquidity,
                    pylonPoolBalance, BigInt(blockNumber), pylonConstants,
-                  BigInt(timestamp), true) :
+                  BigInt(timestamp)) :
               pylon.burnAnchor(pylonInfo, pairInfo, decimals, totalSupply, ptTotalSupply, userLiquidity,
                   pylonPoolBalance,  BigInt(blockNumber), pylonConstants,
-                  BigInt(timestamp), energyPT, energyAnchor, true);
+                  BigInt(timestamp), energyPT, energyAnchor);
           return {...burnInfo, liquidity: isFloat ? [burnInfo.amountOut, new TokenAmount(pylon.token1, BigInt(0))] :
                 [new TokenAmount(pylon.token0, BigInt(0)), burnInfo.amountOut]}
         }else{

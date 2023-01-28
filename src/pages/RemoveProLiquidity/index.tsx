@@ -342,7 +342,7 @@ export default function RemoveProLiquidity({
         new BigNumberJs(originalValue).times(
           new BigNumberJs(100))).toString()
   const feeIsTooHigh = rememberedSlippage >= 5
-  
+
  const setCustom = () => {
   setOriginalValue(parsedAmounts[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.toSignificant(6));
   setSync(false);
@@ -425,7 +425,7 @@ const ConfirmationInputModal = () => (
     </Flex>
     <InputContainer>
       <ConfirmationInput disabled={confirmedString} type="text" onChange={e => handleChangeConfirmation(e.target.value)} />
-      <ButtonPrimary disabled={!confirmedString} onClick={() => (setHasConfirmed(true),setConfirmationSlippage(false))} 
+      <ButtonPrimary disabled={!confirmedString} onClick={() => (setHasConfirmed(true),setConfirmationSlippage(false))}
       style={{ margin: 'auto', padding: '12px', height: 'auto', borderRadius: '12px' }}>{'Proceed'}</ButtonPrimary>
     </InputContainer>
   </Flex>
@@ -434,9 +434,9 @@ const ConfirmationInputModal = () => (
 const SlippageWarningModal = () => (
 <Flex flexDirection={'column'} style={{background: theme.darkMode ? '#52273A' : 'transparent'}}>
         <Text mt='20px' style={{lineHeight: '160%'}} textAlign='center'>{'You can reduce slippage and get more'}</Text>
-        <Text mb='10px' textAlign='center'>{`tokens using the Smart Remove method`}</Text>
+        <Text mb='10px' textAlign='center'>{`tokens using the Hybrid Remove method`}</Text>
         <Flex mt='20px' mb='30px' mx='auto' style={{gap: '10px', textAlign: 'center'}}>
-          <Flex onClick={() => [setChosenOption(1), setConfirmationSlippage(true)]} flexDirection={'column'} 
+          <Flex onClick={() => [setChosenOption(1), setConfirmationSlippage(true)]} flexDirection={'column'}
           style={{
             border: `${(chosenOption === 1) ? `2px solid ${theme.pinkGamma}` :
               theme.darkMode ? '2px solid rgba(98, 47, 69, 0.5)' : '2px solid #F5F3F4'}` ,
@@ -451,14 +451,14 @@ const SlippageWarningModal = () => (
             </RadioContainer>
           </Flex>
           <Flex flexDirection={'column'}><PinkContainer><Text>{'Lower slippage'}</Text></PinkContainer>
-            <Flex onClick={() => [setChosenOption(2), setConfirmationSlippage(false)]} flexDirection={'column'} 
-              style={{border: `${(chosenOption === 2) ? `2px solid ${theme.pinkGamma}` : '2px solid transparent'}` , 
-              borderBottomLeftRadius: '17px', 
+            <Flex onClick={() => [setChosenOption(2), setConfirmationSlippage(false)]} flexDirection={'column'}
+              style={{border: `${(chosenOption === 2) ? `2px solid ${theme.pinkGamma}` : '2px solid transparent'}` ,
+              borderBottomLeftRadius: '17px',
               borderBottomRightRadius: '17px',
-              backgroundColor: theme.darkMode ? '#622F45' : '#EEEAEC', 
+              backgroundColor: theme.darkMode ? '#622F45' : '#EEEAEC',
               cursor: 'pointer'}}
             >
-              <Text fontSize='14px' fontWeight={500} p='20px 10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#E4E0E3'}`}}>{'WITH SMART REMOVE'}</Text>
+              <Text fontSize='14px' fontWeight={500} p='20px 10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#E4E0E3'}`}}>{'WITH HYBRID REMOVE'}</Text>
               <Text fontSize='14px' my='10px'>{'You get'}</Text>
               <Text fontSize='18px' fontWeight={500}>
                 {`${formattedAmounts[Field.CURRENCY_A]} ${isFloat ? currencyB?.symbol : currencyA?.symbol} `}
@@ -477,20 +477,20 @@ const SlippageWarningModal = () => (
           </Flex>
         </Flex>
         {chosenOption === 0 && <Text mb='10px' textAlign='center'>{`Please select an option`}</Text>}
-        {chosenOption === 2 && <ButtonPrimary onClick={() => setHasSetAsync(true)} style={{ margin: 'auto' }}>{'Remove with Smart Remove'}</ButtonPrimary>}
+        {chosenOption === 2 && <ButtonPrimary onClick={() => setHasSetAsync(true)} style={{ margin: 'auto' }}>{'Remove with Hybrid Remove'}</ButtonPrimary>}
         {(confirmationSlippage && chosenOption === 1) && <ConfirmationInputModal />}
       </Flex>
 )
 
   function modalHeader() {
     return (
-      feeIsTooHigh ? 
-      !sync ? 
+      feeIsTooHigh ?
+      !sync ?
       (hasSetAsync || hasConfirmed) ? (
         <NoSlippageModalHeader />
       ) : (
         <SlippageWarningModal />
-      ) : 
+      ) :
         hasConfirmed ? (
           <NoSlippageModalHeader />
         ) : (

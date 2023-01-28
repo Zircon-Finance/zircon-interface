@@ -192,7 +192,7 @@ export function useDerivedPylonMintInfo(
                 pylonConstants,
                 BigInt(timestamp),
                 !isFloat
-                )
+            )
             console.log("syncMintInfo", syncMintInfo)
             if (JSBI.greaterThan(syncMintInfo?.amountsToInvest?.sync, ZERO) && JSBI.greaterThan(syncMintInfo?.amountsToInvest?.async, ZERO)) {
               extraFeeTreshold = syncMintInfo?.amountsToInvest?.sync
@@ -235,22 +235,22 @@ export function useDerivedPylonMintInfo(
                 pairInfo,
                 decimals,
                 totalSupply, ptTotalSupply, tokenAmountA, tokenAmountB,
-                 pylonPoolBalance,
+                pylonPoolBalance,
                 BigInt(blockNumber), pylonConstants,
                 BigInt(timestamp),
                 !isFloat
-             )
+            )
           }else{
             asyncMintInfo = pylonPair.mintAsync(
                 pylonInfo,
                 pairInfo,
                 decimals,
                 totalSupply, ptTotalSupply, tokenAmountA, tokenAmountB,
-                 pylonPoolBalance,
+                pylonPoolBalance,
                 BigInt(blockNumber), pylonConstants,
                 BigInt(timestamp),
                 !isFloat
-               )
+            )
           }
           return {...asyncMintInfo, extraFeeTreshold: ZERO, extraSlippagePercentage: ZERO, shouldBlock: false}
         }
@@ -270,8 +270,8 @@ export function useDerivedPylonMintInfo(
       console.log("INTERFACE:: totalSupply, ptTotalSupply, tokenAmountA, tokenAmountA", totalSupply?.raw.toString(), ptTotalSupply?.raw.toString(), tokenAmountA?.raw.toString(), tokenAmountB?.raw.toString())
       console.log("INTERFACE:: ptb, lastk, blockNumber", pylonPoolBalance?.raw.toString(),  BigInt(blockNumber))
       console.log("INTERFACE:: pylonConstants", pylonConstants)
-        console.log("INTERFACE:: timestamp", timestamp)
-        console.log("INTERFACE:: pylonInfo", pylonInfo)
+      console.log("INTERFACE:: timestamp", timestamp)
+      console.log("INTERFACE:: pylonInfo", pylonInfo)
 
       return undefined
     }
@@ -384,9 +384,9 @@ export const useHealthFactor = (  currencyA: Currency | undefined,
   const blockNumber = useBlockNumber()
   const pairInfo = usePairInfo(pylonPair ? Pair.getAddress(pylonPair.token0, pylonPair.token1) : "")
   const decimals = {
-      float: ethers.BigNumber.from(10).pow(currencyA && currencyB ? (isFloat ? currencyA?.decimals : currencyB?.decimals) : 18).toString(),
-          anchor: ethers.BigNumber.from(10).pow(currencyA && currencyB ? (isFloat ? currencyB?.decimals : currencyA?.decimals) : 18 ).toString(),
-    }
+    float: ethers.BigNumber.from(10).pow(currencyA && currencyB ? (isFloat ? currencyA?.decimals : currencyB?.decimals) : 18).toString(),
+    anchor: ethers.BigNumber.from(10).pow(currencyA && currencyB ? (isFloat ? currencyB?.decimals : currencyA?.decimals) : 18 ).toString(),
+  }
 
   const healthFactorResult = useMemo(() => {
     return pylonInfo && pylonPair && ptbEnergy && reserveAnchor && ptb && ptt && lastK && pylonFactory ?
@@ -413,25 +413,25 @@ export function usePairPrices(token0: Currency, token1: Currency, pair: Pair, pa
     const price1 = token1 && await axios.get(`${PRICE_API+(token1?.symbol === 'wMOVR' ? 'MOVR' : token1?.symbol)}BUSD`).then
     ((res) => res?.data?.price).catch((e) => console.log(e))
     return (price0 !== undefined && price1 !== undefined) ? [price0, price1] :
-    price0 !== undefined
-        ? [
-          price0,
-          (pair?.token0 === token0
-              ? parseFloat(pair?.reserve0?.toFixed(2)) /
-              parseFloat(pair?.reserve1?.toFixed(2))
-              : parseFloat(pair?.reserve1?.toFixed(2)) /
-              parseFloat(pair?.reserve0?.toFixed(2))) * price0,
-        ]
-        : price1 !== undefined
+        price0 !== undefined
             ? [
-              (pair?.token1 === token1
-                  ? parseFloat(pair?.reserve1?.toFixed(2)) /
-                  parseFloat(pair?.reserve0?.toFixed(2))
+              price0,
+              (pair?.token0 === token0
+                  ? parseFloat(pair?.reserve0?.toFixed(2)) /
+                  parseFloat(pair?.reserve1?.toFixed(2))
                   : parseFloat(pair?.reserve1?.toFixed(2)) /
-                  parseFloat(pair?.reserve0?.toFixed(2))) * price1,
-              price1,
+                  parseFloat(pair?.reserve0?.toFixed(2))) * price0,
             ]
-            : [0, 0];
+            : price1 !== undefined
+                ? [
+                  (pair?.token1 === token1
+                      ? parseFloat(pair?.reserve1?.toFixed(2)) /
+                      parseFloat(pair?.reserve0?.toFixed(2))
+                      : parseFloat(pair?.reserve1?.toFixed(2)) /
+                      parseFloat(pair?.reserve0?.toFixed(2))) * price1,
+                  price1,
+                ]
+                : [0, 0];
   }
   const [prices, setPrices] = useState([0,0])
   // console.log('reserves', pair?.reserve0?.toFixed(2), pair?.reserve1?.toFixed(2))

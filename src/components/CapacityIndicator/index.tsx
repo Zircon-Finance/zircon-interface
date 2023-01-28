@@ -50,13 +50,20 @@ interface Props {
     hoverPage?: string
     slippage?: BigNumber
     reservesPTU?: BigNumber
+    tokenSymbol?: string
 }
 
 interface ToolTipProps {
     option: string
   }
 
-const CapacityIndicator: React.FC<Props> = ({gamma, hoverPage, health, isFloat, noSpan, blocked, feePercentage,extraFee = new BigNumberJs(0), extraFeeTreshold = new BigNumberJs(0), isDeltaGamma, slashingOmega= new BigNumberJs(0), slippage = new BigNumberJs(0), reservesPTU = new BigNumberJs(0)}) => {
+const CapacityIndicator: React.FC<Props> = ({gamma,
+                                                hoverPage, health, isFloat,
+                                                noSpan, blocked, feePercentage,
+                                                extraFee = new BigNumberJs(0), extraFeeTreshold = new BigNumberJs(0),
+                                                isDeltaGamma, slashingOmega= new BigNumberJs(0),
+                                                slippage = new BigNumberJs(0), reservesPTU = new BigNumberJs(0),
+                                                tokenSymbol}) => {
     const theme = useTheme();
     const [hoverRisk, setHoverRisk] = React.useState(false);
     const [hoverFee, setHoverFee] = React.useState(false);
@@ -114,7 +121,7 @@ const CapacityIndicator: React.FC<Props> = ({gamma, hoverPage, health, isFloat, 
             </RowContainer>}
             {!blocked && slippage.gt(0) && <RowContainer>
                 <SmallContainer>
-                    {!noSpan && <span style={{marginLeft: 8}}>{'Slippage > ' + reservesPTU.toFixed(0)}</span>}
+                    {!noSpan && <span style={{marginLeft: 8}}>{'Slippage For ' + reservesPTU.toFixed(0) + " " + tokenSymbol}</span>}
                     <QuestionMarkContainer
                         onMouseEnter={() => setHoverSlippage(true)}
                         onMouseLeave={() => setHoverSlippage(false)}

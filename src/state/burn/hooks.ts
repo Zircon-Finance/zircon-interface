@@ -179,10 +179,10 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
                   decimals,
                   totalSupply, ptTotalSupply, userLiquidity,
                    pylonPoolBalance, BigInt(blockNumber), pylonConstants,
-                  BigInt(timestamp)) :
+                  BigInt(timestamp), true) :
               pylon.burnAnchor(pylonInfo, pairInfo, decimals, totalSupply, ptTotalSupply, userLiquidity,
                   pylonPoolBalance,  BigInt(blockNumber), pylonConstants,
-                  BigInt(timestamp), energyPT, energyAnchor);
+                  BigInt(timestamp), energyPT, energyAnchor, true);
           return {...burnInfo, liquidity: isFloat ? [burnInfo.amountOut, new TokenAmount(pylon.token1, BigInt(0))] :
                 [new TokenAmount(pylon.token0, BigInt(0)), burnInfo.amountOut]}
         }else{
@@ -237,7 +237,8 @@ export function useDerivedPylonBurnInfo(
     liquidity?: [TokenAmount, TokenAmount];
     omegaSlashingPercentage?: JSBI;
     slippage?: JSBI;
-    reservesPTU?: JSBI
+    reservesPTU?: JSBI;
+    amountWithSlippage?: JSBI
   }
   healthFactor?: string;
   gamma?: string;

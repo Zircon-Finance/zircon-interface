@@ -1458,7 +1458,7 @@ export default function AddLiquidityPro({
                 isFloat={isFloat}
                 blocked={mintInfo?.blocked}
                 feePercentage={feePercentage}
-                extraFee={new BigNumberJs(mintInfo?.extraSlippagePercentage.toString()).div(new BigNumberJs(10).pow(18))}
+                extraFee={new BigNumberJs(mintInfo?.slippage.toString()).div(new BigNumberJs(10).pow(18))}
                 extraFeeTreshold={new BigNumberJs(mintInfo?.extraFeeTreshold.toString()).div(new BigNumberJs(10).pow(18))}
                 isDeltaGamma={mintInfo?.deltaApplied}
                 hoverPage={'addLiq'}
@@ -1552,7 +1552,7 @@ export default function AddLiquidityPro({
                                   onClick={() => {
                                     expertMode ? onAdd() : setShowConfirm(true); setRememberedSlippage(
                                       (parseFloat(new BigNumberJs(mintInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18)).toString()) +
-                                      parseFloat(new BigNumberJs(mintInfo?.extraSlippagePercentage.toString()).div(new BigNumberJs(10).pow(18)).toString()))
+                                      parseFloat(new BigNumberJs(mintInfo?.slippage.toString()).div(new BigNumberJs(10).pow(18)).toString()))
                                     );
                                   }}
                                   error={

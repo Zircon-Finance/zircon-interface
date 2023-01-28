@@ -179,52 +179,23 @@ export function useDerivedPylonMintInfo(
           let syncMintInfo;
           let extraFeeTreshold = ZERO;
           let shouldBlock = false;
-          if (isFloat) {
-            syncMintInfo = pylonPair.mintSync(
-                pylonInfo,
-                pairInfo,
-                decimals,
-                totalSupply,
-                ptTotalSupply,
-                tokenAmountA,
-                pylonPoolBalance,
-                BigInt(blockNumber),
-                pylonConstants,
-                BigInt(timestamp),
-                !isFloat
-            )
-            console.log("syncMintInfo", syncMintInfo)
-            if (JSBI.greaterThan(syncMintInfo?.amountsToInvest?.sync, ZERO) && JSBI.greaterThan(syncMintInfo?.amountsToInvest?.async, ZERO)) {
-              extraFeeTreshold = syncMintInfo?.amountsToInvest?.sync
-            }
-            if (JSBI.greaterThan(syncMintInfo?.amountsToInvest?.async, ZERO)) {
-              shouldBlock = true
-            }
-
-          }else{
-            syncMintInfo = pylonPair.mintSync(
-                pylonInfo,
-                pairInfo,
-                decimals,
-                totalSupply,
-                ptTotalSupply,
-                tokenAmountB,
-                pylonPoolBalance,
-                BigInt(blockNumber),
-                pylonConstants,
-                BigInt(timestamp),
-                !isFloat
-            )
-            if (JSBI.greaterThan(syncMintInfo?.amountsToInvest?.sync, ZERO) && JSBI.greaterThan(syncMintInfo?.amountsToInvest?.async, ZERO)) {
-
-              extraFeeTreshold = syncMintInfo?.amountsToInvest?.sync
-            }
-            if (JSBI.greaterThan(syncMintInfo?.amountsToInvest?.async, ZERO)) {
-              shouldBlock = true
-            }
-
+          syncMintInfo = pylonPair.mintSync(
+              pylonInfo,
+              pairInfo,
+              decimals,
+              totalSupply,
+              ptTotalSupply,
+              isFloat ? tokenAmountA : tokenAmountB,
+              pylonPoolBalance,
+              BigInt(blockNumber),
+              pylonConstants,
+              BigInt(timestamp),
+              !isFloat,
+              true
+          )
+          if (JSBI.greaterThan(syncMintInfo?.amountsToInvest?.sync, ZERO) && JSBI.greaterThan(syncMintInfo?.amountsToInvest?.async, ZERO)) {
+            extraFeeTreshold = syncMintInfo?.amountsToInvest?.sync
           }
-
           return {...syncMintInfo, extraFeeTreshold: extraFeeTreshold, shouldBlock}
         }else {
           let asyncMintInfo;
@@ -252,7 +223,7 @@ export function useDerivedPylonMintInfo(
                 !isFloat
             )
           }
-          return {...asyncMintInfo, extraFeeTreshold: ZERO, extraSlippagePercentage: ZERO, shouldBlock: false}
+          return {...asyncMintInfo, extraFeeTreshold: ZERO, slippage: ZERO, shouldBlock: false}
         }
       } else {
         console.error("INTERFACE:: error missing data")

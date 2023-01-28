@@ -26,16 +26,16 @@ export const PhishingBanner = () => {
   const theme = useTheme()
   const {width} = useWindowDimensions()
   const openWebsite = () => {
-    const newWindow = window.open('https://app.zircon.finance', '_blank', 'noopener,noreferrer')
+    const newWindow = window.open('https://beta.zircon.finance', '_blank', 'noopener,noreferrer')
     if (newWindow) newWindow.opener = null
   }
   return (
     <PhyshingContainer>
         <WarningLight />
         <Flex flexDirection={width <= 992 ? 'column' : 'row'} py={width <= 992 && '10px'}>
-          <Text color={'#E9D886'}>PHISHING WARNING: </Text>
-          <Text ml={width >= 992 && 2} color={theme.darkMode ? '#CCB6B5' : '#E8E6E6'}>please make sure you're visiting  </Text>
-          <Link to={'#'} onClick={() => openWebsite()} style={{textDecoration: 'none', color: '#E9D886', marginLeft: width >= 992 && '5px'}}> https://app.zircon.finance </Link>
+          <Text color={'#E9D886'}>WARNING: </Text>
+          <Text ml={width >= 992 && 2} color={theme.darkMode ? '#CCB6B5' : '#E8E6E6'}>this endpoint is only for testing purposes </Text>
+          <Link to={'#'} onClick={() => openWebsite()} style={{textDecoration: 'none', color: '#E9D886', marginLeft: width >= 992 && '5px'}}> https://beta.zircon.finance </Link>
           <Text ml={width >= 992 &&'5px'} color={theme.darkMode ? '#CCB6B5' : '#E8E6E6'}>check the URL carefully</Text>
         </Flex>
         <CloseIcon fill={'#fff'} onClick={() => setShowBanner()} />

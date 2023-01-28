@@ -91,12 +91,12 @@ export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' }) {
 
   const hoverContent = (
     <DialogContainer style={{
-      background: theme.questionMarkBg, 
-      position: 'fixed', 
-      top: width >= 1100 ? '80px' : width >= 700 ? '140px' : '210px', 
-      width: '200px', 
-      right: 'auto', 
-      padding: '15px'}} 
+      background: theme.questionMarkBg,
+      position: 'fixed',
+      top: width >= 1100 ? '80px' : width >= 700 ? '140px' : '210px',
+      width: '200px',
+      right: 'auto',
+      padding: '15px'}}
     show={hoverBlocked}>
       <Text style={{color: theme.text1}} fontSize='13px' fontWeight={500} mb={'5px'}>
         {blockReasonTitle}
@@ -117,7 +117,7 @@ export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' }) {
         {t('pool')}
       </StyledNavLink>
       <StyledNavLink onMouseEnter={() => setHoverBlocked(true)} onMouseLeave={() => setHoverBlocked(false)}
-      disabled={isFarmBlocked} id={`farm-nav-link`} to={isFarmBlocked ? '#' : '/farm'} isActive={() => active === 'farm'}>
+      disabled={true} id={`farm-nav-link`} to={isFarmBlocked ? '#' : '/farm'} isActive={() => active === 'farm'}>
         {t('Farm')}
       </StyledNavLink>
       {hoverBlocked && isPoolBlocked && isFarmBlocked && hoverContent}

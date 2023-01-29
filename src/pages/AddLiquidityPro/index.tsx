@@ -1069,6 +1069,7 @@ export default function AddLiquidityPro({
     (approvalAPair !== ApprovalState.APPROVED ? true : false) : 
     (approvalA !== ApprovalState.APPROVED ? true : false)
 
+  const callbacoToCall = pylonState === PylonState.EXISTS ? (approveACallback) : (pylonState === PylonState.ONLY_PAIR ? approveACallback : approveACallbackPair)
   return (
       <>
         {(pylonState === PylonState.LOADING || account === '0' || currencyA === null || currencyB === null) &&  (
@@ -1503,9 +1504,7 @@ export default function AddLiquidityPro({
                                   {/* Currency A isn't approved or pylon doesn't exist and A isn't approved */}
                                   {showApproveACondition && (
                                       <ButtonPrimary
-                                          onClick={pylonState === PylonState.EXISTS ?
-                                              approveACallback
-                                              : approveACallbackPair}
+                                          onClick={()=>{callbacoToCall()}}
                                           disabled={approvalA === ApprovalState.PENDING
                                           || approvalAPair === ApprovalState.PENDING}
                                           style={{margin: 'auto', maxWidth: '48%'}}

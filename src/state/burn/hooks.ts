@@ -179,12 +179,12 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
                   decimals,
                   totalSupply, ptTotalSupply, userLiquidity,
                    pylonPoolBalance, BigInt(blockNumber), pylonConstants,
-                  BigInt(timestamp)) :
+                  BigInt(timestamp), true) :
               pylon.burnAnchor(pylonInfo, pairInfo, decimals, totalSupply, ptTotalSupply, userLiquidity,
                   pylonPoolBalance,  BigInt(blockNumber), pylonConstants,
-                  BigInt(timestamp), energyPT, energyAnchor);
-          return {...burnInfo, liquidity: isFloat ? [burnInfo.amount, new TokenAmount(pylon.token1, BigInt(0))] :
-                [new TokenAmount(pylon.token0, BigInt(0)), burnInfo.amount]}
+                  BigInt(timestamp), energyPT, energyAnchor, true);
+          return {...burnInfo, liquidity: isFloat ? [burnInfo.amountOut, new TokenAmount(pylon.token1, BigInt(0))] :
+                [new TokenAmount(pylon.token0, BigInt(0)), burnInfo.amountOut]}
         }else{
           return undefined
         }
@@ -198,7 +198,7 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
                 pylonPoolBalance, BigInt(blockNumber), pylonConstants
                  , BigInt(timestamp),energyPT, energyAnchor);
 
-        return {...burnInfo, liquidity: [burnInfo.amountA, burnInfo.amountB], slippage: ZERO, reservesPTU: ZERO}
+        return {...burnInfo, liquidity: [burnInfo.amountOut, burnInfo.amountOut2], slippage: ZERO, reservesPTU: ZERO}
 
 
       }
@@ -237,7 +237,8 @@ export function useDerivedPylonBurnInfo(
     liquidity?: [TokenAmount, TokenAmount];
     omegaSlashingPercentage?: JSBI;
     slippage?: JSBI;
-    reservesPTU?: JSBI
+    reservesPTU?: JSBI;
+    amountWithSlippage?: JSBI
   }
   healthFactor?: string;
   gamma?: string;
@@ -380,7 +381,7 @@ export function useDerivedPylonBurnInfo(
     error = error ?? 'Enter an amount'
   }
 
-  return { pylon, parsedAmounts, error, burnInfo, healthFactor, gamma: pylonInfo?.[2]?.toString() }
+  return { pylon, parsedAmounts, error, burnInfo, healthFactor, gamma: pylonInfo?.gammaMulDecimals?.toString() }
 }
 
 export function useBurnActionHandlers(): {

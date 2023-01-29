@@ -188,8 +188,8 @@ export default function Header() {
             <UniIcon id="z-logo">
               <img style={{ height: 24, display: 'flex', margin: 'auto' }} src={!darkMode ? DarkLogo : WhiteLogo} alt="logo" />
             </UniIcon>
-            {chainId === 1285 && <BadgeSmall style={{fontSize: '13px', padding: '5px 10px', background: '#56332e', color: '#FFF'}}>
-              {'GAMMA'}
+            {chainId === 1287 && <BadgeSmall style={{fontSize: '13px', padding: '5px 10px', background: '#56332e', color: '#FFF'}}>
+              {'BETA'}
               </BadgeSmall>}
               {/* <ChainPoolTab active={chainId === 1285 ? 'moonriver' : 'bsc'} /> */}
           </Title>
@@ -245,8 +245,8 @@ export default function Header() {
               <UniIcon id="z-logo">
               <img style={{ height: 20, display: 'flex', margin: 'auto' }} src={!darkMode ? DarkLogo : WhiteLogo} alt="logo" />
               </UniIcon>
-              {chainId === 1285 && <BadgeSmall style={{fontSize: '13px', padding: '5px 10px', marginRight: '5px', background: '#56332e', color: '#FFF'}}>
-                {'GAMMA'}
+              {chainId === 1287 && <BadgeSmall style={{fontSize: '13px', padding: '5px 10px', marginRight: '5px', background: '#56332e', color: '#FFF'}}>
+                {'BETA'}
                 </BadgeSmall>}
             </Title>
              <>

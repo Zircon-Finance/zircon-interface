@@ -248,7 +248,7 @@ export default function Swap() {
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
   // never show if price impact is above threshold in non expert mode
   const showApproveFlow =
-    chainId !== 1285 && (
+    !(chainId === 1285 || chainId === 1287) && (
     !swapInputError &&
     (approval === ApprovalState.NOT_APPROVED ||
       approval === ApprovalState.PENDING ||

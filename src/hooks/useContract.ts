@@ -79,6 +79,10 @@ export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contrac
         break
       case ChainId.BSC:
         break
+      case ChainId.BSCT:
+        break
+      case ChainId.ARBGOERLY:
+        break
     }
   }
   return useContract(address, ENS_ABI, withSignerIfPossible)

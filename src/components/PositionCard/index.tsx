@@ -314,8 +314,8 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
 
     const {burnInfo, healthFactor, gamma, parsedAmounts} = useDerivedPylonBurnInfo(currency0 ?? undefined, currency1 ?? undefined, isFloat, true,
         {
-        float: ethers.BigNumber.from(10).pow(currency0 && currency1 ? (isFloat ? currency0?.decimals : currency1?.decimals) : 18).toString(),
-        anchor: ethers.BigNumber.from(10).pow(currency0 && currency1 ? (isFloat ? currency1?.decimals : currency0?.decimals) : 18).toString(),
+        float: ethers.BigNumber.from(10).pow(currency0?.decimals || 18).toString(),
+        anchor: ethers.BigNumber.from(10).pow(currency1?.decimals || 18).toString(),
         }
         ,"100")
 
@@ -454,12 +454,11 @@ export function MinimalPositionPylonCard({ pylon, showUnwrapped = false, border,
     const formattedPoolBalance = userPoolBalance?.toSignificant(4) as unknown as number
 
     const {burnInfo, parsedAmounts} = useDerivedPylonBurnInfo(currency0 ?? undefined, currency1 ?? undefined, isFloat, true, {
-        float: ethers.BigNumber.from(10).pow(currency0 && currency1 ? (isFloat ? currency0?.decimals : currency1?.decimals) : 18).toString(),
-        anchor: ethers.BigNumber.from(10).pow(currency0 && currency1 ? (isFloat ? currency1?.decimals : currency0?.decimals) : 18).toString(),
+        float: ethers.BigNumber.from(10).pow(currency0?.decimals || 18).toString(),
+        anchor: ethers.BigNumber.from(10).pow(currency1?.decimals || 18).toString(),
       } ,"100")
 
     const [token0Deposited, token1Deposited] = !burnInfo ? [undefined, undefined] : [parsedAmounts["CURRENCY_A"], parsedAmounts["CURRENCY_B"]]
-
 
     const { width } = useWindowDimensions();
     const theme = useTheme()

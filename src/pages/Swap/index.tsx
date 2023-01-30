@@ -107,7 +107,6 @@ export default function Swap() {
   const [chosenTokens] = useChosenTokens();
   const inputCurrency = useCurrency(inputCurrencyId)
   const outputCurrency = useCurrency(outputCurrencyId)
-  console.log("inputCurrencyId", inputCurrencyId)
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
   const { address: recipientAddress } = useENSAddress(recipient)
   const toggledVersion = useToggledVersion()
@@ -399,7 +398,7 @@ export default function Swap() {
               onCurrencySelect={handleInputSelect}
               otherCurrency={currencies[Field.OUTPUT]}
               id="swap-currency-input"
-              price={ prices[0]}
+              price={ prices[0] ?? undefined }
             />
             <AutoColumn>
               <AutoRow justify={isExpertMode ? recipient === null ? 'space-between' : 'center' : 'center'} style={{ padding: '0 1rem'}}>
@@ -435,7 +434,7 @@ export default function Swap() {
               onCurrencySelect={handleOutputSelect}
               otherCurrency={currencies[Field.INPUT]}
               id="swap-currency-output"
-              price={prices[1]}
+              price={prices[1] ?? undefined}
             />
 
             {recipient !== null && !showWrap && isExpertMode && (

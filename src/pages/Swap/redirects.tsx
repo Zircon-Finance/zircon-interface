@@ -16,7 +16,6 @@ export function RedirectToSwap(props: RouteComponentProps<{ outputCurrency: stri
       params: { outputCurrency }
     }
   } = props
-  console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAA')
 
   return (
     <Redirect

@@ -192,11 +192,11 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
         let burnInfo = isFloat ?
             pylon.burnAsyncFloat(pylonInfo, pairInfo, decimals, totalSupply, ptTotalSupply, userLiquidity,
                  pylonPoolBalance,  BigInt(blockNumber), pylonConstants,
-                 BigInt(timestamp))
+                 BigInt(timestamp), true)
             :
             pylon.burnAsyncAnchor(pylonInfo, pairInfo, decimals, totalSupply, ptTotalSupply, userLiquidity,
                 pylonPoolBalance, BigInt(blockNumber), pylonConstants
-                 , BigInt(timestamp),energyPT, energyAnchor);
+                 , BigInt(timestamp),energyPT, energyAnchor, true);
 
         return {...burnInfo, liquidity: [burnInfo.amountOut, burnInfo.amountOut2], slippage: ZERO, reservesPTU: ZERO}
 

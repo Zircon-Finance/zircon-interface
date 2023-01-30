@@ -99,7 +99,8 @@ export function useDerivedPylonMintInfo(
               pylonConstants,
               BigInt(timestamp),
               ptbEnergy.raw,
-              reserveAnchor.raw
+              reserveAnchor.raw,
+              true
           ).toString() : undefined
     }catch (e) {
       console.error("INTERFACE:: error health factor", e)
@@ -209,7 +210,8 @@ export function useDerivedPylonMintInfo(
                 pylonPoolBalance,
                 BigInt(blockNumber), pylonConstants,
                 BigInt(timestamp),
-                !isFloat
+                !isFloat,
+                true
             )
           }else{
             asyncMintInfo = pylonPair.mintAsync(
@@ -220,7 +222,8 @@ export function useDerivedPylonMintInfo(
                 pylonPoolBalance,
                 BigInt(blockNumber), pylonConstants,
                 BigInt(timestamp),
-                !isFloat
+                !isFloat,
+                true
             )
           }
           return {...asyncMintInfo, extraFeeTreshold: ZERO, slippage: ZERO, shouldBlock: false}

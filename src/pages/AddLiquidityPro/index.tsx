@@ -185,7 +185,6 @@ export default function AddLiquidityPro({
     float: ethers.BigNumber.from(10).pow(currencyA?.decimals || 18).toString(),
     anchor: ethers.BigNumber.from(10).pow(currencyB?.decimals || 18).toString(),
   }
-  console.log('aadecimals', decimals)
   const {
     dependentField,
     currencies,

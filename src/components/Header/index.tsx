@@ -171,7 +171,7 @@ export default function Header() {
   const theme = useTheme();
   const blockedApiData = useBlockedApiData();
   const isPoolBlocked = blockedApiData?.isPoolBlocked
-  const isFarmBlocked = blockedApiData?.isFarmBlocked
+  const isFarmBlocked = true
 
   return (
     <HeaderFrame>

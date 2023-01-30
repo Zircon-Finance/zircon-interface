@@ -177,8 +177,8 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   // const gamma = new BigNumber(gammaBig).div(new BigNumber(10).pow(18))
   // const healthFactor = useHealthFactor(currency1, currency2)
   const decimals = {
-    float: ethers.BigNumber.from(10).pow(currency1 && currency2 ? (details?.isFloat ? currency1?.decimals : currency2?.decimals) : 18).toString(),
-    anchor: ethers.BigNumber.from(10).pow(currency1 && currency2 ? (details?.isFloat ? currency2?.decimals : currency1?.decimals) : 18).toString(),
+    float: ethers.BigNumber.from(10).pow(currency1?.decimals || 18).toString(),
+    anchor: ethers.BigNumber.from(10).pow(currency2?.decimals || 18).toString(),
   }
   const {
     healthFactor

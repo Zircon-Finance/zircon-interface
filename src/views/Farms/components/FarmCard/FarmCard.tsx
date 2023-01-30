@@ -79,8 +79,8 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, account,
   const addTransaction = useTransactionAdder()
   const [currency1,currency2] = [useCurrency(farm.token1.address),useCurrency(farm.token2.address)]
   const decimals = {
-    float: ethers.BigNumber.from(10).pow(currency1 && currency2 ? (isFloat ? currency1?.decimals : currency2?.decimals) : 18).toString(),
-    anchor: ethers.BigNumber.from(10).pow(currency1 && currency2 ? (isFloat ? currency2?.decimals : currency1?.decimals) : 18).toString(),
+    float: ethers.BigNumber.from(10).pow(currency1?.decimals || 18).toString(),
+    anchor: ethers.BigNumber.from(10).pow(currency2?.decimals || 18).toString(),
   }
   const {
     healthFactor

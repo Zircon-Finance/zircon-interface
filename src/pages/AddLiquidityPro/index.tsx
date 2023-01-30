@@ -182,8 +182,8 @@ export default function AddLiquidityPro({
   const { independentField, typedValue, otherTypedValue } = useMintState();
   const [isFloat, setIsFloat] = useState(true);
   const decimals = {
-    float: ethers.BigNumber.from(10).pow(currencyA && currencyB ? (isFloat ? currencyA?.decimals : currencyB?.decimals) : 18).toString(),
-    anchor: ethers.BigNumber.from(10).pow(currencyA && currencyB ? (isFloat ? currencyB?.decimals : currencyA?.decimals) : 18 ).toString(),
+    float: ethers.BigNumber.from(10).pow(currencyA?.decimals || 18).toString(),
+    anchor: ethers.BigNumber.from(10).pow(currencyB?.decimals || 18).toString(),
   }
   const {
     dependentField,
@@ -890,7 +890,9 @@ export default function AddLiquidityPro({
           </Flex>
         </Flex>
         {chosenOption === 0 && <Text mb='10px' textAlign='center'>{`Please select an option`}</Text>}
-        {chosenOption === 2 && <ButtonPrimary onClick={() => setHasSetAsync(true)} style={{ margin: 'auto' }}>{'Add liquidity with Hybrid Add'}</ButtonPrimary>}
+        {chosenOption === 2 && <ButtonPrimary disabled={error !== undefined} onClick={() => setHasSetAsync(true)} style={{ margin: 'auto' }}>
+          {!error ? 'Add liquidity with Hybrid Add' : error}
+        </ButtonPrimary>}
         {(confirmationSlippage && chosenOption === 1) && <ConfirmationInputModal />}
       </Flex>
   )
@@ -1069,6 +1071,8 @@ export default function AddLiquidityPro({
     (approvalAPair !== ApprovalState.APPROVED ? true : false) :
     (approvalA !== ApprovalState.APPROVED ? true : false)
 
+  const callbackAToCall = pylonState === PylonState.EXISTS ? (approveACallback) : (pylonState === PylonState.ONLY_PAIR ? approveACallback : approveACallbackPair)
+  const callbackBToCall = pylonState === PylonState.EXISTS ? (approveBCallback) : (pylonState === PylonState.ONLY_PAIR ? approveBCallback : approveBCallbackPair)
   return (
       <>
         {(pylonState === PylonState.LOADING || account === '0' || currencyA === null || currencyB === null) &&  (
@@ -1503,9 +1507,7 @@ export default function AddLiquidityPro({
                                   {/* Currency A isn't approved or pylon doesn't exist and A isn't approved */}
                                   {showApproveACondition && (
                                       <ButtonPrimary
-                                          onClick={pylonState === PylonState.EXISTS ?
-                                              approveACallback
-                                              : approveACallbackPair}
+                                          onClick={()=>{callbackAToCall()}}
                                           disabled={approvalA === ApprovalState.PENDING
                                           || approvalAPair === ApprovalState.PENDING}
                                           style={{margin: 'auto', maxWidth: '48%'}}
@@ -1524,8 +1526,7 @@ export default function AddLiquidityPro({
                                   )}
                                   {(pylonState === PylonState.EXISTS ? ((sync === 'half' && approvalB !== ApprovalState.APPROVED) ? true : false) : (pylonState === PylonState.ONLY_PAIR ? (approvalB !== ApprovalState.APPROVED ? true : false) : (approvalBPair !== ApprovalState.APPROVED ? true : false))) &&
                                   (<ButtonPrimary
-                                      onClick={pylonState === (PylonState.NOT_EXISTS) ?
-                                          approveBCallbackPair : approveBCallback}
+                                      onClick={()=>{callbackBToCall()}}
                                       disabled={(approvalB === ApprovalState.PENDING ||
                                       approvalBPair === ApprovalState.PENDING ? true : false)}
                                       style={{margin: 'auto', maxWidth: '48%'}}

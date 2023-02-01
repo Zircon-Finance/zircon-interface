@@ -45,15 +45,9 @@ export function usePylons(currencies: [Currency | undefined, Currency | undefine
       [tokens]
   )
 
-  console.log("RRR:: tokenA", tokens)
-  console.log("RRR:: pairAd", pairAddresses)
-  console.log("RRR:: pylonAddress", pylonAddresses)
-
   const results = useMultipleContractSingleData(pylonAddresses, PYLON_INTERFACE, 'getSyncReserves')
   const resultsPair = useMultipleContractSingleData(pairAddresses, PAIR_INTERFACE, 'getReserves')
   const liquidityFee = useLiquidityFee()
-  console.log("RRR:: resultsP", resultsPair)
-  console.log("RRR:: results", results)
   return useMemo(() => {
     return results.map((result, i) => {
       const { result: reserves, loading } = result

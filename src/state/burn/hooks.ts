@@ -332,7 +332,7 @@ export function useDerivedPylonBurnInfo(
     if(!percentage){
       percentToRemove = new Percent(typedValue, '100')
     }else{
-      percentToRemove = new Percent(typedValue, '100')
+      percentToRemove = new Percent(percentage, '100')
     }
 
   }

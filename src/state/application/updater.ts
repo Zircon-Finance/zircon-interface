@@ -34,18 +34,24 @@ export default function Updater(): null {
   // attach/detach listeners
   useEffect(() => {
     if (!library || !chainId || !windowVisible) return undefined
+    const intervalId = setInterval(() => {
 
-    setState({ chainId, blockNumber: null, timestamp: null })
+
+      setState({ chainId, blockNumber: null, timestamp: null })
 
 
-    library
-      .getBlock('latest')
-      .then(blockNumberCallback)
-      .catch(error => console.error(`Failed to get block number for chainId: ${chainId}`, error))
+      library
+        .getBlock('latest')
+        .then(blockNumberCallback)
+        .catch(error => console.error(`Failed to get block number for chainId: ${chainId}`, error))
 
-    library.on('block', blockNumberCallback)
+      library.on('block', blockNumberCallback)
+      return () => {
+        library.removeListener('block', blockNumberCallback)
+      }
+    }, 2000)
     return () => {
-      library.removeListener('block', blockNumberCallback)
+      clearInterval(intervalId)
     }
   }, [dispatch, chainId, library, blockNumberCallback, windowVisible])
 

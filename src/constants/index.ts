@@ -126,6 +126,18 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
   [ChainId.ARBGOERLY]: [
       new Token(ChainId.ARBGOERLY, '0x680Faf7f226324F8ECdA0c5ba17c9bee2E8534C7', 18, 'ZRG', 'Zircon Gamma'),
       new Token(ChainId.ARBGOERLY, '0x723ac13403f6Ac850B921532e7CD6EF56bC1C0f4', 18, 'WMOVR', 'WMOVR Token'),
+      new Token(ChainId.ARBGOERLY, '0x97a3fa0854ce32E88FDE98C90Cba798e51882563', 18, 'ETH', 'Athereum'),
+      new Token(ChainId.ARBGOERLY, '0x47133e2774757ccb6052954907A46619FF6c4883', 6, 'USDC', 'USD Coin'),
+      new Token(ChainId.ARBGOERLY, '0x267b6eE95C10CE9FD3882F91B3cc9bd74EA8ABbc', 12, 'xcKSM', 'Kusama'),
+      new Token(ChainId.ARBGOERLY, '0x23CA803686b124d85cBe9Cb4dbDda75f89385A1C', 18, 'LDO', 'Lido'),
+      new Token(ChainId.ARBGOERLY, '0xd98C9e791891c673a97b14F7462B33c92987FA11', 18, 'MFAM', 'MFAM Token'),
+      new Token(ChainId.ARBGOERLY, '0x1ADE71647Be1197c791e6B65A45a6178A57Ad18f', 18, 'xcRMRK', 'RMRK'),
+      new Token(ChainId.ARBGOERLY, '0x77cD17f55ae21f8F98cE81C22D5E022503E64190', 18, 'kBTC', 'Kintsugi BTC'),
+      new Token(ChainId.ARBGOERLY, '0x1277464d2b97966807a184172E0dc0Be4F07A351', 18, '1SWAP', '1SWAP Token'),
+      new Token(ChainId.ARBGOERLY, '0x7C1a63fA397a3Aa8a0bbFBB8DDD1D6ef54206E59', 18, 'BNB', 'BNB'),
+      new Token(ChainId.ARBGOERLY, '0xDB2f99f5408e95643E50a6987aD31B539faee147', 18, 'ZPTA', 'ZPTA'),
+      new Token(ChainId.ARBGOERLY, '0x0c9cc7847b333F0B565158D7fbCEfbeAFda66a54', 18, 'ZPT', 'ZPTB'),
+
   ],
 }
 

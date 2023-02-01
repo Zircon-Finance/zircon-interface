@@ -47,7 +47,7 @@ export const talismanChains: Chain[] = [
     blockExplorerUrls: ["https://moonbeam.moonscan.io/"],
   },
   {
-    id: 1287,
+    id: 1285,
     name: "Moonriver",
     nativeCurrency: {
       name: "MOVR",

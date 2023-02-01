@@ -34,7 +34,7 @@ import {WrapperWithPadding} from '../Pool/styleds'
 import {ApprovalState, useApproveCallback} from '../../hooks/useApproveCallback'
 import {Dots} from '../../components/swap/styleds'
 import {useBurnActionHandlers, useBurnState, useDerivedPylonBurnInfo} from '../../state/burn/hooks'
-import {Field, typeInput} from '../../state/burn/actions'
+import {Field} from '../../state/burn/actions'
 import {useBlockNumber, useWalletModalToggle} from '../../state/application/hooks'
 import {useUserDeadline, useUserSlippageTolerance} from '../../state/user/hooks'
 import {BigNumber} from '@ethersproject/bignumber'
@@ -50,8 +50,6 @@ import { ConfirmationInput, InputContainer, PinkContainer, RadioButton, RadioCon
 import PlusIcon from '../../views/Farms/components/PlusIcon'
 import ErrorTxContainer from '../../components/ErrorTxContainer'
 import { ethers } from 'ethers'
-import { useDispatch } from 'react-redux'
-import { AppDispatch } from '../../state'
 
 export const PercButton = styled.button<{ width: string }>`
   padding: 0.5rem 1rem;
@@ -381,15 +379,7 @@ useEffect(() => {
   }
 }, [hasConfirmed])
 
-console.log('AAASlippage total: ', rememberedSlippage)
-console.log('AAASlippage burn: ', parseFloat(new BigNumberJs(burnInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18)).toString()))
-console.log('AAASlippage actual: ', parseFloat(new BigNumberJs(burnInfo?.slippage.toString()).div(new BigNumberJs(10).pow(18)).toString())
-)
-
-const dispatch = useDispatch<AppDispatch>()
-  useEffect(() => {
-    dispatch(typeInput({ field: Field.LIQUIDITY_PERCENT, typedValue: '0' }))
-  }, [dispatch])
+console.log('Slippage: ', rememberedSlippage)
 
 const NoSlippageModalHeader = () => (
   <AutoColumn gap={'5px'} style={{ marginTop: '15px' }}>

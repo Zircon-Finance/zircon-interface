@@ -136,6 +136,7 @@ export function useSingleTokenSwapInfo(
   const parsedAmount = tryParseAmount(chainId, '1', inputCurrency ?? undefined)
 
   const bestTradeExactIn = useTradeExactIn(parsedAmount, outputCurrency ?? undefined)
+
   if (!inputCurrency || !outputCurrency || !bestTradeExactIn) {
     return null
   }

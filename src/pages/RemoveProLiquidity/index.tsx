@@ -96,8 +96,8 @@ export default function RemoveProLiquidity({
   // burn state
   const { independentField, typedValue } = useBurnState()
   const { pylon, parsedAmounts, error, healthFactor, gamma, burnInfo } = useDerivedPylonBurnInfo(currencyA ?? undefined, currencyB ?? undefined, isFloat, sync, {
-    float: ethers.BigNumber.from(10).pow(currencyA && currencyB ? (isFloat ? currencyA?.decimals : currencyB?.decimals) : 18).toString(),
-        anchor: ethers.BigNumber.from(10).pow(currencyA && currencyB ? (isFloat ? currencyB?.decimals : currencyA?.decimals) : 18 ).toString(),
+    float: ethers.BigNumber.from(10).pow(currencyA?.decimals || 18).toString(),
+        anchor: ethers.BigNumber.from(10).pow(currencyB?.decimals || 18 ).toString(),
   })
   const { onUserInput: _onUserInput } = useBurnActionHandlers()
   const isValid = !error
@@ -846,7 +846,8 @@ const SlippageWarningModal = () => (
                     isDeltaGamma={burnInfo?.deltaApplied}
                     slippage={new BigNumberJs((burnInfo?.slippage ?? "0").toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
                     reservesPTU={new BigNumberJs((burnInfo?.amountWithSlippage ?? "0").toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
-                    tokenSymbol={(isFloat ? tokenA?.symbol : tokenB?.symbol) ?? ""}
+                    tokenSymbol0={tokenA?.symbol ?? ""}
+                    tokenSymbol1={(tokenB?.symbol) ?? ""}
                 />
               </div>
               <div style={{ position: 'relative' }}>

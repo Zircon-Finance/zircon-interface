@@ -50,7 +50,8 @@ interface Props {
     hoverPage?: string
     slippage?: BigNumber
     reservesPTU?: BigNumber
-    tokenSymbol?: string
+    tokenSymbol0?: string
+    tokenSymbol1?: string
 }
 
 interface ToolTipProps {
@@ -63,12 +64,13 @@ const CapacityIndicator: React.FC<Props> = ({gamma,
                                                 extraFee = new BigNumberJs(0), extraFeeTreshold = new BigNumberJs(0),
                                                 isDeltaGamma, slashingOmega= new BigNumberJs(0),
                                                 slippage = new BigNumberJs(0), reservesPTU = new BigNumberJs(0),
-                                                tokenSymbol}) => {
+                                                tokenSymbol0, tokenSymbol1}) => {
     const theme = useTheme();
     const [hoverRisk, setHoverRisk] = React.useState(false);
     const [hoverFee, setHoverFee] = React.useState(false);
     const [hoverSlashing, setHoverSlashing] = React.useState(false);
     const [hoverSlippage, setHoverSlippage] = React.useState(false);
+    console.log("QQ:: ", isFloat)
     const TooltipContentRisk: React.FC<ToolTipProps> = ({option}) => { return (
         <ToolTip style={{left: '-100px'}} show={hoverRisk || hoverFee || hoverSlashing || hoverSlippage}>
             <Text fontSize='13px' fontWeight={500} color={theme.text1}>
@@ -106,7 +108,7 @@ const CapacityIndicator: React.FC<Props> = ({gamma,
 
             {!blocked && extraFee.gt(0) && <RowContainer>
                 <SmallContainer>
-                    {!noSpan && <span style={{marginLeft: 8}}>{'Slippage For Amount > ' + extraFeeTreshold.toFixed(2)}</span>}
+                    {!noSpan && <span style={{marginLeft: 8}}>{'Slippage For ' + extraFeeTreshold.toFixed(2)  + " " + (isFloat ? tokenSymbol0 : tokenSymbol1)}</span>}
                     <QuestionMarkContainer
                         onMouseEnter={() => setHoverSlippage(true)}
                         onMouseLeave={() => setHoverSlippage(false)}
@@ -121,7 +123,7 @@ const CapacityIndicator: React.FC<Props> = ({gamma,
             </RowContainer>}
             {!blocked && slippage.gt(0) && <RowContainer>
                 <SmallContainer>
-                    {!noSpan && <span style={{marginLeft: 8}}>{'Slippage For ' + reservesPTU.toFixed(0) + " " + tokenSymbol}</span>}
+                    {!noSpan && <span style={{marginLeft: 8}}>{'Slippage For ' + reservesPTU.toFixed(0) + " " + (isFloat ? tokenSymbol0 : tokenSymbol1)}</span>}
                     <QuestionMarkContainer
                         onMouseEnter={() => setHoverSlippage(true)}
                         onMouseLeave={() => setHoverSlippage(false)}

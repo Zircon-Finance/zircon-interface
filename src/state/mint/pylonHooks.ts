@@ -195,7 +195,7 @@ export function useDerivedPylonMintInfo(
               true
           )
           if (JSBI.greaterThan(syncMintInfo?.amountsToInvest?.sync, ZERO) && JSBI.greaterThan(syncMintInfo?.amountsToInvest?.async, ZERO)) {
-            extraFeeTreshold = syncMintInfo?.amountsToInvest?.sync
+            extraFeeTreshold = syncMintInfo?.amountsToInvest?.async
           }
           return {...syncMintInfo, extraFeeTreshold: extraFeeTreshold, shouldBlock}
         }else {

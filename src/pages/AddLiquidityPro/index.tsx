@@ -1465,7 +1465,7 @@ export default function AddLiquidityPro({
                 tokenSymbol0={pylonPair?.token0?.symbol ?? ""}
                 tokenSymbol1={pylonPair?.token1?.symbol ?? ""}
                 extraFee={new BigNumberJs(mintInfo?.slippage.toString()).div(new BigNumberJs(10).pow(18))}
-                extraFeeTreshold={new BigNumberJs(mintInfo?.extraFeeTreshold.toString()).div(new BigNumberJs(10).pow(18))}
+                extraFeeTreshold={new BigNumberJs(mintInfo?.extraFeeTreshold.toString())}
                 isDeltaGamma={mintInfo?.deltaApplied}
                 hoverPage={'addLiq'}
             />}

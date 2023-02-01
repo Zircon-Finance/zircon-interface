@@ -180,11 +180,17 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
                   totalSupply, ptTotalSupply, userLiquidity,
                    pylonPoolBalance, BigInt(blockNumber), pylonConstants,
                   BigInt(timestamp), true) :
-              pylon.burnAnchor(pylonInfo, pairInfo, decimals, totalSupply, ptTotalSupply, userLiquidity,
+              pylon.burnAnchor(
+                  pylonInfo,
+                  pairInfo,
+                  decimals,
+                  totalSupply, ptTotalSupply, userLiquidity,
                   pylonPoolBalance,  BigInt(blockNumber), pylonConstants,
                   BigInt(timestamp), energyPT, energyAnchor, true);
-          return {...burnInfo, liquidity: isFloat ? [burnInfo.amountOut, new TokenAmount(pylon.token1, BigInt(0))] :
-                [new TokenAmount(pylon.token0, BigInt(0)), burnInfo.amountOut]}
+          return {...burnInfo,
+            liquidity: isFloat ? [burnInfo.amountOut, new TokenAmount(pylon.token1, BigInt(0)),] :
+                [new TokenAmount(pylon.token0, BigInt(0)), burnInfo.amountOut],
+            amountWithSlippage: JSBI.divide(burnInfo.amountWithSlippage, JSBI.BigInt(isFloat ? decimals.float.toString() : decimals.anchor.toString()))}
         }else{
           return undefined
         }

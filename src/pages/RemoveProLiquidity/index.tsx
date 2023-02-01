@@ -845,7 +845,7 @@ const SlippageWarningModal = () => (
                     feePercentage={new BigNumberJs(burnInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
                     isDeltaGamma={burnInfo?.deltaApplied}
                     slippage={new BigNumberJs((burnInfo?.slippage ?? "0").toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
-                    reservesPTU={new BigNumberJs((burnInfo?.amountWithSlippage ?? "0").toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
+                    reservesPTU={new BigNumberJs((burnInfo?.amountWithSlippage ?? "0").toString()) ?? new BigNumberJs(0)}
                     tokenSymbol0={tokenA?.symbol ?? ""}
                     tokenSymbol1={(tokenB?.symbol) ?? ""}
                 />

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useTheme } from 'styled-components'
 import {Token, Pylon, NATIVE_TOKEN} from 'zircon-sdk'
 // import { Link } from 'react-router-dom'
@@ -34,6 +34,9 @@ import HistoryTransactions from '../../components/HistoryTransactions'
 import LearnIcon, { SmallerQuestionmark } from '../../components/LearnIcon'
 import {usePylonConstants} from "../../data/PylonData";
 import {useBlockNumber} from "../../state/application/hooks";
+import { Field, typeInput } from '../../state/burn/actions'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from '../../state'
 
 export default function Pool() {
   const theme = useTheme()
@@ -85,6 +88,11 @@ export default function Pool() {
       [tokenPairsWithLiquidityTokens, v2PairsBalances]
   )
   // const v2Pairs = usePairs(liquidityTokensWithBalances.map(({ tokens }) => tokens))
+  const dispatch = useDispatch<AppDispatch>()
+  useEffect(() => {
+    dispatch(typeInput({ field: Field.LIQUIDITY_PERCENT, typedValue: '100' }))
+  }, [dispatch])
+
 
   const pylons = usePylons(liquidityTokensWithBalances.map(({ tokens }) => tokens))
   const v2IsLoading =

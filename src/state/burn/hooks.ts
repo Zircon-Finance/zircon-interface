@@ -280,11 +280,11 @@ export function useDerivedPylonBurnInfo(
   const timestamp = useBlockTimestamp()
   console.log("timestamp", timestamp)
   let userLiquidity = useTokenBalance(account ?? undefined, isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken)
-  if (typedValue !== '0' && pylon !== undefined && userLiquidity !== undefined && independentField === Field.LIQUIDITY_PERCENT)  {
-    userLiquidity = new TokenAmount(isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken, JSBI.divide(
-      JSBI.multiply(
-        userLiquidity?.raw, JSBI.BigInt(typedValue || 100)), JSBI.BigInt(100)))
-  }
+  // if (typedValue !== '0' && pylon !== undefined && userLiquidity !== undefined && independentField === Field.LIQUIDITY_PERCENT)  {
+  //   userLiquidity = new TokenAmount(isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken, JSBI.divide(
+  //     JSBI.multiply(
+  //       userLiquidity?.raw, JSBI.BigInt(typedValue || 100)), JSBI.BigInt(100)))
+  // }
   const pylonPoolBalance = useTokenBalance(pylon?.address, pylon?.pair.liquidityToken)
   const ptTotalSupply = useTotalSupply(isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken)
   const totalSupply = useTotalSupply(pylon?.pair.liquidityToken)

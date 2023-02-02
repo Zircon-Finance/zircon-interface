@@ -320,7 +320,7 @@ export function usePairAdder(): (pair: Pair) => void {
  * @param tokenB the other token
  */
 export function toV2LiquidityToken([tokenA, tokenB]: [Token, Token]): Token {
-  return new Token(tokenA.chainId, Pair.getAddress(tokenA, tokenB), 18, 'UNI-V2', 'CLASSIC')
+  return new Token(tokenA.chainId, Pair.getAddress(tokenA, tokenB), 18, 'ZIRCON', 'CLASSIC')
 }
 /**
  * Given two tokens return the liquidity token that represents its float liquidity shares

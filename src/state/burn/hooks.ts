@@ -278,7 +278,6 @@ export function useDerivedPylonBurnInfo(
   const pylonConstants = usePylonConstants()
   const blockNumber = useBlockNumber()
   const timestamp = useBlockTimestamp()
-  console.log("timestamp", timestamp)
   let userLiquidity = useTokenBalance(account ?? undefined, isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken)
   // if (typedValue !== '0' && pylon !== undefined && userLiquidity !== undefined && independentField === Field.LIQUIDITY_PERCENT)  {
   //   userLiquidity = new TokenAmount(isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken, JSBI.divide(

@@ -71,7 +71,6 @@ export function useDerivedPylonMintInfo(
 
   // Pylon
   const [pylonState, pylonPair] = usePylon(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B])
-  console.log("FF:: pylonPair", pylonPair)
   const pylonInfo = usePylonInfo(pylonPair?.address)
   const pylonConstants = usePylonConstants()
   const blockNumber = useBlockNumber()
@@ -176,7 +175,6 @@ export function useDerivedPylonMintInfo(
       if (pylonState === PylonState.EXISTS && pylonPair && pylonSupply && tokenAmountA && tokenAmountB
           && totalSupply && ptTotalSupply && userLiquidity && pylonPoolBalance && pylonInfo && pairInfo && pylonConstants) {
         if (sync === "off") {
-          console.log("FF:: pp")
           let syncMintInfo;
           let extraFeeTreshold = ZERO;
           let shouldBlock = false;

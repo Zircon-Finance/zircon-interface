@@ -312,14 +312,14 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
     const userPoolBalance = useTokenBalance(account ?? undefined, isFloat ? pylon.floatLiquidityToken : pylon.anchorLiquidityToken)
     const formattedPoolBalance = userPoolBalance.toSignificant(4) as unknown as number
 
-    const {burnInfo, healthFactor, gamma, parsedAmounts} = useDerivedPylonBurnInfo(currency0 ?? undefined, currency1 ?? undefined, isFloat, true,
+    const {burnInfo, healthFactor, gamma, idealBurnAmount} = useDerivedPylonBurnInfo(currency0 ?? undefined, currency1 ?? undefined, isFloat, true,
         {
-        float: ethers.BigNumber.from(10).pow(currency0?.decimals || 18).toString(),
-        anchor: ethers.BigNumber.from(10).pow(currency1?.decimals || 18).toString(),
+            float: ethers.BigNumber.from(10).pow(currency0?.decimals || 18).toString(),
+            anchor: ethers.BigNumber.from(10).pow(currency1?.decimals || 18).toString(),
         }
         ,"100")
 
-    const [token0Deposited, token1Deposited] = !burnInfo ? [undefined, undefined] : [parsedAmounts["CURRENCY_A"], parsedAmounts["CURRENCY_B"]]
+    // const [token0Deposited, token1Deposited] = !burnInfo ? [undefined, undefined] : [parsedAmounts["CURRENCY_A"], parsedAmounts["CURRENCY_B"]]
 
     const { width } = useWindowDimensions();
 
@@ -371,40 +371,19 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
                                 </RowFixed>
                             </FixedHeightRow>
                             <Separator style={{margin: '10px 0 10px 0'}} />
-                            {isFloat ? <FixedHeightRow>
-                                    <RowFixed>
-                                        <Text fontSize={13} fontWeight={400}>
-                                            Pooled {currency0.symbol}:
-                                        </Text>
-                                    </RowFixed>
-                                    {token0Deposited ? (
-                                        <RowFixed>
-                                            <Text fontSize={13} fontWeight={400} marginLeft={'6px'}>
-                                                {token0Deposited?.toSignificant(6)}
-                                            </Text>
-                                            <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={currency0} chainId={chainId} />
-                                        </RowFixed>
-                                    ) : (
-                                        '-'
-                                    )}
-                                </FixedHeightRow> :
-                                <FixedHeightRow>
-                                    <RowFixed>
-                                        <Text fontSize={13} fontWeight={400}>
-                                            Pooled {currency1.symbol}:
-                                        </Text>
-                                    </RowFixed>
-                                    {token1Deposited ? (
-                                        <RowFixed>
-                                            <Text fontSize={13} fontWeight={400} marginLeft={'6px'}>
-                                                {token1Deposited?.toSignificant(6)}
-                                            </Text>
-                                            <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={currency1} chainId={chainId} />
-                                        </RowFixed>
-                                    ) : (
-                                        '-'
-                                    )}
-                                </FixedHeightRow> }
+                            <FixedHeightRow>
+                                <RowFixed>
+                                    <Text fontSize={13} fontWeight={400}>
+                                        Pooled {isFloat ? currency0.symbol : currency1.symbol}:
+                                    </Text>
+                                </RowFixed>
+                                <RowFixed>
+                                    <Text fontSize={13} fontWeight={400} marginLeft={'6px'}>
+                                        {idealBurnAmount ? idealBurnAmount?.toSignificant() : "0"}
+                                    </Text>
+                                    <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={isFloat ? currency0 : currency1} chainId={chainId} />
+                                </RowFixed>
+                            </FixedHeightRow>
                             <FixedHeightRow style={{alignItems: 'center'}}>
                                 <RowFixed>
                                     <Text fontSize={13} fontWeight={400}>
@@ -453,12 +432,12 @@ export function MinimalPositionPylonCard({ pylon, showUnwrapped = false, border,
     const userPoolBalance = useTokenBalance(account ?? undefined, isFloat ? pylon.floatLiquidityToken : pylon.anchorLiquidityToken)
     const formattedPoolBalance = userPoolBalance?.toSignificant(4) as unknown as number
 
-    const {burnInfo, parsedAmounts} = useDerivedPylonBurnInfo(currency0 ?? undefined, currency1 ?? undefined, isFloat, true, {
+    const {idealBurnAmount} = useDerivedPylonBurnInfo(currency0 ?? undefined, currency1 ?? undefined, isFloat, true, {
         float: ethers.BigNumber.from(10).pow(currency0?.decimals || 18).toString(),
         anchor: ethers.BigNumber.from(10).pow(currency1?.decimals || 18).toString(),
-      } ,"100")
+    } ,"100")
 
-    const [token0Deposited, token1Deposited] = !burnInfo ? [undefined, undefined] : [parsedAmounts["CURRENCY_A"], parsedAmounts["CURRENCY_B"]]
+    // const [token0Deposited, token1Deposited] = !burnInfo ? [undefined, undefined] : [parsedAmounts["CURRENCY_A"], parsedAmounts["CURRENCY_B"]]
 
     const { width } = useWindowDimensions();
     const theme = useTheme()
@@ -544,11 +523,11 @@ export function MinimalPositionPylonCard({ pylon, showUnwrapped = false, border,
                             </RowFixed>
                         </FixedHeightRow>
                         <AutoColumn gap="4px">
-                            {isFloat && <FixedHeightRow>
+                            <FixedHeightRow>
                                 <Text color={theme.text1} fontSize={13} fontWeight={400}>
-                                    Pooled {currency0.symbol}
+                                    Pooled {isFloat ? currency0.symbol : currency1.symbol}
                                 </Text>
-                                {token0Deposited ? (
+                                {idealBurnAmount ? (
                                     <RowFixed>
                                         <Text
                                             color={theme.text1}
@@ -556,32 +535,14 @@ export function MinimalPositionPylonCard({ pylon, showUnwrapped = false, border,
                                             fontWeight={400}
                                             marginLeft={"6px"}
                                         >
-                                            {token0Deposited?.toSignificant(6)}
+                                            {idealBurnAmount?.toSignificant(6)}
                                         </Text>
                                     </RowFixed>
                                 ) : (
                                     "-"
                                 )}
-                            </FixedHeightRow>}
-                            {!isFloat && <FixedHeightRow>
-                                <Text color={theme.text1} fontSize={13} fontWeight={400}>
-                                    Pooled {currency1.symbol}
-                                </Text>
-                                {token1Deposited ? (
-                                    <RowFixed>
-                                        <Text
-                                            color={theme.text1}
-                                            fontSize={13}
-                                            fontWeight={400}
-                                            marginLeft={"6px"}
-                                        >
-                                            {token1Deposited?.toSignificant(6)}
-                                        </Text>
-                                    </RowFixed>
-                                ) : (
-                                    "-"
-                                )}
-                            </FixedHeightRow>}
+                            </FixedHeightRow>
+
                         </AutoColumn>
                     </AutoColumn>
                 </OutlineCard>

@@ -160,6 +160,10 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
   if(isLastRoot) {
     return undefined;
   }else{
+    console.log("DFG::", pylonInfo)
+    console.log("DFG::", totalSupply.raw.toString(), ptTotalSupply.raw.toString())
+    console.log("DFG::", userLiquidity.raw.toString())
+
     try{
       if(isSync) {
 
@@ -187,6 +191,7 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
                   totalSupply, ptTotalSupply, userLiquidity,
                   pylonPoolBalance,  BigInt(blockNumber), pylonConstants,
                   BigInt(timestamp), energyPT, energyAnchor, true);
+          console.log("DFG::", burnInfo.amountOut.raw.toString())
           return {...burnInfo,
             liquidity: isFloat ? [burnInfo.amountOut, new TokenAmount(pylon.token1, BigInt(0)),] :
                 [new TokenAmount(pylon.token0, BigInt(0)), burnInfo.amountOut],
@@ -248,6 +253,7 @@ export function useDerivedPylonBurnInfo(
   }
   healthFactor?: string;
   gamma?: string;
+  idealBurnAmount?: TokenAmount
 } {
   const { account, chainId } = useActiveWeb3React()
 
@@ -296,6 +302,29 @@ export function useDerivedPylonBurnInfo(
         totalSupply, ptTotalSupply, pylonInfo,
         pylonConstants, blockNumber, pairInfo,
         isSync, isFloat, ptbEnergy, reserveAnchor, timestamp, decimals)
+  }, [pylon, userLiquidity, pylonPoolBalance,
+    totalSupply, ptTotalSupply, pylonInfo, pylonConstants, blockNumber, pairInfo, isSync, isFloat] )
+
+  let idealBurnAmount = useMemo(() => {
+    if(!ptTotalSupply || !userLiquidity || !pylonPoolBalance || !totalSupply || !pylonInfo || !pylonConstants || !pairInfo || !blockNumber) {
+      return undefined
+    }
+    let idealBurn = pylon?.idealBalance(
+        pylonInfo,
+        pairInfo,
+        decimals,
+        userLiquidity,
+        ptTotalSupply,
+        totalSupply,
+        pylonPoolBalance,
+        BigInt(blockNumber),
+        pylonConstants,
+        BigInt(timestamp),
+        !isFloat,
+        true
+    ) ?? undefined
+
+    return idealBurn//JSBI.divide(idealBurn, JSBI.BigInt(isFloat ? decimals.float.toString() : decimals.anchor.toString()))
   }, [pylon, userLiquidity, pylonPoolBalance,
     totalSupply, ptTotalSupply, pylonInfo, pylonConstants, blockNumber, pairInfo, isSync, isFloat] )
 
@@ -387,7 +416,7 @@ export function useDerivedPylonBurnInfo(
     error = error ?? 'Enter an amount'
   }
 
-  return { pylon, parsedAmounts, error, burnInfo, healthFactor, gamma: pylonInfo?.gammaMulDecimals?.toString() }
+  return { pylon, parsedAmounts, error, burnInfo, healthFactor, gamma: pylonInfo?.gammaMulDecimals?.toString(), idealBurnAmount }
 }
 
 export function useBurnActionHandlers(): {

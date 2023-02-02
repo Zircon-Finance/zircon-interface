@@ -97,10 +97,11 @@ export default function RemoveProLiquidity({
 
   // burn state
   const { independentField, typedValue } = useBurnState()
-  const { pylon, parsedAmounts, error, healthFactor, gamma, burnInfo } = useDerivedPylonBurnInfo(currencyA ?? undefined, currencyB ?? undefined, isFloat, sync, {
-    float: ethers.BigNumber.from(10).pow(currencyA?.decimals || 18).toString(),
+  const { pylon, parsedAmounts, error, healthFactor, gamma, burnInfo } =
+      useDerivedPylonBurnInfo(currencyA ?? undefined, currencyB ?? undefined, isFloat, sync, {
+        float: ethers.BigNumber.from(10).pow(currencyA?.decimals || 18).toString(),
         anchor: ethers.BigNumber.from(10).pow(currencyB?.decimals || 18 ).toString(),
-  })
+      })
   const { onUserInput: _onUserInput } = useBurnActionHandlers()
   const isValid = !error
   // modal and loading
@@ -274,8 +275,8 @@ export default function RemoveProLiquidity({
 
     const approvalCallData = tokenContract.interface.encodeFunctionData('approve', [router.address, MaxUint256])
     const callData = router.interface.encodeFunctionData((
-      sync ? oneCurrencyIsETH ? 'removeLiquiditySyncETH' : 'removeLiquiditySync' :
-      oneCurrencyIsETH ? 'removeLiquidityAsyncETH' : 'removeLiquidityAsync'), args)
+        sync ? oneCurrencyIsETH ? 'removeLiquiditySyncETH' : 'removeLiquiditySync' :
+            oneCurrencyIsETH ? 'removeLiquidityAsyncETH' : 'removeLiquidityAsync'), args)
 
     // all estimations failed...
     if (indexOfSuccessfulEstimation === -1) {
@@ -286,16 +287,16 @@ export default function RemoveProLiquidity({
 
       setAttemptingTxn(true)
       await ((chainId === 1285 || chainId === 1287) ?
-        batchContract.batchAll(
-          [tokenContract.address, router.address],
-          ["000000000000000000", "000000000000000000"],
-          [approvalCallData, callData],
-          []
-        )
-        :
-        router[methodName](...args, {
-        gasLimit: safeGasEstimate
-      }))
+          batchContract.batchAll(
+              [tokenContract.address, router.address],
+              ["000000000000000000", "000000000000000000"],
+              [approvalCallData, callData],
+              []
+          )
+          :
+          router[methodName](...args, {
+            gasLimit: safeGasEstimate
+          }))
           .then((response: TransactionResponse) => {
             setAttemptingTxn(false)
 
@@ -328,129 +329,129 @@ export default function RemoveProLiquidity({
     }
   }
 
- // logic for modal for too high fees
- const [originalValue, setOriginalValue] = useState('')
- const [confirmedString, setConfirmedString] = useState(false)
- const [hasConfirmed, setHasConfirmed] = useState(false)
- const [hasSetAsync, setHasSetAsync] = useState(false)
- const [confirmationSlippage, setConfirmationSlippage] = useState(false)
- const [chosenOption, setChosenOption] = useState(2)
- const [rememberedSlippage, setRememberedSlippage] = useState(0)
+  // logic for modal for too high fees
+  const [originalValue, setOriginalValue] = useState('')
+  const [confirmedString, setConfirmedString] = useState(false)
+  const [hasConfirmed, setHasConfirmed] = useState(false)
+  const [hasSetAsync, setHasSetAsync] = useState(false)
+  const [confirmationSlippage, setConfirmationSlippage] = useState(false)
+  const [chosenOption, setChosenOption] = useState(2)
+  const [rememberedSlippage, setRememberedSlippage] = useState(0)
 
- const differencePercentage = (new BigNumberJs(formattedAmounts[Field.CURRENCY_A] || 0).times(
-  new BigNumberJs(!isFloat ? pylon?.pair?.priceOf(tokenA).toSignificant(6) : pylon?.pair?.priceOf(tokenB).toSignificant(6))).plus(
-    new BigNumberJs(formattedAmounts[Field.CURRENCY_B] || 0))).minus(
+  const differencePercentage = (new BigNumberJs(formattedAmounts[Field.CURRENCY_A] || 0).times(
+      new BigNumberJs(!isFloat ? pylon?.pair?.priceOf(tokenA).toSignificant(6) : pylon?.pair?.priceOf(tokenB).toSignificant(6))).plus(
+      new BigNumberJs(formattedAmounts[Field.CURRENCY_B] || 0))).minus(
       new BigNumberJs(originalValue)).div(
-        new BigNumberJs(originalValue).times(
+      new BigNumberJs(originalValue).times(
           new BigNumberJs(100))).toString()
   const feeIsTooHigh = rememberedSlippage >= 5
 
- const setCustom = () => {
-  setOriginalValue(parsedAmounts[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.toSignificant(6));
-  setSync(false);
-}
-
- useEffect(() => {
-  if (showConfirm && feeIsTooHigh) {
-    setCustom();
+  const setCustom = () => {
+    setOriginalValue(parsedAmounts[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.toSignificant(6));
+    setSync(false);
   }
-  else if (!showConfirm ) {
-    setConfirmedString(false);
-    setOriginalValue('');
-    setHasConfirmed(false);
-    setConfirmationSlippage(false);
-    setChosenOption(2);
+
+  useEffect(() => {
+    if (showConfirm && feeIsTooHigh) {
+      setCustom();
+    }
+    else if (!showConfirm ) {
+      setConfirmedString(false);
+      setOriginalValue('');
+      setHasConfirmed(false);
+      setConfirmationSlippage(false);
+      setChosenOption(2);
+      setHasSetAsync(false);
+      setSync(true);
+    }
+  }, [showConfirm])
+
+  const handleChangeConfirmation = (typedValue: string) => {
+    setConfirmedString(typedValue.toLowerCase() === 'confirm');
+  }
+
+  const backToOriginalValue = () => {
     setHasSetAsync(false);
+    onLiquidityInput(originalValue)
     setSync(true);
   }
-}, [showConfirm])
 
-const handleChangeConfirmation = (typedValue: string) => {
-  setConfirmedString(typedValue.toLowerCase() === 'confirm');
-}
+  useEffect(() => {
+    if (hasConfirmed) {
+      backToOriginalValue();
+    }
+  }, [hasConfirmed])
 
-const backToOriginalValue = () => {
-  setHasSetAsync(false);
-  onLiquidityInput(originalValue)
-  setSync(true);
-}
+  console.log('AAASlippage total: ', rememberedSlippage)
+  console.log('AAASlippage burn: ', parseFloat(new BigNumberJs(burnInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18)).toString()))
+  console.log('AAASlippage actual: ', parseFloat(new BigNumberJs(burnInfo?.slippage.toString()).div(new BigNumberJs(10).pow(18)).toString())
+  )
 
-useEffect(() => {
-  if (hasConfirmed) {
-    backToOriginalValue();
-  }
-}, [hasConfirmed])
-
-console.log('AAASlippage total: ', rememberedSlippage)
-console.log('AAASlippage burn: ', parseFloat(new BigNumberJs(burnInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18)).toString()))
-console.log('AAASlippage actual: ', parseFloat(new BigNumberJs(burnInfo?.slippage.toString()).div(new BigNumberJs(10).pow(18)).toString())
-)
-
-const dispatch = useDispatch<AppDispatch>()
+  const dispatch = useDispatch<AppDispatch>()
   useEffect(() => {
     dispatch(typeInput({ field: Field.LIQUIDITY_PERCENT, typedValue: '0' }))
   }, [dispatch])
 
-const NoSlippageModalHeader = () => (
-  <AutoColumn gap={'5px'} style={{ marginTop: '15px' }}>
-    <RowBetween align="flex-end">
-      <Text fontSize={24} fontWeight={400}>
-        {parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)}
-      </Text>
-      <RowFixed gap="4px">
-        <CurrencyLogo currency={currencyA} size={'24px'} chainId={chainId} />
-        <Text fontSize={24} fontWeight={400} style={{ marginLeft: '10px' }}>
-          {currencyA?.symbol}
+  const NoSlippageModalHeader = () => (
+      <AutoColumn gap={'5px'} style={{ marginTop: '15px' }}>
+        <RowBetween align="flex-end">
+          <Text fontSize={24} fontWeight={400}>
+            {parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)}
+          </Text>
+          <RowFixed gap="4px">
+            <CurrencyLogo currency={currencyA} size={'24px'} chainId={chainId} />
+            <Text fontSize={24} fontWeight={400} style={{ marginLeft: '10px' }}>
+              {currencyA?.symbol}
+            </Text>
+          </RowFixed>
+        </RowBetween>
+        <RowFixed>
+          <Plus size="16" color={theme.text2} />
+        </RowFixed>
+        <RowBetween align="flex-end">
+          <Text fontSize={24} fontWeight={400}>
+            {parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)}
+          </Text>
+          <RowFixed gap="4px">
+            <CurrencyLogo currency={currencyB} size={'24px'} chainId={chainId} />
+            <Text fontSize={24} fontWeight={400} style={{ marginLeft: '10px' }}>
+              {currencyB?.symbol}
+            </Text>
+          </RowFixed>
+        </RowBetween>
+
+        <Text fontSize={12} textAlign="left" padding={"20px 0 0 0 "} color={theme.whiteHalf}>
+          {`Output is estimated. If the price changes by more than ${allowedSlippage /
+          100}% your transaction will revert.`}
         </Text>
-      </RowFixed>
-    </RowBetween>
-    <RowFixed>
-      <Plus size="16" color={theme.text2} />
-    </RowFixed>
-    <RowBetween align="flex-end">
-      <Text fontSize={24} fontWeight={400}>
-        {parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)}
-      </Text>
-      <RowFixed gap="4px">
-        <CurrencyLogo currency={currencyB} size={'24px'} chainId={chainId} />
-        <Text fontSize={24} fontWeight={400} style={{ marginLeft: '10px' }}>
-          {currencyB?.symbol}
-        </Text>
-      </RowFixed>
-    </RowBetween>
+      </AutoColumn>
+  )
 
-    <Text fontSize={12} textAlign="left" padding={"20px 0 0 0 "} color={theme.whiteHalf}>
-      {`Output is estimated. If the price changes by more than ${allowedSlippage /
-      100}% your transaction will revert.`}
-    </Text>
-  </AutoColumn>
-)
+  const ConfirmationInputModal = () => (
+      <Flex flexDirection={'column'}>
+        <Flex justifyContent={'center'}><Text mr='5px'>{`Type`}</Text><Text mr='5px' style={{fontWeight: 500, color: theme.pinkGamma}}>{'Confirm '}</Text><Text> {' if you are sure'}</Text></Flex>
+        <Flex justifyContent={'center'} mb='10px'><Text mr='5px'>{`you want`}</Text><Text mr='5px' style={{fontWeight: 500, color: theme.pinkGamma}}>
+          {`to lose ${Math.abs(parseFloat(differencePercentage)).toFixed(2)}`}
+        </Text><Text>{'of your position'}</Text>
+        </Flex>
+        <InputContainer>
+          <ConfirmationInput disabled={confirmedString} type="text" onChange={e => handleChangeConfirmation(e.target.value)} />
+          <ButtonPrimary disabled={!confirmedString} onClick={() => (setHasConfirmed(true),setConfirmationSlippage(false))}
+                         style={{ margin: 'auto', padding: '12px', height: 'auto', borderRadius: '12px' }}>{'Proceed'}</ButtonPrimary>
+        </InputContainer>
+      </Flex>
+  )
 
-const ConfirmationInputModal = () => (
-  <Flex flexDirection={'column'}>
-    <Flex justifyContent={'center'}><Text mr='5px'>{`Type`}</Text><Text mr='5px' style={{fontWeight: 500, color: theme.pinkGamma}}>{'Confirm '}</Text><Text> {' if you are sure'}</Text></Flex>
-    <Flex justifyContent={'center'} mb='10px'><Text mr='5px'>{`you want`}</Text><Text mr='5px' style={{fontWeight: 500, color: theme.pinkGamma}}>
-      {`to lose ${Math.abs(parseFloat(differencePercentage)).toFixed(2)}`}
-      </Text><Text>{'of your position'}</Text>
-    </Flex>
-    <InputContainer>
-      <ConfirmationInput disabled={confirmedString} type="text" onChange={e => handleChangeConfirmation(e.target.value)} />
-      <ButtonPrimary disabled={!confirmedString} onClick={() => (setHasConfirmed(true),setConfirmationSlippage(false))}
-      style={{ margin: 'auto', padding: '12px', height: 'auto', borderRadius: '12px' }}>{'Proceed'}</ButtonPrimary>
-    </InputContainer>
-  </Flex>
-)
-
-const SlippageWarningModal = () => (
-<Flex flexDirection={'column'} style={{background: theme.darkMode ? '#52273A' : 'transparent'}}>
+  const SlippageWarningModal = () => (
+      <Flex flexDirection={'column'} style={{background: theme.darkMode ? '#52273A' : 'transparent'}}>
         <Text mt='20px' style={{lineHeight: '160%'}} textAlign='center'>{'You can reduce slippage and get more'}</Text>
         <Text mb='10px' textAlign='center'>{`tokens using the Hybrid Remove method`}</Text>
         <Flex mt='20px' mb='30px' mx='auto' style={{gap: '10px', textAlign: 'center'}}>
           <Flex onClick={() => [setChosenOption(1), setConfirmationSlippage(true)]} flexDirection={'column'}
-          style={{
-            border: `${(chosenOption === 1) ? `2px solid ${theme.pinkGamma}` :
-              theme.darkMode ? '2px solid rgba(98, 47, 69, 0.5)' : '2px solid #F5F3F4'}` ,
-               borderRadius: '17px', cursor: 'pointer', marginTop: '30px'}}>
+                style={{
+                  border: `${(chosenOption === 1) ? `2px solid ${theme.pinkGamma}` :
+                      theme.darkMode ? '2px solid rgba(98, 47, 69, 0.5)' : '2px solid #F5F3F4'}` ,
+                  borderRadius: '17px', cursor: 'pointer', marginTop: '30px'}}>
             <Text fontSize='14px' fontWeight={500} p='20px 10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#F5F3F4'}`}}>{'CURRENT POSITION'}</Text>
             <Text my='10px'>{'You get'}</Text>
             <Text fontSize='18px' pb='77px' fontWeight={500}>
@@ -462,11 +463,11 @@ const SlippageWarningModal = () => (
           </Flex>
           <Flex flexDirection={'column'}><PinkContainer><Text>{'Lower slippage'}</Text></PinkContainer>
             <Flex onClick={() => [setChosenOption(2), setConfirmationSlippage(false)]} flexDirection={'column'}
-              style={{border: `${(chosenOption === 2) ? `2px solid ${theme.pinkGamma}` : '2px solid transparent'}` ,
-              borderBottomLeftRadius: '17px',
-              borderBottomRightRadius: '17px',
-              backgroundColor: theme.darkMode ? '#622F45' : '#EEEAEC',
-              cursor: 'pointer'}}
+                  style={{border: `${(chosenOption === 2) ? `2px solid ${theme.pinkGamma}` : '2px solid transparent'}` ,
+                    borderBottomLeftRadius: '17px',
+                    borderBottomRightRadius: '17px',
+                    backgroundColor: theme.darkMode ? '#622F45' : '#EEEAEC',
+                    cursor: 'pointer'}}
             >
               <Text fontSize='14px' fontWeight={500} p='20px 10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#E4E0E3'}`}}>{'WITH HYBRID REMOVE'}</Text>
               <Text fontSize='14px' my='10px'>{'You get'}</Text>
@@ -490,26 +491,26 @@ const SlippageWarningModal = () => (
         {chosenOption === 2 && <ButtonPrimary onClick={() => setHasSetAsync(true)} style={{ margin: 'auto' }}>{'Remove with Hybrid Remove'}</ButtonPrimary>}
         {(confirmationSlippage && chosenOption === 1) && <ConfirmationInputModal />}
       </Flex>
-)
+  )
 
   function modalHeader() {
     return (
-      feeIsTooHigh ?
-      !sync ?
-      (hasSetAsync || hasConfirmed) ? (
-        <NoSlippageModalHeader />
-      ) : (
-        <SlippageWarningModal />
-      ) :
-        hasConfirmed ? (
-          <NoSlippageModalHeader />
-        ) : (
-      <SlippageWarningModal />
-      )
-    : (
-    <NoSlippageModalHeader />
+        feeIsTooHigh ?
+            !sync ?
+                (hasSetAsync || hasConfirmed) ? (
+                    <NoSlippageModalHeader />
+                ) : (
+                    <SlippageWarningModal />
+                ) :
+                hasConfirmed ? (
+                    <NoSlippageModalHeader />
+                ) : (
+                    <SlippageWarningModal />
+                )
+            : (
+                <NoSlippageModalHeader />
+            )
     )
-  )
   }
 
   function modalBottom() {
@@ -545,19 +546,19 @@ const SlippageWarningModal = () => (
               </>
           )}
           {errorTx && (
-           <ErrorTxContainer errorTx={errorTx} />
+              <ErrorTxContainer errorTx={errorTx} />
           )}
           {(burnInfo.blocked || burnInfo.asyncBlocked) && (
-          <RowBetween mt={10}>
-            <StyledWarningIcon />
-            <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{"Transaction is likely to fail so is currently blocked. Try in a few minutes"}</span>
-          </RowBetween>
+              <RowBetween mt={10}>
+                <StyledWarningIcon />
+                <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{"Transaction is likely to fail so is currently blocked. Try in a few minutes"}</span>
+              </RowBetween>
           )}
           {(burnInfo.deltaApplied) && (
-          <RowBetween mt={10}>
-            <StyledWarningIcon />
-            <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{"We estimate a high fee for this transaction. Try in a few minutes"}</span>
-          </RowBetween>
+              <RowBetween mt={10}>
+                <StyledWarningIcon />
+                <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{"We estimate a high fee for this transaction. Try in a few minutes"}</span>
+              </RowBetween>
           )}
           <ButtonPrimary disabled={!(chainId === 1285 || chainId === 1287) && (!(approval === ApprovalState.APPROVED || signatureData !== null) || burnInfo.blocked || burnInfo.asyncBlocked || burnInfo.deltaApplied || (feeIsTooHigh && (!hasConfirmed && !hasSetAsync)))} onClick={onRemove}>
             <Text fontWeight={400} fontSize={18}>
@@ -884,8 +885,8 @@ const SlippageWarningModal = () => (
                       <ButtonError
                           onClick={() => {
                             setShowConfirm(true); setRememberedSlippage(
-                              parseFloat(new BigNumberJs(burnInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18)).toString()) +
-                              parseFloat(new BigNumberJs(burnInfo?.slippage.toString()).div(new BigNumberJs(10).pow(18)).toString())
+                                parseFloat(new BigNumberJs(burnInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18)).toString()) +
+                                parseFloat(new BigNumberJs(burnInfo?.slippage.toString()).div(new BigNumberJs(10).pow(18)).toString())
                             )
                           }}
                           disabled={!(chainId === 1285 || chainId === 1287) ? (!isValid || (signatureData === null && approval !== ApprovalState.APPROVED)) : !isValid}

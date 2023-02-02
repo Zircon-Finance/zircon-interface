@@ -789,7 +789,9 @@ export default function AddLiquidityPro({
       new BigNumberJs(amountOut)).times(
         new BigNumberJs(100)).toFixed(2).toString())
 
+  const [hasSetCustomValues, setHasSetCustomValues] = useState(false)
   const setAsyncCustom = () => {
+    setHasSetCustomValues(true)
     setOriginalValue(parsedAmounts[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.toSignificant(6));
     setCustomValue1(floatTokenHalf.toString());
     setCustomValue2(anchorTokenMultiplied.toString());
@@ -820,11 +822,12 @@ export default function AddLiquidityPro({
   }, [hasConfirmed])
 
   useEffect(() => {
-    if (showConfirm && feeIsTooHigh) {
+    if (showConfirm && feeIsTooHigh && sync !== 'half') {
       setAmountOut(mintInfo?.amountOut.toSignificant(6));
       setAsyncCustom();
     }
     else if (!showConfirm ) {
+      setHasSetCustomValues(false);
       onFieldBInput('')
       onFieldAInput('')
       setChosenOption(2);
@@ -945,8 +948,10 @@ export default function AddLiquidityPro({
           sync === 'half' ?
             (hasSetAsync || hasConfirmed) ? (
               <NoSlippageModalHeader />
-            ) : (
+            ) : hasSetCustomValues ? (
               <SlippageWarningModal />
+            ) : (
+              <NoSlippageModalHeader />
             ) :
               hasConfirmed ? (
                 <NoSlippageModalHeader />
@@ -976,7 +981,7 @@ export default function AddLiquidityPro({
             blocked={mintInfo?.blocked}
             shouldBlock={mintInfo?.shouldBlock || mintInfo?.deltaApplied || mintInfo?.blocked}
             asyncBlock={false}
-            disabledConfirmation={feeIsTooHigh && (!hasConfirmed && !hasSetAsync)}
+            disabledConfirmation={feeIsTooHigh && hasSetCustomValues && (!hasConfirmed && !hasSetAsync)}
         />
     );
   };
@@ -1104,8 +1109,8 @@ export default function AddLiquidityPro({
                         }
                         onDismiss={handleDismissConfirmation}
                         topContent={modalHeader}
-                        bottomContent={feeIsTooHigh ? (feeIsTooHigh && (hasConfirmed===false && hasSetAsync===false) ? (() => <></>) : modalBottom) : modalBottom}
-                        feeTooHigh={feeIsTooHigh && (hasConfirmed===false && hasSetAsync===false)}
+                        bottomContent={feeIsTooHigh ? sync === 'half' && !hasSetCustomValues ? modalBottom : (feeIsTooHigh && (hasConfirmed===false && hasSetAsync===false) ? (() => <></>) : modalBottom) : modalBottom}
+                        feeTooHigh={feeIsTooHigh && hasSetCustomValues && (hasConfirmed===false && hasSetAsync===false)}
                     />
                 )}
                 pendingText={pendingText()}

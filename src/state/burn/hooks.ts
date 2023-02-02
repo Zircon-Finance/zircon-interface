@@ -278,12 +278,17 @@ export function useDerivedPylonBurnInfo(
   const pylonConstants = usePylonConstants()
   const blockNumber = useBlockNumber()
   const timestamp = useBlockTimestamp()
-  let userLiquidity = useTokenBalance(account ?? undefined, isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken)
-  // if (typedValue !== '0' && pylon !== undefined && userLiquidity !== undefined && independentField === Field.LIQUIDITY_PERCENT)  {
-  //   userLiquidity = new TokenAmount(isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken, JSBI.divide(
-  //     JSBI.multiply(
-  //       userLiquidity?.raw, JSBI.BigInt(typedValue || 100)), JSBI.BigInt(100)))
-  // }
+  console.log("timestamp", timestamp)
+  const userLiquidity = useTokenBalance(account ?? undefined, isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken)
+  
+  let userLiquidityAdjustedPercentage = userLiquidity
+
+  if (typedValue !== '0' && pylon !== undefined && userLiquidity !== undefined && independentField === Field.LIQUIDITY_PERCENT)  {
+    userLiquidityAdjustedPercentage = new TokenAmount(isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken, JSBI.divide(
+      JSBI.multiply(
+      userLiquidityAdjustedPercentage?.raw, JSBI.BigInt(typedValue)), JSBI.BigInt(100)))
+  }
+  
   const pylonPoolBalance = useTokenBalance(pylon?.address, pylon?.pair.liquidityToken)
   const ptTotalSupply = useTotalSupply(isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken)
   const totalSupply = useTotalSupply(pylon?.pair.liquidityToken)
@@ -297,11 +302,11 @@ export function useDerivedPylonBurnInfo(
 
   let burnInfo = useMemo(() => {
     return getLiquidityValues(
-        pylon, userLiquidity, pylonPoolBalance,
+        pylon, userLiquidityAdjustedPercentage, pylonPoolBalance,
         totalSupply, ptTotalSupply, pylonInfo,
         pylonConstants, blockNumber, pairInfo,
         isSync, isFloat, ptbEnergy, reserveAnchor, timestamp, decimals)
-  }, [pylon, userLiquidity, pylonPoolBalance,
+  }, [pylon, userLiquidityAdjustedPercentage, pylonPoolBalance,
     totalSupply, ptTotalSupply, pylonInfo, pylonConstants, blockNumber, pairInfo, isSync, isFloat] )
 
   let idealBurnAmount = useMemo(() => {
@@ -393,16 +398,16 @@ export function useDerivedPylonBurnInfo(
   } = {
     [Field.LIQUIDITY_PERCENT]: percentToRemove,
     [Field.LIQUIDITY]:
-        userLiquidity && percentToRemove && percentToRemove.greaterThan('0')
-            ? new TokenAmount(userLiquidity.token, percentToRemove.multiply(userLiquidity.raw).quotient)
+        userLiquidity
+            ? new TokenAmount(userLiquidity.token, userLiquidity.raw)
             : undefined,
     [Field.CURRENCY_A]:
-        tokenA && percentToRemove && percentToRemove.greaterThan('0') && liquidityValueA
-            ? new TokenAmount(tokenA, percentToRemove.multiply(liquidityValueA.raw).quotient)
+        tokenA && liquidityValueA
+            ? new TokenAmount(tokenA, liquidityValueA.raw)
             : undefined,
     [Field.CURRENCY_B]:
-        tokenB && percentToRemove && percentToRemove.greaterThan('0') && liquidityValueB
-            ? new TokenAmount(tokenB, percentToRemove.multiply(liquidityValueB.raw).quotient)
+        tokenB && liquidityValueB
+            ? new TokenAmount(tokenB, liquidityValueB.raw)
             : undefined
   }
 
@@ -414,6 +419,8 @@ export function useDerivedPylonBurnInfo(
   if (!parsedAmounts[Field.LIQUIDITY] || !parsedAmounts[Field.CURRENCY_A] || !parsedAmounts[Field.CURRENCY_B]) {
     error = error ?? 'Enter an amount'
   }
+  console.log('percentToRemove: ', percentToRemove.toFixed(0))
+
 
   return { pylon, parsedAmounts, error, burnInfo, healthFactor, gamma: pylonInfo?.gammaMulDecimals?.toString(), idealBurnAmount }
 }

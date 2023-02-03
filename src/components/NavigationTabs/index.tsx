@@ -22,7 +22,8 @@ const Tabs = styled.div`
   border-radius: 17px;
   justify-content: space-evenly;
   margin: auto;
-  border: 1px solid ${({ theme }) => theme.navigationBorder};
+  height: 44px;
+  background: ${({ theme }) => theme.darkMode ? 'rgba(213, 174, 175, 0.07)' : '#ECEAEA' };
 `
 
 const activeClassName = 'ACTIVE'
@@ -32,12 +33,13 @@ const StyledNavLink = styled(NavLink).attrs({
 })<{ disabled?: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
   align-items: center;
+  height: 34px;
   font-weight: 400;
   justify-content: center;
   border-radius: 12px;
   outline: none;
   text-decoration: none;
-  color: ${({ theme, disabled }) => disabled ? theme.opacitySmall : theme.tabsText};
+  color: ${({ theme, disabled }) => disabled ? theme.opacitySmall : theme.pinkBrown};
   font-size: 16px;
   cursor: ${({ disabled }) => disabled ? 'not-allowed' : 'pointer'};
   padding: 9px 13px;
@@ -46,7 +48,8 @@ const StyledNavLink = styled(NavLink).attrs({
   &.${activeClassName} {
     border-radius: 12px;
     color: ${({ theme, disabled }) => !disabled && theme.text1};
-    background-color: ${({ theme, disabled }) => !disabled && theme.navigationTabs};
+    background-color: ${({ theme, disabled }) => !disabled && theme.darkMode ? 'rgba(213, 174, 175, 0.25)' : '#FCFBFC'};
+    box-shadow: ${({ theme, disabled }) => !disabled && theme.darkMode ? 'none' : '0px 1px 2px rgba(0, 0, 0, 0.15)'};
   }
 
   :hover,
@@ -66,15 +69,6 @@ const ActiveText = styled.div`
 const StyledArrowLeft = styled(ArrowLeft)`
   margin: 12px 0px;
   stroke: ${({ theme }) => theme.pinkBrown} !important;
-`
-
-const BnbContainer = styled.div`
-display: flex;
-svg {
-  path {
-    fill: #F0B90B;
-  }
-}
 `
 
 export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' }) {
@@ -128,12 +122,14 @@ export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' }) {
 export function ChainPoolTab({ active }: { active: 'bsc' | 'moonriver' }) {
   const { width } = useWindowDimensions();
   return (
-    <Tabs style={{ width: width >= 700 ? 'auto' : '100%', padding: '3px', marginLeft: '20px', marginRight: '0px' }}>
-      <StyledNavLink id={`swap-chain-bsc`} to={'#'} onClick={()=> {connectNet('bsc')}} isActive={() => active === 'bsc'} style={{padding: '5px 10px'}}>
-        <BnbContainer><BnbLogo /></BnbContainer>
+    <Tabs style={{ width: width >= 700 ? 'auto' : '100%', padding: '5px', marginLeft: width >= 700 ? '5px' : '0px', marginRight: width >= 700 ? '5px' : '0px'}}>
+      <StyledNavLink id={`swap-chain-bsc`} to={'#'} onClick={()=> {connectNet('bsc')}} isActive={() => active === 'bsc'} style={{padding: '5px, 8px, 5px, 8px'}}>
+        <BnbLogo />
+        <Text ml='5px'>{'BSC'}</Text>
       </StyledNavLink>
-      <StyledNavLink id={`swap-chain-moonriver`}to={'#'} onClick={()=> {connectNet('moonriver')}} isActive={() => active === 'moonriver'} style={{padding: '5px 10px'}}>
+      <StyledNavLink id={`swap-chain-moonriver`}to={'#'} onClick={()=> {connectNet('moonriver')}} isActive={() => active === 'moonriver'} style={{padding: '5px, 8px, 5px, 8px'}}>
         <MoonriverLogo />
+        <Text ml='5px'>{'Moonriver'}</Text>
       </StyledNavLink>
     </Tabs>
   )

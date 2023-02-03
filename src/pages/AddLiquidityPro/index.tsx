@@ -859,7 +859,7 @@ export default function AddLiquidityPro({
               {`${originalValue} ${currencies[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.symbol} `}
             </Text>
             <Text fontSize='14px' mt='10px'>{'You get'}</Text>
-            <Text fontSize='18px' mb='20px' fontWeight={500}>{`${amountOut} LP`}</Text>
+            <Text fontSize='18px' mb='20px' fontWeight={500}>{`${amountOut.length > 15 ? amountOut.slice(0, 3) + '...' + amountOut.slice(-3) : amountOut} LP`}</Text>
             <RadioContainer style={{marginTop: '5px'}} active={chosenOption === 1} second={false}>
               <RadioButton active={chosenOption === 1} />
             </RadioContainer>
@@ -882,7 +882,7 @@ export default function AddLiquidityPro({
                 {`${customValue2} ${currencies[isFloat ? Field.CURRENCY_B : Field.CURRENCY_A]?.symbol} `}
               </Text>
               <Text fontSize='14px' mt='10px'>{'You get'}</Text>
-              <Text fontSize='18px' fontWeight={500}>{`${mintInfo?.amountOut.toSignificant(6)} LP`}</Text>
+              <Text fontSize='18px' mb='20px' fontWeight={500}>{`${mintInfo?.amountOut.toSignificant(6).length > 15 ? mintInfo?.amountOut.toSignificant(6).slice(0, 3) + '...' + mintInfo?.amountOut.toSignificant(6).slice(-3) : mintInfo?.amountOut.toSignificant(6)} LP`}</Text>
               <Text fontSize='14px' pb='10px' color={percentageDifference >= 0 ? theme.percentageGreen : theme.percentageRed} fontWeight={500}>
                 {`${percentageDifference >= 0 ? '+' : ''} ${percentageDifference}%`}
               </Text>

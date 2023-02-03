@@ -445,9 +445,7 @@ const SlippageWarningModal = () => (
                borderRadius: '17px', cursor: 'pointer', marginTop: '30px'}}>
             <Text fontSize='14px' fontWeight={500} p='20px 10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#F5F3F4'}`}}>{'CURRENT POSITION'}</Text>
             <Text my='10px'>{'You get'}</Text>
-            <Text fontSize='18px' pb='77px' fontWeight={500}>
-              {`${originalValue} ${!isFloat ? currencyB?.symbol : currencyA?.symbol} `}
-            </Text>
+            <Text fontSize='18px' mb='20px' fontWeight={500}>{`${originalValue.length > 15 ? originalValue.slice(0, 3) + '...' + originalValue.slice(-3) : originalValue} ${!isFloat ? currencyB?.symbol : currencyA?.symbol}`}</Text>
             <RadioContainer style={{marginTop: '5px'}} active={chosenOption === 1} second={false}>
               <RadioButton active={chosenOption === 1} />
             </RadioContainer>

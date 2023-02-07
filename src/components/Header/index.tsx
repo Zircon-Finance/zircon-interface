@@ -11,7 +11,7 @@ import { useActiveWeb3React, useBlockedApiData, useWindowDimensions } from '../.
 //import { useDarkModeManager } from '../../state/user/hooks'
 import { useETHBalances } from '../../state/wallet/hooks'
 import {
-  ChainPoolTab,
+  // ChainPoolTab,
   SwapPoolTabs } from '../../components/NavigationTabs'
 
 // import { YellowCard } from '../Card'
@@ -166,7 +166,7 @@ export default function Header() {
   const [showClaimTokens, setShowClaimTokens] = React.useState(false);
   const blockedApiData = useBlockedApiData();
   const isPoolBlocked = blockedApiData?.isPoolBlocked
-  const isFarmBlocked = blockedApiData?.isFarmBlocked
+  const isFarmBlocked = true
 
   return (
     <HeaderFrame>
@@ -179,7 +179,7 @@ export default function Header() {
         {width >= 700 ?
         <>
         <HeaderElement>
-          <Title href="." style={{width: account ? width < 1100 ? '250px' : '550px' : width > 1100 ? '420px' : '160px', height: '44px'}}>
+          <Title href="." style={{width: account ? width < 1100 ? '250px' : '270px' : width > 1100 ? '210px' : '160px', height: '44px'}}>
             <UniIcon id="z-logo">
               <img style={{ height: 35, display: 'flex', margin: 'auto' }} src={!darkMode ? DarkLogo : WhiteLogo} alt="logo" />
             </UniIcon>
@@ -202,7 +202,7 @@ export default function Header() {
               onClick={() => darkMode ? toggleSetDarkMode() : toggleSetDarkMode()}>
             <SunLogo  />
             </button>
-            <ChainPoolTab active={chainId === 1285 ? 'moonriver' : 'bsc'} />
+            {/* <ChainPoolTab active={chainId === 1285 ? 'moonriver' : 'bsc'} /> */}
             {/* <ButtonOutlined mr="10px" style={{border: `1px solid ${theme.navigationTabs}`, color: theme.pinkBrown, padding: '12px 20px', maxHeight: '50px'}} onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined> */}
           </HeaderElement> </> :
           <div style={{display: 'grid', gridGap: '15px'}}>
@@ -216,7 +216,7 @@ export default function Header() {
               onClick={() => darkMode ? toggleSetDarkMode() : toggleSetDarkMode()}>
             <SunLogo  />
             </button>
-            <ChainPoolTab active={chainId === 1285 ? 'moonriver' : 'bsc'} />
+            {/* <ChainPoolTab active={chainId === 1285 ? 'moonriver' : 'bsc'} /> */}
             {/* <ButtonOutlined mr="10px" style={{border: `1px solid ${theme.navigationTabs}`, color: theme.pinkBrown, padding: '12px 20px', maxHeight: '50px'}} onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined> */}
            </HeaderElement>
            <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : location.pathname === '/farm' ? 'farm' : 'pool'} />
@@ -268,7 +268,7 @@ export default function Header() {
           </HeaderElement>
           <HeaderControls style={{marginBottom: width <= 700 ? '5px' : '0px'}}>
             <HeaderElement>
-              <ChainPoolTab active={chainId === 1285 ? 'moonriver' : 'bsc'} />
+              {/* <ChainPoolTab active={chainId === 1285 ? 'moonriver' : 'bsc'} /> */}
             </HeaderElement>
           </HeaderControls>
           </div>

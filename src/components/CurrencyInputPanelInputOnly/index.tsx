@@ -66,10 +66,13 @@ const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
 const InputPanel = styled.div<{ hideInput?: boolean }>`
   ${({ theme }) => theme.flexColumnNoWrap}
   position: relative;
-  width: 50%;
-  margin: 0 5px;
+  margin: 5px;
   border-radius: ${({ hideInput }) => (hideInput ? '8px' : '20px')};
   z-index: 1;
+  @media (min-width: 700px) {
+    margin: 0 5px;
+    width: 50%;
+  }
 `
 
 const Container = styled.div<{ hideInput: boolean }>`
@@ -81,15 +84,14 @@ const Container = styled.div<{ hideInput: boolean }>`
 
 const StyledTokenName = styled.span<{ active?: boolean }>`
   ${({ active }) => (active ? '  margin: 0 0 0 0.5rem;' : '  margin: 0 0.25rem 0 0.25rem')}
-  font-size:  13px;
+  font-size:  16px;
   align-self: center;
   text-align: left;
   display: flex;
-  flex-flow: column;
+  flex-flow: row;
   align-items: center;
   @media (min-width: 500px) {
     font-size: 16px;
-    flex-flow: row;
     ${({ active }) => (active ? '  margin: 0 0.75 0.75rem;' : '  margin: 0 0.25rem 0 0.25rem')}
   }
 `
@@ -193,7 +195,7 @@ export default function CurrencyInputPanel({
                         <>{currency && 
                             <p
                               style={{
-                                margin: width >= 500 ? "10px 0" : "0 0 0 0",
+                                margin: "10px 0",
                                 width: '100%',
                                 alignSelf: 'center',
                                 display: 'flex',
@@ -208,7 +210,7 @@ export default function CurrencyInputPanel({
                             style={{
                               width: '100%',
                               color: theme.darkMode ? hovered ? currency ? theme.text1 : theme.meatPink : currency ? theme.text1 : theme.meatPink : hovered ? currency ? theme.text1 : theme.bg8 : currency ? '#080506' : theme.bg8,
-                              marginLeft: width <= 500 ? '0' : "5px",
+                              marginLeft: "5px",
                               fontSize: width > 500 ? "16px" : "13px",
                               fontWeight: 500,
                             }}

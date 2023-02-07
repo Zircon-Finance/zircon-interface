@@ -31,6 +31,7 @@ const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan
   const [hoverIndicator, setHoverIndicator] = React.useState(false);
   const theme = useTheme()
   const {width} = useWindowDimensions()
+  console.log('AAAgamma', gamma)
 
   const TooltipContentRisk: React.FC<Props> = ({gamma, health, isFloat}) => {return (
     <ToolTip style={
@@ -62,10 +63,10 @@ const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan
           <TooltipContentRisk gamma={gamma} health={health} isFloat={isFloat}/>
         )}
         {(!gamma || !health) ? <Skeleton width={60} /> : isFloat ? <div style={{display: "flex", flexDirection: 'row', justifyContent: 'center', alignItems: 'center', pointerEvents: 'none'}}>
-          {gamma < 0.4 && <CapacityIndicatorDivergenceYellow hover={hoverIndicator}/>}
-          {gamma < 0.7 && gamma >= 0.4 && <CapacityIndicatorDivergenceGreen hover={hoverIndicator}/>}
-          {gamma >= 0.7 && <CapacityIndicatorDivergenceRed hover={hoverIndicator}/>}
-          {!noSpan && <span style={{marginRight: 4,marginLeft: 8, color: theme.text1, fontSize: font && font}}>{`${(parseFloat(gamma)*10-5).toFixed(0)}`}</span>}
+          {gamma >= 110 && <CapacityIndicatorDivergenceYellow hover={hoverIndicator}/>}
+          {gamma > 90 && gamma < 110 && <CapacityIndicatorDivergenceGreen hover={hoverIndicator}/>}
+          {gamma <= 90 && <CapacityIndicatorDivergenceRed hover={hoverIndicator}/>}
+          {!noSpan && <span style={{marginRight: 4,marginLeft: 8, color: theme.text1, fontSize: font && font}}>{`${(parseFloat(gamma)).toFixed(0)}`}</span>}
           </div>
             :
             <div style={{display: "flex", flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>

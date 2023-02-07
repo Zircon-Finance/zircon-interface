@@ -16,7 +16,6 @@ import {
 
 import { resetUserState } from '../global/actions'
 import {BIG_ZERO} from '../../utils/bigNumber'
-import fetchPools from "./fetchPoolsInfo";
 import {simpleRpcProvider} from "../../utils/providers";
 import { getApiData } from './helpers'
 import { ChainId, Token } from 'zircon-sdk'
@@ -43,10 +42,10 @@ export const fetchPoolsPublicDataAsync = (chainId: number, currentBlockNumber?: 
       }
     })
 
-    const poolsInformation = await fetchPools(chainId, apiData)
+    // const poolsInformation = await fetchPools(chainId, apiData)
     const priceZRGMOVR = {zrg: apiData[0]?.zrgPrice, movr: apiData[0]?.movrPrice}
 
-    const liveData = poolsInformation.map((pool, i) => {
+    const liveData = apiData.map((pool, i) => {
       const apiPool = apiData.filter((poolArray) => poolArray.contractAddress === pool.contractAddress.toLowerCase());
       const blockLimit = blockLimits.find((entry) => entry.contractAddress.toLowerCase() === pool.contractAddress.toLowerCase())
 

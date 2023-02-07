@@ -5,11 +5,11 @@ import debounce from 'lodash/debounce'
 import { useTranslation } from 'react-i18next'
 import { SearchInput } from '../SearchModal/styleds'
 import { useWindowDimensions } from '../../hooks'
-import SearchIcon from '../../assets/svg/Search.svg'
 import { Flex } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 import { CloseIcon } from '../../theme'
 import { useShowMobileSearchBarManager } from '../../state/user/hooks'
+import SearchIcon from './SearchIcon'
 
 interface Props {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
@@ -20,18 +20,11 @@ const SearchButton = styled.button`
   background: ${({ theme }) => theme.farmTabsBg};
   border: none;
   border-radius: 12px;
-  padding: 0.5rem;
+  padding: 7px;
   cursor: pointer;
+  height: 38px;
   outline: none;
   transition: all 0.2s ease-in-out;
-  &:hover {
-    background: ${({ theme }) => theme.cardExpanded};
-  }
-  svg {
-    path {
-      stroke: ${({ theme }) => !theme.darkMode && '#874955 !important'};
-    }
-  }
 `
 
 const SearchInputFarm: React.FC<Props> = ({ onChange: onChangeCallback, placeholder = 'Search' }) => {
@@ -62,7 +55,7 @@ const SearchInputFarm: React.FC<Props> = ({ onChange: onChangeCallback, placehol
       ) : (
         <Flex style={{width: '100%'}}>
           {!showMobileSearchBar && <SearchButton onClick={() => [setFakeMobileSearchBar(true),toggleShowMobileSearchBar()]} >
-            <img src={SearchIcon} alt="search" />
+            <SearchIcon />
           </SearchButton>}
           {showMobileSearchBar && (
             <>

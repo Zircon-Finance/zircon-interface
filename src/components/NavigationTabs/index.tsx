@@ -79,7 +79,7 @@ export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' }) {
 
   const blockedApiData = useBlockedApiData();
   const isPoolBlocked = blockedApiData?.isPoolBlocked
-  const isFarmBlocked = true
+  const isFarmBlocked = blockedApiData?.isFarmBlocked
   const blockReasonTitle = blockedApiData?.blockReasonTitle
   const blockReasonDescription = blockedApiData?.blockReasonDescription
 
@@ -111,7 +111,7 @@ export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' }) {
         {t('pool')}
       </StyledNavLink>
       <StyledNavLink onMouseEnter={() => setHoverBlocked(true)} onMouseLeave={() => setHoverBlocked(false)}
-      disabled={true} id={`farm-nav-link`} to={isFarmBlocked ? '#' : '/farm'} isActive={() => active === 'farm'}>
+      disabled={isFarmBlocked} id={`farm-nav-link`} to={isFarmBlocked ? '#' : '/farm'} isActive={() => active === 'farm'}>
         {t('Farm')}
       </StyledNavLink>
       {hoverBlocked && isPoolBlocked && isFarmBlocked && hoverContent}
@@ -137,7 +137,7 @@ export function ChainPoolTab({ active }: { active: 'bsc' | 'moonriver' }) {
 
 export function FindPoolTabs() {
   return (
-    <Tabs style={{border: 'none'}}>
+    <Tabs style={{border: 'none', background: 'none', height: 'auto'}}>
       <RowBetween style={{ padding: '11px 25px' }}>
         <HistoryLink to="/pool">
           <StyledArrowLeft strokeWidth={1} />
@@ -151,7 +151,7 @@ export function FindPoolTabs() {
 
 export function AddRemoveTabs({ adding }: { adding: boolean }) {
   return (
-    <Tabs style={{border: 'none'}}>
+    <Tabs style={{border: 'none', background: 'none', height: 'auto'}}>
       <RowBetween style={{ padding: '11px 25px' }}>
         <HistoryLink to="/pool">
           <StyledArrowLeft strokeWidth={1} />

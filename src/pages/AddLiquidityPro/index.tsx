@@ -43,7 +43,6 @@ import {ConfirmAddModalBottom} from "./ConfirmAddModalBottom";
 import {currencyId} from "../../utils/currencyId";
 import {LottieContainer} from "../App";
 import LearnIcon from "../../components/LearnIcon";
-import {Toggle} from "@pancakeswap/uikit";
 // import {getPoolAprAddress} from "../../utils/apr";
 import {SpaceBetween} from "../../views/Farms/components/FarmTable/Actions/ActionPanel";
 import RepeatIcon from "../../components/RepeatIcon";
@@ -109,9 +108,12 @@ const IconContainer = styled.div`
   border-radius: 100%;
   background: ${({ theme }) => theme.maxButton};
   width: 45px;
-  height: 40px;
+  height: 45px;
   align-self: center;
   cursor: pointer;
+  @media (min-width: 700px) {
+    height: 40px;
+  }
   &:hover {
     background: ${({ theme }) => theme.maxButtonHover};
   }
@@ -195,9 +197,10 @@ export default function AddLiquidityPro({
     price,
     noPylon,
     mintInfo,
-    gamma,
+    // gamma,
     error,
     healthFactor,
+    delta,
   } = useDerivedPylonMintInfo(
       currencyA ?? undefined,
       currencyB ?? undefined,
@@ -1059,7 +1062,7 @@ export default function AddLiquidityPro({
   const pylonConstants = usePylonConstants()
   const blockNumber = useBlockNumber()
   // const gammaBig = useGamma(pylonPair?.address)
-  const gammaAdjusted = new BigNumberJs(gamma? gamma?.toString() : "0").div(new BigNumberJs(10).pow(18))
+  const gammaAdjusted = new BigNumberJs(delta ? delta : "0").div(new BigNumberJs(10).pow(18))
   const feePercentage = new BigNumberJs(mintInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18))
   const health = healthFactor?.toLowerCase()
 
@@ -1142,12 +1145,12 @@ export default function AddLiquidityPro({
               )}
 
               {/* Condition that triggers pylon view */}
-              <div
+              <Flex
                   style={{
-                    display: "flex",
                     margin: "0px 5px",
                     paddingBottom: currencies[Field.CURRENCY_B] !== undefined ? '0' : '10px',
                   }}
+                flexDirection={width >= 700 ? "row" : "column"}
               >
                 <CurrencyInputPanelInputOnly
                     onCurrencySelect={handleCurrencyASelect}
@@ -1159,6 +1162,7 @@ export default function AddLiquidityPro({
                 />
                 <IconContainer
                     onClick={handleSwapCurrencies}
+                    style={{ transform: width <= 700 && "rotate(90deg)" }}
                 >
                   <RepeatIcon />
                 </IconContainer>
@@ -1171,7 +1175,7 @@ export default function AddLiquidityPro({
                     anchor={true}
                     price={prices[1]}
                 />
-              </div>
+              </Flex>
 
               {/* Condition that triggers pylov view */}
 
@@ -1271,30 +1275,8 @@ export default function AddLiquidityPro({
                           </div>
                       )}
                     </Flex>
-                    {width <= 700 && pylonState === PylonState.EXISTS && (
-                        <>
-                          <Flex
-                              margin={"0 10px 0 20px"}
-                              justifyContent={"space-between"}
-                          >
-                      <span id='swap-and-add' style={{ alignSelf: "center" }}>
-                        {"SWAP AND ADD"}
-                      </span>
-                            <Toggle
-                                id="advancedModeToggle"
-                                checked={sync === "half"}
-                                checkedColor={'dropdownDeep'}
-                                defaultColor={'invertedContrast'}
-                                onChange={() => {
-                                  setSync(sync !== "off" ? "off" : "half");
-                                }}
-                                scale="sm"
-                            />
-                          </Flex>
-                        </>
-                    )}
                     {currencies[Field.CURRENCY_B] !== undefined &&
-                    pylonState === PylonState.EXISTS && width >= 700 && (
+                    pylonState === PylonState.EXISTS && width >= 1 && (
                         <div style={{ padding: "0 10px 0 10px" }}>
                           <Flex
                               style={{
@@ -1330,7 +1312,6 @@ export default function AddLiquidityPro({
                                     borderRadius: "12px",
                                     padding: "5px",
                                     fontSize: "13px",
-                                    width: width >= 700 ? "inherit" : "100%",
                                     background: theme.darkMode ? theme.liquidityBg : '#F5F3F3',
                                   }}
                               >

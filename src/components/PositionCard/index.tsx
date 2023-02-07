@@ -312,7 +312,7 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
     const userPoolBalance = useTokenBalance(account ?? undefined, isFloat ? pylon.floatLiquidityToken : pylon.anchorLiquidityToken)
     const formattedPoolBalance = userPoolBalance.toSignificant(4) as unknown as number
 
-    const {burnInfo, healthFactor, gamma, idealBurnAmount} = useDerivedPylonBurnInfo(currency0 ?? undefined, currency1 ?? undefined, isFloat, true,
+    const {burnInfo, healthFactor, idealBurnAmount, delta} = useDerivedPylonBurnInfo(currency0 ?? undefined, currency1 ?? undefined, isFloat, true,
         {
             float: ethers.BigNumber.from(10).pow(currency0?.decimals || 18).toString(),
             anchor: ethers.BigNumber.from(10).pow(currency1?.decimals || 18).toString(),
@@ -392,7 +392,7 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
                                 </RowFixed>
                                 {burnInfo ? (
                                     <RowFixed>
-                                        <CapacityIndicatorSmall gamma={new BigNumberJs(gamma).div(new BigNumberJs(10).pow(18))} health={healthFactor} isFloat={isFloat}
+                                        <CapacityIndicatorSmall gamma={new BigNumberJs(delta ? delta : '0').div(new BigNumberJs(10).pow(18))} health={healthFactor} isFloat={isFloat}
                                                                 hoverPage="positionCard" />
                                     </RowFixed>
                                 ) : (

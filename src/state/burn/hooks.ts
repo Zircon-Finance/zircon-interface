@@ -253,7 +253,8 @@ export function useDerivedPylonBurnInfo(
   }
   healthFactor?: string;
   gamma?: string;
-  idealBurnAmount?: TokenAmount
+  idealBurnAmount?: TokenAmount;
+  delta?: string;
 } {
   const { account, chainId } = useActiveWeb3React()
 
@@ -354,6 +355,27 @@ export function useDerivedPylonBurnInfo(
 
   }, [pylonInfo, pylon, ptbEnergy, reserveAnchor, pylonPoolBalance, totalSupply, pairInfo, pylonConstants])
 
+  const delta = useMemo(() => {
+    if (pylonInfo && pylon && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && pairInfo && pylonConstants) {
+      return pylon.getDelta(
+          pylonInfo,
+          pairInfo,
+          decimals,
+          totalSupply,
+          pylonPoolBalance,
+          BigInt(blockNumber),
+          pylonConstants,
+          BigInt(timestamp),
+          true,
+      ).toString();
+    }else{
+      return undefined
+    }
+
+  }, [pylonInfo, pylon, ptbEnergy, reserveAnchor, pylonPoolBalance, totalSupply, pairInfo, pylonConstants])
+
+  console.log('AAADELTA FROM BURN', delta)
+
   const liquidityValues: { [Field.CURRENCY_A]?: TokenAmount; [Field.CURRENCY_B]?: TokenAmount } = {
     [Field.CURRENCY_A]: liquidityValueA,
     [Field.CURRENCY_B]: liquidityValueB
@@ -422,7 +444,7 @@ export function useDerivedPylonBurnInfo(
   console.log('percentToRemove: ', percentToRemove.toFixed(0))
 
 
-  return { pylon, parsedAmounts, error, burnInfo, healthFactor, gamma: pylonInfo?.gammaMulDecimals?.toString(), idealBurnAmount }
+  return { pylon, parsedAmounts, error, burnInfo, healthFactor, gamma: pylonInfo?.gammaMulDecimals?.toString(), idealBurnAmount, delta }
 }
 
 export function useBurnActionHandlers(): {

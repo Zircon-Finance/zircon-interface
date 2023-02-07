@@ -52,6 +52,7 @@ export function useDerivedPylonMintInfo(
   poolTokenPercentage?: Percent
   error?: string,
   healthFactor?: string,
+  delta?: string,
 } {
   const { account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
@@ -107,6 +108,31 @@ export function useDerivedPylonMintInfo(
     }
 
   }, [pylonInfo, pairInfo, pylonPair, ptbEnergy, reserveAnchor, pylonPoolBalance, totalSupply, pylonConstants,pylonState])
+
+  const delta = useMemo(() => {
+    try {
+      return pylonInfo && pylonState === PylonState.EXISTS && pylonPair && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && pylonConstants && pylonState === PylonState.EXISTS?
+          pylonPair.getDelta(
+              pylonInfo,
+              pairInfo,
+              decimals,
+              totalSupply,
+              pylonPoolBalance,
+              BigInt(blockNumber),
+              pylonConstants,
+              BigInt(timestamp),
+              true,
+          ).toString() : undefined
+    }catch (e) {
+      console.error("INTERFACE:: error delta", e)
+      return undefined
+    }
+
+  }, [pylonInfo, pairInfo, pylonPair, ptbEnergy, reserveAnchor, pylonPoolBalance, totalSupply, pylonConstants,pylonState])
+
+  console.log('AAADELTA FROM MINT', delta)
+
+
   const noPylon: boolean =
       pylonState === PylonState.NOT_EXISTS || Boolean(pylonSupply && JSBI.equal(pylonSupply.raw, ZERO))
 
@@ -299,7 +325,8 @@ export function useDerivedPylonMintInfo(
     gamma: pylonInfo ? pylonInfo.gammaMulDecimals ? pylonInfo.gammaMulDecimals.toString() : undefined : undefined,
     //poolTokenPercentage,
     error,
-    healthFactor
+    healthFactor,
+    delta
   }
 }
 
@@ -332,7 +359,7 @@ export function useMintActionHandlers(
   }
 }
 
-export const useHealthFactor = (  currencyA: Currency | undefined,
+export const useHealthFactorDelta = (  currencyA: Currency | undefined,
                                   currencyB: Currency | undefined,
                                   isFloat: boolean) => {
   const currencies: { [field in Field]?: Currency } = useMemo(
@@ -375,7 +402,22 @@ export const useHealthFactor = (  currencyA: Currency | undefined,
             reserveAnchor.raw
         ) : 'Loading...'
   }, [pylonInfo, pylonPair, ptbEnergy, reserveAnchor, ptb, ptt, lastK, pylonFactory])
-  return healthFactorResult
+
+  const deltaResult = useMemo(() => {
+    return pylonInfo && pylonPair && ptbEnergy && reserveAnchor && ptb && ptt && lastK && pylonFactory ?
+        pylonPair.getDelta(
+            pylonInfo,
+            pairInfo,
+            decimals,
+            ptt,
+            ptb,
+            BigInt(blockNumber),
+            pylonFactory,
+            BigInt(timestamp),
+        ) : 'Loading...'
+  }, [pylonInfo, pylonPair, ptbEnergy, reserveAnchor, ptb, ptt, lastK, pylonFactory])
+
+  return {healthFactor: healthFactorResult, delta: deltaResult}
 }
 
 export function usePairPrices(token0: Currency, token1: Currency, pair: Pair, pairState: PairState) {

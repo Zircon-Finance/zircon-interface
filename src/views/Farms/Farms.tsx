@@ -5,7 +5,7 @@ import React, {
 import BigNumber from 'bignumber.js'
 import { useWeb3React } from '@web3-react/core'
 import { RowType, Toggle, Text, Flex } from '@pancakeswap/uikit'
-import styled, { useTheme } from 'styled-components'
+import styled, { css, keyframes, useTheme } from 'styled-components'
 import Page from '../../components/Layout/Page'
 import useIntersectionObserver from '../../hooks/useIntersectionObserver'
 import { useTranslation } from 'react-i18next'
@@ -60,7 +60,36 @@ const FlexLayout = styled.div`
   }
 `
 
-const ControlContainer = styled.div`
+const expandAnimation = keyframes`
+  from {
+    opacity: 0;
+    max-height: 0px;
+  }
+  to {
+    opacity: 1;
+    max-height: 110px;
+  }
+`
+const collapseAnimation = keyframes`
+  from {
+    opacity: 1;
+    max-height: 110px;
+  }
+  to {
+    opacity: 0;
+    max-height: 0px;
+  }
+`
+
+const ControlContainer = styled.div<{ active: boolean }>`
+  animation: ${({ active }) =>
+    active
+                  ? css`
+                    ${expandAnimation} 200ms forwards
+                  `
+                  : css`
+                    ${collapseAnimation} 200ms forwards
+                  `};
   display: flex;
   width: 100%;
   align-items: center;
@@ -178,6 +207,22 @@ export const ModalContainer = styled.div`
   svg {
     fill: ${({ theme }) => theme.text1};
   }
+`
+
+const FiltersButton = styled.button`
+  position: absolute;
+  right: 0;
+  background: ${({ theme }) => theme.darkMode ? 'rgba(213, 174, 175, 0.07)' : '#EDEAEA'};
+  border-radius: 12px;
+  padding: 3px 9px;
+  font-size: 14px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.pinkBrown};
+  cursor: pointer;
+  outline: none;
+  margin-right: 20px;
+  margin-top: 13px;
+  border: none;
 `
 
 const NUMBER_OF_POOLS_VISIBLE = 6
@@ -506,23 +551,34 @@ const Farms: React.FC = ({ children }) => {
   }
   const darkMode = useIsDarkMode()
   const [hoverButton, setHoverButton] = useState(false)
+  const [showFilters, setShowFilters] = useState(false)
+  const [fakeShowFilters, setFakeShowFilters] = useState(false)
+  const toggleFilters = () => {
+    setFakeShowFilters(!fakeShowFilters)
+    setTimeout(() => {
+      setShowFilters(!showFilters)
+    }, 200)
+  }
   activeFarms = chosenPools
   return (
     <FarmsContext.Provider value={{ activeFarms }}>
       <Page>
-        <Text
-          color={theme.text1}
-          fontWeight={300}
-          fontSize={"30px"}
-          style={{
-            textAlign: "center",
-            alignSelf: "center",
-            marginBottom: width >= 700 ? "30px" : "20px",
-          }}
-        >
-          {"Farms"}
-        </Text>
-        <ControlContainer>
+        <Flex justifyContent={'center'} alignContent={'center'}>
+          <Text
+            color={theme.text1}
+            fontWeight={300}
+            fontSize={"30px"}
+            style={{
+              textAlign: "center",
+              alignSelf: "center",
+              marginBottom: width >= 700 ? "30px" : "20px",
+            }}
+          >
+            {"Farms"}
+          </Text>
+          {width <= 700 && <FiltersButton onClick={() => toggleFilters()}>{showFilters ? 'Hide filters' : 'Show filters'}</FiltersButton>}
+        </Flex>
+        {(showFilters || width >= 700) && <ControlContainer active={fakeShowFilters || width >= 700}>
           <Flex m={"0px"}>
             <PylonClassicTab active={filter} />
             <AnchorFloatTab active={filterAnchorFloat} />
@@ -548,7 +604,7 @@ const Farms: React.FC = ({ children }) => {
                     letterSpacing={"0.05em"}
                   >
                     {" "}
-                    {width > 700 ? "SHOW ONLY MINE" : "SHOW ONLY MINE"}
+                    {width > 700 ? "STAKED ONLY" : "STAKED ONLY"}
                   </Text>
                   <Toggle
                     id="staked-only-farms"
@@ -576,7 +632,7 @@ const Farms: React.FC = ({ children }) => {
               </LabelWrapper>
             </FilterContainer>
           </Flex>
-        </ControlContainer>
+        </ControlContainer>}
         <MainContainer>
           <table
             style={{

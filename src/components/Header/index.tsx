@@ -166,7 +166,7 @@ export default function Header() {
   const [showClaimTokens, setShowClaimTokens] = React.useState(false);
   const blockedApiData = useBlockedApiData();
   const isPoolBlocked = blockedApiData?.isPoolBlocked
-  const isFarmBlocked = true
+  const isFarmBlocked = blockedApiData?.isFarmBlocked
 
   return (
     <HeaderFrame>
@@ -179,7 +179,7 @@ export default function Header() {
         {width >= 700 ?
         <>
         <HeaderElement>
-          <Title href="." style={{width: account ? width < 1100 ? '250px' : '550px' : width > 1100 ? '350px' : '160px', height: '44px'}}>
+          <Title href="." style={{width: account ? width < 1100 ? '250px' : '550px' : width > 1100 ? '420px' : '160px', height: '44px'}}>
             <UniIcon id="z-logo">
               <img style={{ height: 35, display: 'flex', margin: 'auto' }} src={!darkMode ? DarkLogo : WhiteLogo} alt="logo" />
             </UniIcon>

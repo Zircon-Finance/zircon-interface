@@ -83,7 +83,8 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, account,
     anchor: ethers.BigNumber.from(10).pow(currency2?.decimals || 18).toString(),
   }
   const {
-    healthFactor
+    healthFactor,
+    delta
   } = useDerivedPylonMintInfo(
       currency1 ?? undefined,
       currency2 ?? undefined,
@@ -91,8 +92,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, account,
       "off",
       decimals
   );
-  const gammaBig = farm?.gamma
-  const gamma = new BigNumber(gammaBig).div(new BigNumber(10).pow(18))
+  const gamma = new BigNumber(delta ? delta : '0').div(new BigNumber(10).pow(18))
   const {width} = useWindowDimensions()
   const {pools} = usePools()
 

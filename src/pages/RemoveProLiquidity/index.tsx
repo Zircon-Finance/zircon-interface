@@ -95,7 +95,7 @@ export default function RemoveProLiquidity({
 
   // burn state
   const { independentField, typedValue } = useBurnState()
-  const { pylon, parsedAmounts, error, healthFactor, gamma, burnInfo } =
+  const { pylon, parsedAmounts, error, healthFactor, burnInfo, delta } =
       useDerivedPylonBurnInfo(currencyA ?? undefined, currencyB ?? undefined, isFloat, sync, {
     float: ethers.BigNumber.from(10).pow(currencyA?.decimals || 18).toString(),
         anchor: ethers.BigNumber.from(10).pow(currencyB?.decimals || 18 ).toString(),
@@ -837,7 +837,7 @@ const SlippageWarningModal = () => (
               <div style={{marginBottom: 32}}>
                 <CapacityIndicator
                     hoverPage='removeLiq'
-                    gamma={new BigNumberJs(gamma).div(new BigNumberJs(10).pow(18))}
+                    gamma={new BigNumberJs(delta ? delta : '0').div(new BigNumberJs(10).pow(18))}
                     health={healthFactor}
                     isFloat={isFloat}
                     slashingOmega={new BigNumberJs(burnInfo?.omegaSlashingPercentage.toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}

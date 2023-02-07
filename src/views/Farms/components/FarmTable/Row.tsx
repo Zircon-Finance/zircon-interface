@@ -181,6 +181,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
     anchor: ethers.BigNumber.from(10).pow(currency2?.decimals || 18).toString(),
   }
   const {
+    delta,
     healthFactor
   } = useDerivedPylonMintInfo(
       currency1 ?? undefined,
@@ -190,7 +191,6 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
       decimals
   );
   const pool = usePool(details.contractAddress).pool
-  const gamma = pool?.gamma
   const hasStakedAmount = !!pool.userData.stakedBalance.toNumber()
   const [actionPanelExpanded, setActionPanelExpanded] = useState(false)
   const [hovered, setHovered] = useState(false)
@@ -283,7 +283,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   //   setRewardTokens(r.slice(0, -1))
   // }, [])
   const [hoverRisk, setHoverRisk] = useState(false)
-  const gammaAdjusted = new BigNumberJs(gamma).div(new BigNumberJs(10).pow(18))
+  const gammaAdjusted = new BigNumberJs(delta ? delta : '0').div(new BigNumberJs(10).pow(18))
   const {chainId} = useActiveWeb3React()
 
   const handleRenderRow = () => {
@@ -303,7 +303,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
               case 'details':
                 // const risk = gammaAdjusted && (gammaAdjusted.isLessThanOrEqualTo(0.7) || gammaAdjusted.isGreaterThanOrEqualTo(0.5))
                 return (
-                  <TableData key={key} style={{width: gamma ? '15%' : '12%'}}>
+                  <TableData key={key} style={{width: delta ? '15%' : '12%'}}>
                     <CellInner>
                       <CellLayout>
                         <div style={{width: '200%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>

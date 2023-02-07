@@ -266,11 +266,11 @@ export default function Header() {
               </AccountElement>
            </>
           </HeaderElement>
-          <HeaderControls style={{marginBottom: width <= 700 ? '5px' : '0px'}}>
-            <HeaderElement>
+          {/* <HeaderControls style={{marginBottom: width <= 700 ? '5px' : '0px'}}> */}
+            {/* <HeaderElement> */}
               {/* <ChainPoolTab active={chainId === 1285 ? 'moonriver' : 'bsc'} /> */}
-            </HeaderElement>
-          </HeaderControls>
+            {/* </HeaderElement> */}
+          {/* </HeaderControls> */}
           </div>
           <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : location.pathname === '/farm' ? 'farm' : 'pool'} />
         </>

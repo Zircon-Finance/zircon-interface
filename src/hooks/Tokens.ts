@@ -14,7 +14,7 @@ const timezone = require('dayjs/plugin/timezone') // dependent on utc plugin
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
-const GAMMA_SUBGRAPH_URI = 'https://api.thegraph.com/subgraphs/name/reshyresh/zircon-alpha'
+const GAMMA_SUBGRAPH_URI = 'https://api.thegraph.com/subgraphs/name/reshyresh/zircon-gamma'
 const BSC_SUBGRAPH_URI = 'https://api.thegraph.com/subgraphs/name/reshyresh/zi'
 
 export function useAllTokens(): { [address: string]: Token } {

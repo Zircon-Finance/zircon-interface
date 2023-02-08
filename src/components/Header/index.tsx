@@ -165,8 +165,9 @@ export default function Header() {
   const [darkMode, toggleSetDarkMode] = useDarkModeManager();
   const [showClaimTokens, setShowClaimTokens] = React.useState(false);
   const blockedApiData = useBlockedApiData();
-  const isPoolBlocked = blockedApiData?.isPoolBlocked
-  const isFarmBlocked = true
+  console.log(blockedApiData)
+  const isPoolBlocked = false
+  const isFarmBlocked = false
 
   return (
     <HeaderFrame>

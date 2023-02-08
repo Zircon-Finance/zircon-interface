@@ -101,8 +101,10 @@ export default function App() {
   const theme = useTheme()
 
   const blockedApiData = useBlockedApiData();
-  const isPoolBlocked = blockedApiData?.isPoolBlocked
-  const isFarmBlocked = true
+  console.log(blockedApiData)
+
+  const isPoolBlocked = false
+  const isFarmBlocked = false
   const blockReasonTitle = blockedApiData?.blockReasonTitle
   const blockReasonDescription = blockedApiData?.blockReasonDescription
 

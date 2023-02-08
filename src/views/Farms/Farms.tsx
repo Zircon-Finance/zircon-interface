@@ -758,6 +758,28 @@ const Farms: React.FC = ({ children }) => {
                 </TableData>
               )}
             </tr>
+            {width <= 992 && (
+              <tr>
+                <TableData style={{ width: "15%" }} >
+                  {account && <ButtonLighter disabled={pendingTx || stakedOnlyFarms.length === 0} fontSize='13px' 
+                  onClick={()=>harvestAllPools()} 
+                  onMouseEnter={() => setHoverHarvestAll(true)}
+                  onMouseLeave={() => setHoverHarvestAll(false)}
+                  style={{background: hoverHarvestAll ? theme.darkMode ? 'rgba(202, 144, 187, 0.17)' : 'rgba(202, 144, 187, 0.07)' : 
+                  theme.darkMode ? '#442433' : '#f5eef3', 
+                  padding: '5px 10px', 
+                  height: '29px', 
+                  width: '100%', 
+                  color:theme.darkMode ? '#CA90BB' : '#9E4D86', 
+                  fontWeight: 500,
+                  border: 'none',
+                  marginTop: '5px'}} >
+                  {pendingTx ? 'HARVESTING...' :'HARVEST FROM ALL FARMS'}
+                </ButtonLighter>}
+                </TableData>
+                </tr>
+              )}
+              
           </table>
           {renderContent()}
           {((chosenPools.length < pools.length && chosenPools.length === numberOfFarmsVisible) ||

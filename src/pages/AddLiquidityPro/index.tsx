@@ -209,7 +209,6 @@ export default function AddLiquidityPro({
       decimals
   );
 
-  console.log("FF:: mintInfo", mintInfo);
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noPylon);
   const isValid = !error;
 

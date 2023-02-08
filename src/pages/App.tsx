@@ -102,7 +102,7 @@ export default function App() {
 
   const blockedApiData = useBlockedApiData();
   const isPoolBlocked = blockedApiData?.isPoolBlocked
-  const isFarmBlocked = true
+  const isFarmBlocked = false
   const blockReasonTitle = blockedApiData?.blockReasonTitle
   const blockReasonDescription = blockedApiData?.blockReasonDescription
 

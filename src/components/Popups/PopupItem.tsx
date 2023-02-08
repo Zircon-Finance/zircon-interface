@@ -7,6 +7,7 @@ import { PopupContent } from '../../state/application/actions'
 import { useRemovePopup } from '../../state/application/hooks'
 import ListUpdatePopup from './ListUpdatePopup'
 import TransactionPopup from './TransactionPopup'
+import { useShowBannerManager } from '../../state/user/hooks'
 
 export const StyledClose = styled(X)`
   position: absolute;
@@ -95,9 +96,11 @@ export default function PopupItem({
       setSuccessfulTx(success)
     }
   }, [content])
+  const [showbanner, ] = useShowBannerManager()
 
   return (
-    <Popup style={{background: theme.darkMode ? successfulTx ? 'rgba(92, 179, 118, 0.05)' : 'rgba(230, 112, 102, 0.05)' :
+    <Popup style={{marginTop: showbanner ? '70px' : '10px',
+    background: theme.darkMode ? successfulTx ? 'rgba(92, 179, 118, 0.05)' : 'rgba(230, 112, 102, 0.05)' :
     successfulTx ? 'rgba(40, 116, 56, 0.05)' : 'rgba(211, 53, 53, 0.05)',
     border: `1px solid ${theme.darkMode ? successfulTx ? 'rgba(92, 179, 118, 0.1)' : 'rgba(230, 112, 102, 0.1)' : 
     successfulTx ? 'rgba(40, 116, 56, 0.1)' : 'rgba(211, 53, 53, 0.1)' }`}}>

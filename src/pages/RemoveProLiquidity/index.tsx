@@ -88,8 +88,6 @@ export default function RemoveProLiquidity({
   ])
   const theme = useTheme()
 
-  const [percentageUserInput, setPercentageUserInput] = useState('0')
-  console.log("percentageUserInput", percentageUserInput)
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle()
 
@@ -565,7 +563,6 @@ const SlippageWarningModal = () => (
   const liquidityPercentChangeCallback = useCallback(
       (value: number) => {
         onUserInput(Field.LIQUIDITY_PERCENT, value.toString())
-        setPercentageUserInput(value.toString())
       },
       [onUserInput]
   )

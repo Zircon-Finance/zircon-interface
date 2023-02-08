@@ -374,8 +374,6 @@ export function useDerivedPylonBurnInfo(
 
   }, [pylonInfo, pylon, ptbEnergy, reserveAnchor, pylonPoolBalance, totalSupply, pairInfo, pylonConstants])
 
-  console.log('AAADELTA FROM BURN', delta)
-
   const liquidityValues: { [Field.CURRENCY_A]?: TokenAmount; [Field.CURRENCY_B]?: TokenAmount } = {
     [Field.CURRENCY_A]: liquidityValueA,
     [Field.CURRENCY_B]: liquidityValueB

@@ -400,8 +400,8 @@ export default function WalletModal({
           <ContentWrapper>
             {error instanceof UnsupportedChainIdError ? (
               <>
-              <h5 style={{textAlign: 'center'}}>{'Please connect to the appropriate Moonbase network.'}</h5>
-              {connector === injected && <ButtonPrimary mt={'30px'} onClick={() => connectNet('moonbase')} >{'Click to connect'}</ButtonPrimary>}
+              <h5 style={{textAlign: 'center'}}>{'Please connect to the appropriate Moonriver network.'}</h5>
+              {connector === injected && <ButtonPrimary mt={'30px'} onClick={() => connectNet('moonriver')} >{'Click to connect'}</ButtonPrimary>}
               </>
             ) : (
               'Error connecting. Please make sure you are connected to the appropriate Moonriver network.'

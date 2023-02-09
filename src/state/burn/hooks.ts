@@ -334,7 +334,6 @@ export function useDerivedPylonBurnInfo(
     totalSupply, ptTotalSupply, pylonInfo, pylonConstants, blockNumber, pairInfo, isSync, isFloat] )
 
   const [liquidityValueA, liquidityValueB] = !burnInfo ? [undefined, undefined] : burnInfo?.liquidity
-  console.log('BBB', burnInfo?.liquidity[0].toSignificant(6), burnInfo?.liquidity[1].toSignificant(6))
 
   const healthFactor = useMemo(() => {
     if (pylonInfo && pylon && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && pairInfo && pylonConstants) {
@@ -410,8 +409,6 @@ export function useDerivedPylonBurnInfo(
       }
     }
   }
-  console.log('AAA Amount of tokena: ', liquidityValueB?.toSignificant(6), ' adjusted to user percentage of: ', percentToRemove.toFixed(0), percentToRemove?.multiply(liquidityValueB?.raw || '0')?.quotient?.toString())
-
 
   const parsedAmounts: {
     [Field.LIQUIDITY_PERCENT]: Percent
@@ -429,8 +426,8 @@ export function useDerivedPylonBurnInfo(
       ? new TokenAmount(tokenA, liquidityValueA.raw)
             : undefined,
     [Field.CURRENCY_B]:
-      tokenB && liquidityValueB
-      ? new TokenAmount(tokenB, liquidityValueB.raw)
+      tokenB && percentToRemove && percentToRemove.greaterThan('0') && liquidityValueB
+      ? new TokenAmount(tokenB, percentToRemove.multiply(liquidityValueB.raw).quotient)
             : undefined
   }
 
@@ -442,8 +439,6 @@ export function useDerivedPylonBurnInfo(
   if (!parsedAmounts[Field.LIQUIDITY] || !parsedAmounts[Field.CURRENCY_A] || !parsedAmounts[Field.CURRENCY_B]) {
     error = error ?? 'Enter an amount'
   }
-  console.log('percentToRemove: ', percentToRemove.toFixed(0))
-
 
   return { pylon, parsedAmounts, error, burnInfo, healthFactor, gamma: pylonInfo?.gammaMulDecimals?.toString(), idealBurnAmount, delta }
 }

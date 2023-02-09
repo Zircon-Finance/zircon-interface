@@ -44,9 +44,9 @@ const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan
       hoverPage === 'positionCard' && {display: 'none', bottom: '50px', left: width >= 450 ? '70%' : '120px'}
       } show={hoverIndicator && showHover && (gamma !== undefined || health !== undefined)}>
         <Text fontSize='13px' fontWeight={500} color={theme.text1}>
-            {isFloat ? gamma < 0.4 ? 'The vault has zero or negative impermanent loss to encourage new liquidity.' :
-            (gamma < 0.7 && gamma >= 0.4) ? 'The Float vault is balanced, you will have very little impermanent loss' :
-            gamma >= 0.7 && 'The vault is suffering heavy impermanent loss, you will gain less than expected.' :
+            {isFloat ? gamma >= 110 ? 'The vault has zero or negative impermanent loss to encourage new liquidity.' :
+            (gamma > 90 && gamma < 110) ? 'The Float vault is balanced, you will have very little impermanent loss' :
+            gamma <= 90 && 'The vault is suffering heavy impermanent loss, you will gain less than expected.' :
             health === "high" ? 'The vault is in normal operating conditions, all good.' :
             health === "medium" ? 'The vault is under stress, the risks of joining it are high.' :
             health === "low" && 'The vault is temporarily limiting withdrawal claims. Joining it is dangerous and might result in loss of funds.'

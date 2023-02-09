@@ -387,7 +387,7 @@ export function useDerivedPylonBurnInfo(
     }else{
       percentToRemove = new Percent(percentage, '100')
     }
-
+    
   }
   // user specified a specific amount of liquidity tokens
   else if (independentField === Field.LIQUIDITY) {
@@ -418,16 +418,16 @@ export function useDerivedPylonBurnInfo(
   } = {
     [Field.LIQUIDITY_PERCENT]: percentToRemove,
     [Field.LIQUIDITY]:
-        userLiquidity
-            ? new TokenAmount(userLiquidity.token, userLiquidity.raw)
+      userLiquidity && percentToRemove && percentToRemove.greaterThan('0')
+      ? new TokenAmount(userLiquidity.token, percentToRemove.multiply(userLiquidity.raw).quotient)
             : undefined,
     [Field.CURRENCY_A]:
-        tokenA && liquidityValueA
-            ? new TokenAmount(tokenA, liquidityValueA.raw)
+      tokenA && percentToRemove && percentToRemove.greaterThan('0') && liquidityValueA
+      ? new TokenAmount(tokenA, percentToRemove.multiply(liquidityValueA.raw).quotient)
             : undefined,
     [Field.CURRENCY_B]:
-        tokenB && liquidityValueB
-            ? new TokenAmount(tokenB, liquidityValueB.raw)
+      tokenB && percentToRemove && percentToRemove.greaterThan('0') && liquidityValueB
+      ? new TokenAmount(tokenB, percentToRemove.multiply(liquidityValueB.raw).quotient)
             : undefined
   }
 

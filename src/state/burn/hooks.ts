@@ -334,6 +334,7 @@ export function useDerivedPylonBurnInfo(
     totalSupply, ptTotalSupply, pylonInfo, pylonConstants, blockNumber, pairInfo, isSync, isFloat] )
 
   const [liquidityValueA, liquidityValueB] = !burnInfo ? [undefined, undefined] : burnInfo?.liquidity
+  console.log('BBB', burnInfo?.liquidity[0].toSignificant(6), burnInfo?.liquidity[1].toSignificant(6))
 
   const healthFactor = useMemo(() => {
     if (pylonInfo && pylon && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && pairInfo && pylonConstants) {
@@ -385,7 +386,7 @@ export function useDerivedPylonBurnInfo(
     if(!percentage){
       percentToRemove = new Percent(typedValue, '100')
     }else{
-      percentToRemove = new Percent(percentage, '100')
+      percentToRemove = new Percent(typedValue, '100')
     }
     
   }
@@ -409,6 +410,8 @@ export function useDerivedPylonBurnInfo(
       }
     }
   }
+  console.log('AAA Amount of tokena: ', liquidityValueB?.toSignificant(6), ' adjusted to user percentage of: ', percentToRemove.toFixed(0), percentToRemove?.multiply(liquidityValueB?.raw || '0')?.quotient?.toString())
+
 
   const parsedAmounts: {
     [Field.LIQUIDITY_PERCENT]: Percent
@@ -422,12 +425,12 @@ export function useDerivedPylonBurnInfo(
       ? new TokenAmount(userLiquidity.token, percentToRemove.multiply(userLiquidity.raw).quotient)
             : undefined,
     [Field.CURRENCY_A]:
-      tokenA && percentToRemove && percentToRemove.greaterThan('0') && liquidityValueA
-      ? new TokenAmount(tokenA, percentToRemove.multiply(liquidityValueA.raw).quotient)
+      tokenA && liquidityValueA
+      ? new TokenAmount(tokenA, liquidityValueA.raw)
             : undefined,
     [Field.CURRENCY_B]:
-      tokenB && percentToRemove && percentToRemove.greaterThan('0') && liquidityValueB
-      ? new TokenAmount(tokenB, percentToRemove.multiply(liquidityValueB.raw).quotient)
+      tokenB && liquidityValueB
+      ? new TokenAmount(tokenB, liquidityValueB.raw)
             : undefined
   }
 

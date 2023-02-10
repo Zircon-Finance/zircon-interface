@@ -221,7 +221,6 @@ export default function AddLiquidityPro({
           f.isAnchor === !isFloat &&
           f.apr !== 0 && f.isFinished === false
   );
-  console.log('CurrencyA', currencyA?.symbol, 'CurrencyB', currencyB?.symbol, 'isFloat', isFloat, 'farm', farm)
   const { pool } = usePool(useMemo(() => farm ? farm?.contractAddress : '0x0f2eacd08e26932d1a74dbcf094d097d827aca3b', [farm]));
   const addTransaction = useTransactionAdder()
   const lpContract = useERC20(pool?.stakingToken.address)

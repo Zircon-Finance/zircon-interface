@@ -117,19 +117,20 @@ export function usePylonConstants(): PylonFactory | undefined {
         "muUpdatePeriod",
         "muChangeFactor",
         "oracleUpdateSecs"
-    ])
+    ])?.flatMap<any>((res => res?.result)).filter(t => t !== undefined)
     const pairResult = useSingleContractMultipleMethods(factoryContract, [
         "liquidityFee",
         "dynamicRatio",
-    ])
+    ])?.flatMap<any>((res => res?.result)).filter(t => t !== undefined)
     const energyResult = useSingleContractMultipleMethods(energyFactoryContract, [
         "feePercentageRev",
         "feePercentageEnergy",
         "getMinMaxFee"
-    ])
-    console.log("FF:: ", pylonResult, pairResult, energyResult)
+    ])?.flatMap<any>((res => res?.result)).filter(t => t !== undefined)
+    
+    let result = (energyResult && pairResult && pylonResult && pylonResult.length > 1 && pairResult.length > 1 && energyResult.length > 1) &&
+        pylonResult.concat(pairResult).concat(energyResult)
 
-    let result = pylonResult.concat(pairResult).concat(energyResult)?.flatMap<any>((res => res?.result)).filter(t => t !== undefined)
     return result && result.length > 10 ? new PylonFactory(result[0], result[1], result[2], result[3], result[4], result[5], result[6],
         result[7], result[8], result[9], result[10], result[11], result[12]) : undefined
 }

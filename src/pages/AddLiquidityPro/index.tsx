@@ -23,7 +23,7 @@ import {RowBetween, RowFlat} from "../../components/Row";
 // import { Link } from 'react-router-dom'
 // import { ArrowRight } from 'react-feather'
 import {PYLON_ROUTER_ADDRESS, ROUTER_ADDRESS} from "../../constants";
-import {PylonState} from "../../data/PylonReserves";
+import {PylonState, usePylon} from "../../data/PylonReserves";
 import {useActiveWeb3React, useWindowDimensions} from "../../hooks";
 import {useCurrency} from "../../hooks/Tokens";
 import {ApprovalState, useApproveCallback,} from "../../hooks/useApproveCallback";
@@ -183,9 +183,10 @@ export default function AddLiquidityPro({
 
   const { independentField, typedValue, otherTypedValue } = useMintState();
   const [isFloat, setIsFloat] = useState(true);
+  const [,pylonObj] = usePylon(currencyA, currencyB);
   const decimals = {
-    float: ethers.BigNumber.from(10).pow(currencyA?.decimals || 18).toString(),
-    anchor: ethers.BigNumber.from(10).pow(currencyB?.decimals || 18).toString(),
+    float: ethers.BigNumber.from(10).pow(currencyA?.symbol === pylonObj?.token0?.symbol ? currencyA?.decimals : currencyB?.decimals || 18).toString(),
+    anchor: ethers.BigNumber.from(10).pow(currencyB?.symbol === pylonObj?.token1?.symbol ? currencyB?.decimals : currencyA?.decimals || 18).toString(),
   }
   const {
     dependentField,
@@ -1663,6 +1664,7 @@ export default function AddLiquidityPro({
                   isFloat={isFloat}
                   pylonConstants={pylonConstants}
                   blockNumber={blockNumber}
+                  currencies={[currencyA, currencyB]}
               />
             </AutoColumn>
         ) : null}

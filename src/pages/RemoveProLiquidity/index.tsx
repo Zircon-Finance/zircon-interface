@@ -50,6 +50,7 @@ import { ConfirmationInput, InputContainer, PinkContainer, RadioButton, RadioCon
 import PlusIcon from '../../views/Farms/components/PlusIcon'
 import ErrorTxContainer from '../../components/ErrorTxContainer'
 import { ethers } from 'ethers'
+import { usePylon } from '../../data/PylonReserves'
 
 export const PercButton = styled.button<{ width: string }>`
   padding: 0.5rem 1rem;
@@ -93,10 +94,11 @@ export default function RemoveProLiquidity({
 
   // burn state
   const { independentField, typedValue } = useBurnState()
+  const [,pylonObj] = usePylon(currencyA, currencyB);
   const { pylon, parsedAmounts, error, healthFactor, burnInfo, delta } =
       useDerivedPylonBurnInfo(currencyA ?? undefined, currencyB ?? undefined, isFloat, sync, {
-    float: ethers.BigNumber.from(10).pow(currencyA?.decimals || 18).toString(),
-        anchor: ethers.BigNumber.from(10).pow(currencyB?.decimals || 18 ).toString(),
+        float: ethers.BigNumber.from(10).pow(currencyA?.symbol === pylonObj?.token0?.symbol ? currencyA?.decimals : currencyB?.decimals || 18).toString(),
+        anchor: ethers.BigNumber.from(10).pow(currencyB?.symbol === pylonObj?.token1?.symbol ? currencyB?.decimals : currencyA?.decimals || 18).toString(),
   })
   const { onUserInput: _onUserInput } = useBurnActionHandlers()
   const isValid = !error

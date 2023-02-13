@@ -383,8 +383,8 @@ export const useHealthFactorDelta = (  currencyA: Currency | undefined,
   const blockNumber = useBlockNumber()
   const pairInfo = usePairInfo(pylonPair ? Pair.getAddress(pylonPair.token0, pylonPair.token1) : "")
   const decimals = {
-    float: ethers.BigNumber.from(10).pow(currencyA?.decimals || 18).toString(),
-    anchor: ethers.BigNumber.from(10).pow(currencyB?.decimals || 18).toString(),
+    float: ethers.BigNumber.from(10).pow(currencyA?.symbol === pylonPair?.token0?.symbol ? currencyA?.decimals : currencyB?.decimals || 18).toString(),
+    anchor: ethers.BigNumber.from(10).pow(currencyB?.symbol === pylonPair?.token1?.symbol ? currencyB?.decimals : currencyA?.decimals || 18).toString(),
   }
 
   const healthFactorResult = useMemo(() => {

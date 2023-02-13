@@ -311,15 +311,13 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
 
     const [showMore, setShowMore] = useState(false)
 
-    const [currencyA, currencyB] = currencies
-
     const userPoolBalance = useTokenBalance(account ?? undefined, isFloat ? pylon.floatLiquidityToken : pylon.anchorLiquidityToken)
     const formattedPoolBalance = userPoolBalance.toSignificant(4) as unknown as number
 
     const {burnInfo, healthFactor, idealBurnAmount, delta} = useDerivedPylonBurnInfo(currency0 ?? undefined, currency1 ?? undefined, isFloat, true,
         {
-          float: ethers.BigNumber.from(10).pow(currency0?.symbol === currencyA?.symbol ? currency0?.decimals : currency1?.decimals || 18).toString(),
-          anchor: ethers.BigNumber.from(10).pow(currency1?.symbol === currencyB?.symbol ? currency1?.decimals : currency0?.decimals || 18).toString(),
+          float: ethers.BigNumber.from(10).pow(currency0?.decimals || 18).toString(),
+          anchor: ethers.BigNumber.from(10).pow(currency1?.decimals || 18).toString(),
         }
         ,"100")
 
@@ -431,7 +429,6 @@ export function MinimalPositionPylonCard({ pylon, showUnwrapped = false, border,
     const currency0 = showUnwrapped ? pylon.token1 : unwrappedToken(pylon.token0, chainId)
     const currency1 = showUnwrapped ? pylon.token0 : unwrappedToken(pylon.token1, chainId)
 
-    const [currencyA, currencyB] = currencies
 
     const [showMore, setShowMore] = useState(false)
 
@@ -439,8 +436,8 @@ export function MinimalPositionPylonCard({ pylon, showUnwrapped = false, border,
     const formattedPoolBalance = userPoolBalance?.toSignificant(4) as unknown as number
 
     const {idealBurnAmount} = useDerivedPylonBurnInfo(currency0 ?? undefined, currency1 ?? undefined, isFloat, true, {
-        float: ethers.BigNumber.from(10).pow(currency0?.symbol === currencyA?.symbol ? currency0?.decimals : currency1?.decimals || 18).toString(),
-        anchor: ethers.BigNumber.from(10).pow(currency1?.symbol === currencyB?.symbol ? currency1?.decimals : currency0?.decimals || 18).toString(),
+        float: ethers.BigNumber.from(10).pow(currency0?.decimals || 18).toString(),
+        anchor: ethers.BigNumber.from(10).pow(currency1?.decimals || 18).toString(),
     } ,"100")
 
     // const [token0Deposited, token1Deposited] = !burnInfo ? [undefined, undefined] : [parsedAmounts["CURRENCY_A"], parsedAmounts["CURRENCY_B"]]

@@ -16,22 +16,17 @@ import {
 
 import { resetUserState } from '../global/actions'
 import {BIG_ZERO} from '../../utils/bigNumber'
-import {simpleRpcProvider} from "../../utils/providers";
 import { getApiData } from './helpers'
-import { ChainId, Token } from 'zircon-sdk'
+import { Token } from 'zircon-sdk'
 
 const initialState: PoolsState = {
   data: [],
   userDataLoaded: false,
 }
 
-export const fetchPoolsPublicDataAsync = (chainId: number, currentBlockNumber?: number, ) => async (dispatch, getState) => {
+export const fetchPoolsPublicDataAsync = (chainId: number, currentBlock: number) => async (dispatch, getState) => {
   try {
-    const [currentBlock] = await Promise.all([
-      currentBlockNumber ? Promise.resolve(currentBlockNumber) : simpleRpcProvider(chainId).getBlockNumber(),
-    ])
-
-    const apiData = await getApiData()
+    const apiData = await getApiData(chainId)
 
     // Get start-end block for each pool
     const blockLimits = apiData?.map((pool) => {
@@ -67,18 +62,18 @@ export const fetchPoolsPublicDataAsync = (chainId: number, currentBlockNumber?: 
 
       return {
         ...pool,
-        token1: new Token(ChainId.MOONRIVER, apiPool[0]?.tokens?.token0?.address, apiPool[0]?.tokens?.token0?.decimals, 
+        token1: new Token(chainId, apiPool[0]?.tokens?.token0?.address, apiPool[0]?.tokens?.token0?.decimals, 
           apiPool[0]?.tokens?.token0?.symbol === 'WMOVR' ? 'MOVR' : apiPool[0]?.tokens?.token0?.symbol,
           apiPool[0]?.tokens?.token0?.symbol === 'WMOVR' ? 'MOVR' : apiPool[0]?.tokens?.token0?.symbol),
-        token2: new Token(ChainId.MOONRIVER, apiPool[0]?.tokens?.token1?.address, apiPool[0]?.tokens?.token1?.decimals, 
+        token2: new Token(chainId, apiPool[0]?.tokens?.token1?.address, apiPool[0]?.tokens?.token1?.decimals, 
           apiPool[0]?.tokens?.token1?.symbol === 'WMOVR' ? 'MOVR' : apiPool[0]?.tokens?.token1?.symbol,
           apiPool[0]?.tokens?.token1?.symbol === 'WMOVR' ? 'MOVR' : apiPool[0]?.tokens?.token1?.symbol),
         ...blockLimit,
         isClassic: false,
         isAnchor: apiPool[0]?.isAnchor,
-        stakingToken: new Token(ChainId.MOONRIVER, apiPool[0]?.stakedToken, 18, 'ZPT', 'Zircon Pool Token'),
+        stakingToken: new Token(chainId, apiPool[0]?.stakedToken, 18, 'ZPT', 'Zircon Pool Token'),
         earningToken: apiPool[0]?.earningTokenInfo?.filter((entry) => entry.blockReward !== '0').map((earningInfo) => {
-          return new Token(ChainId.MOONRIVER, 
+          return new Token(chainId, 
             (earningInfo?.tokenSymbol === 'wMOVR' ? '0x98878B06940aE243284CA214f92Bb71a2b032B8A' : '0x4545E94974AdACb82FC56BCf136B07943e152055'), 
             18, earningInfo?.tokenSymbol, earningInfo?.tokenSymbol)
         }),
@@ -105,7 +100,7 @@ export const fetchPoolsPublicDataAsync = (chainId: number, currentBlockNumber?: 
         pylonAddress: apiPool[0]?.pylonAddress,
       }
     })
-    getState().pools.data.length === 0 && dispatch(setPoolsPublicData(liveData))
+    if (getState().pools.data.length === 0 || getState().pools.data[0]?.tokens?.token0?.chainId !== chainId) {dispatch(setPoolsPublicData(liveData))}
   } catch (error) {
     console.error('[Pools Action] error when getting public data', error)
   }
@@ -143,6 +138,7 @@ export const fetchPoolsUserDataAsync = createAsyncThunk<
     {chainId: number; account: string; pools: any[] }
     >('pool/fetchPoolsUserData', async ({chainId, account, pools}, { rejectWithValue }) => {
   try {
+    console.log('fetching user data')
     const [allowances, stakingTokenBalances, stakedBalances, pendingRewards] = await Promise.all([
       fetchPoolsAllowance(account, chainId, pools),
       fetchUserBalances(account, chainId, pools),

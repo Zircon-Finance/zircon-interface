@@ -18,7 +18,7 @@ import { OVERLAY_READY } from '../../connectors/Fortmatic'
 // import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { ButtonPrimary, ButtonSecondary } from '../Button'
-import { Link, Text } from 'rebass'
+import { Flex, Link, Text } from 'rebass'
 import { useActiveWeb3React } from '../../hooks'
 
 const CloseIcon = styled.div`
@@ -400,11 +400,14 @@ export default function WalletModal({
           <ContentWrapper>
             {error instanceof UnsupportedChainIdError ? (
               <>
-              <h5 style={{textAlign: 'center'}}>{'Please connect to the appropriate Moonriver network.'}</h5>
-              {connector === injected && <ButtonPrimary mt={'30px'} onClick={() => connectNet('moonriver')} >{'Click to connect'}</ButtonPrimary>}
+              <h5 style={{textAlign: 'center'}}>{'Please connect to an appropriate supported network.'}</h5>
+              <Flex style={{justifyContent: 'space-between'}}>
+                {connector === injected && <ButtonPrimary mt={'10px'} style={{width: '48%'}} onClick={() => connectNet('moonriver')} >{'Moonriver'}</ButtonPrimary>}
+                {connector === injected && <ButtonPrimary mt={'10px'} style={{width: '48%'}} onClick={() => connectNet('bsc')} >{'BSC'}</ButtonPrimary>}
+              </Flex>
               </>
             ) : (
-              'Error connecting. Please make sure you are connected to the appropriate Moonriver network.'
+              'Error connecting. Please make sure you are connected to an appropriate supported network.'
             )}
           </ContentWrapper>
         </UpperSection>

@@ -63,6 +63,7 @@ import { useBatchPrecompileContract } from '../../hooks/useContract'
 import { basePool } from "../../state/pools/selectors";
 import PlusIcon from "../../views/Farms/components/PlusIcon";
 import { ethers } from "ethers";
+import { simpleRpcProvider } from "../../utils/providers";
 
 export const RadioContainer = styled.div<{ active: boolean, second: boolean }>`
   display: flex;
@@ -170,9 +171,14 @@ export default function AddLiquidityPro({
   );
   const dispatch = useDispatch()
 
+
   useEffect(() => {
-    dispatch(fetchPoolsPublicDataAsync(chainId))
-  }, [account, dispatch])
+    const fetchPoolsDataWithFarms = async () => {
+        const currentBlock = await Promise.resolve(simpleRpcProvider(chainId).getBlockNumber())
+        dispatch(fetchPoolsPublicDataAsync(chainId, currentBlock))
+      }
+      fetchPoolsDataWithFarms()
+  }, [account, dispatch, chainId])
 
   const toggleWalletModal = useWalletModalToggle(); // toggle wallet when disconnected
 

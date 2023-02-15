@@ -151,4 +151,4 @@ export const getTokenPricesFromFarm = (farms: SerializedFarm[]) => {
   }, {})
 }
 
-export const getApiData = async() => await axios.get('https://edgeapi.zircon.finance/static/yield').then((res) => res.data)
+export const getApiData = async(chainId) => await axios.get(`https://edgeapi.zircon.finance/static/yield/${chainId}`).then((res) => res.data)

@@ -272,7 +272,7 @@ const Farms: React.FC = ({ children }) => {
   const isActive = filtedFinishedOnly === FarmFinishedOnly.FALSE
   const isArchived = filtedFinishedOnly === FarmFinishedOnly.ARCHIVED
 
-  usePoolsPageFetch(isInactive)
+  usePoolsPageFetch(isInactive)  
 
   const [numberOfFarmsVisible, setNumberOfFarmsVisible] = useState(NUMBER_OF_POOLS_VISIBLE)
 
@@ -389,7 +389,7 @@ const Farms: React.FC = ({ children }) => {
     simpleRpcProvider(chainId ?? 1285).getBlockNumber().then((block) => {
       setCurrentBlock(block)
     })
-  }, [])
+  }, [chainId])
 
   chosenPools = useMemo(() => {
     let sortedPools = sortPools(sortOption, chosenPools).slice(0, numberOfFarmsVisible)

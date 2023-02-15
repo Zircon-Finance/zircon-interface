@@ -24,14 +24,16 @@ import { useCurrency } from '../../hooks/Tokens'
 import { useTokenBalance } from '../wallet/hooks'
 import { usePair } from '../../data/Reserves'
 import { useActiveWeb3React } from '../../hooks'
+import { simpleRpcProvider } from '../../utils/providers'
 
 export const useFetchPublicPoolsData = () => {
   const dispatch = useDispatch()
   const {chainId} = useActiveWeb3React()
 
   useSlowRefreshEffect(
-    (currentBlock) => {
+    () => {
       const fetchPoolsDataWithFarms = async () => {
+      const currentBlock = await Promise.resolve(simpleRpcProvider(chainId).getBlockNumber())
         batch(() => {
           dispatch(fetchPoolsPublicDataAsync(chainId, currentBlock))
           dispatch(fetchPoolsStakingLimitsAsync())
@@ -40,7 +42,7 @@ export const useFetchPublicPoolsData = () => {
 
       fetchPoolsDataWithFarms()
     },
-    [dispatch],
+    [dispatch, chainId],
   )
 }
 

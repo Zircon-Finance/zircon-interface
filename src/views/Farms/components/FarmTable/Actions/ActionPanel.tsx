@@ -42,6 +42,7 @@ import { QuestionMarkContainer, ToolTip } from '../Row'
 import CapacityIndicatorSmall from '../../../../../components/CapacityIndicatorSmall/index'
 import { CONTRACT_ADDRESS_BASE } from '../../../../../constants/lists'
 import DaysLeftBar from '../../../../../components/DaysLeftBar'
+import { HealthFactorParams } from '../../../../../state/mint/pylonHooks'
 
 export interface ActionPanelProps {
   apr: AprProps
@@ -53,7 +54,7 @@ export interface ActionPanelProps {
   expanded: boolean
   clickAction: Dispatch<SetStateAction<boolean>>
   gamma: number
-  healthFactor: string,
+  healthFactor: HealthFactorParams,
   currentBlock: any
 }
 
@@ -231,12 +232,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const { t } = useTranslation()
   const { isAnchor, token1, token2, isClassic } = farm
   const lpLabel = `${farm.token1.symbol}-${farm.token2.symbol}`
-  // getLiquidityUrlPathParts({
-  //   quoteTokenAddress: quoteToken.address,
-  //   tokenAddress: token.address,
-  // })
   const bsc = CONTRACT_ADDRESS_BASE+farm.contractAddress
-  // getBscScanLink(lpAddress, 'address')
   const lpAddress = farm.stakingToken.address
   const info = CONTRACT_ADDRESS_BASE+farm.lpAddress
   const theme = useTheme()
@@ -509,7 +505,9 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
               {!farm.isFinished && <SpaceBetween>
               <Text color={theme.text1} fontSize='13px' fontWeight={400}>{isAnchor ? 'Health Factor' : 'Divergence'}</Text>
               <div style={{display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
-                <CapacityIndicatorSmall showHover={false} gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true} hoverPage={'farmAction'}/>
+                <CapacityIndicatorSmall showHover={false} gamma={gamma} health={healthFactor} isFloat={!isAnchor} noSpan={true} hoverPage={'farmAction'}
+                currencies={[token1, token2]}
+                 />
                 <QuestionMarkContainer
                     onMouseEnter={() => setHoverRisk(true)}
                     onMouseLeave={() => setHoverRisk(false)}

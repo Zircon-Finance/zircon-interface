@@ -31,6 +31,12 @@ interface MintInfo extends MintSyncParams {
   shouldBlock: boolean;
 }
 
+export interface HealthFactorParams {
+  healthFactor: String,
+  omega: JSBI,
+  maxOfVab: JSBI,
+  maxNoOmega: JSBI
+}
 
 export function useDerivedPylonMintInfo(
     currencyA: Currency | undefined,
@@ -51,7 +57,7 @@ export function useDerivedPylonMintInfo(
   gamma?: string | undefined
   poolTokenPercentage?: Percent
   error?: string,
-  healthFactor?: string,
+  healthFactor?: HealthFactorParams,
   delta?: string,
 } {
   const { account, chainId } = useActiveWeb3React()
@@ -101,7 +107,7 @@ export function useDerivedPylonMintInfo(
               ptbEnergy.raw,
               reserveAnchor.raw,
               true
-          ).toString() : undefined
+          ) : undefined
     }catch (e) {
       console.error("INTERFACE:: error health factor", e)
       return undefined
@@ -129,9 +135,6 @@ export function useDerivedPylonMintInfo(
     }
 
   }, [pylonInfo, pairInfo, pylonPair, ptbEnergy, reserveAnchor, pylonPoolBalance, totalSupply, pylonConstants,pylonState])
-
-  console.log('AAADELTA FROM MINT', delta)
-
 
   const noPylon: boolean =
       pylonState === PylonState.NOT_EXISTS || Boolean(pylonSupply && JSBI.equal(pylonSupply.raw, ZERO))
@@ -383,8 +386,8 @@ export const useHealthFactorDelta = (  currencyA: Currency | undefined,
   const blockNumber = useBlockNumber()
   const pairInfo = usePairInfo(pylonPair ? Pair.getAddress(pylonPair.token0, pylonPair.token1) : "")
   const decimals = {
-    float: ethers.BigNumber.from(10).pow(currencyA?.symbol === pylonPair?.token0?.symbol ? currencyA?.decimals : currencyB?.decimals || 18).toString(),
-    anchor: ethers.BigNumber.from(10).pow(currencyB?.symbol === pylonPair?.token1?.symbol ? currencyB?.decimals : currencyA?.decimals || 18).toString(),
+    float: ethers.BigNumber.from(10).pow(currencyA?.decimals || 18).toString(),
+    anchor: ethers.BigNumber.from(10).pow(currencyB?.decimals || 18).toString(),
   }
 
   const healthFactorResult = useMemo(() => {

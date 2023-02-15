@@ -23,7 +23,7 @@ import {RowBetween, RowFlat} from "../../components/Row";
 // import { Link } from 'react-router-dom'
 // import { ArrowRight } from 'react-feather'
 import {PYLON_ROUTER_ADDRESS, ROUTER_ADDRESS} from "../../constants";
-import {PylonState, usePylon} from "../../data/PylonReserves";
+import {PylonState} from "../../data/PylonReserves";
 import {useActiveWeb3React, useWindowDimensions} from "../../hooks";
 import {useCurrency} from "../../hooks/Tokens";
 import {ApprovalState, useApproveCallback,} from "../../hooks/useApproveCallback";
@@ -183,10 +183,9 @@ export default function AddLiquidityPro({
 
   const { independentField, typedValue, otherTypedValue } = useMintState();
   const [isFloat, setIsFloat] = useState(true);
-  const [,pylonObj] = usePylon(currencyA, currencyB);
   const decimals = {
-    float: ethers.BigNumber.from(10).pow(currencyA?.symbol === pylonObj?.token0?.symbol ? currencyA?.decimals : currencyB?.decimals || 18).toString(),
-    anchor: ethers.BigNumber.from(10).pow(currencyB?.symbol === pylonObj?.token1?.symbol ? currencyB?.decimals : currencyA?.decimals || 18).toString(),
+    float: ethers.BigNumber.from(10).pow(currencyA?.decimals || 18).toString(),
+    anchor: ethers.BigNumber.from(10).pow(currencyB?.decimals || 18).toString(),
   }
   const {
     dependentField,
@@ -907,7 +906,7 @@ export default function AddLiquidityPro({
     <Flex flexDirection={'column'}>
       <Flex justifyContent={'center'}><Text mr='5px'>{`Type`}</Text><Text mr='5px' style={{fontWeight: 500, color: theme.pinkGamma}}>{'Confirm '}</Text><Text> {' if you are sure'}</Text></Flex>
       <Flex justifyContent={'center'} mb='10px'><Text mr='5px'>{`you want`}</Text><Text mr='5px' style={{fontWeight: 500, color: theme.pinkGamma}}>
-        {`to lose ${Math.abs(percentageDifference)}`}
+        {`to lose ${Math.abs(percentageDifference)}%`}
         </Text><Text>{'of your position'}</Text>
       </Flex>
       <InputContainer>
@@ -1064,7 +1063,7 @@ export default function AddLiquidityPro({
   // const gammaBig = useGamma(pylonPair?.address)
   const gammaAdjusted = new BigNumberJs(delta ? delta : "0").div(new BigNumberJs(10).pow(18))
   const feePercentage = new BigNumberJs(mintInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18))
-  const health = healthFactor?.toLowerCase()
+  const health = healthFactor
 
   const [pairState,pair] = usePair(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B])
   const prices = usePairPrices(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B], pair, pairState)
@@ -1454,6 +1453,7 @@ export default function AddLiquidityPro({
                 extraFeeTreshold={new BigNumberJs(mintInfo?.extraFeeTreshold.toString())}
                 isDeltaGamma={mintInfo?.deltaApplied}
                 hoverPage={'addLiq'}
+                currencies={[currencyA, currencyB]}
             />}
 
             {currencies[Field.CURRENCY_A] &&

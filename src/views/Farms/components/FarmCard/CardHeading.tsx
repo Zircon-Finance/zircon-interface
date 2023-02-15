@@ -13,6 +13,7 @@ import {EarningTokenInfo} from "../../../../state/types";
 import DaysLeftBar from "../../../../components/DaysLeftBar";
 import { CONTRACT_ADDRESS_BASE } from "../../../../constants/lists";
 import { StyledLinkExternal } from "../FarmTable/Actions/ActionPanel";
+import { HealthFactorParams } from "../../../../state/mint/pylonHooks";
 
 export interface ExpandableSectionProps {
     lpLabel?: string;
@@ -26,7 +27,7 @@ export interface ExpandableSectionProps {
     earningToken: SerializedToken[];
     earningTokenBlock: EarningTokenInfo[];
     gamma: any;
-    healthFactor: string;
+    healthFactor: HealthFactorParams;
     contractAddress: string;
     vaultAddress: string;
     endBlock: number;

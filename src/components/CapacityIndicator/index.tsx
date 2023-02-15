@@ -6,6 +6,7 @@ import {Text} from "rebass";
 import QuestionMarkIcon from "../QuestionMarkIcon";
 import BigNumber from "bignumber.js";
 import BigNumberJs from "bignumber.js";
+import { HealthFactorParams } from '../../state/mint/pylonHooks';
 
 const Container = styled.div`
   display: flex;
@@ -38,7 +39,7 @@ const SmallContainer = styled.div`
 
 interface Props {
     gamma?: any
-    health?: string
+    health?: HealthFactorParams
     isFloat?: boolean
     noSpan?: boolean
     blocked?: boolean
@@ -52,6 +53,7 @@ interface Props {
     reservesPTU?: BigNumber
     tokenSymbol0?: string
     tokenSymbol1?: string
+    currencies: any[]
 }
 
 interface ToolTipProps {
@@ -64,7 +66,7 @@ const CapacityIndicator: React.FC<Props> = ({gamma,
                                                 extraFee = new BigNumberJs(0), extraFeeTreshold = new BigNumberJs(0),
                                                 isDeltaGamma, slashingOmega= new BigNumberJs(0),
                                                 slippage = new BigNumberJs(0), reservesPTU = new BigNumberJs(0),
-                                                tokenSymbol0, tokenSymbol1}) => {
+                                                tokenSymbol0, tokenSymbol1, currencies}) => {
     const theme = useTheme();
     const [hoverRisk, setHoverRisk] = React.useState(false);
     const [hoverFee, setHoverFee] = React.useState(false);
@@ -167,7 +169,7 @@ const CapacityIndicator: React.FC<Props> = ({gamma,
                         <QuestionMarkIcon />
                     </QuestionMarkContainer>
                 </SmallContainer>
-                <CapacityIndicatorSmall gamma={gamma} health={health} isFloat={isFloat} hoverPage={hoverPage} />
+                <CapacityIndicatorSmall gamma={gamma} health={health} isFloat={isFloat} hoverPage={hoverPage} currencies={currencies} />
             </RowContainer>
         </Container>
     )

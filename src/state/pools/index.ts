@@ -67,12 +67,12 @@ export const fetchPoolsPublicDataAsync = (chainId: number, currentBlockNumber?: 
 
       return {
         ...pool,
-        token1: new Token(ChainId.MOONRIVER, apiPool[0]?.underlyingTokens[0], 18, 
-          apiPool[0]?.underlyingTokensSymbol[0] === 'WMOVR' ? 'MOVR' : apiPool[0]?.underlyingTokensSymbol[0],
-          apiPool[0]?.underlyingTokensSymbol[0] === 'WMOVR' ? 'MOVR' : apiPool[0]?.underlyingTokensSymbol[0]),
-        token2: new Token(ChainId.MOONRIVER, apiPool[0]?.underlyingTokens[1], 18,
-          apiPool[0]?.underlyingTokensSymbol[1] === 'WMOVR' ? 'MOVR' : apiPool[0]?.underlyingTokensSymbol[1],
-          apiPool[0]?.underlyingTokensSymbol[1] === 'WMOVR' ? 'MOVR' : apiPool[0]?.underlyingTokensSymbol[1]),
+        token1: new Token(ChainId.MOONRIVER, apiPool[0]?.tokens?.token0?.address, apiPool[0]?.tokens?.token0?.decimals, 
+          apiPool[0]?.tokens?.token0?.symbol === 'WMOVR' ? 'MOVR' : apiPool[0]?.tokens?.token0?.symbol,
+          apiPool[0]?.tokens?.token0?.symbol === 'WMOVR' ? 'MOVR' : apiPool[0]?.tokens?.token0?.symbol),
+        token2: new Token(ChainId.MOONRIVER, apiPool[0]?.tokens?.token1?.address, apiPool[0]?.tokens?.token1?.decimals, 
+          apiPool[0]?.tokens?.token1?.symbol === 'WMOVR' ? 'MOVR' : apiPool[0]?.tokens?.token1?.symbol,
+          apiPool[0]?.tokens?.token1?.symbol === 'WMOVR' ? 'MOVR' : apiPool[0]?.tokens?.token1?.symbol),
         ...blockLimit,
         isClassic: false,
         isAnchor: apiPool[0]?.isAnchor,

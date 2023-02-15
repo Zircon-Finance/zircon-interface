@@ -95,7 +95,7 @@ animation: ${({ show }) =>
     : css`
         ${collapseAnimation} 200ms linear forwards
       `};
-background: ${({theme}) => theme.questionMarkBg};
+background: ${({theme}) => theme.darkMode ? '#743751' : '#E1DDDE'};
 border-radius: 17px; 
 padding: 10px;
 position: absolute; 
@@ -167,6 +167,7 @@ const collapseAnimation = keyframes`
 
 const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const [isVisible, setIsVisible] = useState(false)
+  console.log('Currencies: ', props?.farm?.token, props?.farm?.quoteToken)
   const {
     details,
     userDataReady,
@@ -308,7 +309,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                       <CellLayout>
                         <div style={{width: '200%', display: 'flex', marginLeft: '20px', alignItems: 'center', justifyContent: 'flex-end'}}>
                             {!props.farm.isFinished && <><CapacityIndicatorSmall gamma={gammaAdjusted} health={healthFactor} isFloat={!props.farm.isAnchor} noSpan={false}
-                            hoverPage={'farmRow'}/>
+                            hoverPage={'farmRow'} currencies={[props.farm.token, props.farm.quoteToken]} />
                             <QuestionMarkContainer
                               onMouseEnter={() => setHoverRisk(true)}
                               onMouseLeave={() => setHoverRisk(false)}
@@ -514,7 +515,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
         <tr style={{display: 'flex', flexDirection: 'column'}}>
           <td colSpan={6}>
             <ActionPanel {...props} expanded={actionPanelExpanded} clickAction={setActionPanelExpanded} 
-            gamma={gammaAdjusted.toNumber()}healthFactor={healthFactor} currentBlock = {props.farm.currentBlock} />
+            gamma={gammaAdjusted.toNumber()} healthFactor={healthFactor} currentBlock = {props.farm.currentBlock} />
           </td>
         </tr>
       )}

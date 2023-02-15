@@ -50,7 +50,6 @@ import { ConfirmationInput, InputContainer, PinkContainer, RadioButton, RadioCon
 import PlusIcon from '../../views/Farms/components/PlusIcon'
 import ErrorTxContainer from '../../components/ErrorTxContainer'
 import { ethers } from 'ethers'
-import { usePylon } from '../../data/PylonReserves'
 
 export const PercButton = styled.button<{ width: string }>`
   padding: 0.5rem 1rem;
@@ -94,11 +93,10 @@ export default function RemoveProLiquidity({
 
   // burn state
   const { independentField, typedValue } = useBurnState()
-  const [,pylonObj] = usePylon(currencyA, currencyB);
   const { pylon, parsedAmounts, error, healthFactor, burnInfo, delta } =
       useDerivedPylonBurnInfo(currencyA ?? undefined, currencyB ?? undefined, isFloat, sync, {
-        float: ethers.BigNumber.from(10).pow(currencyA?.symbol === pylonObj?.token0?.symbol ? currencyA?.decimals : currencyB?.decimals || 18).toString(),
-        anchor: ethers.BigNumber.from(10).pow(currencyB?.symbol === pylonObj?.token1?.symbol ? currencyB?.decimals : currencyA?.decimals || 18).toString(),
+        float: ethers.BigNumber.from(10).pow(currencyA?.decimals || 18).toString(),
+        anchor: ethers.BigNumber.from(10).pow(currencyB?.decimals || 18).toString(),
   })
   const { onUserInput: _onUserInput } = useBurnActionHandlers()
   const isValid = !error
@@ -422,7 +420,7 @@ const ConfirmationInputModal = () => (
   <Flex flexDirection={'column'}>
     <Flex justifyContent={'center'}><Text mr='5px'>{`Type`}</Text><Text mr='5px' style={{fontWeight: 500, color: theme.pinkGamma}}>{'Confirm '}</Text><Text> {' if you are sure'}</Text></Flex>
     <Flex justifyContent={'center'} mb='10px'><Text mr='5px'>{`you want`}</Text><Text mr='5px' style={{fontWeight: 500, color: theme.pinkGamma}}>
-      {`to lose ${Math.abs(parseFloat(differencePercentage)).toFixed(2)}`}
+      {`to lose ${Math.abs(parseFloat(differencePercentage)).toFixed(2)}%`}
       </Text><Text>{'of your position'}</Text>
     </Flex>
     <InputContainer>
@@ -538,13 +536,13 @@ const SlippageWarningModal = () => (
            <ErrorTxContainer errorTx={errorTx} />
           )}
           {(burnInfo.blocked || burnInfo.asyncBlocked) && (
-          <RowBetween mt={10}>
+          <RowBetween mt={10} mb={'10px'}>
             <StyledWarningIcon />
             <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{"Transaction is likely to fail so is currently blocked. Try in a few minutes"}</span>
           </RowBetween>
           )}
           {(burnInfo.deltaApplied) && (
-          <RowBetween mt={10}>
+          <RowBetween mt={10} mb={'10px'}>
             <StyledWarningIcon />
             <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{"We estimate a high fee for this transaction. Try in a few minutes"}</span>
           </RowBetween>
@@ -847,6 +845,7 @@ const SlippageWarningModal = () => (
                     reservesPTU={new BigNumberJs((burnInfo?.amountWithSlippage ?? "0").toString()) ?? new BigNumberJs(0)}
                     tokenSymbol0={tokenA?.symbol ?? ""}
                     tokenSymbol1={(tokenB?.symbol) ?? ""}
+                    currencies={[currencyA, currencyB]}
                 />
               </div>
               <div style={{ position: 'relative' }}>

@@ -220,6 +220,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, displayApr, removed, account,
                 noSpan={false}
                 hoverPage={"tableCardBottom"}
                 font={'14px'}
+                currencies={[farm.token1, farm.token2]}
               />
             </Flex>
           )}

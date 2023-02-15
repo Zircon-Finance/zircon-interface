@@ -395,7 +395,7 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
                                 {burnInfo ? (
                                     <RowFixed>
                                         <CapacityIndicatorSmall gamma={new BigNumberJs(delta ? delta : '0').div(new BigNumberJs(10).pow(18))} health={healthFactor} isFloat={isFloat}
-                                                                hoverPage="positionCard" />
+                                                                hoverPage="positionCard" currencies={[currency0, currency1]} />
                                     </RowFixed>
                                 ) : (
                                     '-'
@@ -426,8 +426,8 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
 export function MinimalPositionPylonCard({ pylon, showUnwrapped = false, border, isFloat, blockNumber, pylonConstants, currencies}: PylonPositionCardProps) {
     const { account, chainId } = useActiveWeb3React()
 
-    const currency0 = showUnwrapped ? pylon.token1 : unwrappedToken(pylon.token0, chainId)
-    const currency1 = showUnwrapped ? pylon.token0 : unwrappedToken(pylon.token1, chainId)
+    const currency0 = showUnwrapped ? pylon.token0 : unwrappedToken(pylon.token0, chainId)
+    const currency1 = showUnwrapped ? pylon.token1 : unwrappedToken(pylon.token1, chainId)
 
 
     const [showMore, setShowMore] = useState(false)

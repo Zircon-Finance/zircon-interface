@@ -16,6 +16,7 @@ import BigNumber from 'bignumber.js'
 import {usePairInfo, usePylonConstants, usePylonInfo} from "../../data/PylonData";
 import {useBlockNumber, useBlockTimestamp} from "../application/hooks";
 import { Decimals, PairInfo, PylonInfo } from 'zircon-sdk/dist/interfaces/pylonInterface'
+import { HealthFactorParams } from '../mint/pylonHooks'
 
 export function useBurnState(): AppState['burn'] {
   return useSelector<AppState, AppState['burn']>(state => state.burn)
@@ -251,7 +252,7 @@ export function useDerivedPylonBurnInfo(
     reservesPTU?: JSBI;
     amountWithSlippage?: JSBI
   }
-  healthFactor?: string;
+  healthFactor?: HealthFactorParams;
   gamma?: string;
   idealBurnAmount?: TokenAmount;
   delta?: string;

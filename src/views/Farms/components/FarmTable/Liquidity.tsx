@@ -173,10 +173,10 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
               </Text>
               <Flex flexDirection={'column'} alignItems='left'>
                 <Text style={{color: theme.text1}} fontSize='13px' fontWeight={500}>
-                  {`${farm.reserves?.reserve0.toFixed(0)} ${farm.token1.symbol}` }
+                  {`${formattedNum(farm.reserves?.reserve0.toFixed(2), true)} ${farm.token1.symbol}` }
                 </Text>
                 <Text style={{color: theme.text1}} fontSize='13px' fontWeight={500}>
-                {`${farm.reserves?.reserve1.toFixed(0)} ${farm.token2.symbol}` }
+                {`${formattedNum(farm.reserves?.reserve1.toFixed(2), true)} ${farm.token2.symbol}` }
                 </Text>
               </Flex>
             </Flex>

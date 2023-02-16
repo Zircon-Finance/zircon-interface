@@ -105,6 +105,15 @@ export const formatDollarAmount = (num, digits) => {
   return formatter.format(num)
 }
 
+export const formatAmount = (num, digits) => {
+  const formatter = new Intl.NumberFormat([], {
+    style: 'decimal',
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  })
+  return formatter.format(num)
+}
+
 export const formattedNum = (number, usd = false, acceptNegatives = false) => {
   if (isNaN(number) || number === '' || number === undefined) {
     return usd ? '$0' : 0
@@ -136,6 +145,28 @@ export const formattedNum = (number, usd = false, acceptNegatives = false) => {
     } else {
       return formatDollarAmount(num, 2)
     }
+  }
+
+  return Number(num.toFixed(4))
+}
+
+export const formattedNumNormal = (number, usd = false, acceptNegatives = false) => {
+  if (isNaN(number) || number === '' || number === undefined) {
+    return usd ? '$0' : 0
+  }
+  let num = parseFloat(number)
+
+  if (num > 500000000) {
+    return (usd ? '$' : '') + toK(num.toFixed(0))
+  }
+
+
+  if (num < 0.0001 && num > 0) {
+    return '< 0.0001'
+  }
+
+  if (num > 1000) {
+    return usd ? formatAmount(num, 2) : Number(num.toFixed(2))
   }
 
   return Number(num.toFixed(4))

@@ -337,8 +337,9 @@ export function useDerivedPylonBurnInfo(
   const [liquidityValueA, liquidityValueB] = !burnInfo ? [undefined, undefined] : burnInfo?.liquidity
 
   const healthFactor = useMemo(() => {
-    if (pylonInfo && pylon && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && pairInfo && pylonConstants) {
-      return pylon.getHealthFactor(
+    try {
+      return pylonInfo && pylon && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && pairInfo && pylonConstants ?
+       pylon.getHealthFactor(
           pylonInfo,
           pairInfo,
           decimals,
@@ -349,12 +350,14 @@ export function useDerivedPylonBurnInfo(
           BigInt(timestamp),
           ptbEnergy.raw,
           reserveAnchor.raw
-      ).toString();
-    }else{
+      ) : undefined
+    } catch (e) {
+      console.error("INTERFACE:: error health factor", e)
       return undefined
     }
 
   }, [pylonInfo, pylon, ptbEnergy, reserveAnchor, pylonPoolBalance, totalSupply, pairInfo, pylonConstants])
+
 
   const delta = useMemo(() => {
     if (pylonInfo && pylon && ptbEnergy && reserveAnchor && pylonPoolBalance && totalSupply && pairInfo && pylonConstants) {

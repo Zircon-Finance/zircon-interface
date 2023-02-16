@@ -80,7 +80,7 @@ export const fetchPoolsPublicDataAsync = (chainId: number, currentBlock: number)
         earningTokenInfo: earningTokenInfo || [],
         vTotalSupply: apiPool[0]?.psiTS,
         liquidity: {pylon: parseFloat(apiPool[0]?.tvl.tvlPylon), pair: parseFloat(apiPool[0]?.tvl.tvlPair)},
-        reserves: {reserve0: parseFloat(apiPool[0]?.reserves.r1Complete), reserve1: parseFloat(apiPool[0]?.reserves.r0Complete)},
+        reserves: {reserve0: parseFloat(apiPool[0]?.reserves.r0Complete), reserve1: parseFloat(apiPool[0]?.reserves.r1Complete)},
         zrgPrice: priceZRGMOVR?.zrg,
         movrPrice: priceZRGMOVR?.movr,
         staked: new BigNumber(apiPool[0]?.staked).toString(),

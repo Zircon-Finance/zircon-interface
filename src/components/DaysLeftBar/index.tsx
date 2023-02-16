@@ -1,7 +1,8 @@
 import { rgba } from 'polished'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Flex, Text } from 'rebass'
 import styled, { css, keyframes, useTheme } from 'styled-components'
+import { useActiveWeb3React } from '../../hooks'
 import { QuestionMarkContainer, ToolTip } from '../../views/Farms/components/FarmTable/Row'
 import QuestionMarkIcon from '../QuestionMarkIcon'
 
@@ -53,12 +54,25 @@ const Marker = styled.div<{ percentage: number }>`
     left: 100%;
 `
 
+const useBlocksMintedDaily = () => {
+  const [blocksMintedDaily, setBlocksMintedDaily] = React.useState(0)
+  const {chainId} = useActiveWeb3React()
+  useEffect(() => {
+    if (chainId === 56) {
+      setBlocksMintedDaily(28500)
+    } else if (chainId === 1285) {
+      setBlocksMintedDaily(6500)
+    }},[chainId])
+  return blocksMintedDaily
+}
+
 const DaysLeftBar: React.FC<DaysLeftProps> = ({viewMode = 'table', startBlock, endBlock, currentBlock}) => {
   const [hoverBlocks, setHoverBlocks] = React.useState(false)
   const blocksLeft = endBlock - currentBlock
-  const daysLeft = parseInt((blocksLeft / 6500).toFixed(0))
-  const hoursLeft = parseInt(((blocksLeft / 6500) * 24).toFixed(0))
-  const percentageRemaining = daysLeft * 100 / ((endBlock - startBlock) / 6500)
+  const blocksDaily = useBlocksMintedDaily()
+  const daysLeft = parseInt((blocksLeft / blocksDaily).toFixed(0))
+  const hoursLeft = parseInt(((blocksLeft / blocksDaily) * 24).toFixed(0))
+  const percentageRemaining = daysLeft * 100 / ((endBlock - startBlock) / blocksDaily)
   const theme = useTheme()
 
   const TooltipContent: React.FC = () => {return (

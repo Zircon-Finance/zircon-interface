@@ -1,6 +1,6 @@
 import { parseBytes32String } from '@ethersproject/strings'
 import { Currency, Token, currencyEquals, NATIVE_TOKEN } from 'zircon-sdk'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSelectedTokenList } from '../state/lists/hooks'
 import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'
 import { useUserAddedTokens } from '../state/user/hooks'
@@ -14,8 +14,29 @@ const timezone = require('dayjs/plugin/timezone') // dependent on utc plugin
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
-const GAMMA_SUBGRAPH_URI = 'https://api.thegraph.com/subgraphs/name/reshyresh/zircon-gamma'
-const BSC_SUBGRAPH_URI = 'https://api.thegraph.com/subgraphs/name/reshyresh/zi'
+export const useSubgraphUrl = () => {
+  const [subgraphUrl, setSubgraphUrl] = useState('https://api.thegraph.com/subgraphs/name/reshyresh/zircon-finance')
+  const {chainId} = useActiveWeb3React()
+  useEffect(() => {
+    if (chainId === 56) {
+      setSubgraphUrl('https://api.thegraph.com/subgraphs/name/reshyresh/zi')
+    } else if (chainId === 1285) {
+      setSubgraphUrl('https://api.thegraph.com/subgraphs/name/reshyresh/zircon-finance')
+    }},[chainId])
+  return subgraphUrl
+}
+
+export const useBlocksSubgraphUrl = () => {
+  const [blockSubgraphUrl, setBlockSubgraphUrl] = useState('https://api.thegraph.com/subgraphs/name/rebase-agency/moonriver-blocks')
+  const {chainId} = useActiveWeb3React()
+  useEffect(() => {
+    if (chainId === 56) {
+      setBlockSubgraphUrl('https://api.thegraph.com/subgraphs/name/astroswap/bscblocks')
+    } else if (chainId === 1285) {
+      setBlockSubgraphUrl('https://api.thegraph.com/subgraphs/name/rebase-agency/moonriver-blocks')
+    }},[chainId])
+  return blockSubgraphUrl
+}
 
 export function useAllTokens(): { [address: string]: Token } {
   const { chainId } = useActiveWeb3React()
@@ -116,7 +137,7 @@ export function useCurrency(currencyId: string | undefined): Currency | null | u
   return isETH ? NATIVE_TOKEN[chainId] : token
 }
 
-export async function getTopTokens(chainId: number) {
+export async function getTopTokens(chainId: number, subgraphUrl: string) {
   let unix = dayjs().tz('GMT').subtract(1, 'day').startOf('day').unix()
   let currentQuery = `{
     tokenDayDatas(
@@ -155,10 +176,9 @@ export async function getTopTokens(chainId: number) {
       totalLiquidityUSD
     }
   }`
-
-  let query = await axios.post(chainId === 1285 ? GAMMA_SUBGRAPH_URI : BSC_SUBGRAPH_URI, JSON.stringify({query: currentQuery, variables: null, operationName: undefined} ), ).then(
+  let query = await axios.post(subgraphUrl, JSON.stringify({query: currentQuery, variables: null, operationName: undefined} ), ).then(
     res => res.data.data.tokenDayDatas)
-  let oneDayAgoQueryData = await axios.post(chainId === 1285 ? GAMMA_SUBGRAPH_URI : BSC_SUBGRAPH_URI, JSON.stringify({query: oneDayAgoQuery, variables: null, operationName: undefined} ), ).then(
+  let oneDayAgoQueryData = await axios.post(subgraphUrl, JSON.stringify({query: oneDayAgoQuery, variables: null, operationName: undefined} ), ).then(
     res => res.data.data.tokenDayDatas)
 
   return {query, oneDayAgoQueryData}

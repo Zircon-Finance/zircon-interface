@@ -23,7 +23,7 @@ import Settings from '../../components/Settings'
 import orderBy from 'lodash/orderBy'
 import { INITIAL_ALLOWED_SLIPPAGE } from '../../constants'
 import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
-import { getTopTokens, useCurrency } from '../../hooks/Tokens'
+import { getTopTokens, useCurrency, useSubgraphUrl } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
 import useENSAddress from '../../hooks/useENSAddress'
 import { useSwapCallback } from '../../hooks/useSwapCallback'
@@ -182,15 +182,19 @@ export default function Swap() {
     onCurrencySelection(Field.INPUT, NATIVE_TOKEN[chainId])
   }, [])
 
+  const subgraphUrl = useSubgraphUrl()
+
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
     }
-    getTopTokens(chainId).then((res) => {
+    getTopTokens(chainId, subgraphUrl).then((res) => {
       setTopTokens(res.query)
       setTopTokensPrevious(res.oneDayAgoQueryData)
     })
-  }, [approval, approvalSubmitted])
+  }, [approval, approvalSubmitted, chainId, subgraphUrl])
+
+  
 
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(chainId, currencyBalances[Field.INPUT])
   const atMaxAmountInput = Boolean(maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput))

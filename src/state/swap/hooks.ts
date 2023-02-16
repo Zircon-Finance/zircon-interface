@@ -16,7 +16,7 @@ import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
-import { useCurrency } from '../../hooks/Tokens'
+import { useBlocksSubgraphUrl, useCurrency, useSubgraphUrl } from '../../hooks/Tokens'
 import { useTradeExactIn, useTradeExactOut } from '../../hooks/Trades'
 import useParsedQueryString from '../../hooks/useParsedQueryString'
 import { isAddress } from '../../utils'
@@ -356,6 +356,8 @@ export const useFetchPairPrices = ({
   const pairData = useSelector(pairByDataIdSelector({ pairId, timeWindow }))
   const derivedPairData = useSelector(derivedPairByDataIdSelector({ pairId, timeWindow }))
   const dispatch = useDispatch()
+  const subgraphUrl = useSubgraphUrl()
+  const blockSubgraphUrl = useBlocksSubgraphUrl()
 
   useEffect(() => {
     const fetchDerivedData = async () => {
@@ -366,7 +368,7 @@ export const useFetchPairPrices = ({
         // Try to get at least derived data for chart
         // This is used when there is no direct data for pool
         // i.e. when multihops are necessary
-        const derivedData = await fetchDerivedPriceData(token0Address, token1Address, timeWindow)
+        const derivedData = await fetchDerivedPriceData(token0Address, token1Address, timeWindow, subgraphUrl, blockSubgraphUrl)
         if (derivedData) {
           const normalizedDerivedData = normalizeDerivedChartData(derivedData)
           dispatch(updateDerivedPairData({ pairData: normalizedDerivedData, pairId, timeWindow }))
@@ -383,7 +385,7 @@ export const useFetchPairPrices = ({
 
     const fetchAndUpdatePairPrice = async () => {
       setIsLoading(true)
-      const { data } = await fetchPairPriceData({ pairId, timeWindow })
+      const { data } = await fetchPairPriceData({ pairId, timeWindow, subgraphUrl })
       if (data) {
         // Find out if Liquidity Pool has enough liquidity
         // low liquidity pool might mean that the price is incorrect

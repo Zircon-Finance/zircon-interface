@@ -5,7 +5,6 @@ import { gql } from 'graphql-request'
 import { multiQuery } from './infoQueryHelpers'
 import { getDerivedPrices, getDerivedPricesQueryConstructor } from '../queries/getDerivedPrices'
 import { PairDataTimeWindowEnum } from '../types'
-import { BLOCKS_CLIENT, INFO_CLIENT } from '../../../constants/lists'
 
 const blocksQueryConstructor = (subqueries: string[]) => {
   return gql`query blocks {
@@ -26,6 +25,7 @@ export const getBlocksFromTimestamps = async (
   timestamps: number[],
   sortDirection: 'asc' | 'desc' = 'desc',
   skipCount = 500,
+  blockSubgraphUrl: string,
 ): Promise<any> => {
   if (timestamps?.length === 0) {
     return []
@@ -34,7 +34,7 @@ export const getBlocksFromTimestamps = async (
   const fetchedData: any = await multiQuery(
     blocksQueryConstructor,
     getBlockSubqueries(timestamps),
-    BLOCKS_CLIENT,
+    blockSubgraphUrl,
     skipCount,
   )
 
@@ -55,11 +55,11 @@ export const getBlocksFromTimestamps = async (
   return blocks
 }
 
-const getTokenDerivedBnbPrices = async (tokenAddress: string, blocks: any) => {
+const getTokenDerivedBnbPrices = async (tokenAddress: string, blocks: any, subgraphUrl: string) => {
   const prices: any | undefined = await multiQuery(
     getDerivedPricesQueryConstructor,
     getDerivedPrices(tokenAddress, blocks),
-    INFO_CLIENT,
+    subgraphUrl,
     200,
   )
 
@@ -126,6 +126,8 @@ const fetchDerivedPriceData = async (
   token0Address: string,
   token1Address: string,
   timeWindow: PairDataTimeWindowEnum,
+  subgraphUrl: string,
+  blockSubgraphUrl: string,
 ) => {
   const interval = getInterval(timeWindow)
   const endTimestamp = getUnixTime(new Date())
@@ -138,14 +140,14 @@ const fetchDerivedPriceData = async (
   }
 
   try {
-    const blocks = await getBlocksFromTimestamps(timestamps, 'asc', 500)
+    const blocks = await getBlocksFromTimestamps(timestamps, 'asc', 500, blockSubgraphUrl)
     if (!blocks || blocks.length === 0) {
       console.error('Error fetching blocks for timestamps', timestamps)
       return null
     }
 
-    const token0DerivedBnb = await getTokenDerivedBnbPrices(token0Address, blocks)
-    const token1DerivedBnb = await getTokenDerivedBnbPrices(token1Address, blocks)
+    const token0DerivedBnb = await getTokenDerivedBnbPrices(token0Address, blocks, subgraphUrl)
+    const token1DerivedBnb = await getTokenDerivedBnbPrices(token1Address, blocks, subgraphUrl)
     return { token0DerivedBnb, token1DerivedBnb }
   } catch (error) {
     console.error('Failed to fetched derived price data for chart', error)

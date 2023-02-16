@@ -111,15 +111,16 @@ export const useWindowDimensions = () => {
 
 export const useBlockedApiData = () => {
   const [blockedApiData, setBlockedApiData] = useState(null);
+  const {chainId} = useActiveWeb3React()
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await fetch('https://edgeapi.zircon.finance/static/paused');
+      const result = await fetch(`https://edgeapi.zircon.finance/static/paused/${chainId}`);
       const data = await result.json();
       setBlockedApiData(data);
     };
     fetchData();
-  }, []);
+  }, [chainId]);
 
   return blockedApiData;
 }

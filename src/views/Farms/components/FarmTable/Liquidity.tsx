@@ -8,7 +8,7 @@ import { Flex } from 'rebass'
 import { useWindowDimensions } from '../../../../hooks'
 import { usePairLiquidity } from '../../../../state/pools/hooks'
 import BigNumberJs from "bignumber.js";
-import { formattedNum } from '../../../../utils/formatBalance'
+import { formattedNum, formattedNumNormal } from '../../../../utils/formatBalance'
 import PlusIconMini from '../PlusIconMini'
 import { Separator } from '../../../../components/SearchModal/styleds'
 
@@ -173,10 +173,10 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
               </Text>
               <Flex flexDirection={'column'} alignItems='left'>
                 <Text style={{color: theme.text1}} fontSize='13px' fontWeight={500}>
-                  {`${formattedNum(farm.reserves?.reserve0.toFixed(2), true)} ${farm.token1.symbol}` }
+                  {`${formattedNumNormal(farm.reserves?.reserve0.toFixed(2), true)} ${farm.token1.symbol}` }
                 </Text>
                 <Text style={{color: theme.text1}} fontSize='13px' fontWeight={500}>
-                {`${formattedNum(farm.reserves?.reserve1.toFixed(2), true)} ${farm.token2.symbol}` }
+                {`${formattedNumNormal(farm.reserves?.reserve1.toFixed(2), true)} ${farm.token2.symbol}` }
                 </Text>
               </Flex>
             </Flex>

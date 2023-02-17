@@ -256,12 +256,12 @@ export function useDerivedPylonMintInfo(
           return {...asyncMintInfo, extraFeeTreshold: ZERO, slippage: ZERO, shouldBlock: false}
         }
       } else {
-        console.error("INTERFACE:: error missing data")
-        console.log("INTERFACE:: pylonInfo", pylonInfo)
-        console.log("INTERFACE:: pylonPoolBalance", pylonPoolBalance)
-        console.log("INTERFACE:: blockNumber", blockNumber)
-        console.log("INTERFACE:: blockNumber", blockNumber)
-        console.log("INTERFACE:: tkA tkB", tokenAmountA, tokenAmountB)
+        // console.error("INTERFACE:: error missing data")
+        // console.log("INTERFACE:: pylonInfo", pylonInfo)
+        // console.log("INTERFACE:: pylonPoolBalance", pylonPoolBalance)
+        // console.log("INTERFACE:: blockNumber", blockNumber)
+        // console.log("INTERFACE:: blockNumber", blockNumber)
+        // console.log("INTERFACE:: tkA tkB", tokenAmountA, tokenAmountB)
         return undefined
       }
     }catch (e) {

@@ -7,13 +7,13 @@ import { BadgeSmall } from "../../../../components/Header";
 import { SerializedToken } from "../../../../constants/types";
 import { Text } from "rebass";
 
-import { useWindowDimensions } from "../../../../hooks";
+import { useActiveWeb3React, useWindowDimensions } from "../../../../hooks";
 import { RewardPerBlock } from "../../Farms";
 import {EarningTokenInfo} from "../../../../state/types";
 import DaysLeftBar from "../../../../components/DaysLeftBar";
-import { CONTRACT_ADDRESS_BASE } from "../../../../constants/lists";
 import { StyledLinkExternal } from "../FarmTable/Actions/ActionPanel";
 import { HealthFactorParams } from "../../../../state/mint/pylonHooks";
+import { getEtherscanLink } from "../../../../utils";
 
 export interface ExpandableSectionProps {
     lpLabel?: string;
@@ -58,6 +58,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
   }) => {
     const theme = useTheme();
     const {width} = useWindowDimensions()
+    const {chainId} = useActiveWeb3React()
     return (
       <div
         style={{ padding: "10px", color: theme.text1 }}
@@ -141,7 +142,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
           <Flex justifyContent={'space-between'} style={{borderTop: `1px solid ${theme.opacitySmall}`, paddingTop: '10px'}}>
           <StyledLinkExternal
             style={{ color: theme.pinkBrown, fontWeight: 500, marginRight: '10px' }}
-            href={CONTRACT_ADDRESS_BASE+lpAddress}
+            href={getEtherscanLink(chainId, lpAddress, 'address')}
           >
             {"See Pair Info ↗"}
           </StyledLinkExternal>
@@ -150,7 +151,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
               color: theme.pinkBrown,
               fontWeight: 500,
             }}
-            href={CONTRACT_ADDRESS_BASE+contractAddress}
+            href={getEtherscanLink(chainId, contractAddress, 'address')}
           >
             {"View Contract ↗"}
           </StyledLinkExternal>

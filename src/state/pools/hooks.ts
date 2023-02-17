@@ -8,7 +8,7 @@ import {
   // fetchCakeVaultPublicData,
   // fetchCakeVaultUserData,
   // fetchCakeVaultFees,
-  fetchPoolsStakingLimitsAsync,
+  // fetchPoolsStakingLimitsAsync,
 } from '.'
 import { DeserializedPool,
   // VaultKey
@@ -36,7 +36,7 @@ export const useFetchPublicPoolsData = () => {
       const currentBlock = await Promise.resolve(simpleRpcProvider(chainId).getBlockNumber())
         batch(() => {
           dispatch(fetchPoolsPublicDataAsync(chainId, currentBlock))
-          dispatch(fetchPoolsStakingLimitsAsync())
+          // dispatch(fetchPoolsStakingLimitsAsync())
         })
       }
 

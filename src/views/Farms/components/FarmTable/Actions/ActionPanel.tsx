@@ -40,9 +40,9 @@ import { BIG_ZERO } from '../../../../../utils/bigNumber'
 import QuestionMarkIcon from '../../../../../components/QuestionMarkIcon'
 import { QuestionMarkContainer, ToolTip } from '../Row'
 import CapacityIndicatorSmall from '../../../../../components/CapacityIndicatorSmall/index'
-import { CONTRACT_ADDRESS_BASE } from '../../../../../constants/lists'
 import DaysLeftBar from '../../../../../components/DaysLeftBar'
 import { HealthFactorParams } from '../../../../../state/mint/pylonHooks'
+import { getEtherscanLink } from '../../../../../utils'
 
 export interface ActionPanelProps {
   apr: AprProps
@@ -232,9 +232,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const { t } = useTranslation()
   const { isAnchor, token1, token2, isClassic } = farm
   const lpLabel = `${farm.token1.symbol}-${farm.token2.symbol}`
-  const bsc = CONTRACT_ADDRESS_BASE+farm.contractAddress
   const lpAddress = farm.stakingToken.address
-  const info = CONTRACT_ADDRESS_BASE+farm.lpAddress
   const theme = useTheme()
   const {pools} = usePools()
   const { pool } = usePool(farm.contractAddress)
@@ -433,10 +431,12 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                     }
                     </Flex>
                     <SpaceBetween style={{borderTop: `1px solid ${theme.opacitySmall}`, paddingTop: '5px', marginBottom: width <= 800 && '20px'}}>
-                      <StyledLinkExternal style={{color:theme.darkMode ? theme.meatPink : theme.poolPinkButton, fontWeight: 400}} href={bsc}>
+                      <StyledLinkExternal style={{color:theme.darkMode ? theme.meatPink : theme.poolPinkButton, fontWeight: 400}} 
+                      href={getEtherscanLink(chainId, farm?.contractAddress, 'address')}>
                         {t('View contract ↗')}
                       </StyledLinkExternal>
-                      <StyledLinkExternal style={{color:theme.darkMode ? theme.meatPink : theme.poolPinkButton, fontWeight: 400}} href={info}>
+                      <StyledLinkExternal style={{color:theme.darkMode ? theme.meatPink : theme.poolPinkButton, fontWeight: 400}} 
+                      href={getEtherscanLink(chainId, farm?.lpAddress, 'address')}>
                         {t('See pair info ↗')}
                       </StyledLinkExternal>
                     </SpaceBetween>

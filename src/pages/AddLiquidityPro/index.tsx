@@ -49,7 +49,7 @@ import RepeatIcon from "../../components/RepeatIcon";
 import {usePool, usePools} from "../../state/pools/hooks";
 import {useERC20, useSousChef} from "../../hooks/useContract";
 import useApprovePool from "../../views/Farms/hooks/useApproveFarm";
-import {fetchPoolsPublicDataAsync} from "../../state/pools";
+import {fetchPoolsPublicDataAsync, fetchPoolsUserDataAsync} from "../../state/pools";
 import {useDispatch} from "react-redux";
 import {AddressZero} from "@ethersproject/constants";
 import InfoCircle from "../../components/InfoCircle";
@@ -171,15 +171,6 @@ export default function AddLiquidityPro({
   );
   const dispatch = useDispatch()
 
-
-  useEffect(() => {
-    const fetchPoolsDataWithFarms = async () => {
-        const currentBlock = await Promise.resolve(simpleRpcProvider(chainId).getBlockNumber())
-        dispatch(fetchPoolsPublicDataAsync(chainId, currentBlock))
-      }
-      fetchPoolsDataWithFarms()
-  }, [account, dispatch, chainId])
-
   const toggleWalletModal = useWalletModalToggle(); // toggle wallet when disconnected
 
   const expertMode = useIsExpertMode();
@@ -220,6 +211,14 @@ export default function AddLiquidityPro({
 
   // handle pool button values
   const {pools} = usePools();
+  useEffect(() => {
+    const fetchPoolsDataWithFarms = async () => {
+        const currentBlock = await Promise.resolve(simpleRpcProvider(chainId).getBlockNumber())
+        dispatch(fetchPoolsPublicDataAsync(chainId, currentBlock))
+        dispatch(fetchPoolsUserDataAsync({chainId, account, pools}))
+      }
+      fetchPoolsDataWithFarms()
+  }, [account, chainId, pools.length])
   const farm = pools.find(
       (f) =>
           f.token1.symbol === (currencyA?.symbol === 'wMOVR' ? 'MOVR' : currencyA?.symbol === 'KSM' ? 'xcKSM' : currencyA?.symbol) &&
@@ -233,7 +232,6 @@ export default function AddLiquidityPro({
   const farmIsApproved = useCallback(
       () => account && pool.userData.allowance && pool.userData.allowance.isGreaterThan(0)
       , [account, pool])
-
   const [pendingTx, setPendingTx] = useState(false)
   const {handleApprove} = useApprovePool(farm ?? basePool, lpContract, farm?.contractAddress ?? 1)
   const sousChefContract = useSousChef(farm?.contractAddress ?? AddressZero)

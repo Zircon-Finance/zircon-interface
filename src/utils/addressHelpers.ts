@@ -17,12 +17,10 @@ export const getAddress = (address: string): string => {
   return address[chainId] ?? address
 }
 
-export const getMasterChefAddress = () => {
-  const chainId = NETWORK_CHAIN_ID
+export const getMasterChefAddress = (chainId) => {
   return FARM_FACTORY_ADDRESS[chainId] //addresses.masterChef
 }
-export const getMulticallAddress = () => {
-  const chainId = NETWORK_CHAIN_ID
+export const getMulticallAddress = (chainId) => {
   return MULTICALL_ADDRESS[chainId] //addresses.multiCall
 }
 

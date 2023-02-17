@@ -26,10 +26,10 @@ export const getBep20Contract = (chainId: number, address: string, signer?: Sign
   return getContract(chainId, bep20Abi, address, signer)
 }
 export const getMasterchefContract = (chainId: number, signer?: Signer | Provider) => {
-  return getContract(chainId, masterChef, getAddress(getMasterChefAddress()), signer)
+  return getContract(chainId, masterChef, getAddress(getMasterChefAddress(chainId)), signer)
 }
 export const getMulticallContract = (chainId: number) => {
-  return getContract(chainId, MultiCallAbi, getAddress(getMulticallAddress()), simpleRpcProvider(chainId))
+  return getContract(chainId, MultiCallAbi, getAddress(getMulticallAddress(chainId)), simpleRpcProvider(chainId))
 }
 export const getSouschefContract = (chainId: number, contractAddress: string, signer?: Signer | Provider) => {
   return getContract(chainId, psionicFarm, getAddress(contractAddress), signer)

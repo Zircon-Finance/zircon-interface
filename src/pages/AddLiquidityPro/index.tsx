@@ -784,7 +784,7 @@ export default function AddLiquidityPro({
    '0px 1px 2px rgba(13, 6, 9, 0.15), inset 0px -1px 1px rgba(13, 6, 9, 0.15), inset 0px 1px 1px rgba(237, 223, 229, 0.1)' :
    '0px 1px 2px rgba(0, 0, 0, 0.15)';
 
-  const feeIsTooHigh = rememberedSlippage >= 5
+  const feeIsTooHigh = rememberedSlippage >= 1
   const floatTokenHalf = parseFloat(parsedAmounts[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.toSignificant(6)) / 2
   const anchorTokenMultiplied = parseFloat(parsedAmounts[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.toSignificant(6)) / 2 *
   parseFloat(
@@ -1589,8 +1589,14 @@ export default function AddLiquidityPro({
                                         farm ?
                                         (!farmIsApproved() && !(chainId === 1285 || chainId === 1287)) ?
                                         (approveFarm()) :
-                                        (setShowConfirm(true), setIsStaking(true)) :
-                                        (setShowConfirm(true), setIsStaking(true))
+                                        (setShowConfirm(true), setIsStaking(true), setRememberedSlippage(
+                                          (parseFloat(new BigNumberJs(mintInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18)).toString()) +
+                                          parseFloat(new BigNumberJs(mintInfo?.slippage.toString()).div(new BigNumberJs(10).pow(18)).toString()))
+                                        )) :
+                                        (setShowConfirm(true), setIsStaking(true), setRememberedSlippage(
+                                          (parseFloat(new BigNumberJs(mintInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18)).toString()) +
+                                          parseFloat(new BigNumberJs(mintInfo?.slippage.toString()).div(new BigNumberJs(10).pow(18)).toString()))
+                                        ))
                                       }
                                       disabled={
                                         pendingTx ||

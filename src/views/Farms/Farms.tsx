@@ -653,7 +653,7 @@ const Farms: React.FC = ({ children }) => {
                   : null
               }
             >
-              <TableData style={{ minWidth: width >= 600 ? "275px" : "auto" }}>
+              <TableData style={{ minWidth: width >= 600 ? (chainId === 1285 || chainId === 1287) ? "275px" : '225px' : "auto" }}>
               <ViewModeTabs active={viewMode} />
               </TableData>
               {viewMode === ViewMode.TABLE && width > 992 ? (
@@ -661,6 +661,7 @@ const Farms: React.FC = ({ children }) => {
                   <TableData
                     key={option}
                     style={{
+                      width: (chainId === 1285 || chainId === 1287) ? '12%' : '9%',
                       cursor:
                         "pointer",
                     }}
@@ -739,7 +740,8 @@ const Farms: React.FC = ({ children }) => {
                   />
                 </TableData>
               )}
-              {viewMode === ViewMode.TABLE && width > 992 && (
+              {!(chainId === 1285 || chainId === 1287) && width >= 992 && <TableData/>}
+              {viewMode === ViewMode.TABLE && width > 992 && (chainId === 1285 || chainId === 1287) && (
                 <TableData style={{ width: "15%" }} >
                   {account && <ButtonLighter disabled={pendingTx || stakedOnlyFarms.length === 0} fontSize='13px' 
                   onClick={()=>harvestAllPools()} 
@@ -758,7 +760,7 @@ const Farms: React.FC = ({ children }) => {
                 </TableData>
               )}
             </tr>
-            {width <= 992 && (
+            {width <= 992 && (chainId === 1285 || chainId === 1287) && (
               <tr>
                 <TableData style={{ width: "15%" }} >
                   {account && <ButtonLighter disabled={pendingTx || stakedOnlyFarms.length === 0} fontSize='13px' 

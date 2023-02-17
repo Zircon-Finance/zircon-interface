@@ -1585,8 +1585,14 @@ export default function AddLiquidityPro({
                                         farm ?
                                         (!farmIsApproved() && !(chainId === 1285 || chainId === 1287)) ?
                                         (approveFarm()) :
-                                        (setShowConfirm(true), setIsStaking(true)) :
-                                        (setShowConfirm(true), setIsStaking(true))
+                                        (setShowConfirm(true), setIsStaking(true), setRememberedSlippage(
+                                          (parseFloat(new BigNumberJs(mintInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18)).toString()) +
+                                          parseFloat(new BigNumberJs(mintInfo?.slippage.toString()).div(new BigNumberJs(10).pow(18)).toString()))
+                                        )) :
+                                        (setShowConfirm(true), setIsStaking(true), setRememberedSlippage(
+                                          (parseFloat(new BigNumberJs(mintInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18)).toString()) +
+                                          parseFloat(new BigNumberJs(mintInfo?.slippage.toString()).div(new BigNumberJs(10).pow(18)).toString()))
+                                        ))
                                       }
                                       disabled={
                                         pendingTx ||

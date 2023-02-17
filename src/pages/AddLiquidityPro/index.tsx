@@ -780,7 +780,7 @@ export default function AddLiquidityPro({
    '0px 1px 2px rgba(13, 6, 9, 0.15), inset 0px -1px 1px rgba(13, 6, 9, 0.15), inset 0px 1px 1px rgba(237, 223, 229, 0.1)' :
    '0px 1px 2px rgba(0, 0, 0, 0.15)';
 
-  const feeIsTooHigh = rememberedSlippage >= 5
+  const feeIsTooHigh = rememberedSlippage >= 1
   const floatTokenHalf = parseFloat(parsedAmounts[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.toSignificant(6)) / 2
   const anchorTokenMultiplied = parseFloat(parsedAmounts[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.toSignificant(6)) / 2 *
   parseFloat(

@@ -123,11 +123,13 @@ export function CurrencySearch({
     ]
   }, [filteredTokens, searchQuery, searchToken, tokenComparator])
 
-  const floatTokens = ['ETH', 'KSM', 'LDO', 'kBTC', 'wMOVR']
-  const anchorTokens = ['USDC', 'ETH', 'KSM', 'wMOVR']
+  const floatTokens = chainId === 1285 ? ['ETH', 'KSM', 'LDO', 'kBTC', 'wMOVR'] : ['BNB', 'CAKE']
+  const anchorTokens = chainId === 1285 ? ['USDC', 'ETH', 'KSM', 'wMOVR'] : ['BNB', 'CAKE', 'BUSD']
 
-  const selectedFloatTokens = filteredSortedTokens.filter(token => floatTokens.includes(token.symbol)).concat(mainnetTokens.movr)
-  const selectedAnchorTokens = filteredSortedTokens.filter(token => anchorTokens.includes(token.symbol)).concat(mainnetTokens.movr)
+  const selectedFloatTokens = filteredSortedTokens.filter(token => floatTokens.includes(token.symbol)).concat(
+    chainId === 1285 ? mainnetTokens.movr : mainnetTokens.bnb)
+  const selectedAnchorTokens = filteredSortedTokens.filter(token => anchorTokens.includes(token.symbol)).concat(
+    chainId === 1285 ? mainnetTokens.movr : mainnetTokens.bnb)
 
   const handleCurrencySelect = useCallback(
     (currency: Currency) => {

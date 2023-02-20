@@ -97,6 +97,7 @@ export default function RemoveProLiquidity({
       useDerivedPylonBurnInfo(currencyA ?? undefined, currencyB ?? undefined, isFloat, sync, {
         float: ethers.BigNumber.from(10).pow(currencyA?.decimals || 18).toString(),
         anchor: ethers.BigNumber.from(10).pow(currencyB?.decimals || 18).toString(),
+        priceMultiplier: ethers.BigNumber.from(10).pow((currencyA?.decimals + 18 - currencyB?.decimals) || 18).toString()
   })
   const { onUserInput: _onUserInput } = useBurnActionHandlers()
   const isValid = !error

@@ -318,6 +318,7 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
         {
           float: ethers.BigNumber.from(10).pow(currency0?.decimals || 18).toString(),
           anchor: ethers.BigNumber.from(10).pow(currency1?.decimals || 18).toString(),
+          priceMultiplier: ethers.BigNumber.from(10).pow((currency0?.decimals + 18 - currency1?.decimals) || 18).toString()
         }
         ,"100")
 
@@ -438,6 +439,7 @@ export function MinimalPositionPylonCard({ pylon, showUnwrapped = false, border,
     const {idealBurnAmount} = useDerivedPylonBurnInfo(currency0 ?? undefined, currency1 ?? undefined, isFloat, true, {
         float: ethers.BigNumber.from(10).pow(currency0?.decimals || 18).toString(),
         anchor: ethers.BigNumber.from(10).pow(currency1?.decimals || 18).toString(),
+        priceMultiplier: ethers.BigNumber.from(10).pow(currency0?.decimals + 18 - currency1?.decimals).toString()
     } ,"100")
 
     // const [token0Deposited, token1Deposited] = !burnInfo ? [undefined, undefined] : [parsedAmounts["CURRENCY_A"], parsedAmounts["CURRENCY_B"]]

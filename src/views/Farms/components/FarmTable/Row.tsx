@@ -180,6 +180,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const decimals = {
     float: ethers.BigNumber.from(10).pow(currency1?.decimals || 18).toString(),
     anchor: ethers.BigNumber.from(10).pow(currency2?.decimals || 18).toString(),
+    priceMultiplier: ethers.BigNumber.from(10).pow((currency1?.decimals + 18 - currency2?.decimals) || 18).toString()
   }
   const {
     delta,

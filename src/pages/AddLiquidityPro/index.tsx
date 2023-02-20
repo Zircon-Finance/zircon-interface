@@ -1069,7 +1069,7 @@ export default function AddLiquidityPro({
   const gammaAdjusted = new BigNumberJs(delta ? delta : "0").div(new BigNumberJs(10).pow(18))
   const feePercentage = new BigNumberJs(mintInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18))
   const health = healthFactor
-
+  console.log("FF::", pylonPair?.address)
   const [pairState,pair] = usePair(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B])
   const prices = usePairPrices(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B], pair, pairState)
 

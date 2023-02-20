@@ -1,5 +1,4 @@
 import { NETWORK_CHAIN_ID } from '../connectors'
-import addresses from '../constants/contracts'
 import {FARM_FACTORY_ADDRESS, MULTICALL_ADDRESS} from "zircon-sdk";
 
 // interface Address {
@@ -22,9 +21,4 @@ export const getMasterChefAddress = (chainId) => {
 }
 export const getMulticallAddress = (chainId) => {
   return MULTICALL_ADDRESS[chainId] //addresses.multiCall
-}
-
-// TODO: Delete
-export const getFarmAuctionAddress = () => {
-  return addresses.farmAuction
 }

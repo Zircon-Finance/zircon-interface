@@ -441,10 +441,6 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                       </StyledLinkExternal>
                     </SpaceBetween>
                   </>
-              {/* <TagsContainer> */}
-              {/* {farm.isCommunity ? <FarmAuctionTag /> : <CoreTag />} */}
-              {/* {dual ? <DualTag /> : null} */}
-              {/* </TagsContainer> */}
             </ActionContainer>
           </QuarterContainer>
 

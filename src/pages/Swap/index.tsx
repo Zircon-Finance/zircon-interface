@@ -589,7 +589,8 @@ export default function Swap() {
 
     {/* // User chosen tokens */}
     {chosenTokens?.length > 0 && (
-      <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none'}}>
+      <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none',
+      visibility: chainId === 1285 ? 'visible' : 'hidden'}}>
         <Flex mt='auto' mb="auto" ml='20px'>
             <StarFull />
           </Flex>
@@ -603,7 +604,8 @@ export default function Swap() {
       </Flex>
       )}
 
-    <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none'}}>
+    <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none',
+    visibility: chainId === 1285 ? 'visible' : 'hidden'}}>
     <table
       style={{
         width: "100%",

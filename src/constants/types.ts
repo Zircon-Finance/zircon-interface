@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { Token } from 'zircon-sdk'
 
 export type TranslatableText =
@@ -114,75 +113,4 @@ export interface DeserializedPoolConfig extends PoolConfigBaseProps {
   token2: SerializedToken
   earningToken: Token[]
   stakingToken: Token
-}
-
-export type Images = {
-  lg: string
-  md: string
-  sm: string
-  ipfs?: string
-}
-
-export type TeamImages = {
-  alt: string
-} & Images
-
-// Farm Auction
-export interface FarmAuctionBidderConfig {
-  account: string
-  farmName: string
-  tokenAddress: string
-  quoteToken: Token
-  tokenName: string
-  projectSite?: string
-  lpAddress?: string
-}
-
-// Note: this status is slightly different compared to 'status' comfing
-// from Farm Auction smart contract
-export enum AuctionStatus {
-  ToBeAnnounced, // No specific dates/blocks to display
-  Pending, // Auction is scheduled but not live yet (i.e. waiting for startBlock)
-  Open, // Auction is open for bids
-  Finished, // Auction end block is reached, bidding is not possible
-  Closed, // Auction was closed in smart contract
-}
-
-export interface Auction {
-  id: number
-  status: AuctionStatus
-  startBlock: number
-  startDate: Date
-  endBlock: number
-  endDate: Date
-  auctionDuration: number
-  initialBidAmount: number
-  topLeaderboard: number
-  leaderboardThreshold: BigNumber
-}
-
-export interface BidderAuction {
-  id: number
-  amount: BigNumber
-  claimed: boolean
-}
-
-export interface Bidder extends FarmAuctionBidderConfig {
-  position?: number
-  isTopPosition: boolean
-  samePositionAsAbove: boolean
-  amount: BigNumber
-}
-
-export interface ConnectedBidder {
-  account: string
-  isWhitelisted: boolean
-  bidderData?: Bidder
-}
-
-export enum FetchStatus {
-  Idle = 'IDLE',
-  Fetching = 'FETCHING',
-  Fetched = 'FETCHED',
-  Failed = 'FAILED',
 }

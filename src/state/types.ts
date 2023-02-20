@@ -51,10 +51,6 @@ export interface DeserializedFarm extends DeserializedFarmConfig {
   userData?: DeserializedFarmUserData
 }
 
-export enum VaultKey {
-  CakeVault = 'cakeVault',
-  IfoPool = 'ifoPool',
-}
 export interface EarningTokenInfo {
   blockReward: number,
   blockRewardPrice: number,
@@ -76,7 +72,6 @@ interface CorePoolProps {
   stakingTokenPrice?: number
   // earningTokenPrice?: number[]
   earningTokenInfo?: EarningTokenInfo[]
-  vaultKey?: VaultKey
   vTotalSupply?: number,
 }
 
@@ -146,38 +141,6 @@ export interface PoolsState {
   // cakeVault: SerializedCakeVault
   // ifoPool: SerializedIfoCakeVault
   userDataLoaded: boolean
-}
-
-export enum HistoryFilter {
-  ALL = 'all',
-  COLLECTED = 'collected',
-  UNCOLLECTED = 'uncollected',
-}
-
-
-// Voting
-
-/* eslint-disable camelcase */
-/**
- * @see https://hub.snapshot.page/graphql
- */
-
-
-export enum ProposalType {
-  ALL = 'all',
-  CORE = 'core',
-  COMMUNITY = 'community',
-}
-
-export enum ProposalState {
-  ACTIVE = 'active',
-  PENDING = 'pending',
-  CLOSED = 'closed',
-}
-
-export interface Space {
-  id: string
-  name: string
 }
 
 // Global state

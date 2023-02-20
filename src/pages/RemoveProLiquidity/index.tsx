@@ -344,7 +344,7 @@ export default function RemoveProLiquidity({
   const feeIsTooHigh = rememberedSlippage >= 5
 
  const setCustom = () => {
-  setOriginalValue(parsedAmounts[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.toSignificant(6));
+  setOriginalValue(parsedAmounts[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.toFixed(6));
   setSync(false);
 }
 

@@ -705,7 +705,7 @@ export default function AddLiquidityPro({
         })
   }
 
-  const formattedLiquidity = (mintInfo?.amountOut.toSignificant(
+  const formattedLiquidity = (mintInfo?.amountOut.toFixed(
       6
   ) as unknown) as number;
 

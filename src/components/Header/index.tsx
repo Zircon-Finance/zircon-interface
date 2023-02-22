@@ -179,7 +179,7 @@ export default function Header() {
         {width >= 700 ?
         <>
         <HeaderElement>
-        <Title href="." style={{width: account ? width < 1100 ? '250px' : '520px' : width > 1100 ? '420px' : '160px', height: '44px'}}>
+        <Title href="." style={{width: account ? width < 1100 ? '250px' : '525px' : width > 1100 ? '420px' : '160px', height: '44px'}}>
           <UniIcon id="z-logo">
               <img style={{ height: 35, display: 'flex', margin: 'auto' }} src={!darkMode ? DarkLogo : WhiteLogo} alt="logo" />
             </UniIcon>
@@ -221,11 +221,11 @@ export default function Header() {
            </HeaderElement>
            <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : location.pathname === '/farm' ? 'farm' : 'pool'} />
           </div>}
-          <HeaderControls>
+          <HeaderControls style={{height: width <= 1100 && '44px'}}>
           <AccountElement active={!!account} style={{ pointerEvents: 'auto', height: '44px' }}>
               {account && userEthBalance ? (
                 <BalanceText style={{ flexShrink: 0 }} pl="1.25rem" pr="0.5rem" fontWeight={400}>
-                  {userEthBalance?.toSignificant(4)} {NATIVE_TOKEN[chainId].symbol}
+                  {parseFloat(userEthBalance?.toFixed(10)) <= 0.0001 ? '0.0..' : userEthBalance?.toFixed(4)} {NATIVE_TOKEN[chainId].symbol}
                 </BalanceText>
               ) : null}
               <Web3Status />
@@ -259,7 +259,7 @@ export default function Header() {
            <AccountElement active={!!account} style={{ pointerEvents: 'auto'}}>
                 {account && userEthBalance ? (
                   <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={400}>
-                    {userEthBalance?.toSignificant(4)} {chainId === 1285 ? 'MOVR' : chainId === 56 && 'BNB'}
+                    {parseFloat(userEthBalance?.toFixed(10)) <= 0.0001 ? '0.0..' : userEthBalance?.toFixed(4)} {NATIVE_TOKEN[chainId].symbol}
                   </BalanceText>
                 ) : null}
                 <Web3Status />

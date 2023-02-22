@@ -202,7 +202,7 @@ export default function RemoveLiquidity({
           [tokenContract.address, router.address], 
           ["000000000000000000", "000000000000000000"],
           [approvalCallData, callData],
-          []
+          [1000000, 1000000, 1000000]
         )
          :
         router[methodName](...args, {

@@ -195,7 +195,7 @@ export function useSwapCallback(
           [tokenContract.address, ROUTER_ADDRESS[chainId]], 
           ["000000000000000000", value],
           [approvalCallData, callData],
-          []
+          [300000, 300000]
         ) :
         contract[methodName](...args, {
           ...(value && !isZero(value) ? { value, from: account } : { from: account })

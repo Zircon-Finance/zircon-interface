@@ -565,7 +565,7 @@ export default function AddLiquidityPro({
               [lpContract.address, token0Contract.address, token1Contract.address,  router.address],
               ["000000000000000000", "000000000000000000", "000000000000000000", (value !== undefined && value !== null) ? value : "000000000000000000"],
               [farmApprovalCallData, approvalCallData0, approvalCallData1, callData],
-              []
+              [1000000, 1000000, 1000000]
             )
             :
             method(...args, {

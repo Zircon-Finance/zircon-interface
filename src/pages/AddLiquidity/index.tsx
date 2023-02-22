@@ -199,7 +199,7 @@ export default function AddLiquidity({
             [token0Contract.address, token1Contract.address, router.address], 
             ["000000000000000000", "000000000000000000", "000000000000000000"],
             [approvalCallData0,approvalCallData1, callData],
-            []
+            [1000000, 1000000, 1000000]
           )
           :
         method(...args, {

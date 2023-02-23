@@ -160,7 +160,7 @@ const supportedNetworks = {
   bsc: {
     chainId: bscChainId,
     chainName: 'Binance Smart Chain',
-    rpcUrls: ['https://bsc-dataseed.binance.org/'],
+    rpcUrls: ['https://rpc.ankr.com/bsc'],
     blockExplorerUrls: ['https://bscscan.com'],
     nativeCurrency: {
       name: 'BNB',

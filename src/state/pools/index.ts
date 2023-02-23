@@ -18,6 +18,8 @@ import { resetUserState } from '../global/actions'
 import {BIG_ZERO} from '../../utils/bigNumber'
 import { getApiData } from './helpers'
 import { Token } from 'zircon-sdk'
+import { PRICE_API } from '../../constants/lists'
+import axios from 'axios'
 
 const initialState: PoolsState = {
   data: [],
@@ -37,8 +39,14 @@ export const fetchPoolsPublicDataAsync = (chainId: number, currentBlock: number)
       }
     })
 
+    const bnbPrice = async () => {
+      const response = await axios.get(`${PRICE_API}BNBBUSD`)
+      const data = await response.data
+      return data?.price?.toString()
+    }
     // const poolsInformation = await fetchPools(chainId, apiData)
-    const priceZRGMOVR = {zrg: apiData[0]?.zrgPrice, movr: apiData[0]?.movrPrice}
+    const priceZRGMOVR = {zrg: apiData[0]?.zrgPrice, movr: chainId === 1285 ? apiData[0]?.movrPrice : await bnbPrice()}
+
 
     const liveData = apiData.map((pool, i) => {
       const apiPool = apiData.filter((poolArray) => poolArray.contractAddress === pool.contractAddress.toLowerCase());

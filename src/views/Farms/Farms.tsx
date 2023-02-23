@@ -27,8 +27,8 @@ import FarmRepeatIcon from '../../components/FarmRepeatIcon'
 import FarmsPage from '../../pages/Farm/'
 import Select from '../../components/Select/Select'
 import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
-import {usePools, usePoolsPageFetch } from '../../state/pools/hooks'
-import { fetchPoolsUserDataAsync } from '../../state/pools'
+import {usePools } from '../../state/pools/hooks'
+import { fetchPoolsPublicDataAsync, fetchPoolsUserDataAsync } from '../../state/pools'
 import {DeserializedPool, EarningTokenInfo} from '../../state/types'
 import orderBy from 'lodash/orderBy'
 import { ButtonLighter } from '../../components/Button'
@@ -272,7 +272,14 @@ const Farms: React.FC = ({ children }) => {
   const isActive = filtedFinishedOnly === FarmFinishedOnly.FALSE
   const isArchived = filtedFinishedOnly === FarmFinishedOnly.ARCHIVED
 
-  usePoolsPageFetch(isInactive)   
+  useEffect(() => {
+    const fetchPoolsDataWithFarms = async () => {
+        const currentBlock = await Promise.resolve(simpleRpcProvider(chainId).getBlockNumber())
+        dispatch(fetchPoolsPublicDataAsync(chainId, currentBlock))
+        dispatch(fetchPoolsUserDataAsync({chainId, account, pools}))
+      }
+      fetchPoolsDataWithFarms()
+  }, [account, chainId, pools.length])
 
   const [numberOfFarmsVisible, setNumberOfFarmsVisible] = useState(NUMBER_OF_POOLS_VISIBLE)
 
@@ -686,14 +693,14 @@ const Farms: React.FC = ({ children }) => {
                     {sortOption === option.toLowerCase() ? (
                       <SelectedOptionDiv />
                     ) : null}
-                    {(option === 'Earned' && totalEarnings.toFixed(2) !== '0.00' && !isInactive) && (
+                    {(option === 'Earned' && totalEarnings.toFixed(2) !== '0.00' && !isInactive && !isArchived) && (
                       <Flex alignItems="center">
                         <Text fontSize="12px" color={'#5ebe7b'}>
                           ~{totalEarnings ? formattedNum(totalEarnings.toFixed(2)) : 0} USD
                         </Text>
                       </Flex>
                     )}
-                    {(option === 'Staked' && totalStaked.toFixed(0) !== '0' && !isInactive) && (
+                    {(option === 'Staked' && totalStaked.toFixed(0) !== '0' && !isInactive && !isArchived) && (
                       <Flex alignItems="center">
                         <Text fontSize="12px" color={'#5ebe7b'}>
                           ~{totalStaked ? formattedNum(totalStaked.toFixed(2)) : 0} USD

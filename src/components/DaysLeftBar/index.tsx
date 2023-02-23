@@ -72,7 +72,7 @@ const DaysLeftBar: React.FC<DaysLeftProps> = ({viewMode = 'table', startBlock, e
   const blocksDaily = useBlocksMintedDaily()
   const daysLeft = parseInt((blocksLeft / blocksDaily).toFixed(0))
   const hoursLeft = parseInt(((blocksLeft / blocksDaily) * 24).toFixed(0))
-  const percentageRemaining = daysLeft * 100 / ((endBlock - startBlock) / blocksDaily)
+  const percentageRemaining = hoursLeft * 100 / (((endBlock - startBlock) / blocksDaily) *24)
   const theme = useTheme()
 
   const TooltipContent: React.FC = () => {return (
@@ -89,7 +89,7 @@ const DaysLeftBar: React.FC<DaysLeftProps> = ({viewMode = 'table', startBlock, e
     <Flex flexDirection={"column"} alignItems={"center"} mt={"10px"} style={{width: '100%', minWidth: viewMode === 'card' && '200px'}}>
       <Flex alignItems={"center"} justifyContent={'space-between'} style={{width: '100%'}}>
       <Text style={{ width: "100%", marginBottom: '5px' }} textAlign={"left"} fontSize={13}
-      color = {daysLeft <= 3 ? theme.percentageRed : theme.text1}>
+      color = {hoursLeft <= 72 ? theme.percentageRed : theme.text1}>
         {`${(daysLeft || hoursLeft) ? hoursLeft >= 24 ? 
           `~ ${daysLeft} days left` : 
           `~ ${hoursLeft} hours left` : 

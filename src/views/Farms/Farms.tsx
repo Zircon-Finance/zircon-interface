@@ -272,7 +272,7 @@ const Farms: React.FC = ({ children }) => {
   const isActive = filtedFinishedOnly === FarmFinishedOnly.FALSE
   const isArchived = filtedFinishedOnly === FarmFinishedOnly.ARCHIVED
 
-  usePoolsPageFetch(isInactive)  
+  usePoolsPageFetch(isInactive)   
 
   const [numberOfFarmsVisible, setNumberOfFarmsVisible] = useState(NUMBER_OF_POOLS_VISIBLE)
 
@@ -740,6 +740,7 @@ const Farms: React.FC = ({ children }) => {
                   />
                 </TableData>
               )}
+              {!(chainId === 1285 || chainId === 1287) && width >= 992 && viewMode !== ViewMode.CARD && <TableData/>}
               {viewMode === ViewMode.TABLE && width > 992 && (chainId === 1285 || chainId === 1287) && (
                 <TableData style={{ width: "15%" }} >
                   {account && <ButtonLighter disabled={pendingTx || stakedOnlyFarms.length === 0} fontSize='13px' 

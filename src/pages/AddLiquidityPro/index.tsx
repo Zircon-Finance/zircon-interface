@@ -221,11 +221,15 @@ export default function AddLiquidityPro({
       fetchPoolsDataWithFarms()
   }, [account, chainId, pools.length])
   const farm = pools.find(
-      (f) =>
+      (f) => chainId === 1285 ? (
           f.token1.symbol === (currencyA?.symbol === 'wMOVR' ? 'MOVR' : currencyA?.symbol === 'KSM' ? 'xcKSM' : currencyA?.symbol) &&
           f.token2.symbol === (currencyB?.symbol === 'wMOVR' ? 'MOVR' : currencyB?.symbol === 'KSM' ? 'xcKSM' : currencyB?.symbol) &&
           f.isAnchor === !isFloat &&
-          f.apr !== 0 && f.isFinished === false
+          f.apr !== 0 && f.isFinished === false) : (
+          f.token1.symbol === (currencyA?.symbol === 'BNB' ? 'WBNB' : currencyA?.symbol) &&
+          f.token2.symbol === (currencyB?.symbol === 'BNB' ? 'WBNB' : currencyB?.symbol) &&
+          f.isAnchor === !isFloat &&
+          f.apr !== 0 && f.isFinished === false)
   );
   const { pool } = usePool(useMemo(() => farm ? farm?.contractAddress : '0x0f2eacd08e26932d1a74dbcf094d097d827aca3b', [farm]));
   const addTransaction = useTransactionAdder()

@@ -71,35 +71,6 @@ const DepositModal: React.FC<DepositModalProps> = ({
     const fullBalanceNumber = new BigNumber(fullBalance)
 
     const usdToStake = lpTokensToStake.multipliedBy(new BigNumber(1e18)).dividedBy(pool?.stakedBalancePool).multipliedBy(pool.staked.toString()).multipliedBy(pool?.quotingPrice)
-    // console.log('Multiplying user input: ', lpTokensToStake?.toFixed(6),' by ZPT price: ',
-    // pool?.isAnchor ? pool?.staked.toFixed(6) : pool?.stakedFL.toFixed(6), ' to get USD value: ', usdToStake.toFixed(6))
-    // const stakingTokenPrice = new BigNumber(pool.staked.toString()).multipliedBy(new BigNumber(pool?.quotingPrice)).toNumber()
-        // `${(new BigNumber(staked).div(stakedBalancePool).multipliedBy(stakedBalance).multipliedBy(price)).toFixed(1, BigNumber.ROUND_DOWN)}`
-
-    // const aprs = pool?.earningTokenInfo?.map((block) => {
-    //     return getPoolApr(stakingTokenPrice, [block])
-    // })
-    // console.log("APRS: ", pool?.earningToken)
-    // const interestBreakdowns = aprs ? pool?.earningToken.map((token, i ) => {
-    //     return getInterestBreakdown({
-    //         principalInUSD: !lpTokensToStake.isNaN() ? usdToStake.toNumber() : 0,
-    //         apr: aprs[i],
-    //         earningTokenPrice: token.symbol === "ZRG" ? pool?.zrgPrice : pool?.movrPrice,
-    //     })
-    // }) : []
-    // const interestBreakdown = getInterestBreakdown({
-    //     principalInUSD: !lpTokensToStake.isNaN() ? usdToStake.toNumber() : 0,
-    //     apr,
-    //     earningTokenPrice: pool ? pool?.earningTokenPrice.reduce((a, r) => a+r) : 0,
-    // })
-
-    // console.log("usdToStake", usdToStake.toString(), pool?.earningTokenPrice[0])
-    // const two = new BigNumber(2)
-    // let interestBreakdown =  new BigNumber(0)
-
-    // interestBreakdowns.forEach((breakdown) => {
-    //     interestBreakdown =  interestBreakdown.plus(breakdown[3])
-    // })
     const annualRoi = usdToStake.times(pool.apr).dividedBy(100) //two.times(interestBreakdown)
     const annualRoiAsNumber = annualRoi.toNumber()
     const formattedAnnualRoi = formatNumber(annualRoiAsNumber, annualRoi.gt(10000) ? 0 : 2, annualRoi.gt(10000) ? 0 : 2)

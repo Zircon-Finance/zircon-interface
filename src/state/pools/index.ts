@@ -73,8 +73,9 @@ export const fetchPoolsPublicDataAsync = (chainId: number, currentBlock: number)
         isAnchor: apiPool[0]?.isAnchor,
         stakingToken: new Token(chainId, apiPool[0]?.stakedToken, 18, 'ZPT', 'Zircon Pool Token'),
         earningToken: apiPool[0]?.earningTokenInfo?.filter((entry) => entry.blockReward !== '0').map((earningInfo) => {
-          return new Token(chainId, 
-            (earningInfo?.tokenSymbol === 'wMOVR' ? '0x98878B06940aE243284CA214f92Bb71a2b032B8A' : '0x4545E94974AdACb82FC56BCf136B07943e152055'), 
+          return new Token(chainId, chainId === 1285 ?
+            (earningInfo?.tokenSymbol === 'wMOVR' ? '0x98878B06940aE243284CA214f92Bb71a2b032B8A' : '0x4545E94974AdACb82FC56BCf136B07943e152055') :
+            (earningInfo?.tokenSymbol === 'WBNB' ? '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c' : '0x808a3f2639a5cd54d64ed768192369bcd729100e'),
             18, earningInfo?.tokenSymbol, earningInfo?.tokenSymbol)
         }),
         earningTokenInfo: earningTokenInfo || [],

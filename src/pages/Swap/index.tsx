@@ -340,9 +340,11 @@ export default function Swap() {
         <div style={{alignSelf: 'center'}}>
         { outputCurrency ? (
             <PriceChartContainer
-                inputCurrencyId={inputCurrencyId === NATIVE_TOKEN[chainId].symbol ? '0x98878b06940ae243284ca214f92bb71a2b032b8a' : inputCurrencyId}
+                inputCurrencyId={inputCurrencyId === NATIVE_TOKEN[chainId].symbol ? chainId === 1285 ? '0x98878b06940ae243284ca214f92bb71a2b032b8a' : 
+                 '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c' : inputCurrencyId}
                 inputCurrency={currencies[Field.INPUT]}
-                outputCurrencyId={outputCurrencyId === NATIVE_TOKEN[chainId].symbol ? '0x98878b06940ae243284ca214f92bb71a2b032b8a' : outputCurrencyId}
+                outputCurrencyId={outputCurrencyId === NATIVE_TOKEN[chainId].symbol ? chainId === 1285 ? '0x98878b06940ae243284ca214f92bb71a2b032b8a' : 
+                 '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c' : outputCurrencyId}
                 outputCurrency={currencies[Field.OUTPUT]}
                 isChartExpanded={isChartExpanded}
                 setIsChartExpanded={setIsChartExpanded}

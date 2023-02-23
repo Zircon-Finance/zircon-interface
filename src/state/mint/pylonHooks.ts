@@ -425,9 +425,11 @@ export const useHealthFactorDelta = (  currencyA: Currency | undefined,
 
 export function usePairPrices(token0: Currency, token1: Currency, pair: Pair, pairState: PairState) {
   async function getPrices() {
-    const price0 = token0 && await axios.get(`${PRICE_API+(token0?.symbol === 'wMOVR' ? 'MOVR' : token0?.symbol === 'WBNB' ? 'BNB' : token0?.symbol)}BUSD`).then
+    const price0 = token0 && await axios.get(token0?.symbol === 'USDT' ? `${PRICE_API + 'BUSDUSDT'}` :
+      `${PRICE_API + (token0?.symbol === 'wMOVR' ? 'MOVR' : token0?.symbol === 'WBNB' ? 'BNB' : token0?.symbol)}BUSD`).then
     ((res) => res?.data?.price).catch((e) => console.log(e))
-    const price1 = token1 && await axios.get(`${PRICE_API+(token1?.symbol === 'wMOVR' ? 'MOVR' : token1?.symbol === 'WBNB' ? 'BNB' : token1?.symbol)}BUSD`).then
+    const price1 = token1 && await axios.get(token1?.symbol === 'USDT' ? `${PRICE_API + 'BUSDUSDT'}` :
+    `${PRICE_API + (token1?.symbol === 'wMOVR' ? 'MOVR' : token1?.symbol === 'WBNB' ? 'BNB' : token1?.symbol)}BUSD`).then
     ((res) => res?.data?.price).catch((e) => console.log(e))
     return (price0 !== undefined && price1 !== undefined) ? [price0, price1] :
         price0 !== undefined

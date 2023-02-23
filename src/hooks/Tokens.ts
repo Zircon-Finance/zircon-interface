@@ -61,6 +61,34 @@ export function useAllTokens(): { [address: string]: Token } {
   }, [chainId, userAddedTokens, allTokens])
 }
 
+export function useApiTokens(): { [address: string]: Token } {
+  const { chainId } = useActiveWeb3React()
+  const [tokensData, setTokensData] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await fetch(`https://edgeapi.zircon.finance/static/monitoring/${chainId}`);
+      const data = await result.json();
+      setTokensData(data?.tokens);
+    };
+    fetchData();
+  }, [chainId]);
+
+  return useMemo(() => {
+    if (!chainId) return {}
+    return (
+      tokensData?.map(token => {
+        return new Token(
+          chainId,
+          token.address,
+          token.decimals,
+          token.symbol,
+        )
+      })
+    )
+  }, [chainId, tokensData])
+}
+
 // Check if currency is included in custom list from user storage
 export function useIsUserAddedToken(currency: Currency): boolean {
   const userAddedTokens = useUserAddedTokens()

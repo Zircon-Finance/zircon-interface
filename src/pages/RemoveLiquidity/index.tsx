@@ -476,7 +476,7 @@ export default function RemoveLiquidity({
                               currencyB === NATIVE_TOKEN[chainId] ? WDEV[chainId].address : currencyIdB
                             }`}
                           >
-                            Receive wMOVR
+                            {chainId === 1285 ? 'Receive wMOVR' : 'Receive WBNB'}
                           </StyledInternalLink>
                         ) : oneCurrencyIsWDEV ? (
                           <StyledInternalLink
@@ -484,7 +484,7 @@ export default function RemoveLiquidity({
                               currencyA && currencyEquals(currencyA, WDEV[chainId]) ? NATIVE_TOKEN[chainId].symbol : currencyIdA
                             }/${currencyB && currencyEquals(currencyB, WDEV[chainId]) ? NATIVE_TOKEN[chainId].symbol : currencyIdB}`}
                           >
-                            Receive MOVR
+                            {chainId === 1285 ? 'Receive MOVR' : 'Receive BNB'}
                           </StyledInternalLink>
                         ) : null}
                       </RowBetween>

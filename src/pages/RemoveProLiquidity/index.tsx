@@ -748,7 +748,7 @@ const SlippageWarningModal = () => (
                                           currencyB === NATIVE_TOKEN[chainId] ? WDEV[chainId].address : currencyIdB
                                       }/${isFloat ? "FLOAT" : "STABLE"}`}
                                   >
-                                    Receive wMOVR
+                                    {chainId === 1285 ? 'Receive wMOVR' : 'Receive WBNB'}
                                   </StyledInternalLink>
                               ) : oneCurrencyIsWDEV ? (
                                   <StyledInternalLink
@@ -756,7 +756,7 @@ const SlippageWarningModal = () => (
                                           currencyA && currencyEquals(currencyA, WDEV[chainId]) ? NATIVE_TOKEN[chainId].symbol : currencyIdA
                                       }/${currencyB && currencyEquals(currencyB, WDEV[chainId]) ? NATIVE_TOKEN[chainId].symbol : currencyIdB}/${isFloat ? "FLOAT" : "STABLE"}`}
                                   >
-                                    Receive MOVR
+                                    {chainId === 1285 ? 'Receive MOVR' : 'Receive BNB'}
                                   </StyledInternalLink>
                               ) : null}
                             </RowBetween>

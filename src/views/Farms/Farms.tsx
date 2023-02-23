@@ -740,7 +740,6 @@ const Farms: React.FC = ({ children }) => {
                   />
                 </TableData>
               )}
-              {!(chainId === 1285 || chainId === 1287) && width >= 992 && <TableData/>}
               {viewMode === ViewMode.TABLE && width > 992 && (chainId === 1285 || chainId === 1287) && (
                 <TableData style={{ width: "15%" }} >
                   {account && <ButtonLighter disabled={pendingTx || stakedOnlyFarms.length === 0} fontSize='13px' 

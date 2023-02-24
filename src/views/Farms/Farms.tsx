@@ -39,6 +39,7 @@ import { useAddPopup } from '../../state/application/hooks'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { useDispatch } from 'react-redux'
 import { simpleRpcProvider } from '../../utils/providers'
+import { useBlocksMintedDaily } from '../../components/DaysLeftBar'
 
 interface Props {
   earningRewardsBlock:  EarningTokenInfo[]
@@ -239,12 +240,13 @@ export const getDisplayApr = (cakeRewardsApr?: number, lpRewardsApr?: number) =>
 
 export const RewardPerBlock: React.FC<Props> = ({ earningRewardsBlock }) => {
   const theme = useTheme()
+  const blocksDaily = useBlocksMintedDaily()
   return(
       <>
         {earningRewardsBlock ? earningRewardsBlock.map((reward, index) => (
             <Text mb={earningRewardsBlock.length === 1 && '20px'} fontSize='13px' fontWeight={400} color={theme.darkMode ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0,0,0,0.9)'} key={index}>
               {(reward.blockReward !== 0) ?
-                  `~ ${(reward.blockReward*6800*30).toFixed(0)}  ${reward.symbol === 'MOVR' ? 'wMOVR' : reward.symbol}` :
+                  `~ ${(reward.blockReward*blocksDaily*30).toFixed(0)}  ${reward.symbol === 'MOVR' ? 'wMOVR' : reward.symbol}` :
                   'Loading...'
               }
             </Text>

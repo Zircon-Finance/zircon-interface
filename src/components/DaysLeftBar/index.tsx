@@ -54,7 +54,7 @@ const Marker = styled.div<{ percentage: number }>`
     left: 100%;
 `
 
-const useBlocksMintedDaily = () => {
+export const useBlocksMintedDaily = () => {
   const [blocksMintedDaily, setBlocksMintedDaily] = React.useState(0)
   const {chainId} = useActiveWeb3React()
   useEffect(() => {

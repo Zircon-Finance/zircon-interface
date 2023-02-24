@@ -28,7 +28,7 @@ import FarmsPage from '../../pages/Farm/'
 import Select from '../../components/Select/Select'
 import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
 import {usePools } from '../../state/pools/hooks'
-import { fetchPoolsPublicDataAsync, fetchPoolsUserDataAsync } from '../../state/pools'
+import { fetchPoolsPublicDataAsync, fetchPoolsUserDataAsync, setPoolsPublicData } from '../../state/pools'
 import {DeserializedPool, EarningTokenInfo} from '../../state/types'
 import orderBy from 'lodash/orderBy'
 import { ButtonLighter } from '../../components/Button'
@@ -271,6 +271,7 @@ const Farms: React.FC = ({ children }) => {
   const isInactive = filtedFinishedOnly === FarmFinishedOnly.TRUE
   const isActive = filtedFinishedOnly === FarmFinishedOnly.FALSE
   const isArchived = filtedFinishedOnly === FarmFinishedOnly.ARCHIVED
+  const [rememberedChainId, setRememberedChainId] = useState(chainId)
 
   useEffect(() => {
     const fetchPoolsDataWithFarms = async () => {
@@ -281,11 +282,16 @@ const Farms: React.FC = ({ children }) => {
         dispatch(fetchPoolsPublicDataAsync(chainId, currentBlock))
       }
     }
-    console.log("DD:: currentBlock", currentBlock)
-    console.log("DD:: pools", pools.length)
       fetchPoolsDataWithFarms()
 
   }, [account, chainId, pools.length])
+
+  useEffect(() => {
+    if (rememberedChainId !== chainId) {
+      dispatch(setPoolsPublicData([]))
+      setRememberedChainId(chainId)
+    }
+  }, [chainId])
 
   const [numberOfFarmsVisible, setNumberOfFarmsVisible] = useState(NUMBER_OF_POOLS_VISIBLE)
 

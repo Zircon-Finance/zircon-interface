@@ -28,6 +28,7 @@ const initialState: PoolsState = {
 
 export const fetchPoolsPublicDataAsync = (chainId: number, currentBlock: number) => async (dispatch, getState) => {
   try {
+    console.log("DD:: fetching pools public data")
     const apiData = await getApiData(chainId)
 
     // Get start-end block for each pool
@@ -57,7 +58,7 @@ export const fetchPoolsPublicDataAsync = (chainId: number, currentBlock: number)
       const isPoolFinished = isPoolEndBlockExceeded || !apiPool[0]
       const isPoolFinishedRecently = isPoolFinished && currentBlock - Number(blockLimit.endBlock) <= 195000
       const isPoolArchived = isPoolFinished && currentBlock - Number(blockLimit.endBlock) >= 195000
-      
+
       let earningTokenInfo: EarningTokenInfo[] = apiPool[0]?.earningTokenInfo?.filter((entry) => entry.blockReward !== '0').map((earningInfo,index) => {
         return {
           symbol: earningInfo?.tokenSymbol,
@@ -70,10 +71,10 @@ export const fetchPoolsPublicDataAsync = (chainId: number, currentBlock: number)
 
       return {
         ...pool,
-        token1: new Token(chainId, apiPool[0]?.tokens?.token0?.address, apiPool[0]?.tokens?.token0?.decimals, 
+        token1: new Token(chainId, apiPool[0]?.tokens?.token0?.address, apiPool[0]?.tokens?.token0?.decimals,
           apiPool[0]?.tokens?.token0?.symbol === 'WMOVR' ? 'MOVR' : apiPool[0]?.tokens?.token0?.symbol,
           apiPool[0]?.tokens?.token0?.symbol === 'WMOVR' ? 'MOVR' : apiPool[0]?.tokens?.token0?.symbol),
-        token2: new Token(chainId, apiPool[0]?.tokens?.token1?.address, apiPool[0]?.tokens?.token1?.decimals, 
+        token2: new Token(chainId, apiPool[0]?.tokens?.token1?.address, apiPool[0]?.tokens?.token1?.decimals,
           apiPool[0]?.tokens?.token1?.symbol === 'WMOVR' ? 'MOVR' : apiPool[0]?.tokens?.token1?.symbol,
           apiPool[0]?.tokens?.token1?.symbol === 'WMOVR' ? 'MOVR' : apiPool[0]?.tokens?.token1?.symbol),
         ...blockLimit,

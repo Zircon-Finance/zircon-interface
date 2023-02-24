@@ -33,6 +33,7 @@ export const useFetchPublicPoolsData = () => {
   useSlowRefreshEffect(
     () => {
       const fetchPoolsDataWithFarms = async () => {
+        console.log("DD:: chain", chainId)
       const currentBlock = await Promise.resolve(simpleRpcProvider(chainId).getBlockNumber())
         batch(() => {
           dispatch(fetchPoolsPublicDataAsync(chainId, currentBlock))

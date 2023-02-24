@@ -83,13 +83,13 @@ const collapseAnimation = keyframes`
 
 const ControlContainer = styled.div<{ active: boolean }>`
   animation: ${({ active }) =>
-    active
-                  ? css`
-                    ${expandAnimation} 200ms forwards
-                  `
-                  : css`
-                    ${collapseAnimation} 200ms forwards
-                  `};
+      active
+          ? css`
+            ${expandAnimation} 200ms forwards
+          `
+          : css`
+            ${collapseAnimation} 200ms forwards
+          `};
   display: flex;
   width: 100%;
   align-items: center;
@@ -240,16 +240,16 @@ export const getDisplayApr = (cakeRewardsApr?: number, lpRewardsApr?: number) =>
 export const RewardPerBlock: React.FC<Props> = ({ earningRewardsBlock }) => {
   const theme = useTheme()
   return(
-    <>
-    {earningRewardsBlock ? earningRewardsBlock.map((reward, index) => (
-      <Text mb={earningRewardsBlock.length === 1 && '20px'} fontSize='13px' fontWeight={400} color={theme.darkMode ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0,0,0,0.9)'} key={index}>
-        {(reward.blockReward !== 0) ?
-          `~ ${(reward.blockReward*6800*30).toFixed(0)}  ${reward.symbol === 'MOVR' ? 'wMOVR' : reward.symbol}` :
-          'Loading...'
-        }
-      </Text>
-    )):<Text fontSize='13px' fontWeight={400} color={theme.darkMode ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0,0,0,0.9)'}>Loading...</Text>}
-    </>
+      <>
+        {earningRewardsBlock ? earningRewardsBlock.map((reward, index) => (
+            <Text mb={earningRewardsBlock.length === 1 && '20px'} fontSize='13px' fontWeight={400} color={theme.darkMode ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0,0,0,0.9)'} key={index}>
+              {(reward.blockReward !== 0) ?
+                  `~ ${(reward.blockReward*6800*30).toFixed(0)}  ${reward.symbol === 'MOVR' ? 'wMOVR' : reward.symbol}` :
+                  'Loading...'
+              }
+            </Text>
+        )):<Text fontSize='13px' fontWeight={400} color={theme.darkMode ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0,0,0,0.9)'}>Loading...</Text>}
+      </>
   )
 }
 
@@ -274,11 +274,17 @@ const Farms: React.FC = ({ children }) => {
 
   useEffect(() => {
     const fetchPoolsDataWithFarms = async () => {
-        const currentBlock = await Promise.resolve(simpleRpcProvider(chainId).getBlockNumber())
-        dispatch(fetchPoolsPublicDataAsync(chainId, currentBlock))
+      const currentBlock = await Promise.resolve(simpleRpcProvider(chainId).getBlockNumber())
+      if (pools.length > 0) {
         dispatch(fetchPoolsUserDataAsync({chainId, account, pools}))
+      }else{
+        dispatch(fetchPoolsPublicDataAsync(chainId, currentBlock))
       }
+    }
+    console.log("DD:: currentBlock", currentBlock)
+    console.log("DD:: pools", pools.length)
       fetchPoolsDataWithFarms()
+
   }, [account, chainId, pools.length])
 
   const [numberOfFarmsVisible, setNumberOfFarmsVisible] = useState(NUMBER_OF_POOLS_VISIBLE)
@@ -318,30 +324,30 @@ const Farms: React.FC = ({ children }) => {
     const contracts = stakedOnlyFarms.map((pool) => getSouschefContract(chainId, pool.contractAddress, library.getSigner()))
     const zeroValues = contracts.map(() => '000000000000000000')
     const callData = stakedOnlyFarms.map((pool, index) => contracts[index].interface.encodeFunctionData('deposit', ['0']))
-    const receipt = await fetchWithCatchTxError(() => 
+    const receipt = await fetchWithCatchTxError(() =>
         batchContract.batchAll(
-        contracts.map((contract) => contract.address), 
-        zeroValues,
-        callData,
-        []
-      ).then((response) => {
-        addTransaction(response, {
-          summary: `Harvest rewards from all pools`
+            contracts.map((contract) => contract.address),
+            zeroValues,
+            callData,
+            []
+        ).then((response) => {
+          addTransaction(response, {
+            summary: `Harvest rewards from all pools`
+          })
+          return response
         })
-        return response
-      })
     )
     if (receipt?.status) {
       setPendingTx(false)
       addPopup(
-        {
-          txn: {
-            hash: receipt.transactionHash,
-            success: receipt.status === 1,
-            summary: `Harvest rewards from all pools`,
-          }
-        },
-        receipt.transactionHash
+          {
+            txn: {
+              hash: receipt.transactionHash,
+              success: receipt.status === 1,
+              summary: `Harvest rewards from all pools`,
+            }
+          },
+          receipt.transactionHash
       )
       dispatch(fetchPoolsUserDataAsync({chainId, account, pools}))
     }
@@ -370,10 +376,10 @@ const Farms: React.FC = ({ children }) => {
               if (!pool.userData || !pool.earningTokenInfo) {
                 return 0
               }
-              return pool.userData ? 
-              parseFloat((new BigNumber(pool.userData.stakedBalance).div(pool.stakedBalancePool).multipliedBy(pool.staked).multipliedBy(pool.quotingPrice))
-              .toFixed(1, BigNumber.ROUND_DOWN)) 
-              : 0
+              return pool.userData ?
+                  parseFloat((new BigNumber(pool.userData.stakedBalance).div(pool.stakedBalancePool).multipliedBy(pool.staked).multipliedBy(pool.quotingPrice))
+                      .toFixed(1, BigNumber.ROUND_DOWN))
+                  : 0
             },
             'desc',
         )
@@ -391,7 +397,7 @@ const Farms: React.FC = ({ children }) => {
   const [currentBlock, setCurrentBlock] = useState(0)
 
   let chosenPools = activeFarms
-  
+
   useEffect(() => {
     simpleRpcProvider(chainId ?? 1285).getBlockNumber().then((block) => {
       setCurrentBlock(block)
@@ -568,264 +574,264 @@ const Farms: React.FC = ({ children }) => {
   }
   activeFarms = chosenPools
   return (
-    <FarmsContext.Provider value={{ activeFarms }}>
-      <Page>
-        <Flex justifyContent={'center'} alignContent={'center'}>
-          <Text
-            color={theme.text1}
-            fontWeight={300}
-            fontSize={"30px"}
-            style={{
-              textAlign: "center",
-              alignSelf: "center",
-              marginBottom: width >= 700 ? "30px" : "20px",
-            }}
-          >
-            {"Farms"}
-          </Text>
-          {width <= 700 && <FiltersButton onClick={() => toggleFilters()}>{showFilters ? 'Hide filters' : 'Show filters'}</FiltersButton>}
-        </Flex>
-        {(showFilters || width >= 700) && <ControlContainer active={fakeShowFilters || width >= 700}>
-          <Flex m={"0px"}>
-            <PylonClassicTab active={filter} />
-            <AnchorFloatTab active={filterAnchorFloat} />
-          </Flex>
-          <Flex
-            position={"relative"}
-            width={
-              width < 500 ? (showMobileSearchBar ? "100%" : "auto") : "auto"
-            }
-            height={"70px"}
-          >
-            {(!showMobileSearchBar || width > 500) && (
-              <ViewControls>
-                <ToggleWrapper
-                  style={{ marginRight: "10px", position: "relative" }}
-                >
-                  <Text
-                    style={{ marginLeft: -10 }}
-                    fontSize="13px"
-                    color={theme.text1}
-                    mr={"10px"}
-                    width={"max-content"}
-                    letterSpacing={"0.05em"}
-                  >
-                    {" "}
-                    {width > 700 ? "STAKED ONLY" : "STAKED ONLY"}
-                  </Text>
-                  <Toggle
-                    id="staked-only-farms"
-                    checked={stakedOnly}
-                    checkedColor={"dropdownDeep"}
-                    defaultColor={"dropdownDeep"}
-                    onChange={() => setStakedOnly(!stakedOnly)}
-                    scale="sm"
-                  />
-                </ToggleWrapper>
-                <FarmTabButtons active='Active' />
-              </ViewControls>
-            )}
-            <FilterContainer>
-              <LabelWrapper
+      <FarmsContext.Provider value={{ activeFarms }}>
+        <Page>
+          <Flex justifyContent={'center'} alignContent={'center'}>
+            <Text
+                color={theme.text1}
+                fontWeight={300}
+                fontSize={"30px"}
                 style={{
-                  marginLeft: showMobileSearchBar ? 0 : 10,
-                  width: "100%",
+                  textAlign: "center",
+                  alignSelf: "center",
+                  marginBottom: width >= 700 ? "30px" : "20px",
                 }}
-              >
-                <SearchInput
-                  onChange={handleChangeQuery}
-                  placeholder="SEARCH FARMS"
-                />
-              </LabelWrapper>
-            </FilterContainer>
+            >
+              {"Farms"}
+            </Text>
+            {width <= 700 && <FiltersButton onClick={() => toggleFilters()}>{showFilters ? 'Hide filters' : 'Show filters'}</FiltersButton>}
           </Flex>
-        </ControlContainer>}
-        <MainContainer>
-          <table
-            style={{
-              width: "100%",
-              borderBottom: `1px solid ${theme.darkMode ? theme.opacitySmall : '#F2F0F1'}`,
-              paddingBottom: "5px",
-            }}
-          >
-            <tr
-              style={
-                viewMode === ViewMode.CARD ||
-                (viewMode === ViewMode.TABLE && width <= 992)
-                  ? {
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }
-                  : null
-              }
+          {(showFilters || width >= 700) && <ControlContainer active={fakeShowFilters || width >= 700}>
+            <Flex m={"0px"}>
+              <PylonClassicTab active={filter} />
+              <AnchorFloatTab active={filterAnchorFloat} />
+            </Flex>
+            <Flex
+                position={"relative"}
+                width={
+                  width < 500 ? (showMobileSearchBar ? "100%" : "auto") : "auto"
+                }
+                height={"70px"}
             >
-              <TableData style={{ minWidth: width >= 600 ? (chainId === 1285 || chainId === 1287) ? "275px" : '225px' : "auto" }}>
-              <ViewModeTabs active={viewMode} />
-              </TableData>
-              {viewMode === ViewMode.TABLE && width > 992 ? (
-                options.map((option) => (
-                  <TableData
-                    key={option}
-                    style={{
-                      width: (chainId === 1285 || chainId === 1287) ? '12%' : '9%',
-                      cursor:
-                        "pointer",
-                    }}
-                    onClick={() => {
-                        sortOption === option.toLowerCase()
-                          ? setSortOption("hot")
-                          : setSortOption(option.toLowerCase());
-                    }}
-                  ><Flex alignItems={'center'}>
-                      <p
-                        style={{
-                          fontSize: "13px",
-                          color: !darkMode ? '#874955' : theme.meatPink,
-                          fontWeight: 500,
-                          margin: 0,
-                        }}
+              {(!showMobileSearchBar || width > 500) && (
+                  <ViewControls>
+                    <ToggleWrapper
+                        style={{ marginRight: "10px", position: "relative" }}
+                    >
+                      <Text
+                          style={{ marginLeft: -10 }}
+                          fontSize="13px"
+                          color={theme.text1}
+                          mr={"10px"}
+                          width={"max-content"}
+                          letterSpacing={"0.05em"}
                       >
-                        {option}
-                      </p>
-                        <FarmRepeatIcon />
-                    </Flex>
-                    {sortOption === option.toLowerCase() ? (
-                      <SelectedOptionDiv />
-                    ) : null}
-                    {(option === 'Earned' && totalEarnings.toFixed(2) !== '0.00' && !isInactive && !isArchived) && (
-                      <Flex alignItems="center">
-                        <Text fontSize="12px" color={'#5ebe7b'}>
-                          ~{totalEarnings ? formattedNum(totalEarnings.toFixed(2)) : 0} USD
-                        </Text>
-                      </Flex>
-                    )}
-                    {(option === 'Staked' && totalStaked.toFixed(0) !== '0' && !isInactive && !isArchived) && (
-                      <Flex alignItems="center">
-                        <Text fontSize="12px" color={'#5ebe7b'}>
-                          ~{totalStaked ? formattedNum(totalStaked.toFixed(2)) : 0} USD
-                        </Text>
-                      </Flex>
-                    )}
-                  </TableData>
-                ))
-              ) : (
-                <TableData
-                  style={{
-                    display: "flex",
-                    width: "200px",
-                    paddingRight: width <= 992 ? "0px" : "5px",
-                  }}
+                        {" "}
+                        {width > 700 ? "STAKED ONLY" : "STAKED ONLY"}
+                      </Text>
+                      <Toggle
+                          id="staked-only-farms"
+                          checked={stakedOnly}
+                          checkedColor={"dropdownDeep"}
+                          defaultColor={"dropdownDeep"}
+                          onChange={() => setStakedOnly(!stakedOnly)}
+                          scale="sm"
+                      />
+                    </ToggleWrapper>
+                    <FarmTabButtons active='Active' />
+                  </ViewControls>
+              )}
+              <FilterContainer>
+                <LabelWrapper
+                    style={{
+                      marginLeft: showMobileSearchBar ? 0 : 10,
+                      width: "100%",
+                    }}
                 >
-                  <Text
-                    style={{ width: "100px", alignSelf: "center" }}
-                    color={theme.whiteHalf}
-                    fontSize={"15px"}
-                  >
-                    {t("Sort by")}
-                  </Text>
-                  <Select
-                    options={[
-                      {
-                        label: t("Hot"),
-                        value: "hot",
-                      },
-                      {
-                        label: t("APR"),
-                        value: "apr",
-                      },
-                      {
-                        label: t("Earned"),
-                        value: "earned",
-                      },
-                      {
-                        label: t("Staked"),
-                        value: "staked",
-                      },
-                    ]}
-                    onOptionChange={(option) => setSortOption(option.value)}
+                  <SearchInput
+                      onChange={handleChangeQuery}
+                      placeholder="SEARCH FARMS"
                   />
-                </TableData>
-              )}
-              {!(chainId === 1285 || chainId === 1287) && width >= 992 && viewMode !== ViewMode.CARD && <TableData/>}
-              {viewMode === ViewMode.TABLE && width > 992 && (chainId === 1285 || chainId === 1287) && (
-                <TableData style={{ width: "15%" }} >
-                  {account && <ButtonLighter disabled={pendingTx || stakedOnlyFarms.length === 0} fontSize='13px' 
-                  onClick={()=>harvestAllPools()} 
-                  onMouseEnter={() => setHoverHarvestAll(true)}
-                  onMouseLeave={() => setHoverHarvestAll(false)}
-                  style={{background: hoverHarvestAll ? theme.darkMode ? 'rgba(202, 144, 187, 0.17)' : 'rgba(202, 144, 187, 0.07)' : 
-                  theme.darkMode ? '#442433' : '#f5eef3', 
-                  padding: '5px 10px', 
-                  height: '29px', 
-                  width: 'auto', 
-                  color:theme.darkMode ? '#CA90BB' : '#9E4D86', 
-                  fontWeight: 500,
-                  border: 'none'}} >
-                  {pendingTx ? 'HARVESTING...' :'HARVEST FROM ALL FARMS'}
-                </ButtonLighter>}
-                </TableData>
-              )}
-            </tr>
-            {width <= 992 && (chainId === 1285 || chainId === 1287) && (
-              <tr>
-                <TableData style={{ width: "15%" }} >
-                  {account && <ButtonLighter disabled={pendingTx || stakedOnlyFarms.length === 0} fontSize='13px' 
-                  onClick={()=>harvestAllPools()} 
-                  onMouseEnter={() => setHoverHarvestAll(true)}
-                  onMouseLeave={() => setHoverHarvestAll(false)}
-                  style={{background: hoverHarvestAll ? theme.darkMode ? 'rgba(202, 144, 187, 0.17)' : 'rgba(202, 144, 187, 0.07)' : 
-                  theme.darkMode ? '#442433' : '#f5eef3', 
-                  padding: '5px 10px', 
-                  height: '29px', 
-                  width: '100%', 
-                  color:theme.darkMode ? '#CA90BB' : '#9E4D86', 
-                  fontWeight: 500,
-                  border: 'none',
-                  marginTop: '5px'}} >
-                  {pendingTx ? 'HARVESTING...' :'HARVEST FROM ALL FARMS'}
-                </ButtonLighter>}
-                </TableData>
-                </tr>
-              )}
-              
-          </table>
-          {renderContent()}
-          {((chosenPools.length < pools.filter((farm) => 
-            (isInactive ? farm.isFinished : isArchived ? farm.isArchived : !farm.isFinished && !farm.isArchived)
-          ).length && chosenPools.length === numberOfFarmsVisible) ||
-          (filterAnchorFloat === FarmFilterAnchorFloat.ANCHOR && pools.filter((pool) => stakedOnly ?
-          (pool.isAnchor && pool.userData.stakedBalance.gt(0)) : pool.isAnchor).length > chosenPools.length && chosenPools.length === (numberOfFarmsVisible/2)) ||
-          (filterAnchorFloat === FarmFilterAnchorFloat.FLOAT && pools.filter((pool) =>  stakedOnly ?
-          (!pool.isAnchor && pool.userData.stakedBalance.gt(0)) : !pool.isAnchor).length > chosenPools.length && chosenPools.length === (numberOfFarmsVisible/2))
-          ) && (
-            <ButtonLighter
-              onClick={() => showMore()}
-              onMouseEnter={() => setHoverButton(true)}
-              onMouseLeave={() => setHoverButton(false)}
-              style={{
-                background: theme.darkMode ? hoverButton ? "#492B36" : '#422330' : hoverButton ? "#F6F2F4" : '#F0E9EB',
-                margin: "auto",
-                marginTop: "20px",
-                height: "43px",
-                fontSize: "16px",
-                border: 'none',
-                position: "relative",
-                borderRadius: "17px",
-                fontWeight: 500,
-                color: theme.pinkBrown
-              }}
+                </LabelWrapper>
+              </FilterContainer>
+            </Flex>
+          </ControlContainer>}
+          <MainContainer>
+            <table
+                style={{
+                  width: "100%",
+                  borderBottom: `1px solid ${theme.darkMode ? theme.opacitySmall : '#F2F0F1'}`,
+                  paddingBottom: "5px",
+                }}
             >
-              {t("Show more farms")}
-            </ButtonLighter>
+              <tr
+                  style={
+                    viewMode === ViewMode.CARD ||
+                    (viewMode === ViewMode.TABLE && width <= 992)
+                        ? {
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }
+                        : null
+                  }
+              >
+                <TableData style={{ minWidth: width >= 600 ? (chainId === 1285 || chainId === 1287) ? "275px" : '225px' : "auto" }}>
+                  <ViewModeTabs active={viewMode} />
+                </TableData>
+                {viewMode === ViewMode.TABLE && width > 992 ? (
+                    options.map((option) => (
+                        <TableData
+                            key={option}
+                            style={{
+                              width: (chainId === 1285 || chainId === 1287) ? '12%' : '9%',
+                              cursor:
+                                  "pointer",
+                            }}
+                            onClick={() => {
+                              sortOption === option.toLowerCase()
+                                  ? setSortOption("hot")
+                                  : setSortOption(option.toLowerCase());
+                            }}
+                        ><Flex alignItems={'center'}>
+                          <p
+                              style={{
+                                fontSize: "13px",
+                                color: !darkMode ? '#874955' : theme.meatPink,
+                                fontWeight: 500,
+                                margin: 0,
+                              }}
+                          >
+                            {option}
+                          </p>
+                          <FarmRepeatIcon />
+                        </Flex>
+                          {sortOption === option.toLowerCase() ? (
+                              <SelectedOptionDiv />
+                          ) : null}
+                          {(option === 'Earned' && totalEarnings.toFixed(2) !== '0.00' && !isInactive && !isArchived) && (
+                              <Flex alignItems="center">
+                                <Text fontSize="12px" color={'#5ebe7b'}>
+                                  ~{totalEarnings ? formattedNum(totalEarnings.toFixed(2)) : 0} USD
+                                </Text>
+                              </Flex>
+                          )}
+                          {(option === 'Staked' && totalStaked.toFixed(0) !== '0' && !isInactive && !isArchived) && (
+                              <Flex alignItems="center">
+                                <Text fontSize="12px" color={'#5ebe7b'}>
+                                  ~{totalStaked ? formattedNum(totalStaked.toFixed(2)) : 0} USD
+                                </Text>
+                              </Flex>
+                          )}
+                        </TableData>
+                    ))
+                ) : (
+                    <TableData
+                        style={{
+                          display: "flex",
+                          width: "200px",
+                          paddingRight: width <= 992 ? "0px" : "5px",
+                        }}
+                    >
+                      <Text
+                          style={{ width: "100px", alignSelf: "center" }}
+                          color={theme.whiteHalf}
+                          fontSize={"15px"}
+                      >
+                        {t("Sort by")}
+                      </Text>
+                      <Select
+                          options={[
+                            {
+                              label: t("Hot"),
+                              value: "hot",
+                            },
+                            {
+                              label: t("APR"),
+                              value: "apr",
+                            },
+                            {
+                              label: t("Earned"),
+                              value: "earned",
+                            },
+                            {
+                              label: t("Staked"),
+                              value: "staked",
+                            },
+                          ]}
+                          onOptionChange={(option) => setSortOption(option.value)}
+                      />
+                    </TableData>
+                )}
+                {!(chainId === 1285 || chainId === 1287) && width >= 992 && viewMode !== ViewMode.CARD && <TableData/>}
+                {viewMode === ViewMode.TABLE && width > 992 && (chainId === 1285 || chainId === 1287) && (
+                    <TableData style={{ width: "15%" }} >
+                      {account && <ButtonLighter disabled={pendingTx || stakedOnlyFarms.length === 0} fontSize='13px'
+                                                 onClick={()=>harvestAllPools()}
+                                                 onMouseEnter={() => setHoverHarvestAll(true)}
+                                                 onMouseLeave={() => setHoverHarvestAll(false)}
+                                                 style={{background: hoverHarvestAll ? theme.darkMode ? 'rgba(202, 144, 187, 0.17)' : 'rgba(202, 144, 187, 0.07)' :
+                                                       theme.darkMode ? '#442433' : '#f5eef3',
+                                                   padding: '5px 10px',
+                                                   height: '29px',
+                                                   width: 'auto',
+                                                   color:theme.darkMode ? '#CA90BB' : '#9E4D86',
+                                                   fontWeight: 500,
+                                                   border: 'none'}} >
+                        {pendingTx ? 'HARVESTING...' :'HARVEST FROM ALL FARMS'}
+                      </ButtonLighter>}
+                    </TableData>
+                )}
+              </tr>
+              {width <= 992 && (chainId === 1285 || chainId === 1287) && (
+                  <tr>
+                    <TableData style={{ width: "15%" }} >
+                      {account && <ButtonLighter disabled={pendingTx || stakedOnlyFarms.length === 0} fontSize='13px'
+                                                 onClick={()=>harvestAllPools()}
+                                                 onMouseEnter={() => setHoverHarvestAll(true)}
+                                                 onMouseLeave={() => setHoverHarvestAll(false)}
+                                                 style={{background: hoverHarvestAll ? theme.darkMode ? 'rgba(202, 144, 187, 0.17)' : 'rgba(202, 144, 187, 0.07)' :
+                                                       theme.darkMode ? '#442433' : '#f5eef3',
+                                                   padding: '5px 10px',
+                                                   height: '29px',
+                                                   width: '100%',
+                                                   color:theme.darkMode ? '#CA90BB' : '#9E4D86',
+                                                   fontWeight: 500,
+                                                   border: 'none',
+                                                   marginTop: '5px'}} >
+                        {pendingTx ? 'HARVESTING...' :'HARVEST FROM ALL FARMS'}
+                      </ButtonLighter>}
+                    </TableData>
+                  </tr>
+              )}
+
+            </table>
+            {renderContent()}
+            {((chosenPools.length < pools.filter((farm) =>
+                    (isInactive ? farm.isFinished : isArchived ? farm.isArchived : !farm.isFinished && !farm.isArchived)
+                ).length && chosenPools.length === numberOfFarmsVisible) ||
+                (filterAnchorFloat === FarmFilterAnchorFloat.ANCHOR && pools.filter((pool) => stakedOnly ?
+                    (pool.isAnchor && pool.userData.stakedBalance.gt(0)) : pool.isAnchor).length > chosenPools.length && chosenPools.length === (numberOfFarmsVisible/2)) ||
+                (filterAnchorFloat === FarmFilterAnchorFloat.FLOAT && pools.filter((pool) =>  stakedOnly ?
+                    (!pool.isAnchor && pool.userData.stakedBalance.gt(0)) : !pool.isAnchor).length > chosenPools.length && chosenPools.length === (numberOfFarmsVisible/2))
+            ) && (
+                <ButtonLighter
+                    onClick={() => showMore()}
+                    onMouseEnter={() => setHoverButton(true)}
+                    onMouseLeave={() => setHoverButton(false)}
+                    style={{
+                      background: theme.darkMode ? hoverButton ? "#492B36" : '#422330' : hoverButton ? "#F6F2F4" : '#F0E9EB',
+                      margin: "auto",
+                      marginTop: "20px",
+                      height: "43px",
+                      fontSize: "16px",
+                      border: 'none',
+                      position: "relative",
+                      borderRadius: "17px",
+                      fontWeight: 500,
+                      color: theme.pinkBrown
+                    }}
+                >
+                  {t("Show more farms")}
+                </ButtonLighter>
+            )}
+          </MainContainer>
+          {account && !userDataLoaded && stakedOnly && (
+              <Flex justifyContent="center"></Flex>
           )}
-        </MainContainer>
-        {account && !userDataLoaded && stakedOnly && (
-          <Flex justifyContent="center"></Flex>
-        )}
-        <div ref={observerRef} />
-      </Page>
-    </FarmsContext.Provider>
+          <div ref={observerRef} />
+        </Page>
+      </FarmsContext.Provider>
   );
 }
 

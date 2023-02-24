@@ -265,7 +265,7 @@ export default function RemoveProLiquidity({
       )
     )
     */
-    const safeGasEstimates: BigNumber[] = [BigNumber.from('5000000')]
+    const safeGasEstimates: BigNumber[] = [BigNumber.from('1000000')]
     const indexOfSuccessfulEstimation = safeGasEstimates.findIndex(safeGasEstimate =>
         BigNumber.isBigNumber(safeGasEstimate)
     )

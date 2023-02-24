@@ -184,7 +184,7 @@ export default function RemoveLiquidity({
 
     const approvalCallData = tokenContract.interface.encodeFunctionData('approve', [router.address, MaxUint256])
     const callData = router.interface.encodeFunctionData((oneCurrencyIsETH ? 'removeLiquidityETH' : 'removeLiquidity'), args)
-    const safeGasEstimates: BigNumber[] = [BigNumber.from('5000000')]
+    const safeGasEstimates: BigNumber[] = [BigNumber.from('1000000')]
     const indexOfSuccessfulEstimation = safeGasEstimates.findIndex(safeGasEstimate =>
       BigNumber.isBigNumber(safeGasEstimate)
     )

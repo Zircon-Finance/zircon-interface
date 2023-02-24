@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled, { useTheme } from 'styled-components'
 import GoogleAnalyticsReporter from '../components/analytics/GoogleAnalyticsReporter'
@@ -26,7 +26,7 @@ import { RedirectPathToSwapOnly, GetNetworkFromUrl, RedirectToSwap } from './Swa
 import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
 import {RedirectOldRemoveLiquidityProPathStructure} from "./RemoveProLiquidity/redirects";
 import RemoveProLiquidity from "./RemoveProLiquidity";
-import { useBlockedApiData, useWindowDimensions } from '../hooks'
+import { useActiveWeb3React, useBlockedApiData, useWindowDimensions } from '../hooks'
 import Farms from '../views/Farms/Farms'
 import Lottie from "lottie-react-web";
 import animation from '../assets/lotties/0uCdcx9Hn5.json'
@@ -35,6 +35,8 @@ import { PhishingBanner, PhyshingContainer } from '../components/PhishingBanner'
 import { WarningLight } from '../components/WarningIcon/index.tsx'
 import { Flex, Text } from 'rebass'
 import { CloseIcon } from '../theme'
+import { useDispatch } from 'react-redux'
+import { setPoolsPublicData } from '../state/pools'
 
 const AppWrapper = styled.div`
   display: flex;
@@ -99,6 +101,9 @@ export default function App() {
   const [showBanner, ] = useShowBannerManager()
   const [showBlockedBanner, setShowBlockedBanner] = React.useState(!showBanner)
   const theme = useTheme()
+  const {chainId} = useActiveWeb3React()
+  const [rememberedChainId, setRememberedChainId] = useState(chainId)
+  const dispatch = useDispatch()
 
   const blockedApiData = useBlockedApiData();
   const isPoolBlocked = blockedApiData?.isPoolBlocked
@@ -110,6 +115,13 @@ export default function App() {
     opacityDiv !== 0 && setTimeout(() => setOpacityDiv(parseFloat((opacity - 0.1).toFixed(1))), 50)
   }
   opacityDiv !== 0 && countDown(opacityDiv)
+
+  useEffect(() => {
+    if (rememberedChainId !== chainId) {
+      dispatch(setPoolsPublicData([]))
+      setRememberedChainId(chainId)
+    }
+  }, [chainId])
 
   const blockedBanner = <PhyshingContainer>
   <WarningLight />

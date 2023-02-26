@@ -511,7 +511,7 @@ const SlippageWarningModal = () => (
             <RowFixed>
               <DoubleCurrencyLogo currency0={currencyA} currency1={currencyB} margin={true} />
               <Text fontWeight={400} fontSize={16}>
-                {parsedAmounts[Field.LIQUIDITY]?.toSignificant(6)}
+                {parsedAmounts[Field.LIQUIDITY] ? parsedAmounts[Field.LIQUIDITY]?.toSignificant(6) : ''}
               </Text>
             </RowFixed>
           </RowBetween>

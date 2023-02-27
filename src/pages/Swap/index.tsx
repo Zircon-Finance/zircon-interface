@@ -312,8 +312,6 @@ export default function Swap() {
   //Top tokens
   const [topTokens, setTopTokens] = useState([])
   const [topTokensPrevious, setTopTokensPrevious] = useState([])
-  console.log('AAAtopTokens', topTokens)
-  console.log('AAAtopTokensPrevious', topTokensPrevious)
   const options = ['Price', 'Price change 24H', 'Volume 24H', 'TVL']
   const [sortOption, setSortOption] = useState('volume 24h')
 
@@ -682,7 +680,7 @@ export default function Swap() {
               <SkeletonTable style={{width: '10%'}}></SkeletonTable>
             </Row>
           </Flex>
-        )) : (
+        )) : topTokens !== undefined && (
         (topTokensPrevious.length > 0 && topTokens.length > 0 && sortedTokens.length > 0) && sortedTokens.map((token, index) => (
           <TopTokensRow
             key={index}

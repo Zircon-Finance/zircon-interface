@@ -15,14 +15,14 @@ interface TokenRowProps {
   }
 
 export const PoolRowSmall:React.FC<TokenRowProps> = ({token1, token2, pool}) => {
-    const currency0 = useCurrency(token1?.token?.id)
-    const currency1 = useCurrency(token2?.token?.id)
+    const currency0 = useCurrency(token1?.id)
+    const currency1 = useCurrency(token2?.id)
     const theme = useTheme()
     const [hovered, setHovered] = React.useState(false)
 
   return (
     <NavLink 
-      to={`/add-pro/${token1?.token?.id}/${token2?.token?.id}`}
+      to={`/add-pro/${token1?.id}/${token2?.id}`}
       style={{textDecoration: 'none', backgroundColor: 'transparent', borderRadius: '17px'}}
     >
     <Flex
@@ -35,7 +35,7 @@ export const PoolRowSmall:React.FC<TokenRowProps> = ({token1, token2, pool}) => 
       >
     <DoubleCurrencyLogo currency0={currency0} currency1={currency1} size={24} margin={true} />
     <Text color={theme.pinkBrown} fontWeight={500} fontSize={'16px'}> 
-      {token1?.token?.symbol} - {token2?.token?.symbol}
+      {token1?.symbol} - {token2?.symbol}
     </Text>
     {pool && <Flex style={{width: 'auto'}} ml='auto'>
       <Lottie

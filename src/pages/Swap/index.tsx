@@ -23,7 +23,7 @@ import Settings from '../../components/Settings'
 import orderBy from 'lodash/orderBy'
 import { INITIAL_ALLOWED_SLIPPAGE } from '../../constants'
 import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
-import { getTopTokens, useCurrency, useSubgraphUrl } from '../../hooks/Tokens'
+import { getTopTokens, useAllTokens, useBlocksSubgraphUrl, useCurrency, useSubgraphUrl } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
 import useENSAddress from '../../hooks/useENSAddress'
 import { useSwapCallback } from '../../hooks/useSwapCallback'
@@ -58,11 +58,13 @@ import FavTokensRow from '../../components/FavouriteTokensRow'
 import { Separator } from '../../components/SearchModal/styleds'
 import { usePools } from '../../state/pools/hooks'
 import { Skeleton } from '@pancakeswap/uikit'
+import { wrappedCurrency } from '../../utils/wrappedCurrency'
 
 export default function Swap() {
   const {pools} = usePools()
   const { t } = useTranslation()
   const loadedUrlParams = useDefaultsFromURLSearch()
+  const allTokens = useAllTokens()
 
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
@@ -183,16 +185,26 @@ export default function Swap() {
   }, [])
 
   const subgraphUrl = useSubgraphUrl()
+  const blockSubgraphUrl = useBlocksSubgraphUrl()
+  const [derivedETH, setDerivedETH] = useState(null)
+  const [oneDayDerivedETH, setOneDayDerivedETH] = useState(null)
 
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
     }
-    getTopTokens(chainId, subgraphUrl).then((res) => {
+  }, [approval, approvalSubmitted, chainId, subgraphUrl])
+
+  useEffect(() => {
+    getTopTokens(chainId, subgraphUrl, blockSubgraphUrl).then((res) => {
       setTopTokens(res.query)
       setTopTokensPrevious(res.oneDayAgoQueryData)
+      setDerivedETH(res.derivedEthQueryData)
+      setOneDayDerivedETH(res.oneDayAgoDerivedEthQueryData)
+    }).catch((err) => {
+      console.log('error fetching top tokens', err)
     })
-  }, [approval, approvalSubmitted, chainId, subgraphUrl])
+  }, [chainId, subgraphUrl, blockSubgraphUrl])
 
   
 
@@ -294,29 +306,37 @@ export default function Swap() {
   const singleTokenPrice = useSingleTokenSwapInfo(chainId, inputCurrencyId, inputCurrency, outputCurrencyId, outputCurrency)
 
   const [pairState,pair] = usePair(currencies[Field.INPUT], currencies[Field.OUTPUT])
-  const prices = usePairPrices(currencies[Field.INPUT], currencies[Field.OUTPUT], pair, pairState)
+  const prices = usePairPrices(wrappedCurrency(currencies[Field.INPUT], chainId)?.address, wrappedCurrency(currencies[Field.OUTPUT], chainId)?.address, 
+  pair, pairState, chainId)
 
   //Top tokens
   const [topTokens, setTopTokens] = useState([])
   const [topTokensPrevious, setTopTokensPrevious] = useState([])
+  console.log('AAAtopTokens', topTokens)
+  console.log('AAAtopTokensPrevious', topTokensPrevious)
   const options = ['Price', 'Price change 24H', 'Volume 24H', 'TVL']
   const [sortOption, setSortOption] = useState('volume 24h')
 
   const sortTokens = (sortOption: string, tokensToSort: any[]) => {
     switch (sortOption) {
       case 'price':
-        return orderBy(tokensToSort, (token: any) => parseFloat(token.priceUSD) ?? 0, 'desc')
+        return orderBy(tokensToSort, (token: any) => parseFloat(token.derivedETH) * parseFloat(derivedETH) ?? 0, 'desc')
       case 'price change 24h':
           return orderBy(tokensToSort, (token: any) => {
-          const previousToken = topTokensPrevious.find((t) => t.token.id === token.token.id)
-          const changePercent = (((parseFloat(token?.priceUSD) - parseFloat(previousToken?.priceUSD)) /
-          parseFloat(previousToken?.priceUSD)) * 100).toFixed(2);
+          const previousToken = topTokensPrevious.find((t) => t.id === token.id)
+          const changePercent = ((((parseFloat(token?.derivedETH) * parseFloat(derivedETH)) - (parseFloat(previousToken?.derivedETH) * parseFloat(oneDayDerivedETH))) / 
+          (parseFloat(previousToken?.derivedETH) * parseFloat(oneDayDerivedETH))) * 100).toFixed(2)
           return changePercent !== 'NaN' ? parseFloat(changePercent) : parseFloat('-100')
         }, 'desc')
       case 'volume 24h':
-        return orderBy(tokensToSort, (token: any) => parseFloat(token.dailyVolumeUSD), 'desc')
+        return orderBy(tokensToSort, (token: any) => {
+          const previousToken = topTokensPrevious.find((t) => t?.id === token?.id)
+          return (parseFloat(token?.tradeVolumeUSD) - parseFloat(previousToken?.tradeVolumeUSD))
+        } , 'desc')
       case 'tvl':
-        return orderBy(tokensToSort, (token: any) => parseFloat(token.totalLiquidityUSD), 'desc')
+        return orderBy(tokensToSort, (token: any) => {
+          return (parseFloat(token?.totalLiquidity) * parseFloat(derivedETH) * (parseFloat(token?.derivedETH)))
+        } , 'desc')
       default:
         return tokensToSort
     }
@@ -589,10 +609,9 @@ export default function Swap() {
       </AppBody>
     </div>
 
-    {/* // User chosen tokens */}
-    {chosenTokens?.length > 0 && (
-      <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none',
-      visibility: chainId === 1285 ? 'visible' : 'hidden'}}>
+    {/* // User chosen tokens */}    
+    {chosenTokens?.filter((token) => Object.keys(allTokens).map((token) => token.toLowerCase()).includes(token.toLowerCase())).length > 0 && (
+      <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none'}}>
         <Flex mt='auto' mb="auto" ml='20px'>
             <StarFull />
           </Flex>
@@ -600,14 +619,13 @@ export default function Swap() {
           {chosenTokens?.map((token, index) => {
           return(
             <FavTokensRow key={index} token={token} index={index} topTokens={topTokens} topTokensPrevious={topTokensPrevious}
-            handleSwap={handleInputSelect} />
+            handleSwap={handleInputSelect} derivedETH={derivedETH} oneDayDerivedETH={oneDayDerivedETH} />
           )})}
         </Flex>
       </Flex>
       )}
 
-    <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none',
-    visibility: chainId === 1285 ? 'visible' : 'hidden'}}>
+    <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none'}}>
     <table
       style={{
         width: "100%",
@@ -653,7 +671,7 @@ export default function Swap() {
           <TableData style={{cursor:"pointer", width: '10%'}} />
         </tr>
         <Separator />
-        {topTokens.length === 0 ? [...Array(skeletons)].map(() => (
+        {topTokens?.length === 0 ? [...Array(skeletons)].map(() => (
           <Flex style={{width: '100%', margin: 'auto'}} flexDirection='column'>
             <Row>
               <SkeletonTable style={{width: '35%', marginLeft: '30px'}}><Skeleton width={'80%'} /></SkeletonTable>
@@ -665,11 +683,13 @@ export default function Swap() {
             </Row>
           </Flex>
         )) : (
-        (topTokensPrevious.length > 0 && topTokens.length > 0) && sortedTokens.map((token, index) => (
+        (topTokensPrevious.length > 0 && topTokens.length > 0 && sortedTokens.length > 0) && sortedTokens.map((token, index) => (
           <TopTokensRow
             key={index}
             token={token}
-            previousToken={topTokensPrevious.find((t) => t.token.id === token.token.id)}
+            previousToken={topTokensPrevious.find((t) => t.id === token.id)}
+            derivedETH={derivedETH}
+            oneDayDerivedETH={oneDayDerivedETH}
             index={index}
             handleInput={handleInputSelect}
             tokens={topTokens}

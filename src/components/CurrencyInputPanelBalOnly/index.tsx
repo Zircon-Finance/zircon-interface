@@ -188,9 +188,11 @@ export default function CurrencyInputPanel({
                   </Text>
                   </div>
                   {currency &&
-                  <Text style={{paddingRight: '0.75rem', alignSelf: 'center'}} color={theme.whiteHalf}>
-                    {`${price && (price*parseFloat(selectedCurrencyBalance?.toFixed(Math.min(6, currency?.decimals)))).toFixed(2) || ''} ${price > 0 ? `$` : ''}` /* This was added, it's supposed to convert to $ */}
-                  </Text>
+                  <Text style={{paddingRight: '0.75rem', alignSelf: 'center', marginTop: showMaxButton ? '10px' : '0px'}} color={theme.whiteHalf}>
+                  {`~${price && (value === '' ? (price*parseFloat(selectedCurrencyBalance?.toFixed(Math.min(6, currency?.decimals)))).toFixed(2) :
+                   (price*parseFloat(value)).toFixed(2))
+                  || ''} ${price > 0 ? `$` : ''}` /* This was added, it's supposed to convert to $ */}
+                </Text>
                   }
                 </TYPE.body>
               )}

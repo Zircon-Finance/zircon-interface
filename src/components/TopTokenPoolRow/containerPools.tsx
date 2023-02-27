@@ -9,17 +9,17 @@ interface ContainerProps {
   }
 
 export const PoolsContainer:React.FC<ContainerProps> = ({mainToken, tokens, pools}) => {
-  const tokensForPools = tokens.filter((token) => token?.token?.symbol !== mainToken?.token?.symbol)
+  const tokensForPools = tokens.filter((token) => token?.symbol !== mainToken?.symbol)
   return (
     <Flex flexDirection={'column'}>
     {tokensForPools.map((token) => (
         <PoolRowSmall
-          key={token?.token?.id}
+          key={token?.id}
           token1={mainToken}
           token2={token} 
           pool={pools.filter((pool) => 
-            pool?.token1?.symbol === (mainToken?.token?.symbol === 'WMOVR' ? 'MOVR' : mainToken?.token?.symbol) && 
-            pool?.token2?.symbol === (token?.token?.symbol === 'WMOVR' ? 'MOVR' : token?.token?.symbol) && 
+            pool?.token1?.symbol === (mainToken?.symbol === 'WMOVR' ? 'MOVR' : mainToken?.symbol) && 
+            pool?.token2?.symbol === (token?.symbol === 'WMOVR' ? 'MOVR' : token?.symbol) && 
             pool?.isFinished === false).length > 0}
         />
         ))

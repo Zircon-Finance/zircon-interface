@@ -20,6 +20,8 @@ interface TokenRowProps {
     handleInput: any;
     tokens: any[];
     pools: any;
+    derivedETH: any;
+    oneDayDerivedETH: any;
   }
 
 export const Row = styled.tr`
@@ -109,12 +111,14 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
     const [hoverPlus, setHoverPlus] = React.useState(false)
     const [hoverSwap, setHoverSwap] = React.useState(false)
     const [liquidityClick, setLiquidityClick] = React.useState(false)
-    const {token, previousToken, index, handleInput, tokens, pools} = item;
-    const currency = useCurrency(token.token.id)
+    const {token, previousToken, index, handleInput, tokens, pools, derivedETH, oneDayDerivedETH} = item;
+    const currency = useCurrency(token.id)
     const theme = useTheme();
     const {chainId} = useActiveWeb3React()
     const [chosenTokens, addChosenTokenCallback, removeChosenTokenFeedback] = useChosenTokens();
-    const changePercent = (((parseFloat(token?.priceUSD) - parseFloat(previousToken?.priceUSD)) / parseFloat(previousToken?.priceUSD)) * 100).toFixed(2);
+    const changePercent = ((((parseFloat(token?.derivedETH) * parseFloat(derivedETH)) - (parseFloat(previousToken?.derivedETH) * parseFloat(oneDayDerivedETH))) / 
+      (parseFloat(previousToken?.derivedETH) * parseFloat(oneDayDerivedETH))) * 100).toFixed(2);
+      console.log('change percent args', token?.derivedETH, derivedETH, previousToken?.derivedETH, oneDayDerivedETH)
     const toggleLiquidityClick = () => {
       setLiquidityClick(!liquidityClick)
     }
@@ -136,8 +140,9 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
       <DialogContainer style={{
           background: theme.darkMode ? '#583141' : '#FCFBFC', 
           boxShadow: !theme.darkMode && '0px 0px 25px rgba(40, 20, 29, 0.1)',
-          right: '-90px',
-          top: '-290px'}} 
+          right: '-40px',
+          bottom: '40px',
+        top: 'auto'}} 
         show={liquidityClick}>
         <Text style={{color: theme.text1}} fontSize='16px' textAlign={'center'} my='10px'>
           {('Select liquidity pool')}
@@ -168,9 +173,9 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
         >
         {index + 1}
         </Text>
-        <Flex id={`favorite-token-${token.token.id}`} style={{margin: '0 5px', cursor: 'pointer'}} onClick={()=> chosenTokens?.includes(token.token.id) ? 
-        removeChosenTokenFeedback(token.token.id) : addChosenTokenCallback(token.token.id)}>
-            {chosenTokens?.includes(token.token.id) ? <StarFull /> : <StarEmpty />}
+        <Flex id={`favorite-token-${token.id}`} style={{margin: '0 5px', cursor: 'pointer'}} onClick={()=> chosenTokens?.includes(token.id) ? 
+        removeChosenTokenFeedback(token.id) : addChosenTokenCallback(token.id)}>
+            {chosenTokens?.includes(token.id) ? <StarFull /> : <StarEmpty />}
         </Flex>
         <CurrencyLogo
         style={{ width: "30px", height: "30px", marginRight: "5px" }}
@@ -182,14 +187,14 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
         color={theme.text1}
         fontSize={"16px"}
         >
-        {token.token.symbol}
+        {token.symbol}
         </Text>
         <Text
         style={{ alignSelf: "center", textAlign: 'center'}}
         color={theme.whiteHalf}
         fontSize={"16px"}
         >
-        {token.token.name}
+        {token.name}
         </Text>
     </TableData>
     <TableData>
@@ -198,7 +203,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
         color={theme.text1}
         fontSize={"16px"}
         >
-        {formattedNum(parseFloat(token.priceUSD).toFixed(5), true)}
+        {formattedNum((parseFloat(token?.derivedETH) * parseFloat(derivedETH)).toFixed(5), true)}
         </Text>
     </TableData>
     <TableData>
@@ -219,7 +224,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
         color={theme.text1}
         fontSize={"16px"}
         >
-        {formattedNum(parseFloat(token.dailyVolumeUSD).toFixed(2), true)}
+        {formattedNum((parseFloat(token?.tradeVolumeUSD) - parseFloat(previousToken?.tradeVolumeUSD)).toFixed(2), true)}
         </Text>
     </TableData>
     <TableData>
@@ -228,7 +233,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
         color={theme.text1}
         fontSize={"16px"}
         >
-        {formattedNum(parseFloat(token.totalLiquidityUSD).toFixed(2), true)}
+        {formattedNum((parseFloat(token?.totalLiquidity) * parseFloat(derivedETH) * (parseFloat(token?.derivedETH))).toFixed(2), true)}
         </Text>
     </TableData>
     <TableData style={{width: '10%'}}>

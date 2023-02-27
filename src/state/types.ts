@@ -67,7 +67,7 @@ interface CorePoolProps {
   feesApr?: number
   liquidity?: {pair:number, pylon:number}
   zrgPrice?: number
-  movrPrice?: number
+  ntvPrice?: number
   rawApr?: number
   stakingTokenPrice?: number
   // earningTokenPrice?: number[]

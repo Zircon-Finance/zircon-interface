@@ -15,7 +15,7 @@ dayjs.extend(utc)
 dayjs.extend(timezone)
 
 export const useSubgraphUrl = () => {
-  const [subgraphUrl, setSubgraphUrl] = useState('https://api.thegraph.com/subgraphs/name/reshyresh/zircon-finance')
+  const [subgraphUrl, setSubgraphUrl] = useState('')
   const {chainId} = useActiveWeb3React()
   useEffect(() => {
     if (chainId === 56) {
@@ -27,7 +27,7 @@ export const useSubgraphUrl = () => {
 }
 
 export const useBlocksSubgraphUrl = () => {
-  const [blockSubgraphUrl, setBlockSubgraphUrl] = useState('https://api.thegraph.com/subgraphs/name/rebase-agency/moonriver-blocks')
+  const [blockSubgraphUrl, setBlockSubgraphUrl] = useState('')
   const {chainId} = useActiveWeb3React()
   useEffect(() => {
     if (chainId === 56) {
@@ -165,49 +165,81 @@ export function useCurrency(currencyId: string | undefined): Currency | null | u
   return isETH ? NATIVE_TOKEN[chainId] : token
 }
 
-export async function getTopTokens(chainId: number, subgraphUrl: string) {
-  let unix = dayjs().tz('GMT').subtract(1, 'day').startOf('day').unix()
-  let currentQuery = `{
-    tokenDayDatas(
-      first: 20
-      orderBy: id
-      orderDirection: desc
-      where: {dailyVolumeUSD_gt: "100", date: ${dayjs().tz('GMT').startOf('day').unix()}}
-    ) {
-      token {
-        id
-        name
-        symbol
-        decimals
-      }
-      priceUSD
-      dailyVolumeUSD
-      totalLiquidityUSD
+export async function getBlockFromTimestamp(timestamp, subgraphUrl) {
+  const blockQuery = `{
+    blocks(first: 1, orderBy: timestamp, orderDirection: asc, where: {timestamp_gt: ${timestamp}, timestamp_lt: ${timestamp + 600}}) {
+      id
+      number
+      timestamp
     }
+  }
+  `
+  let query = await axios.post(subgraphUrl, JSON.stringify({
+      query: blockQuery, 
+      variables: null,
+      operationName: undefined} 
+      ), ).then(
+    res => (console.log('res', res?.data?.data?.blocks[0]?.number),res?.data?.data?.blocks[0]?.number))
+  return query
+}
+
+export async function getTopTokens(chainId: number, subgraphUrl: string, blockSubgraphUrl: string) {
+  const utcOneDayBack = dayjs().tz('GMT').subtract(1, 'day').startOf('minute').unix()
+  const oneDayBlock = await getBlockFromTimestamp(utcOneDayBack, blockSubgraphUrl)
+  const currentBlock = await getBlockFromTimestamp(dayjs().tz('GMT').subtract(1, 'minute').startOf('minute').unix(), blockSubgraphUrl)
+
+  let currentQuery = `{
+    tokens(first: 6, block: {number: ${currentBlock}}, where: {tradeVolumeUSD_gt: "100"}) {
+    id
+    name
+    derivedETH
+    untrackedVolumeUSD
+    txCount
+    totalLiquidity
+    tradeVolumeUSD
+    tradeVolume
+    symbol
+  }
   }`
 
   let oneDayAgoQuery = `{
-    tokenDayDatas(
-      first: 20
-      orderBy: id
-      orderDirection: desc
-      where: {dailyVolumeUSD_gt: "100", date: ${unix}}
-    ) {
-      token {
-        id
-        name
-        symbol
-        decimals
-      }
-      priceUSD
-      dailyVolumeUSD
-      totalLiquidityUSD
+    tokens(first: 6, block: {number: ${oneDayBlock}}, where: {tradeVolumeUSD_gt: "100"}) {
+      id
+      name
+      derivedETH
+      untrackedVolumeUSD
+      txCount
+      totalLiquidity
+      tradeVolumeUSD
+      tradeVolume
+      symbol
     }
   }`
-  let query = await axios.post(subgraphUrl, JSON.stringify({query: currentQuery, variables: null, operationName: undefined} ), ).then(
-    res => res.data.data.tokenDayDatas)
-  let oneDayAgoQueryData = await axios.post(subgraphUrl, JSON.stringify({query: oneDayAgoQuery, variables: null, operationName: undefined} ), ).then(
-    res => res.data.data.tokenDayDatas)
 
-  return {query, oneDayAgoQueryData}
+  let derivedEthQuery = `{
+    bundles(first: 1, orderBy: id, orderDirection: desc, block: {number: ${currentBlock}}) {
+      ethPrice
+    }
+  }
+  `
+
+  let oneDayAgoDerivedEthQuery = `{
+    bundles(first: 1, orderBy: id, orderDirection: desc, block: {number: ${oneDayBlock}}) {
+      ethPrice
+    }
+  }
+  `
+
+  let derivedEthQueryData = await axios.post(subgraphUrl, JSON.stringify({query: derivedEthQuery, variables: null, operationName: undefined} ), ).then(
+    res => res?.data?.data?.bundles[0]?.ethPrice)
+
+  let oneDayAgoDerivedEthQueryData = await axios.post(subgraphUrl, JSON.stringify({query: oneDayAgoDerivedEthQuery, variables: null, operationName: undefined} ), ).then(
+    res => res?.data?.data?.bundles[0]?.ethPrice)
+
+  let query = await axios.post(subgraphUrl, JSON.stringify({query: currentQuery, variables: null, operationName: undefined} ), ).then(
+    res => res?.data?.data?.tokens)
+  let oneDayAgoQueryData = await axios.post(subgraphUrl, JSON.stringify({query: oneDayAgoQuery, variables: null, operationName: undefined} ), ).then(
+    res => res?.data?.data?.tokens)
+
+  return {query, oneDayAgoQueryData, derivedEthQueryData, oneDayAgoDerivedEthQueryData}
 }

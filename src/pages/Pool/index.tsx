@@ -186,7 +186,10 @@ export default function Pool() {
               </div>
               <div style={{width: '85%',display: 'flex', justifyContent: 'center'}}>
                 <ButtonSecondary style={{borderRadius: '17px', marginRight: '5px', padding: '0px', fontWeight: 500, fontSize: width > 992 ? '18px' : '13px', color: theme.pinkBrown}} as={Link} to={'/find'}>{'Import'}</ButtonSecondary>
-                <ButtonPrimary id="add-liquidity-button" as={Link} to={`/add-pro/${chainId === 1285 ? '0x4545E94974AdACb82FC56BCf136B07943e152055' : NATIVE_TOKEN[chainId]?.symbol}`} style={{padding: '18px 0 18px 0', fontSize: width > 992 ? '18px' : '13px'}}>{'Add liquidity'}</ButtonPrimary>
+                <ButtonPrimary id="add-liquidity-button" as={Link} to={`/add-pro/${
+                  chainId === 1285 ? '0x4545E94974AdACb82FC56BCf136B07943e152055' :
+                  chainId === 56 ? '0x808A3F2639a5CD54D64eD768192369BCd729100e' : 
+                  NATIVE_TOKEN[chainId]?.symbol}`} style={{padding: '18px 0 18px 0', fontSize: width > 992 ? '18px' : '13px'}}>{'Add liquidity'}</ButtonPrimary>
               </div>
             </AutoRow>
           </AutoColumn>

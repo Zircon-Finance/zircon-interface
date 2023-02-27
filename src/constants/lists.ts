@@ -4,6 +4,8 @@ export const DEFAULT_TOKEN_LIST_URL =
 
 export const PRICE_API = 'https://api.binance.com/api/v3/ticker/price?symbol='
 
+export const LLAMA_API = 'https://coins.llama.fi/prices/current/'
+
 export const DEFAULT_LIST_OF_LISTS: string[] = [
   DEFAULT_TOKEN_LIST_URL
 ]

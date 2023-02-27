@@ -15,10 +15,10 @@ import {useLastK, usePairInfo, usePylonConstants, usePylonInfo,} from "../../dat
 import {useBlockNumber, useBlockTimestamp} from "../application/hooks";
 import {usePylonFactoryContract} from '../../hooks/useContract'
 import axios from 'axios'
-import {PRICE_API} from '../../constants/lists'
 import {PairState} from '../../data/Reserves'
 import {Decimals, MintSyncParams} from "zircon-sdk/dist/interfaces/pylonInterface";
 import { ethers } from 'ethers'
+import { LLAMA_API } from '../../constants/lists'
 
 const ZERO = JSBI.BigInt(0)
 
@@ -423,41 +423,45 @@ export const useHealthFactorDelta = (  currencyA: Currency | undefined,
   return {healthFactor: healthFactorResult, delta: deltaResult}
 }
 
-export function usePairPrices(token0: Currency, token1: Currency, pair: Pair, pairState: PairState) {
+export function usePairPrices(token0: string, token1: string, pair: Pair, pairState: PairState, chainId: number) {
   async function getPrices() {
-    const price0 = token0 && await axios.get(token0?.symbol === 'USDT' ? `${PRICE_API + 'BUSDUSDT'}` :
-      `${PRICE_API + (token0?.symbol === 'wMOVR' ? 'MOVR' : token0?.symbol === 'WBNB' ? 'BNB' : token0?.symbol)}BUSD`).then
-    ((res) => res?.data?.price).catch((e) => console.log(e))
-    const price1 = token1 && await axios.get(token1?.symbol === 'USDT' ? `${PRICE_API + 'BUSDUSDT'}` :
-    `${PRICE_API + (token1?.symbol === 'wMOVR' ? 'MOVR' : token1?.symbol === 'WBNB' ? 'BNB' : token1?.symbol)}BUSD`).then
-    ((res) => res?.data?.price).catch((e) => console.log(e))
-    return (price0 !== undefined && price1 !== undefined) ? [price0, price1] :
-        price0 !== undefined
-            ? [
-              price0,
-              (pair?.token0 === token0
-                  ? parseFloat(pair?.reserve0?.toFixed(2)) /
-                  parseFloat(pair?.reserve1?.toFixed(2))
-                  : parseFloat(pair?.reserve1?.toFixed(2)) /
-                  parseFloat(pair?.reserve0?.toFixed(2))) * price0,
-            ]
-            : price1 !== undefined
-                ? [
-                  (pair?.token1 === token1
-                      ? parseFloat(pair?.reserve1?.toFixed(2)) /
-                      parseFloat(pair?.reserve0?.toFixed(2))
-                      : parseFloat(pair?.reserve1?.toFixed(2)) /
-                      parseFloat(pair?.reserve0?.toFixed(2))) * price1,
-                  price1,
-                ]
-                : [0, 0];
+  //  const price0 = token0 && await axios.get(token0?.symbol === 'USDT' ? `${PRICE_API + 'BUSDUSDT'}` :
+  //     `${PRICE_API + (token0?.symbol === 'wMOVR' ? 'MOVR' : token0?.symbol === 'WBNB' ? 'BNB' : token0?.symbol)}BUSD`).then
+  //   ((res) => res?.data?.price).catch((e) => console.log(e))
+  //   const price1 = token1 && await axios.get(token1?.symbol === 'USDT' ? `${PRICE_API + 'BUSDUSDT'}` :
+  //   `${PRICE_API + (token1?.symbol === 'wMOVR' ? 'MOVR' : token1?.symbol === 'WBNB' ? 'BNB' : token1?.symbol)}BUSD`).then
+  //   ((res) => res?.data?.price).catch((e) => console.log(e))
+  //   return (price0 !== undefined && price1 !== undefined) ? [price0, price1] :
+  //       price0 !== undefined
+  //           ? [
+  //             price0,
+  //             (pair?.token0 === token0
+  //                 ? parseFloat(pair?.reserve0?.toFixed(2)) /
+  //                 parseFloat(pair?.reserve1?.toFixed(2))
+  //                 : parseFloat(pair?.reserve1?.toFixed(2)) /
+  //                 parseFloat(pair?.reserve0?.toFixed(2))) * price0,
+  //           ]
+  //           : price1 !== undefined
+  //               ? [
+  //                 (pair?.token1 === token1
+  //                     ? parseFloat(pair?.reserve1?.toFixed(2)) /
+  //                     parseFloat(pair?.reserve0?.toFixed(2))
+  //                     : parseFloat(pair?.reserve1?.toFixed(2)) /
+  //                     parseFloat(pair?.reserve0?.toFixed(2))) * price1,
+  //                 price1,
+  //               ]
+  //               : [0, 0];
+  // }
+  const key0 = `${chainId === 1285 ? 'moonriver' : 'bsc'}:${token0}`
+  const key1 = `${chainId === 1285 ? 'moonriver' : 'bsc'}:${token1}`
+  const price0 = token0 !== undefined && await axios.get(`${LLAMA_API + key0}`).then((res) => res?.data?.coins?.[key0]?.price).catch((e) => console.log(e)) || 0
+  const price1 = token1 !== undefined && await axios.get(`${LLAMA_API + key1}`).then((res) => res?.data?.coins?.[key1]?.price).catch((e) => console.log(e)) || 0
+  return [price0, price1]
   }
   const [prices, setPrices] = useState([0,0])
-  // console.log('reserves', pair?.reserve0?.toFixed(2), pair?.reserve1?.toFixed(2))
   useEffect(() => {
     getPrices().then((res) => setPrices(res)).catch((e) => console.log(e))
-    // console.log('Prices: ', prices)
-  }, [token0, token1, pairState])
+  }, [token0, token1, chainId])
   return prices
 }
 

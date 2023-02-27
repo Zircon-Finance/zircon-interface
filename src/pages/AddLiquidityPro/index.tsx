@@ -1075,7 +1075,7 @@ export default function AddLiquidityPro({
   const health = healthFactor
   console.log("FF::", pylonPair?.address)
   const [pairState,pair] = usePair(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B])
-  const prices = usePairPrices(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B], pair, pairState)
+  const prices = usePairPrices(wrappedCurrency(currencyA, chainId)?.address, wrappedCurrency(currencyB, chainId)?.address, pair, pairState, chainId)
 
   const showApproveCondition = (approvalA === ApprovalState.NOT_APPROVED ||
     approvalA === ApprovalState.PENDING ||

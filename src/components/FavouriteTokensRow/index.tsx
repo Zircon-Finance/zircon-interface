@@ -12,18 +12,18 @@ import CurrencyLogo from '../CurrencyLogo';
 import RepeatIcon from '../RepeatIcon';
 import { ArrowMarket, DialogContainer, StarFull } from '../TopTokensRow';
 
-const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) => {
+const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap, derivedETH, oneDayDerivedETH}) => {
     const {chainId} = useActiveWeb3React()
     const currency = useCurrency(token)
     const [hoverPlus, setHoverPlus] = React.useState(false)
     const allTokens = useAllTokens()
     const [hoverSwap, setHoverSwap] = React.useState(false)
     const [hovered, setHovered] = React.useState(false);
-    const tokenData = topTokens.find((t) => t.token.id === token)
-    const tokenDataPrevious = topTokensPrevious.find((t) => t.token.id === token)
+    const tokenData = topTokens.find((t) => t.id === token)
+    const tokenDataPrevious = topTokensPrevious.find((t) => t.id === token)
     const [,,removeChosenTokenCallback] = useChosenTokens();
-    const changePercent = (((parseFloat(tokenData?.priceUSD) - parseFloat(tokenDataPrevious?.priceUSD)) / 
-    parseFloat(tokenDataPrevious?.priceUSD)) * 100).toFixed(2);
+    const changePercent = ((((parseFloat(tokenData?.derivedETH) * parseFloat(derivedETH)) - (parseFloat(tokenDataPrevious?.derivedETH) * parseFloat(oneDayDerivedETH))) / 
+    (parseFloat(tokenDataPrevious?.derivedETH) * parseFloat(oneDayDerivedETH))) * 100).toFixed(2)
     const theme = useTheme();
 
     const plusContent = (
@@ -95,7 +95,7 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap}) 
             style={{ display: "flex", position: 'sticky' }}
             onMouseEnter={() => setHovered(true)}
           >
-            <Link to={`/add-pro/${tokenData?.token.id}/`}>
+            <Link to={`/add-pro/${tokenData?.id}/`}>
               <IconButton
                 style={{
                   background: hoverPlus ? '#B05D98' : theme.slippageActive,

@@ -197,10 +197,10 @@ export default function Swap() {
 
   useEffect(() => {
     getTopTokens(chainId, subgraphUrl, blockSubgraphUrl).then((res) => {
-      setTopTokens(res.query)
-      setTopTokensPrevious(res.oneDayAgoQueryData)
-      setDerivedETH(res.derivedEthQueryData)
-      setOneDayDerivedETH(res.oneDayAgoDerivedEthQueryData)
+      setTopTokens(res.query ? res.query : [])
+      setTopTokensPrevious(res.oneDayAgoQueryData ? res.oneDayAgoQueryData : [])
+      setDerivedETH(res.derivedEthQueryData ? res.derivedEthQueryData : [])
+      setOneDayDerivedETH(res.oneDayAgoDerivedEthQueryData ? res.oneDayAgoDerivedEthQueryData : [])
     }).catch((err) => {
       console.log('error fetching top tokens', err)
     })

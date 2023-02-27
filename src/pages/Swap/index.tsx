@@ -321,14 +321,14 @@ export default function Swap() {
         return orderBy(tokensToSort, (token: any) => parseFloat(token.derivedETH) * parseFloat(derivedETH) ?? 0, 'desc')
       case 'price change 24h':
           return orderBy(tokensToSort, (token: any) => {
-          const previousToken = topTokensPrevious.find((t) => t.id === token.id)
+          const previousToken = topTokensPrevious?.find((t) => t.id === token.id)
           const changePercent = ((((parseFloat(token?.derivedETH) * parseFloat(derivedETH)) - (parseFloat(previousToken?.derivedETH) * parseFloat(oneDayDerivedETH))) / 
           (parseFloat(previousToken?.derivedETH) * parseFloat(oneDayDerivedETH))) * 100).toFixed(2)
           return changePercent !== 'NaN' ? parseFloat(changePercent) : parseFloat('-100')
         }, 'desc')
       case 'volume 24h':
         return orderBy(tokensToSort, (token: any) => {
-          const previousToken = topTokensPrevious.find((t) => t?.id === token?.id)
+          const previousToken = topTokensPrevious?.find((t) => t?.id === token?.id)
           return (parseFloat(token?.tradeVolumeUSD) - parseFloat(previousToken?.tradeVolumeUSD))
         } , 'desc')
       case 'tvl':

@@ -14,6 +14,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useTranslation } from 'react-i18next'
 import { Text } from 'rebass'
 import { useIsDarkMode } from '../../state/user/hooks'
+import { Dots } from '../swap/styleds'
 
 const InputRow = styled.div<{ selected: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -258,9 +259,11 @@ export default function CurrencyInputPanel({
                   </div>
                   {currency && !hideBalance &&
                   <Text style={{paddingRight: '0.75rem', alignSelf: 'center', marginTop: showMaxButton ? '10px' : '0px'}} color={theme.whiteHalf}>
-                    {`~${price && (value === '' ? (price*parseFloat(selectedCurrencyBalance?.toFixed(Math.min(6, currency?.decimals)))).toFixed(2) :
+                    {Number.isNaN(parseFloat(selectedCurrencyBalance?.toFixed(Math.min(6, currency?.decimals)))) && <Dots>{'Loading'}</Dots>}
+                    {`${price && !Number.isNaN(parseFloat(selectedCurrencyBalance?.toFixed(Math.min(6, currency?.decimals)))) &&
+                     (value === '' ? '~'+(price*parseFloat(selectedCurrencyBalance?.toFixed(Math.min(6, currency?.decimals)))).toFixed(2) :
                      (price*parseFloat(value)).toFixed(2))
-                    || ''} ${price > 0 ? `$` : ''}` /* This was added, it's supposed to convert to $ */}
+                    || ''} ${price > 0 && !Number.isNaN(parseFloat(selectedCurrencyBalance?.toFixed(Math.min(6, currency?.decimals)))) ? `$` : ''}`}
                   </Text>
                   }
                 </TYPE.body>

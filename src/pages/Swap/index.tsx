@@ -182,7 +182,7 @@ export default function Swap() {
   // mark when a user has submitted an approval, reset onTokenSelection for input field
   useEffect(() => {
     onCurrencySelection(Field.INPUT, NATIVE_TOKEN[chainId])
-  }, [])
+  }, [chainId])
 
   const subgraphUrl = useSubgraphUrl()
   const blockSubgraphUrl = useBlocksSubgraphUrl()
@@ -194,9 +194,12 @@ export default function Swap() {
       setApprovalSubmitted(true)
     }
   }, [approval, approvalSubmitted, chainId, subgraphUrl])
+  console.log('subgraphUrl', subgraphUrl)
 
   useEffect(() => {
-    getTopTokens(chainId, subgraphUrl, blockSubgraphUrl).then((res) => {
+    ((chainId === 1285 && subgraphUrl === 'https://api.thegraph.com/subgraphs/name/reshyresh/zircon-finance') || 
+    (chainId === 56 && subgraphUrl === 'https://api.thegraph.com/subgraphs/name/reshyresh/zi')) &&
+     getTopTokens(chainId, subgraphUrl, blockSubgraphUrl).then((res) => {
       setTopTokens(res.query ? res.query : [])
       setTopTokensPrevious(res.oneDayAgoQueryData ? res.oneDayAgoQueryData : [])
       setDerivedETH(res.derivedEthQueryData ? res.derivedEthQueryData : [])

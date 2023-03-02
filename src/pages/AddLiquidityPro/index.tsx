@@ -218,7 +218,7 @@ export default function AddLiquidityPro({
         dispatch(fetchPoolsPublicDataAsync(chainId, currentBlock))
         dispatch(fetchPoolsUserDataAsync({chainId, account, pools}))
       }
-      fetchPoolsDataWithFarms()
+      (chainId === 1285 || chainId === 56) && fetchPoolsDataWithFarms()
   }, [account, chainId, pools.length])
   const farm = pools.find(
       (f) => chainId === 1285 ? (

@@ -119,7 +119,7 @@ export const useBlockedApiData = () => {
       const data = await result.json();
       setBlockedApiData(data);
     };
-    fetchData();
+    (chainId === 1285 || chainId === 56) && fetchData();
   }, [chainId]);
 
   return blockedApiData;

@@ -157,6 +157,7 @@ export default function Header() {
   const { account } = useActiveWeb3React()
 
   const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
+  console.log('userEthBalance', userEthBalance)
   //const [isDark] = useDarkModeManager()
   const location = useLocation();
   const { width } = useWindowDimensions();
@@ -225,7 +226,7 @@ export default function Header() {
           <AccountElement active={!!account} style={{ pointerEvents: 'auto', height: '44px' }}>
               {account && userEthBalance ? (
                 <BalanceText style={{ flexShrink: 0 }} pl="1.25rem" pr="0.5rem" fontWeight={400}>
-                  {parseFloat(userEthBalance?.toFixed(10)) <= 0.0001 ? '0.0..' : userEthBalance?.toFixed(4)} {NATIVE_TOKEN[chainId].symbol}
+                  {parseFloat(userEthBalance?.toFixed(10)) <= 0.0001 ? '0.0..' : userEthBalance?.toFixed(4)} {NATIVE_TOKEN[chainId].symbol ?? 'ETH'}
                 </BalanceText>
               ) : null}
               <Web3Status />
@@ -259,7 +260,7 @@ export default function Header() {
            <AccountElement active={!!account} style={{ pointerEvents: 'auto'}}>
                 {account && userEthBalance ? (
                   <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={400}>
-                    {parseFloat(userEthBalance?.toFixed(10)) <= 0.0001 ? '0.0..' : userEthBalance?.toFixed(4)} {NATIVE_TOKEN[chainId].symbol}
+                    {parseFloat(userEthBalance?.toFixed(10)) <= 0.0001 ? '0.0..' : userEthBalance?.toFixed(4)} {NATIVE_TOKEN[chainId].symbol ?? 'ETH'}
                   </BalanceText>
                 ) : null}
                 <Web3Status />

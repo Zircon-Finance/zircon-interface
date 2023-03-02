@@ -24,6 +24,7 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap, d
     const [,,removeChosenTokenCallback] = useChosenTokens();
     const changePercent = ((((parseFloat(tokenData?.derivedETH) * parseFloat(derivedETH)) - (parseFloat(tokenDataPrevious?.derivedETH) * parseFloat(oneDayDerivedETH))) / 
     (parseFloat(tokenDataPrevious?.derivedETH) * parseFloat(oneDayDerivedETH))) * 100).toFixed(2)
+    console.log('Calculating change percent: ', 'old price: ', parseFloat(tokenDataPrevious?.derivedETH) * parseFloat(oneDayDerivedETH), 'new price: ', parseFloat(tokenData?.derivedETH) * parseFloat(derivedETH), 'change percent: ', changePercent)
     const theme = useTheme();
 
     const plusContent = (

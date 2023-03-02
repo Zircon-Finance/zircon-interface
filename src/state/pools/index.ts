@@ -30,13 +30,13 @@ export const fetchPoolsPublicDataAsync = (chainId: number, currentBlock: number)
     const apiData = await getApiData(chainId)
 
     // Get start-end block for each pool
-    const blockLimits = apiData?.map((pool) => {
+    const blockLimits = apiData ? apiData.map((pool) => {
       return {
         contractAddress: pool.contractAddress,
         startBlock: parseInt(pool.startBlock),
         endBlock: parseInt(pool.endBlock)
       }
-    })
+    }) : []
 
     // const poolsInformation = await fetchPools(chainId, apiData)
     const priceZRGNTV = {zrg: apiData[0]?.zrgPrice, ntv: apiData[0]?.ntvPrice}

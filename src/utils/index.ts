@@ -28,7 +28,7 @@ export function getEtherscanLink(chainId: ChainId, data: string, type: 'transact
   //const prefix = `https://${DEVSCAN_PREFIXES[chainId] || DEVSCAN_PREFIXES[1]}etherscan.io`
   const prefix = chainId === 1285 ? 'https://moonriver.moonscan.io' : 
   chainId === 1287 ? 'https://moonbase-blockscout.testnet.moonbeam.network' : chainId === 56 ?
-  'https://bscscan.com' : 'https://goerli.arbiscan.io'
+  'https://bscscan.com' : chainId === 421613 ? 'https://goerli.arbiscan.io' : 'https://arbiscan.io/'
   switch (type) {
     case 'transaction': {
       return `${prefix}/tx/${data}`

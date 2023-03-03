@@ -205,8 +205,8 @@ function Web3StatusInner() {
     chainId === 56 || 
     chainId === 1287 || 
     chainId === 97 || 
-    chainId === 421613 //||
-    //chainId === 42161
+    chainId === 421613 ||
+    chainId === 42161
     )) {
     return (
       <Web3StatusConnected id="web3-status-connected" onClick={toggleWalletModal} pending={hasPendingTransactions}>
@@ -228,8 +228,8 @@ function Web3StatusInner() {
     chainId === 56 || 
     chainId === 1287 || 
     chainId === 97 || 
-    chainId === 421613 //|| 
-    //chainId === 42161
+    chainId === 421613 || 
+    chainId === 42161
     )) {
     return (
       <Web3StatusError onClick={toggleWalletModal}>

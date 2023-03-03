@@ -182,10 +182,10 @@ export function ChainPoolTab({ active }: { active: 'bsc' | 'moonriver' | 'arbitr
       <circle cx="2.5" cy="3" r="2.5" fill={darkMode ? "#CA90BB" : '#9E4D86'}/>
     </svg>)
   }
-  const supported_networks = [56, 1285, 421613]
+  const supported_networks = [56, 1285, 42161, 421613]
 
   const Row = ({ chainId, currentChainId }) => { return(
-    <ChainRow onClick={()=> {connectNet(chainId === 56 ? 'bsc' : chainId === 1285 ? 'moonriver' : 'arbGoerli'); toggleFilters()}}>
+    <ChainRow onClick={()=> {connectNet(chainId === 56 ? 'bsc' : chainId === 1285 ? 'moonriver' : 'arbitrum'); toggleFilters()}}>
       <Flex>
         {chainId === 56 ? <BnbLogo /> : chainId === 1285 ? <MoonriverLogo /> : <ArbitrumLogo />}
         <Text ml='5px'>{chainId === 56 ? 'BSC' : chainId === 1285 ? 'Moonriver' : 'Arbitrum'}</Text>

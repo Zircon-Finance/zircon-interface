@@ -143,8 +143,8 @@ export default function Pool() {
                 chainId === 56 || 
                 chainId === 1287 || 
                 chainId === 97 || 
-                chainId === 421613 //|| 
-                //chainId === 42161
+                chainId === 421613 || 
+                chainId === 42161
                 ) ? (
                   <LightCard padding="40px" style={{border: 'none'}}>
                     <TYPE.body color={theme.text5} textAlign="center">

@@ -122,7 +122,7 @@ const moonbeamChainId = '0x504';
 const moonriverChainId = '0x505';
 const moonbaseAlphaChainId = '0x507';
 const bscChainId = '0x38';
-const arbGoerliChainId = '0x66EED';
+const arbitrumChainId = '0xA4B1';
 
 const supportedNetworks = {
   moonbeam: {
@@ -169,11 +169,11 @@ const supportedNetworks = {
       decimals: 18,
     },
   },
-  arbGoerli: {
-    chainId: arbGoerliChainId,
-    chainName: 'Arbitrum Goerli Testnet',
-    rpcUrls: ['https://endpoints.omniatech.io/v1/arbitrum/goerli/public'],
-    blockExplorerUrls: ['https://goerli.arbiscan.io/'],
+  arbitrum: {
+    chainId: arbitrumChainId,
+    chainName: 'Arbitrum Mainnet',
+    rpcUrls: ['https://arbitrum.blockpi.network/v1/rpc/public'],
+    blockExplorerUrls: ['https://arbiscan.io/'],
     nativeCurrency: {
       name: 'ETH',
       symbol: 'ETH',
@@ -404,8 +404,8 @@ export default function WalletModal({
       chainId === 56 || 
       chainId === 1287 || 
       chainId === 97 || 
-      chainId === 421613 //|| 
-      //chainId === 42161
+      chainId === 421613 || 
+      chainId === 42161
       )) {
       return (
         <UpperSection>

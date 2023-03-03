@@ -182,7 +182,7 @@ export function ChainPoolTab({ active }: { active: 'bsc' | 'moonriver' | 'arbitr
       <circle cx="2.5" cy="3" r="2.5" fill={darkMode ? "#CA90BB" : '#9E4D86'}/>
     </svg>)
   }
-  const supported_networks = [56, 1285, 42161, 421613]
+  const supported_networks = [56, 1285, 42161]
 
   const Row = ({ chainId, currentChainId }) => { return(
     <ChainRow onClick={()=> {connectNet(chainId === 56 ? 'bsc' : chainId === 1285 ? 'moonriver' : 'arbitrum'); toggleFilters()}}>

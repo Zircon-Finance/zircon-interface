@@ -122,6 +122,7 @@ const moonbeamChainId = '0x504';
 const moonriverChainId = '0x505';
 const moonbaseAlphaChainId = '0x507';
 const bscChainId = '0x38';
+const arbGoerliChainId = '0x66EED';
 
 const supportedNetworks = {
   moonbeam: {
@@ -165,6 +166,17 @@ const supportedNetworks = {
     nativeCurrency: {
       name: 'BNB',
       symbol: 'BNB',
+      decimals: 18,
+    },
+  },
+  arbGoerli: {
+    chainId: arbGoerliChainId,
+    chainName: 'Arbitrum Goerli Testnet',
+    rpcUrls: ['https://endpoints.omniatech.io/v1/arbitrum/goerli/public'],
+    blockExplorerUrls: ['https://goerli.arbiscan.io/'],
+    nativeCurrency: {
+      name: 'ETH',
+      symbol: 'ETH',
       decimals: 18,
     },
   },

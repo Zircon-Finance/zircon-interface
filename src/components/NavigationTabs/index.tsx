@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import styled, { useTheme } from 'styled-components'
 import { darken } from 'polished'
 import { useTranslation } from 'react-i18next'
@@ -8,13 +8,18 @@ import { ArrowLeft } from 'react-feather'
 import { RowBetween } from '../Row'
 import QuestionHelper from '../QuestionHelper'
 import Settings from '../Settings'
-import { useBlockedApiData, useWindowDimensions } from '../../hooks'
+import { useActiveWeb3React, useBlockedApiData, useWindowDimensions } from '../../hooks'
 import { connectNet } from '../WalletModal'
 // import MoonbeamLogo from '../MoonbeamLogo'
 import MoonriverLogo from '../MoonriverLogo'
 import BnbLogo from '../BnbLogo'
 import { DialogContainer } from '../TopTokensRow'
-import { Text } from 'rebass'
+import { Flex, Text } from 'rebass'
+import { ControlContainer } from '../../views/Farms/Farms'
+import { ArrowIcon } from '../../views/Farms/components/FarmTable/Details'
+import { Separator } from '../SearchModal/styleds'
+import { useOnClickOutside } from '../../hooks/useOnClickOutside'
+import ArbitrumLogo from '../ArbitrumLogo'
 
 const Tabs = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -71,6 +76,44 @@ const StyledArrowLeft = styled(ArrowLeft)`
   stroke: ${({ theme }) => theme.pinkBrown} !important;
 `
 
+const Container = styled(ControlContainer)`
+  position: fixed;
+  top: 95px;
+  right: 0px;
+  padding: 5px 0;
+  background: ${({ theme }) => theme.darkMode ? '#5d3e3a' : '#FCFBFC'};
+  box-shadow: ${({ theme }) => theme.darkMode ? 'none' : '0px 1px 2px rgba(0, 0, 0, 0.15)'};
+  border-radius: 17px;
+  width: 100%;
+  display: flex;
+  flex-direction: column !important;
+  flex-wrap: nowrap !important;
+  max-height: 300px !important;
+  @media (min-width: 700px) {
+    width: 200px;
+    right: 0px;
+    top: 50px;
+  }
+  @media (min-width: 1100px) {
+    background: ${({ theme }) => theme.darkMode ? 'rgba(213, 174, 175, 0.15)' : '#FCFBFC'};
+    top: 75px;
+    right: 25px;
+  }
+  z-index: 2;
+`
+
+const ChainRow = styled(Flex)`
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  width: 95%;
+  border-radius: 12px;
+  &:hover {
+    cursor: pointer;
+    background: ${({ theme }) => theme.darkMode ? 'rgba(213, 174, 175, 0.1)' : '#F2F0F1'};
+  }
+`
+
 export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' }) {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
@@ -119,18 +162,60 @@ export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' }) {
   )
 }
 
-export function ChainPoolTab({ active }: { active: 'bsc' | 'moonriver' }) {
+export function ChainPoolTab({ active }: { active: 'bsc' | 'moonriver' | 'arbitrum' }) {
   const { width } = useWindowDimensions();
+  const node = useRef<HTMLDivElement>()
+  const theme = useTheme()
+  const {chainId} = useActiveWeb3React()
+  const [showOptions, setShowOptions] = useState(false)
+  const [fakeShowOptions, setFakeShowOptions] = useState(false)
+  const toggleFilters = () => {
+    setFakeShowOptions(!fakeShowOptions)
+    setTimeout(() => {
+      setShowOptions(!showOptions)
+    }, 200)
+  }
+  useOnClickOutside(node, showOptions ? toggleFilters : undefined)
+
+  const activeEllipsis = (darkMode) => { return(
+    <svg width="5" height="6" viewBox="0 0 5 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="2.5" cy="3" r="2.5" fill={darkMode ? "#CA90BB" : '#9E4D86'}/>
+    </svg>)
+  }
+  const supported_networks = [56, 1285, 421613]
+
+  const Row = ({ chainId, currentChainId }) => { return(
+    <ChainRow onClick={()=> {connectNet(chainId === 56 ? 'bsc' : chainId === 1285 ? 'moonriver' : 'arbGoerli'); toggleFilters()}}>
+      <Flex>
+        {chainId === 56 ? <BnbLogo /> : chainId === 1285 ? <MoonriverLogo /> : <ArbitrumLogo />}
+        <Text ml='5px'>{chainId === 56 ? 'BSC' : chainId === 1285 ? 'Moonriver' : 'Arbitrum'}</Text>
+      </Flex>
+      {chainId === currentChainId && activeEllipsis(theme.darkMode)}
+    </ChainRow>)
+  }
+
   return (
-    <Tabs style={{ width: width >= 700 ? 'auto' : '100%', padding: '5px', marginLeft: width >= 700 ? '5px' : '0px', marginRight: width >= 700 ? '5px' : '0px'}}>
-      <StyledNavLink id={`swap-chain-bsc`} to={'#'} onClick={()=> {connectNet('bsc')}} isActive={() => active === 'bsc'} style={{padding: '5px, 8px, 5px, 8px'}}>
-        <BnbLogo />
-        <Text ml='5px'>{'BSC'}</Text>
+    <Tabs ref={node as any} style={{ width: width >= 700 ? 'auto' : '100%', padding: '5px', marginLeft: width >= 700 ? '5px' : '0px', marginRight: width >= 700 ? '5px' : '0px'}}>
+      <StyledNavLink onClick={toggleFilters} id={`swap-chain`} to={'#'}  isActive={() => false} style={{padding: '5px, 8px, 5px, 8px', width: '100%'}}>
+        {chainId === 56 ? <BnbLogo /> : chainId === 1285 ? <MoonriverLogo /> : <ArbitrumLogo />}
+        <Text ml='5px'>{chainId === 56 ? 'BSC' : chainId === 1285 ? 'Moonriver' : 'Arbitrum'}</Text>
+        <ArrowIcon toggled={showOptions} style={{marginLeft: '5px', transform: showOptions ? 'rotate(180deg)' : 'rotate(0deg)'}} />
       </StyledNavLink>
-      <StyledNavLink id={`swap-chain-moonriver`}to={'#'} onClick={()=> {connectNet('moonriver')}} isActive={() => active === 'moonriver'} style={{padding: '5px, 8px, 5px, 8px'}}>
+      {(showOptions) && <Container active={fakeShowOptions}>
+        <Flex p='10px'>
+          <Text fontSize={'13px'} color={theme.darkMode ? 'rgba(255, 255, 255, 0.6)' : '#6A6768'}>{'Select a network'}</Text>
+        </Flex>
+        <Separator style={{marginBottom: '5px'}} />
+        {supported_networks.map((supportedChainId) => {
+          return (
+            <Row chainId={supportedChainId} currentChainId={chainId} />
+          )
+        })}
+        </Container>}
+      {/* <StyledNavLink id={`swap-chain-moonriver`}to={'#'} onClick={()=> {connectNet('moonriver')}} isActive={() => active === 'moonriver'} style={{padding: '5px, 8px, 5px, 8px'}}>
         <MoonriverLogo />
         <Text ml='5px'>{'Moonriver'}</Text>
-      </StyledNavLink>
+      </StyledNavLink> */}
     </Tabs>
   )
 }

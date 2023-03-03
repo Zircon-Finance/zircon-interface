@@ -82,7 +82,7 @@ const collapseAnimation = keyframes`
   }
 `
 
-const ControlContainer = styled.div<{ active: boolean }>`
+export const ControlContainer = styled.div<{ active: boolean }>`
   animation: ${({ active }) =>
       active
           ? css`

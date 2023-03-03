@@ -30,7 +30,6 @@ const compoundPool = async (sousChefContract, batchContract, earnings, pool: Des
   account,
   pool.contractAddress,
   Math.ceil(Date.now() / 1000) + deadline]
-  console.log('args', args)
 
 
   const harvestTokenCallData = sousChefContract.interface.encodeFunctionData('deposit', ['0'])

@@ -56,12 +56,13 @@ import FarmRepeatIcon from '../../components/FarmRepeatIcon'
 import { Row, SkeletonTable, StarFull, TopTokensRow } from '../../components/TopTokensRow'
 import FavTokensRow from '../../components/FavouriteTokensRow'
 import { Separator } from '../../components/SearchModal/styleds'
-import { usePools } from '../../state/pools/hooks'
+// import { usePools } from '../../state/pools/hooks'
 import { Skeleton } from '@pancakeswap/uikit'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
 
 export default function Swap() {
-  const {pools} = usePools()
+  // const {pools} = usePools()
+  const pools = []
   const { t } = useTranslation()
   const loadedUrlParams = useDefaultsFromURLSearch()
   const allTokens = useAllTokens()
@@ -194,7 +195,6 @@ export default function Swap() {
       setApprovalSubmitted(true)
     }
   }, [approval, approvalSubmitted, chainId, subgraphUrl])
-  console.log('subgraphUrl', subgraphUrl)
 
   useEffect(() => {
     ((chainId === 1285 && subgraphUrl === 'https://api.thegraph.com/subgraphs/name/reshyresh/zircon-finance') || 
@@ -612,7 +612,8 @@ export default function Swap() {
 
     {/* // User chosen tokens */}    
     {chosenTokens?.filter((token) => Object.keys(allTokens).map((token) => token.toLowerCase()).includes(token.toLowerCase())).length > 0 && (
-      <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none'}}>
+      <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none',
+      visibility: chainId === 1285 || chainId === 56 ? 'visible' : 'hidden'}}>
         <Flex mt='auto' mb="auto" ml='20px'>
             <StarFull />
           </Flex>
@@ -626,7 +627,8 @@ export default function Swap() {
       </Flex>
       )}
 
-    <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none'}}>
+    <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none',
+    visibility: chainId === 1285 || chainId === 56 ? 'visible' : 'hidden'}}>
     <table
       style={{
         width: "100%",

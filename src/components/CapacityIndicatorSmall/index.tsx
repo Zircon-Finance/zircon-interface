@@ -35,7 +35,6 @@ const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan
   const {width} = useWindowDimensions()
 
   const TooltipContentRisk: React.FC<Props> = ({gamma, health, isFloat}) => {
-    console.log('Anchor decimals: ', currencies)
     return (
     <ToolTip style={
       hoverPage === 'addLiq' ? {bottom: '140px', left: '260px'} :

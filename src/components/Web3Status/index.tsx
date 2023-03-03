@@ -4,7 +4,7 @@ import { darken } from 'polished'
 import React, { useMemo } from 'react'
 import { Activity } from 'react-feather'
 import { useTranslation } from 'react-i18next'
-import styled, { css } from 'styled-components'
+import styled, { css, useTheme } from 'styled-components'
 import CoinbaseWalletIcon from '../../assets/images/coinbaseWalletIcon.svg'
 import FortmaticIcon from '../../assets/images/fortmaticIcon.png'
 import PortisIcon from '../../assets/images/portisIcon.png'
@@ -26,7 +26,7 @@ import Loader from '../Loader'
 
 import { RowBetween } from '../Row'
 import WalletModal from '../WalletModal'
-import { useActiveWeb3React } from '../../hooks'
+import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
 
 const IconWrapper = styled.div<{ size?: number }>`
   ${({ theme }) => theme.flexColumnNoWrap};
@@ -182,6 +182,7 @@ function Web3StatusInner() {
   const { t } = useTranslation()
   const { account, connector, error } = useWeb3React()
   const {chainId} = useActiveWeb3React()
+  const {width} = useWindowDimensions()
 
   const { ENSName } = useENSName(account ?? undefined)
 
@@ -197,6 +198,7 @@ function Web3StatusInner() {
   const hasPendingTransactions = !!pending.length
   const hasSocks = useHasSocks()
   const toggleWalletModal = useWalletModalToggle()
+  const theme = useTheme()
 
   if (account && (
     chainId === 1285 || 
@@ -210,12 +212,12 @@ function Web3StatusInner() {
       <Web3StatusConnected id="web3-status-connected" onClick={toggleWalletModal} pending={hasPendingTransactions}>
         {hasPendingTransactions ? (
           <RowBetween>
-            <Text>{pending?.length} Pending</Text> <Loader stroke="white" />
+            <Text style={{fontSize: width >= 500 ? '16px' : '13px'}}>{pending?.length} Pending</Text> <Loader stroke="white" />
           </RowBetween>
         ) : (
           <>
             {hasSocks ? SOCK : null}
-            <Text>{ENSName || shortenAddress(account)}</Text>
+            {width >= 420 && <Text style={{fontSize: width >= 500 ? '16px' : '13px', color: theme.whiteHalf}}>{ENSName || shortenAddress(account)}</Text>}
           </>
         )}
         {!hasPendingTransactions && connector && <StatusIcon connector={connector} />}

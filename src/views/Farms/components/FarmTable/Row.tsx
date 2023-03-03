@@ -167,7 +167,6 @@ const collapseAnimation = keyframes`
 
 const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const [isVisible, setIsVisible] = useState(false)
-  console.log('Currencies: ', props?.farm?.token, props?.farm?.quoteToken)
   const {
     details,
     userDataReady,

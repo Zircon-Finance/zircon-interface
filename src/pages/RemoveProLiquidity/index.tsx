@@ -379,8 +379,6 @@ useEffect(() => {
   }
 }, [hasConfirmed])
 
-  console.log('Slippage: ', rememberedSlippage)
-
 
 const NoSlippageModalHeader = () => (
   <AutoColumn gap={'5px'} style={{ marginTop: '15px' }}>

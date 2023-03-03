@@ -319,7 +319,6 @@ export default function AddLiquidityPro({
       parsedAmounts[getField(true)],
       PYLON_ROUTER_ADDRESS[chainId ? chainId : ""]
   );
-  console.log('approvalA: ', approvalA)
   const [approvalB, approveBCallback] = useApproveCallback(
       parsedAmounts[getField(false)],
       PYLON_ROUTER_ADDRESS[chainId ? chainId : ""]

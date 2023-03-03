@@ -118,7 +118,6 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
     const [chosenTokens, addChosenTokenCallback, removeChosenTokenFeedback] = useChosenTokens();
     const changePercent = ((((parseFloat(token?.derivedETH) * parseFloat(derivedETH)) - (parseFloat(previousToken?.derivedETH) * parseFloat(oneDayDerivedETH))) / 
       (parseFloat(previousToken?.derivedETH) * parseFloat(oneDayDerivedETH))) * 100).toFixed(2);
-      console.log('change percent args', token?.derivedETH, derivedETH, previousToken?.derivedETH, oneDayDerivedETH)
     const toggleLiquidityClick = () => {
       setLiquidityClick(!liquidityClick)
     }

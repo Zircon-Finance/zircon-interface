@@ -121,11 +121,11 @@ export default function RemoveProLiquidity({
             ? '<1'
             : parsedAmounts[Field.LIQUIDITY_PERCENT].toFixed(0),
     [Field.LIQUIDITY]:
-        independentField === Field.LIQUIDITY ? typedValue : parsedAmounts[Field.LIQUIDITY]?.toSignificant(6) ?? '',
+        independentField === Field.LIQUIDITY ? typedValue : parsedAmounts[Field.LIQUIDITY] ? parsedAmounts[Field.LIQUIDITY]?.toSignificant(6) : '' ?? '',
     [Field.CURRENCY_A]:
-        independentField === Field.CURRENCY_A ? typedValue : parsedAmounts[Field.CURRENCY_A]?.toSignificant(6) ?? '',
+        independentField === Field.CURRENCY_A ? typedValue : parsedAmounts[Field.CURRENCY_A]  ? parsedAmounts[Field.CURRENCY_A]?.toSignificant(6) : '' ?? '',
     [Field.CURRENCY_B]:
-        independentField === Field.CURRENCY_B ? typedValue : parsedAmounts[Field.CURRENCY_B]?.toSignificant(6) ?? ''
+        independentField === Field.CURRENCY_B ? typedValue : parsedAmounts[Field.CURRENCY_B] ? parsedAmounts[Field.CURRENCY_B]?.toSignificant(6) : '' ?? ''
   }
 
   const atMaxAmount = parsedAmounts[Field.LIQUIDITY_PERCENT]?.equalTo(new Percent('1'))
@@ -265,7 +265,7 @@ export default function RemoveProLiquidity({
       )
     )
     */
-    const safeGasEstimates: BigNumber[] = [BigNumber.from('5000000')]
+    const safeGasEstimates: BigNumber[] = [BigNumber.from('1000000')]
     const indexOfSuccessfulEstimation = safeGasEstimates.findIndex(safeGasEstimate =>
         BigNumber.isBigNumber(safeGasEstimate)
     )
@@ -511,7 +511,7 @@ const SlippageWarningModal = () => (
             <RowFixed>
               <DoubleCurrencyLogo currency0={currencyA} currency1={currencyB} margin={true} />
               <Text fontWeight={400} fontSize={16}>
-                {parsedAmounts[Field.LIQUIDITY]?.toSignificant(6)}
+                {parsedAmounts[Field.LIQUIDITY] ? parsedAmounts[Field.LIQUIDITY]?.toSignificant(6) : ''}
               </Text>
             </RowFixed>
           </RowBetween>

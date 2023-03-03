@@ -28,7 +28,7 @@ import FarmsPage from '../../pages/Farm/'
 import Select from '../../components/Select/Select'
 import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
 import {usePools } from '../../state/pools/hooks'
-import { fetchPoolsPublicDataAsync, fetchPoolsUserDataAsync } from '../../state/pools'
+import { fetchPoolsPublicDataAsync, fetchPoolsUserDataAsync, setPoolsPublicData } from '../../state/pools'
 import {DeserializedPool, EarningTokenInfo} from '../../state/types'
 import orderBy from 'lodash/orderBy'
 import { ButtonLighter } from '../../components/Button'
@@ -39,6 +39,7 @@ import { useAddPopup } from '../../state/application/hooks'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { useDispatch } from 'react-redux'
 import { simpleRpcProvider } from '../../utils/providers'
+import { useBlocksMintedDaily } from '../../components/DaysLeftBar'
 
 interface Props {
   earningRewardsBlock:  EarningTokenInfo[]
@@ -239,12 +240,13 @@ export const getDisplayApr = (cakeRewardsApr?: number, lpRewardsApr?: number) =>
 
 export const RewardPerBlock: React.FC<Props> = ({ earningRewardsBlock }) => {
   const theme = useTheme()
+  const blocksDaily = useBlocksMintedDaily()
   return(
       <>
         {earningRewardsBlock ? earningRewardsBlock.map((reward, index) => (
             <Text mb={earningRewardsBlock.length === 1 && '20px'} fontSize='13px' fontWeight={400} color={theme.darkMode ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0,0,0,0.9)'} key={index}>
               {(reward.blockReward !== 0) ?
-                  `~ ${(reward.blockReward*6800*30).toFixed(0)}  ${reward.symbol === 'MOVR' ? 'wMOVR' : reward.symbol}` :
+                  `~ ${(reward.blockReward*blocksDaily*30).toFixed(0)}  ${reward.symbol === 'MOVR' ? 'wMOVR' : reward.symbol}` :
                   'Loading...'
               }
             </Text>
@@ -271,6 +273,7 @@ const Farms: React.FC = ({ children }) => {
   const isInactive = filtedFinishedOnly === FarmFinishedOnly.TRUE
   const isActive = filtedFinishedOnly === FarmFinishedOnly.FALSE
   const isArchived = filtedFinishedOnly === FarmFinishedOnly.ARCHIVED
+  const [rememberedChainId, setRememberedChainId] = useState(chainId)
 
   useEffect(() => {
     const fetchPoolsDataWithFarms = async () => {
@@ -281,11 +284,16 @@ const Farms: React.FC = ({ children }) => {
         dispatch(fetchPoolsPublicDataAsync(chainId, currentBlock))
       }
     }
-    console.log("DD:: currentBlock", currentBlock)
-    console.log("DD:: pools", pools.length)
       fetchPoolsDataWithFarms()
 
   }, [account, chainId, pools.length])
+
+  useEffect(() => {
+    if (rememberedChainId !== chainId) {
+      dispatch(setPoolsPublicData([]))
+      setRememberedChainId(chainId)
+    }
+  }, [chainId])
 
   const [numberOfFarmsVisible, setNumberOfFarmsVisible] = useState(NUMBER_OF_POOLS_VISIBLE)
 

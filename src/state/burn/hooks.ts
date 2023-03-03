@@ -426,7 +426,7 @@ export function useDerivedPylonBurnInfo(
       userLiquidity ?
       independentField !== Field.LIQUIDITY_PERCENT ?
       new TokenAmount(userLiquidity.token, percentToRemove.multiply(userLiquidity.raw).quotient)
-      : new TokenAmount(userLiquidity.token, userLiquidity.raw)
+      : userLiquidity && percentToRemove && percentToRemove.greaterThan('0') && new TokenAmount(userLiquidity.token, percentToRemove.multiply(userLiquidity.raw).quotient)
             : undefined,
     [Field.CURRENCY_A]:
       tokenA && liquidityValueA ?

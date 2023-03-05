@@ -49,7 +49,6 @@ import LearnIcon from '../../components/LearnIcon'
 import PriceChartContainer from '../../components/Chart/PriceChartContainer'
 import NoChartAvailable from '../../components/Chart/NoChartAvailable'
 import { usePairPrices } from '../../state/mint/pylonHooks'
-import { usePair } from '../../data/Reserves'
 import { SelectedOptionDiv } from '../../views/Farms/Farms'
 import { TableData } from '../../views/Farms/components/FarmTable/Row'
 import FarmRepeatIcon from '../../components/FarmRepeatIcon'
@@ -308,9 +307,7 @@ export default function Swap() {
 
   const singleTokenPrice = useSingleTokenSwapInfo(chainId, inputCurrencyId, inputCurrency, outputCurrencyId, outputCurrency)
 
-  const [pairState,pair] = usePair(currencies[Field.INPUT], currencies[Field.OUTPUT])
-  const prices = usePairPrices(wrappedCurrency(currencies[Field.INPUT], chainId)?.address, wrappedCurrency(currencies[Field.OUTPUT], chainId)?.address, 
-  pair, pairState, chainId)
+  const prices = usePairPrices(wrappedCurrency(currencies[Field.INPUT], chainId)?.address, wrappedCurrency(currencies[Field.OUTPUT], chainId)?.address, chainId)
 
   //Top tokens
   const [topTokens, setTopTokens] = useState([])

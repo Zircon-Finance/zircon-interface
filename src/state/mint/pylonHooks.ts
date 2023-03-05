@@ -15,7 +15,6 @@ import {useLastK, usePairInfo, usePylonConstants, usePylonInfo,} from "../../dat
 import {useBlockNumber, useBlockTimestamp} from "../application/hooks";
 import {usePylonFactoryContract} from '../../hooks/useContract'
 import axios from 'axios'
-import {PairState} from '../../data/Reserves'
 import {Decimals, MintSyncParams} from "zircon-sdk/dist/interfaces/pylonInterface";
 import { ethers } from 'ethers'
 import { LLAMA_API } from '../../constants/lists'
@@ -423,7 +422,7 @@ export const useHealthFactorDelta = (  currencyA: Currency | undefined,
   return {healthFactor: healthFactorResult, delta: deltaResult}
 }
 
-export function usePairPrices(token0: string, token1: string, pair: Pair, pairState: PairState, chainId: number) {
+export function usePairPrices(token0: string, token1: string, chainId: number) {
   async function getPrices() {
   //  const price0 = token0 && await axios.get(token0?.symbol === 'USDT' ? `${PRICE_API + 'BUSDUSDT'}` :
   //     `${PRICE_API + (token0?.symbol === 'wMOVR' ? 'MOVR' : token0?.symbol === 'WBNB' ? 'BNB' : token0?.symbol)}BUSD`).then

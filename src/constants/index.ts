@@ -144,7 +144,9 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
       new Token(ChainId.ARBGOERLY, '0x7C1a63fA397a3Aa8a0bbFBB8DDD1D6ef54206E59', 18, 'BNB', 'BNB'),
       new Token(ChainId.ARBGOERLY, '0xDB2f99f5408e95643E50a6987aD31B539faee147', 18, 'ZPTA', 'ZPTA'),
       new Token(ChainId.ARBGOERLY, '0x0c9cc7847b333F0B565158D7fbCEfbeAFda66a54', 18, 'ZPT', 'ZPTB'),
-
+  ],
+  [ChainId.ARBITRUM]: [
+      new Token(ChainId.ARBITRUM, '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8', 6, 'USDC', 'USD Coin'),
   ],
 }
 

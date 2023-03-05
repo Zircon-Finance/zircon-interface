@@ -57,7 +57,6 @@ import {usePylonConstants} from "../../data/PylonData";
 import Lottie from "lottie-react-web";
 import animation from '../../assets/lotties/0uCdcx9Hn5.json'
 import CapacityIndicator from "../../components/CapacityIndicator";
-import { usePair } from "../../data/Reserves";
 import { Separator } from "../../components/SearchModal/styleds";
 import { useBatchPrecompileContract } from '../../hooks/useContract'
 import { basePool } from "../../state/pools/selectors";
@@ -1073,8 +1072,7 @@ export default function AddLiquidityPro({
   const feePercentage = new BigNumberJs(mintInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18))
   const health = healthFactor
   console.log("FF::", pylonPair?.address)
-  const [pairState,pair] = usePair(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B])
-  const prices = usePairPrices(wrappedCurrency(currencyA, chainId)?.address, wrappedCurrency(currencyB, chainId)?.address, pair, pairState, chainId)
+  const prices = usePairPrices(wrappedCurrency(currencyA, chainId)?.address, wrappedCurrency(currencyB, chainId)?.address, chainId)
 
   const showApproveCondition = (approvalA === ApprovalState.NOT_APPROVED ||
     approvalA === ApprovalState.PENDING ||

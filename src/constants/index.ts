@@ -58,6 +58,7 @@ const WDEV_ONLY: ChainTokenList = {
   [ChainId.BSC]: [WDEV[ChainId.BSC]],
   [ChainId.BSCT]: [WDEV[ChainId.BSCT]],
   [ChainId.ARBGOERLY]: [WDEV[ChainId.ARBGOERLY]],
+  [ChainId.ARBITRUM]: [WDEV[ChainId.ARBITRUM]],
 }
 
 // used to construct intermediary pairs for trading

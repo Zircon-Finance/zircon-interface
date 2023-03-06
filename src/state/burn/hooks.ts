@@ -154,7 +154,7 @@ export function getLiquidityValues(pylon: Pylon, userLiquidity: TokenAmount, pyl
   slippage?: JSBI;
 } {
 
-  if(!ptTotalSupply || !userLiquidity || !pylonPoolBalance || !totalSupply || !pylonInfo || !pylonConstants || !pairInfo || !blockNumber) {
+  if(!ptTotalSupply || !userLiquidity || !pylonPoolBalance || !totalSupply || !pylonInfo || !pylonConstants || !pairInfo || !blockNumber || !pylonInfo.lastRootKTranslated) {
     return undefined
   }
   let isLastRoot = new BigNumber(pylonInfo.lastRootKTranslated.toString()).isEqualTo(0)
@@ -282,7 +282,7 @@ export function useDerivedPylonBurnInfo(
   const timestamp = useBlockTimestamp()
   console.log("timestamp", timestamp)
   const userLiquidity = useTokenBalance(account ?? undefined, isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken)
-  
+
   let userLiquidityAdjustedPercentage = userLiquidity
 
   if (typedValue !== '0' && pylon !== undefined && userLiquidity !== undefined && independentField === Field.LIQUIDITY_PERCENT)  {
@@ -290,7 +290,7 @@ export function useDerivedPylonBurnInfo(
       JSBI.multiply(
       userLiquidityAdjustedPercentage?.raw, JSBI.BigInt(typedValue)), JSBI.BigInt(100)))
   }
-  
+
   const pylonPoolBalance = useTokenBalance(pylon?.address, pylon?.pair.liquidityToken)
   const ptTotalSupply = useTotalSupply(isFloat ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken)
   const totalSupply = useTotalSupply(pylon?.pair.liquidityToken)
@@ -392,7 +392,7 @@ export function useDerivedPylonBurnInfo(
     }else{
       percentToRemove = new Percent(typedValue, '100')
     }
-    
+
   }
   // user specified a specific amount of liquidity tokens
   else if (independentField === Field.LIQUIDITY) {

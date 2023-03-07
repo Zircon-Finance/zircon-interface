@@ -203,6 +203,7 @@ export default function Swap() {
       setTopTokensPrevious(res.oneDayAgoQueryData ? res.oneDayAgoQueryData : [])
       setDerivedETH(res.derivedEthQueryData ? res.derivedEthQueryData : [])
       setOneDayDerivedETH(res.oneDayAgoDerivedEthQueryData ? res.oneDayAgoDerivedEthQueryData : [])
+      setSortOption('volume 24h')
     }).catch((err) => {
       console.log('error fetching top tokens', err)
     })
@@ -313,7 +314,7 @@ export default function Swap() {
   const [topTokens, setTopTokens] = useState([])
   const [topTokensPrevious, setTopTokensPrevious] = useState([])
   const options = ['Price', 'Price change 24H', 'Volume 24H', 'TVL']
-  const [sortOption, setSortOption] = useState('volume 24h')
+  const [sortOption, setSortOption] = useState('')
 
   const sortTokens = (sortOption: string, tokensToSort: any[]) => {
     switch (sortOption) {

@@ -95,11 +95,12 @@ const ChainsContainer = styled.div`
   flex-direction: row;
   justify-content: space-between;
   width: 100%;
-  padding: 0 10px;
+  padding: 5px 10px;
   align-items: center;
   border-radius: 12px;
-  border: 2px solid ${({ theme }) => theme.darkMode ? '#2C2C2C' : '#F5F3F3'};
+  border: 2px solid ${({ theme }) => theme.darkMode ? '#8E8E8E36' : '#F5F3F3'};
   margin-bottom: 5px;
+  gap: 5px;
 `
 
 const ChainButton = styled.div<{ selected: boolean, disabled: boolean }>`
@@ -113,7 +114,7 @@ const ChainButton = styled.div<{ selected: boolean, disabled: boolean }>`
   gap: 5px;
   cursor: pointer;
   border-radius: 12px;
-  border: ${({ selected }) => (selected ? '1px solid #F0B90B' : 'none')};
+  border: ${({ selected, theme }) => (selected ? theme.darkMode ? '1px solid #F0B90B' : '1px solid #D9D2D2' : `2px solid ${theme.darkMode ? '#8E8E8E36' : '#F5F3F3'}`)};
   outline: none;
   opacity: ${({ disabled }) => (disabled ? '0.5' : '1')};
 `
@@ -133,7 +134,7 @@ const InputBalanceContainer = styled.div`
   width: 100%;
   height: 60px;
   border-radius: 12px;
-  background-color: ${({ theme }) => theme.whiteHalf};
+  background-color: ${({ theme }) => theme.darkMode ? '#8E8E8E36' : '#F5F3F3'};
   text-align: center;
   margin-bottom: 10px;
   & > input {
@@ -157,7 +158,7 @@ const StyledRow = styled.div`
   padding-bottom: 5px;
   margin-bottom: 5px;
   align-items: center;
-  border-bottom: 1px solid ${({ theme }) => theme.darkMode ? '#2C2C2C' : '#F5F3F3'};
+  border-bottom: 1px solid ${({ theme }) => theme.darkMode ? '#8E8E8E36' : '#F5F3F3'};
   color: ${({ theme }) => theme.whiteHalf};
 `
 
@@ -221,8 +222,6 @@ export default function Bridge()
     new TokenAmount(tokenToBridge ?? ZRG_ADDRESSES[chainId], MaxUint256.toString()),
     routerAddress
   );
-
-  console.log('allowance', routerApproval)
 
   const handleChainFrom = useCallback(
     (chain: ChainId) => {
@@ -402,26 +401,30 @@ export default function Bridge()
     )
   }
 
-  const InputBalance : React.FC = () => {
+  const InputBalance = () => {
     return (
       <InputBalanceContainer>
         <NumericalInput
+          key={'input-liq'}
+          id={"bridge-liq"}
+          autoFocus={true}
           currency={tokenToBridge}
           value={currencyAmount}
           onUserInput={val => {
-            handleTypeInput(val)
+            setCurrencyAmount(val)
           }}
         />
       </InputBalanceContainer>
     )
   }
 
-  const OutputBalance : React.FC = () => {
+  const OutputBalance = () => {
     const calculatedFee = parseFloat(currencyAmount) * apiData?.SwapFeeRatePerMillion / 100
     const shownFee = calculatedFee < parseFloat(apiData?.MinimumSwapFee) ? parseFloat(apiData?.MinimumSwapFee) : calculatedFee > parseFloat(apiData?.MaximumSwapFee) ? parseFloat(apiData?.MaximumSwapFee) : calculatedFee
     return (
       <InputBalanceContainer>
         <NumericalInput
+          key={'output-liq'}
           currency={tokenToBridge}
           value={(parseFloat(currencyAmount) - shownFee) > 0 ? (parseFloat(currencyAmount) - shownFee).toString() : '0'}
           disabled={true}
@@ -460,7 +463,7 @@ export default function Bridge()
           </>
           <Balance value={from === true ? selectedCurrencyBalance : destinationCurrencyBalance} from={from} />
         </ChainsContainer>
-        {from === true ? <InputBalance /> : <OutputBalance />}
+        {from === true ? InputBalance() : OutputBalance()}
       </Flex>
     )}
 
@@ -546,15 +549,15 @@ export default function Bridge()
                 </StyledRow>
                 <StyledRow>
                   <Text>
-                    Fee: 
+                    Crosschain fee: 
                   </Text>
                   <Text>
                     {(apiData?.SwapFeeRatePerMillion)} %
                   </Text>
                 </StyledRow>
                 <StyledRow>
-                  <Text>
-                    Amounts greater than {formatNumberNew(parseFloat(apiData?.BigValueThreshold))}{' '}
+                  <Text fontSize={'15px'}>
+                    Sending more than {formatNumberNew(parseFloat(apiData?.BigValueThreshold))}{' '}
                     {apiData?.symbol} could take up to 12 hours.
                   </Text>
                 </StyledRow>

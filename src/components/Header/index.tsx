@@ -1,21 +1,16 @@
 // import { ChainId } from 'zircon-sdk'
 import React from 'react'
-// import { isMobile } from 'react-device-detect'
 import { Flex, Text } from 'rebass'
 import { useLocation } from 'react-router-dom';
 
-import styled, { useTheme } from 'styled-components'
+import styled from 'styled-components'
 import DarkLogo from '../../assets/images/mainlogo-dark.png'
 import WhiteLogo from '../../assets/images/mainlogo-white.png'
 import { useActiveWeb3React, useBlockedApiData, useWindowDimensions } from '../../hooks'
-//import { useDarkModeManager } from '../../state/user/hooks'
 import { useETHBalances } from '../../state/wallet/hooks'
 import {
   ChainPoolTab,
   SwapPoolTabs } from '../../components/NavigationTabs'
-
-// import { YellowCard } from '../Card'
-
 import { RowBetween } from '../Row'
 import Web3Status from '../Web3Status'
 import SunLogo from '../SunLogo';
@@ -23,9 +18,6 @@ import { useDarkModeManager } from '../../state/user/hooks';
 import Portal from '@reach/portal';
 import ClaimModal from '../ClaimModal';
 import { NATIVE_TOKEN } from 'zircon-sdk';
-import { ButtonOutlined } from '../Button';
-// import { connectNet } from '../WalletModal';
-// import VersionSwitch from './VersionSwitch'
 
 const HeaderFrame = styled.div`
   width: 100%;
@@ -158,10 +150,7 @@ export default function Header() {
   const { account } = useActiveWeb3React()
 
   const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
-  console.log('userEthBalance', userEthBalance)
-  //const [isDark] = useDarkModeManager()
   const location = useLocation();
-  const theme = useTheme()
   const { width } = useWindowDimensions();
 
   const { chainId } = useActiveWeb3React();
@@ -182,7 +171,7 @@ export default function Header() {
         {width >= 700 ?
         <>
         <HeaderElement style={{}}>
-        <Title href="." style={{width: account ? width < 1100 ? '250px' : '520px' : width > 1100 ? '420px' : '160px', height: '44px'}}>
+        <Title href="." style={{width: account ? width < 1100 ? '250px' : '420px' : width > 1100 ? '420px' : '160px', height: '44px'}}>
           <UniIcon id="z-logo">
               <img style={{ height: 35, display: 'flex', margin: 'auto' }} src={!darkMode ? DarkLogo : WhiteLogo} alt="logo" />
             </UniIcon>
@@ -194,7 +183,7 @@ export default function Header() {
         {width > 1100 ?
         <>
         <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : location.pathname === '/farm' ? (isFarmBlocked ? 'swap' : 'farm') :
-        (isPoolBlocked ? 'swap' : 'pool')} />
+        location.pathname === '/pool' ? (isPoolBlocked ? 'swap' : 'pool') : 'bridge'} />
           <HeaderElement style={{height: '50px'}}>
             <button  style={{border: 'none',
               outline: 'none',
@@ -205,12 +194,12 @@ export default function Header() {
               onClick={() => darkMode ? toggleSetDarkMode() : toggleSetDarkMode()}>
             <SunLogo  />
             </button>
-            <ButtonOutlined mr="10px" style={{border: `none`,
+            {/* <ButtonOutlined mr="10px" style={{border: `none`,
               width: 'auto',
               color: theme.pinkBrown, 
               padding: '12px 20px', 
               maxHeight: '44px',
-              background: `${theme.darkMode ? 'rgba(213, 174, 175, 0.07)' : '#ECEAEA'}`}} onClick={()=>setShowClaimTokens(true)}>{'Bridge ↗'}</ButtonOutlined>
+              background: `${theme.darkMode ? 'rgba(213, 174, 175, 0.07)' : '#ECEAEA'}`}} onClick={()=>setShowClaimTokens(true)}>{'Bridge ↗'}</ButtonOutlined> */}
             <HeaderControls style={{height: width <= 1100 && '44px'}}>
           <AccountElement active={!!account} style={{ pointerEvents: 'auto', height: '44px' }}>
               {account && userEthBalance ? (
@@ -247,7 +236,8 @@ export default function Header() {
               <ChainPoolTab active={chainId === 1285 ? 'moonriver' : 'bsc'} />
             {/* <ButtonOutlined mr="10px" style={{border: `1px solid ${theme.navigationTabs}`, color: theme.pinkBrown, padding: '12px 20px', maxHeight: '50px'}} onClick={()=>setShowClaimTokens(true)}>{'Claim tokens'}</ButtonOutlined> */}
            </HeaderElement>
-           <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : location.pathname === '/farm' ? 'farm' : 'pool'} />
+           <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : location.pathname === '/farm' ? (isFarmBlocked ? 'swap' : 'farm') :
+              location.pathname === '/pool' ? (isPoolBlocked ? 'swap' : 'pool') : 'bridge'} />
           </div>}
           {width >= 1100 && <ChainPoolTab active={chainId === 1285 ? 'moonriver' : 'bsc'} />}
         </> :
@@ -283,14 +273,14 @@ export default function Header() {
               onClick={() => darkMode ? toggleSetDarkMode() : toggleSetDarkMode()}>
             <SunLogo  />
             </button>
-          <ButtonOutlined style={{border: `none`, 
+          {/* <ButtonOutlined style={{border: `none`, 
             width: 'auto',
             color: theme.pinkBrown, 
             padding: '0px, 15px, 0px, 15px', 
             maxHeight: '46px',
             minWidth: '110px',
             marginRight: '5px',
-            background: `${theme.darkMode ? 'rgba(213, 174, 175, 0.07)' : '#ECEAEA'}`}} onClick={()=>setShowClaimTokens(true)}>{'Bridge ↗'}</ButtonOutlined>
+            background: `${theme.darkMode ? 'rgba(213, 174, 175, 0.07)' : '#ECEAEA'}`}} onClick={()=>setShowClaimTokens(true)}>{'Bridge ↗'}</ButtonOutlined> */}
           <AccountElement active={!!account} style={{ pointerEvents: 'auto'}}>
                 {account && userEthBalance ? (
                   <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={400}>
@@ -300,8 +290,9 @@ export default function Header() {
                 <Web3Status />
               </AccountElement>
               </Flex>
-          <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : location.pathname === '/farm' ? 'farm' : 'pool'} />
-        </>
+              <SwapPoolTabs active={location.pathname === '/swap' ? 'swap' : location.pathname === '/farm' ? (isFarmBlocked ? 'swap' : 'farm') :
+                location.pathname === '/pool' ? (isPoolBlocked ? 'swap' : 'pool') : 'bridge'} />
+            </>
 
         }
       </RowBetween>

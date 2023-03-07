@@ -45,6 +45,51 @@ export const formatNumber = (number: number, minPrecision = 2, maxPrecision = 2)
   return number.toLocaleString(undefined, options)
 }
 
+export const formatNumberNew = (number: any, usd = false, scale = true) => {
+  if (isNaN(number) || number === '' || number === undefined) {
+    return usd ? '$0.00' : '0'
+  }
+  const num = parseFloat(number)
+
+  if (num > 500000000 && scale) {
+    return (usd ? '$' : '') + toK(num.toFixed(0))
+  }
+
+  if (num === 0) {
+    if (usd) {
+      return '$0.00'
+    }
+    return '0'
+  }
+
+  if (num < 0.0001 && num > 0) {
+    return usd ? '< $0.0001' : '< 0.0001'
+  }
+
+  if (num > 1000) {
+    return usd
+      ? '$' + Number(parseFloat(String(num)).toFixed(0)).toLocaleString()
+      : '' + Number(parseFloat(String(num)).toFixed(0)).toLocaleString()
+  }
+
+  if (usd) {
+    if (num < 0.1) {
+      return '$' + Number(parseFloat(String(num)).toFixed(4))
+    } else {
+      const usdString = priceFormatter.format(num)
+      return '$' + usdString.slice(1, usdString.length)
+    }
+  }
+
+  return parseFloat(String(num)).toPrecision(4)
+}
+
+const priceFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  minimumFractionDigits: 2,
+})
+
 /**
  * Method to format the display of wei given an EthersBigNumber object
  * Note: does NOT round

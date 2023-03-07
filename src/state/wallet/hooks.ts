@@ -1,11 +1,13 @@
 import { Currency, CurrencyAmount, JSBI, NATIVE_TOKEN, Token, TokenAmount } from 'zircon-sdk'
-import { useMemo } from 'react'
-import ERC20_INTERFACE from '../../constants/abis/erc20'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import ERC20_INTERFACE, { ERC20_ABI } from '../../constants/abis/erc20'
 import { useAllTokens } from '../../hooks/Tokens'
 import { useActiveWeb3React } from '../../hooks'
 import { useMulticallContract } from '../../hooks/useContract'
 import { isAddress } from '../../utils'
 import { useSingleContractMultipleData, useMultipleContractSingleData } from '../multicall/hooks'
+import Web3 from 'web3'
+import getNodeUrl from '../../utils/getRpcUrl'
 
 /**
  * Returns a map of the given addresses to their eventually consistent DEV balances.
@@ -31,7 +33,6 @@ export function useETHBalances(
     'getEthBalance',
     addresses.map(address => [address])
   )
-  console.log('results', results)
 
   return useMemo(
     () =>
@@ -133,4 +134,53 @@ export function useAllTokenBalances(): { [tokenAddress: string]: TokenAmount | u
   const allTokensArray = useMemo(() => Object.values(allTokens ?? {}), [allTokens])
   const balances = useTokenBalances(account ?? undefined, allTokensArray)
   return balances ?? {}
+}
+
+export function useMultichainCurrencyBalance(
+  chainId?: number,
+  account?: string,
+  token?: Currency
+): any | undefined {
+  const { chainId: moonriverChainId } = useActiveWeb3React()
+  const moonriverBalance = useCurrencyBalance(
+    chainId == moonriverChainId && account,
+    chainId == moonriverChainId && token
+  )
+  const [value, setValue] = useState(null)
+
+  const getBalance = useCallback(() => {
+    const web3 = new Web3(getNodeUrl(chainId))
+    console.log('token', token)
+    if (token === NATIVE_TOKEN[chainId]) {
+      web3.eth.getBalance(account).then((response) => {
+        const amount = CurrencyAmount.ether(JSBI.BigInt(response.toString()), chainId)
+        setValue(amount)
+      })
+    } else if (token instanceof Token) {
+      let contract = new web3.eth.Contract(ERC20_ABI as any, token.address)
+      contract.methods
+        .balanceOf(account)
+        .call()
+        .then((response) => {
+          console.log('response', response)
+          const amount = CurrencyAmount.ether(JSBI.BigInt(response.toString()), chainId)
+          setValue(amount)
+        })
+        .catch((ex) => {
+          console.error(ex)
+        })
+    }
+  }, [account, chainId, token])
+
+  useEffect(() => {
+    if (account && chainId && token && chainId != moonriverChainId) {
+      getBalance()
+    } else {
+      setValue(null)
+    }
+  }, [account, chainId, token, getBalance, moonriverChainId])
+
+  return useMemo(() => {
+    return chainId == moonriverChainId ? moonriverBalance : value
+  }, [chainId, moonriverBalance, moonriverChainId, value])
 }

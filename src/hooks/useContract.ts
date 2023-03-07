@@ -5,6 +5,7 @@ import { abi as ZirconPylon } from '../constants/abi/ZirconPylon.json'
 import { abi as ZirconPylonFactory } from '../constants/abi/ZirconPylonFactory.json'
 import { abi as ZirconFactory } from '../constants/abi/ZirconFactory.json'
 import { abi as ZirconEnergyFactory } from '../constants/abi/ZirconEnergyFactory.json'
+import ANYSWAP_ROUTER_ABI from '../constants/abis/anyswap_router.json'
 import BatchPrecompileABI from '../constants/abi/batch_precompile.json'
 import { useMemo } from 'react'
 import ENS_ABI from '../constants/abis/ens-registrar.json'
@@ -58,6 +59,10 @@ export function useV2MigratorContract(): Contract | null {
 
 export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {
   return useContract(tokenAddress, ERC20_ABI, withSignerIfPossible)
+}
+
+export function useAnyswapRouterContract(routerAddress?: string, withSignerIfPossible?: boolean): Contract | null {
+  return useContract(routerAddress, ANYSWAP_ROUTER_ABI, withSignerIfPossible)
 }
 
 export function useWDEVContract(withSignerIfPossible?: boolean): Contract | null {

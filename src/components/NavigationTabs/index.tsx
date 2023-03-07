@@ -114,7 +114,7 @@ const ChainRow = styled(Flex)`
   }
 `
 
-export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' }) {
+export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' | 'bridge' }) {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const theme = useTheme()
@@ -156,6 +156,9 @@ export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' }) {
       <StyledNavLink onMouseEnter={() => setHoverBlocked(true)} onMouseLeave={() => setHoverBlocked(false)}
       disabled={isFarmBlocked} id={`farm-nav-link`} to={isFarmBlocked ? '#' : '/farm'} isActive={() => active === 'farm'}>
         {t('Farm')}
+      </StyledNavLink>
+      <StyledNavLink id={`bridge-nav-link`} to={'/bridge'} isActive={() => active === 'bridge'}>
+        {t('Bridge')}
       </StyledNavLink>
       {hoverBlocked && isPoolBlocked && isFarmBlocked && hoverContent}
     </Tabs>

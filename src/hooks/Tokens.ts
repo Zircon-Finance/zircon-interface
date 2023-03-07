@@ -179,7 +179,7 @@ export async function getBlockFromTimestamp(timestamp, subgraphUrl) {
       variables: null,
       operationName: undefined} 
       ), ).then(
-    res => (console.log('res', res?.data?.data?.blocks[0]?.number),res?.data?.data?.blocks[0]?.number))
+    res => res?.data?.data?.blocks[0]?.number)
   return query
 }
 

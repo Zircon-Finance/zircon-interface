@@ -150,6 +150,12 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
   ],
 }
 
+export const ZRG_ADDRESSES: { [chainId in ChainId]?: Token } = {
+  [ChainId.MOONRIVER]: new Token(ChainId.MOONRIVER, '0x4545E94974AdACb82FC56BCf136B07943e152055', 18, 'ZRG', 'Zircon Gamma'),
+  [ChainId.BSC]: new Token(ChainId.BSC, '0x808a3f2639a5cd54d64ed768192369bcd729100e', 18, 'ZRG', 'ZRG Token'),
+  [ChainId.ARBITRUM]: new Token(ChainId.BSC, '0x808a3f2639a5cd54d64ed768192369bcd729100e', 18, 'ZRG', 'ZRG Token'),
+}
+
 export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } = {
   [ChainId.MAINNET]: [
     [

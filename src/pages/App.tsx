@@ -37,6 +37,7 @@ import { Flex, Text } from 'rebass'
 import { CloseIcon } from '../theme'
 import { useDispatch } from 'react-redux'
 import { setPoolsPublicData } from '../state/pools'
+import Bridge from './bridge'
 
 const AppWrapper = styled.div`
   display: flex;
@@ -160,6 +161,7 @@ export default function App() {
             <Web3ReactManager>
               <Switch>
                 <Route exact strict path="/swap" component={Swap} />
+                <Route exact strict path="/bridge" component={Bridge} />
                 <Route exact strict path="/swap/:network" component={GetNetworkFromUrl} />
                 <Route exact strict path="/swap/:outputCurrency" component={RedirectToSwap} />
                 <Route exact strict path="/send" component={RedirectPathToSwapOnly} />

@@ -536,7 +536,7 @@ const SlippageWarningModal = () => (
           {errorTx && (
            <ErrorTxContainer errorTx={errorTx} />
           )}
-          {(burnInfo.blocked || burnInfo.asyncBlocked) && (
+          {(burnInfo.blocked) && (
           <RowBetween mt={10} mb={'10px'}>
             <StyledWarningIcon />
             <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{"Transaction is likely to fail so is currently blocked. Try in a few minutes"}</span>
@@ -548,7 +548,7 @@ const SlippageWarningModal = () => (
             <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{"We estimate a high fee for this transaction. Try in a few minutes"}</span>
           </RowBetween>
           )}
-          <ButtonPrimary disabled={!(chainId === 1285 || chainId === 1287) && (!(approval === ApprovalState.APPROVED || signatureData !== null) || burnInfo.blocked || burnInfo.asyncBlocked || burnInfo.deltaApplied || (feeIsTooHigh && (!hasConfirmed && !hasSetAsync)))} onClick={onRemove}>
+          <ButtonPrimary disabled={!(chainId === 1285 || chainId === 1287) && (!(approval === ApprovalState.APPROVED || signatureData !== null) || burnInfo.blocked || burnInfo.deltaApplied || (feeIsTooHigh && (!hasConfirmed && !hasSetAsync)))} onClick={onRemove}>
             <Text fontWeight={400} fontSize={18}>
               Confirm
             </Text>
@@ -839,7 +839,7 @@ const SlippageWarningModal = () => (
                     health={healthFactor}
                     isFloat={isFloat}
                     slashingOmega={new BigNumberJs(burnInfo?.omegaSlashingPercentage.toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
-                    blocked={burnInfo?.blocked || burnInfo?.asyncBlocked}
+                    blocked={burnInfo?.blocked}
                     feePercentage={new BigNumberJs(burnInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
                     isDeltaGamma={burnInfo?.deltaApplied}
                     slippage={new BigNumberJs((burnInfo?.slippage ?? "0").toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}

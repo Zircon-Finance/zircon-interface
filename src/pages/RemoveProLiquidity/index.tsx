@@ -101,6 +101,12 @@ export default function RemoveProLiquidity({
   })
   const { onUserInput: _onUserInput } = useBurnActionHandlers()
   const isValid = !error
+  let textError = ''
+  if ((independentField === Field.CURRENCY_A && typedValue > parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)) || 
+    (independentField === Field.CURRENCY_B && typedValue > parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)) ||
+    (independentField === Field.LIQUIDITY && typedValue > parsedAmounts[Field.LIQUIDITY]?.toSignificant(6)) ||
+    parsedAmounts[Field.LIQUIDITY]?.toSignificant(6) === '0') textError = 'Enter an amount' 
+  else textError = ''
   // modal and loading
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [showDetailed, setShowDetailed] = useState<boolean>(false)
@@ -379,12 +385,10 @@ useEffect(() => {
   }
 }, [hasConfirmed])
 
-  console.log('Slippage: ', rememberedSlippage)
-
 
 const NoSlippageModalHeader = () => (
   <AutoColumn gap={'5px'} style={{ marginTop: '15px' }}>
-    <RowBetween align="flex-end">
+    <RowBetween align="center">
       <Text fontSize={24} fontWeight={400}>
         {parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)}
       </Text>
@@ -395,10 +399,11 @@ const NoSlippageModalHeader = () => (
         </Text>
       </RowFixed>
     </RowBetween>
+    {!sync && <>
     <RowFixed>
       <Plus size="16" color={theme.text2} />
     </RowFixed>
-    <RowBetween align="flex-end">
+    <RowBetween align="center">
       <Text fontSize={24} fontWeight={400}>
         {parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)}
       </Text>
@@ -409,6 +414,7 @@ const NoSlippageModalHeader = () => (
         </Text>
       </RowFixed>
     </RowBetween>
+    </>}
 
     <Text fontSize={12} textAlign="left" padding={"20px 0 0 0 "} color={theme.whiteHalf}>
       {`Output is estimated. If the price changes by more than ${allowedSlippage /
@@ -504,8 +510,8 @@ const SlippageWarningModal = () => (
   function modalBottom() {
     return (
         <div>
-          <RowBetween>
-            <Text color={theme.text2} fontWeight={400} fontSize={16} mb='15px'>
+          <RowBetween mb='5px'>
+            <Text color={theme.text2} fontWeight={400} fontSize={16}>
               {'ZPT ' + currencyA?.symbol + '/' + currencyB?.symbol} Burned
             </Text>
             <RowFixed>
@@ -536,7 +542,7 @@ const SlippageWarningModal = () => (
           {errorTx && (
            <ErrorTxContainer errorTx={errorTx} />
           )}
-          {(burnInfo.blocked) && (
+          {(burnInfo.blocked || burnInfo.asyncBlocked) && (
           <RowBetween mt={10} mb={'10px'}>
             <StyledWarningIcon />
             <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{"Transaction is likely to fail so is currently blocked. Try in a few minutes"}</span>
@@ -548,7 +554,7 @@ const SlippageWarningModal = () => (
             <span style={{ color: theme.red1, width: '100%', fontSize: '13px' }}>{"We estimate a high fee for this transaction. Try in a few minutes"}</span>
           </RowBetween>
           )}
-          <ButtonPrimary disabled={!(chainId === 1285 || chainId === 1287) && (!(approval === ApprovalState.APPROVED || signatureData !== null) || burnInfo.blocked || burnInfo.deltaApplied || (feeIsTooHigh && (!hasConfirmed && !hasSetAsync)))} onClick={onRemove}>
+          <ButtonPrimary disabled={!(chainId === 1285 || chainId === 1287) && (!(approval === ApprovalState.APPROVED || signatureData !== null) || burnInfo.blocked || burnInfo.asyncBlocked || burnInfo.deltaApplied || (feeIsTooHigh && (!hasConfirmed && !hasSetAsync)))} onClick={onRemove}>
             <Text fontWeight={400} fontSize={18}>
               Confirm
             </Text>
@@ -691,7 +697,7 @@ const SlippageWarningModal = () => (
                 </AutoColumn>
               </TransparentCard>
               <div style={{display: 'flex', borderRadius: '17px', justifyContent: 'space-between'}}>
-                <span style={{display: 'inline', alignSelf: 'center', fontSize: '13px', marginLeft: '10px', fontWeight: 400}}>{'BURN AND SWAP'}</span>
+                <span style={{display: 'inline', alignSelf: 'center', fontSize: '13px', marginLeft: '10px', fontWeight: 400}}>{'HYBRID BURN'}</span>
                 <div style={{display: 'flex', borderRadius: '17px', padding: '5px', background: theme.liquidityBg}}>
 
                   <ButtonAnchor borderRadius={'12px'} padding={'10px'}
@@ -776,7 +782,7 @@ const SlippageWarningModal = () => (
                         }}
                         showMaxButton={!atMaxAmount}
                         disableCurrencySelect
-                        currency={pylon?.pair?.liquidityToken}
+                        currency={float ? pylon?.floatLiquidityToken : pylon?.anchorLiquidityToken}
                         pair={pylon?.pair}
                         id="liquidity-amount"
                     />
@@ -795,7 +801,7 @@ const SlippageWarningModal = () => (
                         onCurrencySelect={handleSelectCurrencyA}
                         id="remove-liquidity-tokena"
                     />
-                    <ColumnCenter>
+                    {!sync && <><ColumnCenter>
                       <Plus size="16" color={theme.text2} />
                     </ColumnCenter>
                     <CurrencyInputPanel
@@ -809,7 +815,7 @@ const SlippageWarningModal = () => (
                         label={'Output'}
                         onCurrencySelect={handleSelectCurrencyB}
                         id="remove-liquidity-tokenb"
-                    />
+                    /></>}
                   </>
               )}
               {pylon?.pair && (
@@ -839,7 +845,7 @@ const SlippageWarningModal = () => (
                     health={healthFactor}
                     isFloat={isFloat}
                     slashingOmega={new BigNumberJs(burnInfo?.omegaSlashingPercentage.toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
-                    blocked={burnInfo?.blocked}
+                    blocked={burnInfo?.blocked || burnInfo?.asyncBlocked}
                     feePercentage={new BigNumberJs(burnInfo?.feePercentage.toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
                     isDeltaGamma={burnInfo?.deltaApplied}
                     slippage={new BigNumberJs((burnInfo?.slippage ?? "0").toString()).div(new BigNumberJs(10).pow(18)) ?? new BigNumberJs(0)}
@@ -877,11 +883,11 @@ const SlippageWarningModal = () => (
                               parseFloat(new BigNumberJs(burnInfo?.slippage.toString()).div(new BigNumberJs(10).pow(18)).toString())
                             )
                           }}
-                          disabled={!(chainId === 1285 || chainId === 1287) ? (!isValid || (signatureData === null && approval !== ApprovalState.APPROVED)) : !isValid}
+                          disabled={!(chainId === 1285 || chainId === 1287) ? (!isValid || (approval !== ApprovalState.APPROVED)) : !isValid || textError !== ''}
                           error={!isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]}
                       >
                         <Text fontSize={16} fontWeight={400}>
-                          {error || 'Remove'}
+                          {error || textError || 'Remove'}
                         </Text>
                       </ButtonError>
                     </RowBetween>

@@ -24,22 +24,22 @@ const Smiley = ({ success }) => {
                 d="M7.2 14.3984C7.2 14.3984 9 16.7984 12 16.7984C15 16.7984 16.8 14.3984 16.8 14.3984"
                 stroke="#70BD87"
                 stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
               <path
                 d="M8.4 8.39844H8.412"
                 stroke="#70BD87"
                 stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
               <path
                 d="M15.6 8.39844H15.612"
                 stroke="#70BD87"
                 stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </g>
             <defs>
@@ -66,22 +66,22 @@ const Smiley = ({ success }) => {
                 d="M16.8 16.7984C16.8 16.7984 15 14.3984 12 14.3984C8.99995 14.3984 7.19995 16.7984 7.19995 16.7984"
                 stroke="#E98279"
                 stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
               <path
                 d="M8.40002 8.39844H8.41202"
                 stroke="#E98279"
                 stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
               <path
                 d="M15.6 8.39844H15.612"
                 stroke="#E98279"
                 stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </g>
             <defs>
@@ -109,22 +109,22 @@ const Smiley = ({ success }) => {
               d="M7.19995 14.3984C7.19995 14.3984 8.99995 16.7984 12 16.7984C15 16.7984 16.8 14.3984 16.8 14.3984"
               stroke="#287438"
               stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
             <path
               d="M8.3999 8.39844H8.4119"
               stroke="#287438"
               stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
             <path
               d="M15.6001 8.39844H15.6121"
               stroke="#287438"
               stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
           </g>
           <defs>
@@ -151,22 +151,22 @@ const Smiley = ({ success }) => {
               d="M16.8 16.7984C16.8 16.7984 15 14.3984 12 14.3984C8.99995 14.3984 7.19995 16.7984 7.19995 16.7984"
               stroke="#D33535"
               stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
             <path
               d="M8.40002 8.39844H8.41202"
               stroke="#D33535"
               stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
             <path
               d="M15.6 8.39844H15.612"
               stroke="#D33535"
               stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
           </g>
           <defs>

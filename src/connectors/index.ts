@@ -11,7 +11,7 @@ import { talismanChains } from './talisman/talismanChains'
 
 const NETWORK_URL = process.env.REACT_APP_NETWORK_URL
   ? process.env.REACT_APP_NETWORK_URL
-  : 'https://moonriver.public.blastapi.io'
+  : 'https://bsc-dataseed.binance.org'
 const FORMATIC_KEY = process.env.REACT_APP_FORTMATIC_KEY
 const PORTIS_ID = process.env.REACT_APP_PORTIS_ID
 

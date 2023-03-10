@@ -27,7 +27,7 @@ const initialState: PoolsState = {
 export const fetchPoolsPublicDataAsync = (chainId: number, currentBlock: number) => async (dispatch, getState) => {
   try {
     console.log("DD:: fetching pools public data")
-    const apiData = await getApiData(chainId)
+    const apiData = await getApiData(chainId ?? 56)
 
     // Get start-end block for each pool
     const blockLimits = apiData ? apiData.map((pool) => {

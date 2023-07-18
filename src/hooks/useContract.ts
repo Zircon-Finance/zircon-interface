@@ -118,6 +118,7 @@ export function useEnergyFactoryContract(energyFactoryAddress?: string, withSign
 
 export function useMulticallContract(): Contract | null {
   const { chainId } = useActiveWeb3React()
+  console.log('Using contract', MULTICALL_NETWORKS[chainId])
   return useContract(chainId && MULTICALL_NETWORKS[chainId], MULTICALL_ABI, false)
 }
 

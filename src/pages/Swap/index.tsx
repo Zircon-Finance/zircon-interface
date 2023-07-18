@@ -23,7 +23,7 @@ import Settings from '../../components/Settings'
 // import orderBy from 'lodash/orderBy'
 import { INITIAL_ALLOWED_SLIPPAGE } from '../../constants'
 import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
-import { getTopTokens, useAllTokens, useBlocksSubgraphUrl, useCurrency, useSubgraphUrl } from '../../hooks/Tokens'
+import { useAllTokens, useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
 import useENSAddress from '../../hooks/useENSAddress'
 import { useSwapCallback } from '../../hooks/useSwapCallback'
@@ -184,31 +184,30 @@ export default function Swap() {
     onCurrencySelection(Field.INPUT, NATIVE_TOKEN[chainId])
   }, [chainId])
 
-  const subgraphUrl = useSubgraphUrl()
-  const blockSubgraphUrl = useBlocksSubgraphUrl()
-  const [derivedETH, setDerivedETH] = useState(null)
-  const [oneDayDerivedETH, setOneDayDerivedETH] = useState(null)
+  // const subgraphUrl = useSubgraphUrl()
+  // const blockSubgraphUrl = useBlocksSubgraphUrl()
+  // const [derivedETH, setDerivedETH] = useState(null)
+  // const [oneDayDerivedETH, setOneDayDerivedETH] = useState(null)
 
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
     }
-  }, [approval, approvalSubmitted, chainId, subgraphUrl])
-  console.log('subgraphUrl', subgraphUrl)
+  }, [approval, approvalSubmitted, chainId])
 
-  useEffect(() => {
-    ((chainId === 1285 && subgraphUrl === 'https://api.thegraph.com/subgraphs/name/reshyresh/zircon-finance') || 
-    (chainId === 56 && subgraphUrl === 'https://api.thegraph.com/subgraphs/name/reshyresh/zi')) &&
-     getTopTokens(chainId, subgraphUrl, blockSubgraphUrl).then((res) => {
-      setTopTokens(res.query ? res.query : [])
-      setTopTokensPrevious(res.oneDayAgoQueryData ? res.oneDayAgoQueryData : [])
-      setDerivedETH(res.derivedEthQueryData ? res.derivedEthQueryData : [])
-      setOneDayDerivedETH(res.oneDayAgoDerivedEthQueryData ? res.oneDayAgoDerivedEthQueryData : [])
-      // setSortOption('volume 24h')
-    }).catch((err) => {
-      console.log('error fetching top tokens', err)
-    })
-  }, [chainId, subgraphUrl, blockSubgraphUrl])
+  // useEffect(() => {
+  //   ((chainId === 1285 && subgraphUrl === 'https://api.thegraph.com/subgraphs/name/reshyresh/zircon-finance') || 
+  //   (chainId === 56 && subgraphUrl === 'https://api.thegraph.com/subgraphs/name/reshyresh/zi')) &&
+  //    getTopTokens(chainId, subgraphUrl, blockSubgraphUrl).then((res) => {
+  //     setTopTokens(res.query ? res.query : [])
+  //     setTopTokensPrevious(res.oneDayAgoQueryData ? res.oneDayAgoQueryData : [])
+  //     setDerivedETH(res.derivedEthQueryData ? res.derivedEthQueryData : [])
+  //     setOneDayDerivedETH(res.oneDayAgoDerivedEthQueryData ? res.oneDayAgoDerivedEthQueryData : [])
+  //     // setSortOption('volume 24h')
+  //   }).catch((err) => {
+  //     console.log('error fetching top tokens', err)
+  //   })
+  // }, [chainId, subgraphUrl, blockSubgraphUrl])
 
   
 
@@ -314,8 +313,8 @@ export default function Swap() {
   pair, pairState, chainId)
 
   //Top tokens
-  const [topTokens, setTopTokens] = useState([])
-  const [topTokensPrevious, setTopTokensPrevious] = useState([])
+  const [topTokens, ] = useState([])
+  const [topTokensPrevious, ] = useState([])
   // const options = ['Price', 'Price change 24H', 'Volume 24H', 'TVL']
   // const [sortOption, setSortOption] = useState('')
 
@@ -621,7 +620,7 @@ export default function Swap() {
           {chosenTokens?.map((token, index) => {
           return(
             <FavTokensRow key={index} token={token} index={index} topTokens={topTokens} topTokensPrevious={topTokensPrevious}
-            handleSwap={handleInputSelect} derivedETH={derivedETH} oneDayDerivedETH={oneDayDerivedETH} />
+            handleSwap={handleInputSelect} derivedETH={undefined} oneDayDerivedETH={undefined} />
           )})}
         </Flex>
       </Flex>

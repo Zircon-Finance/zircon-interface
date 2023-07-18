@@ -1,5 +1,5 @@
 // import { ChainId } from 'zircon-sdk'
-import React from 'react'
+import React, { useMemo } from 'react'
 // import { isMobile } from 'react-device-detect'
 import { Text } from 'rebass'
 import { useLocation } from 'react-router-dom';
@@ -155,8 +155,9 @@ const BalanceText = styled(Text)`
 
 export default function Header() {
   const { account } = useActiveWeb3React()
+  const memoizedAccounts = useMemo(() => (account ? [account] : []), [account])
 
-  const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
+  const userEthBalance = useETHBalances(memoizedAccounts)?.[account ?? '']
   console.log('userEthBalance', userEthBalance)
   //const [isDark] = useDarkModeManager()
   const location = useLocation();

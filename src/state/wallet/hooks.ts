@@ -1,48 +1,45 @@
 import { Currency, CurrencyAmount, JSBI, NATIVE_TOKEN, Token, TokenAmount } from 'zircon-sdk'
-import { useMemo } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
 import { useAllTokens } from '../../hooks/Tokens'
 import { useActiveWeb3React } from '../../hooks'
-import { useMulticallContract } from '../../hooks/useContract'
 import { isAddress } from '../../utils'
-import { useSingleContractMultipleData, useMultipleContractSingleData } from '../multicall/hooks'
+import { useMultipleContractSingleData } from '../multicall/hooks'
 
 /**
  * Returns a map of the given addresses to their eventually consistent DEV balances.
  */
-export function useETHBalances(
-  uncheckedAddresses?: (string | undefined)[]
-): { [address: string]: CurrencyAmount | undefined } {
-  const multicallContract = useMulticallContract()
-  const { chainId } = useActiveWeb3React()
-  const addresses: string[] = useMemo(
-    () =>
-      uncheckedAddresses
-        ? uncheckedAddresses
-            .map(isAddress)
-            .filter((a): a is string => a !== false)
-            .sort()
-        : [],
-    [uncheckedAddresses]
-  )
+export function useETHBalances(addresses: string[]) {
+  const { library, chainId } = useActiveWeb3React()
+  const [balances, setBalances] = useState<{ [address: string]: CurrencyAmount | undefined }>({})
 
-  const results = useSingleContractMultipleData(
-    multicallContract,
-    'getEthBalance',
-    addresses.map(address => [address])
-  )
-  console.log('result useEthBalance', results)
+  useEffect(() => {
+    if (!library || addresses.length === 0) return () => {};
 
-  return useMemo(
-    () =>
-      addresses.reduce<{ [address: string]: CurrencyAmount }>((memo, address, i) => {
-        const value = results?.[i]?.result?.[0]
-        if (value) memo[address] = CurrencyAmount.ether(JSBI.BigInt(value.toString()), chainId)
-        return memo
-      }, {}),
-    [addresses, results]
-  )
+    let stale = false
+
+    Promise.all(
+      addresses.map(address => library.getBalance(address))
+    ).then(balances => {
+      if (!stale) {
+        setBalances(
+          addresses.reduce<{ [address: string]: CurrencyAmount | undefined }>((memo, address, i) => {
+            const value = balances[i]
+            if (value) memo[address] = CurrencyAmount.ether(JSBI.BigInt(value.toString()), chainId)
+            return memo
+          }, {})
+        )
+      }
+    })
+
+    return () => {
+      stale = true
+    }
+  }, [addresses, library, chainId])
+
+  return balances
 }
+
 
 /**
  * Returns a map of token addresses to their eventually consistent token balances for a single account.

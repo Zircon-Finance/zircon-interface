@@ -106,8 +106,8 @@ export default function App() {
   const dispatch = useDispatch()
 
   const blockedApiData = useBlockedApiData();
-  const isPoolBlocked = blockedApiData?.isPoolBlocked
-  const isFarmBlocked = blockedApiData?.isFarmBlocked
+  const isPoolBlocked = false
+  const isFarmBlocked = true
   const blockReasonTitle = blockedApiData?.blockReasonTitle
   const blockReasonDescription = blockedApiData?.blockReasonDescription
 

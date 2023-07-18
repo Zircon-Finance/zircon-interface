@@ -78,8 +78,8 @@ export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' }) {
   const [hoverBlocked, setHoverBlocked] = React.useState(false)
 
   const blockedApiData = useBlockedApiData();
-  const isPoolBlocked = blockedApiData?.isPoolBlocked
-  const isFarmBlocked = blockedApiData?.isFarmBlocked
+  const isPoolBlocked = false
+  const isFarmBlocked = true
   const blockReasonTitle = blockedApiData?.blockReasonTitle
   const blockReasonDescription = blockedApiData?.blockReasonDescription
 

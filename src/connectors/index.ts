@@ -11,11 +11,11 @@ import { talismanChains } from './talisman/talismanChains'
 
 const NETWORK_URL = process.env.REACT_APP_NETWORK_URL
   ? process.env.REACT_APP_NETWORK_URL
-  : 'https://bsc-dataseed.binance.org'
+  : 'https://endpoints.omniatech.io/v1/arbitrum/goerli/public'
 const FORMATIC_KEY = process.env.REACT_APP_FORTMATIC_KEY
 const PORTIS_ID = process.env.REACT_APP_PORTIS_ID
 
-export const NETWORK_CHAIN_ID: number = parseInt(process.env.REACT_APP_CHAIN_ID ?? '1285')
+export const NETWORK_CHAIN_ID: number = parseInt(process.env.REACT_APP_CHAIN_ID ?? '421613')
 
 if (typeof NETWORK_URL === 'undefined') {
   throw new Error(`REACT_APP_NETWORK_URL must be a defined environment variable`)
@@ -24,6 +24,8 @@ if (typeof NETWORK_URL === 'undefined') {
 export const network = new NetworkConnector({
   urls: { [NETWORK_CHAIN_ID]: NETWORK_URL },
 })
+
+console.log('netowkr provider', network.provider)
 
 let networkLibrary: Web3Provider | undefined
 export function getNetworkLibrary(): Web3Provider {

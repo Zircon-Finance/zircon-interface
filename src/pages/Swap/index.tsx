@@ -20,7 +20,7 @@ import TradePrice from '../../components/swap/TradePrice'
 import TokenWarningModal from '../../components/TokenWarningModal'
 import ProgressSteps from '../../components/ProgressSteps'
 import Settings from '../../components/Settings'
-import orderBy from 'lodash/orderBy'
+// import orderBy from 'lodash/orderBy'
 import { INITIAL_ALLOWED_SLIPPAGE } from '../../constants'
 import { useActiveWeb3React, useWindowDimensions } from '../../hooks'
 import { getTopTokens, useAllTokens, useBlocksSubgraphUrl, useCurrency, useSubgraphUrl } from '../../hooks/Tokens'
@@ -50,18 +50,18 @@ import PriceChartContainer from '../../components/Chart/PriceChartContainer'
 import NoChartAvailable from '../../components/Chart/NoChartAvailable'
 import { usePairPrices } from '../../state/mint/pylonHooks'
 import { usePair } from '../../data/Reserves'
-import { SelectedOptionDiv } from '../../views/Farms/Farms'
-import { TableData } from '../../views/Farms/components/FarmTable/Row'
-import FarmRepeatIcon from '../../components/FarmRepeatIcon'
-import { Row, SkeletonTable, StarFull, TopTokensRow } from '../../components/TopTokensRow'
+// import { SelectedOptionDiv } from '../../views/Farms/Farms'
+// import { TableData } from '../../views/Farms/components/FarmTable/Row'
+// import FarmRepeatIcon from '../../components/FarmRepeatIcon'
+import { StarFull } from '../../components/TopTokensRow'
 import FavTokensRow from '../../components/FavouriteTokensRow'
-import { Separator } from '../../components/SearchModal/styleds'
-import { usePools } from '../../state/pools/hooks'
-import { Skeleton } from '@pancakeswap/uikit'
+// import { Separator } from '../../components/SearchModal/styleds'
+// import { usePools } from '../../state/pools/hooks'
+// import { Skeleton } from '@pancakeswap/uikit'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
 
 export default function Swap() {
-  const {pools} = usePools()
+  // const {pools} = usePools()
   const { t } = useTranslation()
   const loadedUrlParams = useDefaultsFromURLSearch()
   const allTokens = useAllTokens()
@@ -80,7 +80,7 @@ export default function Swap() {
     setDismissTokenWarning(true)
   }, [])
 
-  const skeletons = 5;
+  // const skeletons = 5;
   const { account, chainId } = useActiveWeb3React()
   const theme = useTheme()
 
@@ -204,7 +204,7 @@ export default function Swap() {
       setTopTokensPrevious(res.oneDayAgoQueryData ? res.oneDayAgoQueryData : [])
       setDerivedETH(res.derivedEthQueryData ? res.derivedEthQueryData : [])
       setOneDayDerivedETH(res.oneDayAgoDerivedEthQueryData ? res.oneDayAgoDerivedEthQueryData : [])
-      setSortOption('volume 24h')
+      // setSortOption('volume 24h')
     }).catch((err) => {
       console.log('error fetching top tokens', err)
     })
@@ -316,35 +316,35 @@ export default function Swap() {
   //Top tokens
   const [topTokens, setTopTokens] = useState([])
   const [topTokensPrevious, setTopTokensPrevious] = useState([])
-  const options = ['Price', 'Price change 24H', 'Volume 24H', 'TVL']
-  const [sortOption, setSortOption] = useState('')
+  // const options = ['Price', 'Price change 24H', 'Volume 24H', 'TVL']
+  // const [sortOption, setSortOption] = useState('')
 
-  const sortTokens = (sortOption: string, tokensToSort: any[]) => {
-    switch (sortOption) {
-      case 'price':
-        return orderBy(tokensToSort, (token: any) => parseFloat(token.derivedETH) * parseFloat(derivedETH) ?? 0, 'desc')
-      case 'price change 24h':
-          return orderBy(tokensToSort, (token: any) => {
-          const previousToken = topTokensPrevious?.find((t) => t.id === token.id)
-          const changePercent = ((((parseFloat(token?.derivedETH) * parseFloat(derivedETH)) - (parseFloat(previousToken?.derivedETH) * parseFloat(oneDayDerivedETH))) / 
-          (parseFloat(previousToken?.derivedETH) * parseFloat(oneDayDerivedETH))) * 100).toFixed(2)
-          return changePercent !== 'NaN' ? parseFloat(changePercent) : parseFloat('-100')
-        }, 'desc')
-      case 'volume 24h':
-        return orderBy(tokensToSort, (token: any) => {
-          const previousToken = topTokensPrevious?.find((t) => t?.id === token?.id)
-          return (parseFloat(token?.tradeVolumeUSD) - parseFloat(previousToken?.tradeVolumeUSD))
-        } , 'desc')
-      case 'tvl':
-        return orderBy(tokensToSort, (token: any) => {
-          return (parseFloat(token?.totalLiquidity) * parseFloat(derivedETH) * (parseFloat(token?.derivedETH)))
-        } , 'desc')
-      default:
-        return tokensToSort
-    }
-  }
+  // const sortTokens = (sortOption: string, tokensToSort: any[]) => {
+  //   switch (sortOption) {
+  //     case 'price':
+  //       return orderBy(tokensToSort, (token: any) => parseFloat(token.derivedETH) * parseFloat(derivedETH) ?? 0, 'desc')
+  //     case 'price change 24h':
+  //         return orderBy(tokensToSort, (token: any) => {
+  //         const previousToken = topTokensPrevious?.find((t) => t.id === token.id)
+  //         const changePercent = ((((parseFloat(token?.derivedETH) * parseFloat(derivedETH)) - (parseFloat(previousToken?.derivedETH) * parseFloat(oneDayDerivedETH))) / 
+  //         (parseFloat(previousToken?.derivedETH) * parseFloat(oneDayDerivedETH))) * 100).toFixed(2)
+  //         return changePercent !== 'NaN' ? parseFloat(changePercent) : parseFloat('-100')
+  //       }, 'desc')
+  //     case 'volume 24h':
+  //       return orderBy(tokensToSort, (token: any) => {
+  //         const previousToken = topTokensPrevious?.find((t) => t?.id === token?.id)
+  //         return (parseFloat(token?.tradeVolumeUSD) - parseFloat(previousToken?.tradeVolumeUSD))
+  //       } , 'desc')
+  //     case 'tvl':
+  //       return orderBy(tokensToSort, (token: any) => {
+  //         return (parseFloat(token?.totalLiquidity) * parseFloat(derivedETH) * (parseFloat(token?.derivedETH)))
+  //       } , 'desc')
+  //     default:
+  //       return tokensToSort
+  //   }
+  // }
 
-  const sortedTokens = useMemo(() => sortTokens(sortOption, topTokens), [sortOption, topTokens])
+  // const sortedTokens = useMemo(() => sortTokens(sortOption, topTokens), [sortOption, topTokens])
 
   return (
     <>
@@ -627,7 +627,7 @@ export default function Swap() {
       </Flex>
       )}
 
-    <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none'}}>
+    {/* <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none'}}>
     <table
       style={{
         width: "100%",
@@ -698,7 +698,7 @@ export default function Swap() {
             pools={pools} />
         )))}
       </table>
-    </Flex>
+    </Flex> */}
     <LearnIcon />
     </>
   )

@@ -45,7 +45,7 @@ import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import AppBody from '../AppBody'
 import { ClickableText } from '../Pool/styleds'
 import Loader from '../../components/Loader'
-import LearnIcon from '../../components/LearnIcon'
+// import LearnIcon from '../../components/LearnIcon'
 import PriceChartContainer from '../../components/Chart/PriceChartContainer'
 import NoChartAvailable from '../../components/Chart/NoChartAvailable'
 import { usePairPrices } from '../../state/mint/pylonHooks'
@@ -349,7 +349,7 @@ export default function Swap() {
   return (
     <>
     <div style={{width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', gap: '20px'}}>
-    { width > 1000 && (
+    { width > 10000 && (
     <div style={{
       height: '423px',
       position: 'relative',
@@ -612,7 +612,7 @@ export default function Swap() {
     </div>
 
     {/* // User chosen tokens */}    
-    {chosenTokens?.filter((token) => Object.keys(allTokens).map((token) => token.toLowerCase()).includes(token.toLowerCase())).length > 0 && (
+    {(false) && chosenTokens?.filter((token) => Object.keys(allTokens).map((token) => token.toLowerCase()).includes(token.toLowerCase())).length > 0 && (
       <Flex style={{width: '985px', background: theme.bg1, borderRadius: '17px', marginTop: '20px', display: width > 992 ? 'flex' : 'none'}}>
         <Flex mt='auto' mb="auto" ml='20px'>
             <StarFull />
@@ -699,7 +699,7 @@ export default function Swap() {
         )))}
       </table>
     </Flex> */}
-    <LearnIcon />
+    {/* <LearnIcon /> */}
     </>
   )
 }

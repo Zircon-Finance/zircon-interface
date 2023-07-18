@@ -11,10 +11,11 @@ import Settings from '../Settings'
 import { useBlockedApiData, useWindowDimensions } from '../../hooks'
 import { connectNet } from '../WalletModal'
 // import MoonbeamLogo from '../MoonbeamLogo'
-import MoonriverLogo from '../MoonriverLogo'
-import BnbLogo from '../BnbLogo'
+// import MoonriverLogo from '../MoonriverLogo'
+// import BnbLogo from '../BnbLogo'
 import { DialogContainer } from '../TopTokensRow'
-import { Text } from 'rebass'
+import { Flex, Text } from 'rebass'
+import ArbLogo from '../ArbLogo'
 
 const Tabs = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -119,18 +120,18 @@ export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' }) {
   )
 }
 
-export function ChainPoolTab({ active }: { active: 'bsc' | 'moonriver' }) {
+export function ChainPoolTab({ active }: { active: 'bsc' | 'moonriver' | 'arbgoerli' }) {
   const { width } = useWindowDimensions();
   return (
     <Tabs style={{ width: width >= 700 ? 'auto' : '100%', padding: '5px', marginLeft: width >= 700 ? '5px' : '0px', marginRight: width >= 700 ? '5px' : '0px'}}>
-      <StyledNavLink id={`swap-chain-bsc`} to={'#'} onClick={()=> {connectNet('bsc')}} isActive={() => active === 'bsc'} style={{padding: '5px, 8px, 5px, 8px'}}>
-        <BnbLogo />
-        <Text ml='5px'>{'BSC'}</Text>
+      <StyledNavLink id={`swap-chain-bsc`} to={'#'} onClick={()=> {connectNet('arbGoerli')}} isActive={() => active === 'arbgoerli'} style={{padding: '5px, 8px, 5px, 8px'}}>
+        <Flex alignItems={'center'} justifyContent={'center'} style={{width: '40px', height: '40px'}}><ArbLogo /></Flex>
+        <Text ml='5px'>{'Arbitrum Goerli'}</Text>
       </StyledNavLink>
-      <StyledNavLink id={`swap-chain-moonriver`}to={'#'} onClick={()=> {connectNet('moonriver')}} isActive={() => active === 'moonriver'} style={{padding: '5px, 8px, 5px, 8px'}}>
+      {/* <StyledNavLink id={`swap-chain-moonriver`}to={'#'} onClick={()=> {connectNet('moonriver')}} isActive={() => active === 'moonriver'} style={{padding: '5px, 8px, 5px, 8px'}}>
         <MoonriverLogo />
         <Text ml='5px'>{'Moonriver'}</Text>
-      </StyledNavLink>
+      </StyledNavLink> */}
     </Tabs>
   )
 }

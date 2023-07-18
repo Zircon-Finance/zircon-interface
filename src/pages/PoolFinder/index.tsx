@@ -18,7 +18,7 @@ import { currencyId } from '../../utils/currencyId'
 import AppBody from '../AppBody'
 import { Dots } from '../Pool/styleds'
 import {PylonState, usePylon} from "../../data/PylonReserves";
-import LearnIcon from '../../components/LearnIcon'
+// import LearnIcon from '../../components/LearnIcon'
 // import { usePylon } from '../../data/PylonReserves'
 
 enum Fields {
@@ -214,7 +214,7 @@ export default function PoolFinder() {
             />
 
         </AppBody>
-        <LearnIcon />
+        {/* <LearnIcon /> */}
         </>
     )
 }

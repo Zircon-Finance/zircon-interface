@@ -168,6 +168,17 @@ const supportedNetworks = {
       decimals: 18,
     },
   },
+  arbGoerli: {
+    chainId: '0x66eed',
+    chainName: 'Arbitrum Testnet Goerli',
+    rpcUrls: ['https://arbitrum-goerli.publicnode.com'],
+    blockExplorerUrls: ['https://goerli.arbiscan.io/'],
+    nativeCurrency: {
+      name: 'Goerli Ether',
+      symbol: 'GETH',
+      decimals: 18,
+    },
+  }
 };
 
 export const connectNet = async (network) => {

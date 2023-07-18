@@ -31,7 +31,7 @@ export function useETHBalances(
     'getEthBalance',
     addresses.map(address => [address])
   )
-  console.log('results', results)
+  console.log('result useEthBalance', results)
 
   return useMemo(
     () =>

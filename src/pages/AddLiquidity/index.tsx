@@ -38,7 +38,7 @@ import { Dots, Wrapper } from '../Pool/styleds'
 import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 import { currencyId } from '../../utils/currencyId'
 import { PoolPriceBar } from './PoolPriceBar'
-import LearnIcon from '../../components/LearnIcon'
+// import LearnIcon from '../../components/LearnIcon'
 import InfoCircle from '../../components/InfoCircle'
 import { useBatchPrecompileContract, useTokenContract } from '../../hooks/useContract'
 
@@ -485,7 +485,7 @@ export default function AddLiquidity({
           <MinimalPositionCard showUnwrapped={oneCurrencyIsWDEV} pair={pair} />
         </AutoColumn>
       ) : null}
-      <LearnIcon />
+      {/* <LearnIcon /> */}
     </>
   )
 }

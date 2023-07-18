@@ -39,7 +39,7 @@ import {useBlockNumber, useWalletModalToggle} from '../../state/application/hook
 import {useUserDeadline, useUserSlippageTolerance} from '../../state/user/hooks'
 import {BigNumber} from '@ethersproject/bignumber'
 import {RouteComponentProps} from "react-router-dom";
-import LearnIcon from '../../components/LearnIcon'
+// import LearnIcon from '../../components/LearnIcon'
 import {usePylonConstants} from "../../data/PylonData";
 import styled from 'styled-components'
 import BigNumberJs from "bignumber.js";
@@ -905,7 +905,7 @@ const SlippageWarningModal = () => (
               <MinimalPositionPylonCard showUnwrapped={oneCurrencyIsWDEV} pylon={pylon} isFloat={isFloat} pylonConstants={pylonConstants} blockNumber={blockNumber} />
             </AutoColumn>
         ) : null}
-        <LearnIcon />
+        {/* <LearnIcon /> */}
       </>
   )
 }

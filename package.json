@@ -83,7 +83,7 @@
     "axios": "^0.21.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts --openssl-legacy-provider start",
     "build": "react-scripts build",
     "reducertest": "react-scripts test",
     "test": "cypress open",

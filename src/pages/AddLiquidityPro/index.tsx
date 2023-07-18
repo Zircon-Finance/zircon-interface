@@ -42,7 +42,7 @@ import {Dots, Wrapper} from "../Pool/styleds";
 import {ConfirmAddModalBottom} from "./ConfirmAddModalBottom";
 import {currencyId} from "../../utils/currencyId";
 import {LottieContainer} from "../App";
-import LearnIcon from "../../components/LearnIcon";
+// import LearnIcon from "../../components/LearnIcon";
 // import {getPoolAprAddress} from "../../utils/apr";
 import {SpaceBetween} from "../../views/Farms/components/FarmTable/Actions/ActionPanel";
 import RepeatIcon from "../../components/RepeatIcon";
@@ -1683,7 +1683,7 @@ export default function AddLiquidityPro({
               />
             </AutoColumn>
         ) : null}
-        <LearnIcon />
+        {/* <LearnIcon /> */}
       </>
   );
 }

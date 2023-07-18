@@ -39,7 +39,7 @@ import { Field } from '../../state/burn/actions'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
 import { BigNumber } from '@ethersproject/bignumber'
-import LearnIcon from '../../components/LearnIcon'
+// import LearnIcon from '../../components/LearnIcon'
 import { PercButton } from '../RemoveProLiquidity'
 import {useTransactionAdder} from "../../state/transactions/hooks";
 import {calculateSlippageAmount, getRouterContract} from "../../utils";
@@ -604,7 +604,7 @@ export default function RemoveLiquidity({
           <MinimalPositionCard showUnwrapped={oneCurrencyIsWDEV} pair={pair} />
         </AutoColumn>
       ) : null}
-      <LearnIcon />
+      {/* <LearnIcon /> */}
     </>
   )
 }

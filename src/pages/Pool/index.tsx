@@ -31,7 +31,7 @@ import TriMenu from '../../components/TriMenu'
 import { ButtonPrimary, ButtonSecondary } from '../../components/Button'
 import { Link } from 'react-router-dom'
 import HistoryTransactions from '../../components/HistoryTransactions'
-import LearnIcon, { SmallerQuestionmark } from '../../components/LearnIcon'
+// import LearnIcon, { SmallerQuestionmark } from '../../components/LearnIcon'
 import {usePylonConstants} from "../../data/PylonData";
 import {useBlockNumber} from "../../state/application/hooks";
 
@@ -187,7 +187,7 @@ export default function Pool() {
             </div> */}
             </AutoColumn>
             <AutoRow style={{padding: '10px'}}>
-              {width <= 700 && (<SmallerQuestionmark />)}
+              {/* {width <= 700 && (<SmallerQuestionmark />)} */}
               <div style={{width: '15%', height: '100%'}}>
                   <TriMenu />
               </div>
@@ -200,7 +200,7 @@ export default function Pool() {
               </div>
             </AutoRow>
           </AutoColumn>
-          {width >= 700 && <LearnIcon />}
+          {/* {width >= 700 && <LearnIcon />} */}
         </AppBody>
       </>
   )

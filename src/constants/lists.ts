@@ -1,6 +1,6 @@
 // the DCTDEX Default token list lives here
 export const DEFAULT_TOKEN_LIST_URL =
-  'https://gist.githubusercontent.com/ReshyResh/1d4a52bb0f3f1f1252974cc1f34eb354/raw/9a2ff0411ed86bb58d2a48893ee98fbf34af26e3/BSC_Testnet.json'
+  'https://gist.githubusercontent.com/ReshyResh/bdecbce0c2ab28455239d902a771d95d/raw/0d0321579d05c3cb5ad3ee40594a37186145fb31/Diffuse.json'
 
 export const PRICE_API = 'https://api.binance.com/api/v3/ticker/price?symbol='
 

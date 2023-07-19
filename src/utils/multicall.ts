@@ -20,7 +20,7 @@ const multicall = async <T = any>(chainId: number, abi: any[], calls: Call[]): P
     callData: itf.encodeFunctionData(call.name, call.params),
   }))
 
-  const { returnData } = await multi.aggregate(calldata)
+  const { returnData } = await multi.aggregateStatic(calldata)
   const res = returnData.map((call, i) => itf.decodeFunctionResult(calls[i].name, call))
   return res as any
 }

@@ -1,6 +1,39 @@
 [
   {
     "constant": true,
+    "inputs": [
+      {
+        "components": [
+          {
+            "name": "target",
+            "type": "address"
+          },
+          {
+            "name": "callData",
+            "type": "bytes"
+          }
+        ],
+        "name": "calls",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "aggregateStatic",
+    "outputs": [
+      {
+        "name": "blockNumber",
+        "type": "uint256"
+      },
+      {
+        "name": "returnData",
+        "type": "bytes[]"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
     "inputs": [],
     "name": "getCurrentBlockTimestamp",
     "outputs": [
@@ -14,7 +47,7 @@
     "type": "function"
   },
   {
-    "constant": true,
+    "constant": false,
     "inputs": [
       {
         "components": [
@@ -43,7 +76,7 @@
       }
     ],
     "payable": false,
-    "stateMutability": "view",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -54,6 +87,71 @@
       {
         "name": "blockHash",
         "type": "bytes32"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "requireSuccess",
+        "type": "bool"
+      },
+      {
+        "components": [
+          {
+            "name": "target",
+            "type": "address"
+          },
+          {
+            "name": "callData",
+            "type": "bytes"
+          }
+        ],
+        "name": "calls",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "tryBlockAndAggregate",
+    "outputs": [
+      {
+        "name": "blockNumber",
+        "type": "uint256"
+      },
+      {
+        "name": "blockHash",
+        "type": "bytes32"
+      },
+      {
+        "components": [
+          {
+            "name": "success",
+            "type": "bool"
+          },
+          {
+            "name": "returnData",
+            "type": "bytes"
+          }
+        ],
+        "name": "returnData",
+        "type": "tuple[]"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "getBlockNumber",
+    "outputs": [
+      {
+        "name": "blockNumber",
+        "type": "uint256"
       }
     ],
     "payable": false,
@@ -119,6 +217,110 @@
     ],
     "payable": false,
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "getL1BlockNumber",
+    "outputs": [
+      {
+        "name": "l1BlockNumber",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "requireSuccess",
+        "type": "bool"
+      },
+      {
+        "components": [
+          {
+            "name": "target",
+            "type": "address"
+          },
+          {
+            "name": "callData",
+            "type": "bytes"
+          }
+        ],
+        "name": "calls",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "tryAggregate",
+    "outputs": [
+      {
+        "components": [
+          {
+            "name": "success",
+            "type": "bool"
+          },
+          {
+            "name": "returnData",
+            "type": "bytes"
+          }
+        ],
+        "name": "returnData",
+        "type": "tuple[]"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "components": [
+          {
+            "name": "target",
+            "type": "address"
+          },
+          {
+            "name": "callData",
+            "type": "bytes"
+          }
+        ],
+        "name": "calls",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "blockAndAggregate",
+    "outputs": [
+      {
+        "name": "blockNumber",
+        "type": "uint256"
+      },
+      {
+        "name": "blockHash",
+        "type": "bytes32"
+      },
+      {
+        "components": [
+          {
+            "name": "success",
+            "type": "bool"
+          },
+          {
+            "name": "returnData",
+            "type": "bytes"
+          }
+        ],
+        "name": "returnData",
+        "type": "tuple[]"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

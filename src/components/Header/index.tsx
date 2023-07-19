@@ -158,7 +158,6 @@ export default function Header() {
   const memoizedAccounts = useMemo(() => (account ? [account] : []), [account])
 
   const userEthBalance = useETHBalances(memoizedAccounts)?.[account ?? '']
-  console.log('userEthBalance', userEthBalance)
   //const [isDark] = useDarkModeManager()
   const location = useLocation();
   const { width } = useWindowDimensions();

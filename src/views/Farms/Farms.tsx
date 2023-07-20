@@ -818,7 +818,7 @@ const Farms: React.FC = ({ children }) => {
                     onMouseEnter={() => setHoverButton(true)}
                     onMouseLeave={() => setHoverButton(false)}
                     style={{
-                      background: theme.darkMode ? hoverButton ? "#492B36" : '#422330' : hoverButton ? "#F6F2F4" : '#F0E9EB',
+                      background: theme.darkMode ? hoverButton ? "#A89FCA" : '#422330' : hoverButton ? "#F6F2F4" : '#F0E9EB',
                       margin: "auto",
                       marginTop: "20px",
                       height: "43px",

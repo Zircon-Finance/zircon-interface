@@ -83,7 +83,7 @@ const AccountElement = styled.div<{ active: boolean }>`
   display: flex;
   flex-direction: row;
   align-items: center;
-  background-color: ${({ theme, active }) => (!active ? theme.poolPinkButton : theme.darkMode ? 'rgba(213, 174, 175, 0.07)' : '#ECEAEA')};
+  background-color: ${({ theme, active }) => (!active ? theme.poolPinkButton : theme.darkMode ? '#A89FCA5a' : '#ECEAEA')};
   border-radius: 17px;
   color: ${({ theme }) => theme.text1};
   height: 100%;
@@ -180,7 +180,7 @@ export default function Header() {
         {width >= 700 ?
         <>
         <HeaderElement>
-        <Title href="." style={{width: account ? width < 1100 ? '150px' : '405px' : width > 1100 ? '420px' : '160px', height: '44px'}}>
+        <Title href="." style={{width: account ? width < 1100 ? '150px' : '485px' : width > 1100 ? '420px' : '160px', height: '44px'}}>
           <UniIcon id="z-logo">
               <img style={{ height: 35, display: 'flex', margin: 'auto' }} src={!darkMode ? DarkLogo : WhiteLogo} alt="logo" />
             </UniIcon>

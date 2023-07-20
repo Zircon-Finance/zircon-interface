@@ -24,7 +24,7 @@ const Tabs = styled.div`
   justify-content: space-evenly;
   margin: auto;
   height: 44px;
-  background: ${({ theme }) => theme.darkMode ? 'rgba(213, 174, 175, 0.07)' : '#ECEAEA' };
+  background: ${({ theme }) => theme.darkMode ? '#A89FCA5a' : '#ECEAEA' };
 `
 
 const activeClassName = 'ACTIVE'
@@ -49,7 +49,7 @@ const StyledNavLink = styled(NavLink).attrs({
   &.${activeClassName} {
     border-radius: 12px;
     color: ${({ theme, disabled }) => !disabled && theme.text1};
-    background-color: ${({ theme, disabled }) => !disabled && theme.darkMode ? 'rgba(213, 174, 175, 0.25)' : '#FCFBFC'};
+    background-color: ${({ theme, disabled }) => !disabled && theme.darkMode ? '#A89FCA8a' : '#FCFBFC'};
     box-shadow: ${({ theme, disabled }) => !disabled && theme.darkMode ? 'none' : '0px 1px 2px rgba(0, 0, 0, 0.15)'};
   }
 

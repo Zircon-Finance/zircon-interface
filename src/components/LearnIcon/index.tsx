@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import CoffeeIcon from '../CoffeeIcon'
 
 const LearnBadge = styled.span`
-  background-color: rgba(213, 174, 175, 0.1);
+  background-color: #A89FCA5a;
   display: flex;
   position: relative;
   top: 30px;
@@ -15,7 +15,7 @@ const LearnBadge = styled.span`
   cursor: pointer;
   z-index: 1;
   &:hover {
-      background-color:  rgba(213, 174, 175, 0.2);
+      background-color:  #A89FCA9a;
   }
   @media (min-width: 700px) {
     font-size: 16px;

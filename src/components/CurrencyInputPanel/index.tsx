@@ -43,7 +43,7 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
 
   :focus,
   :hover {
-    background-color: ${({ theme, selected }) => !selected ? theme.meatPinkBrown : theme.darkMode ? '#513642' : '#E5D9DB'};
+    background-color: ${({ theme, selected }) => !selected ? theme.meatPinkBrown : theme.darkMode ? '#424242' : '#E5D9DB'};
     color: ${({ theme, selected }) => !selected ? '#fff' : theme.darkMode ? '#fff' : theme.blackBrown};
     path {
       stroke: #fff;

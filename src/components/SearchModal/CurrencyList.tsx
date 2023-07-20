@@ -116,7 +116,7 @@ function CurrencyRow({
       <Column style={{overflow: 'hidden'}}>
         <Text title={currency.name} fontWeight={400} style={{display: 'flex', flexFlow: 'column'}}>
           <span>{currency.symbol}</span>
-          <span style={{color: 'rgba(173, 149, 159, 1)',width: 'max-content', fontSize: '13px'}}>{currency.name}</span>
+          <span style={{color: 'rgba(81, 81, 81, 1)',width: 'max-content', fontSize: '13px'}}>{currency.name}</span>
         </Text>
         <FadedSpan>
           {!isOnSelectedList && customAdded ? (

@@ -152,7 +152,7 @@ export default function CurrencyInputPanel({
             <CurrencySelect
               onMouseEnter={() => setHovered(true)}
               onMouseLeave={() => setHovered(false)}
-              style={{border: `1px solid ${theme.darkMode ? hovered ? currency ? '#61414A' : theme.meatPink : currency ? '#492B36' : '#87656C' : hovered ? currency ? '#DFCFD2' : theme.bg8 : !currency ? 'rgba(135, 73, 85, 0.5)' : '#F4EFF0' }`}}
+              style={{border: `1px solid ${theme.darkMode ? hovered ? currency ? '#A89FCA' : theme.meatPink : currency ? '#A89FCA' : '#A89FCA' : hovered ? currency ? '#DFCFD2' : theme.bg8 : !currency ? 'rgba(135, 73, 85, 0.5)' : '#F4EFF0' }`}}
               selected={!!currency}
               className="open-currency-select-button"
               onClick={() => {

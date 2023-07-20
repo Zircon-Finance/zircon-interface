@@ -52,7 +52,7 @@ export const ButtonPrimary = styled(Base)`
   }
   &:disabled {
     background-color: ${({ theme, altDisabledStyle }) => (altDisabledStyle ? theme.primary1 : theme.disabled1)};
-    color: ${({ theme }) => (theme.darkMode ? '#7A5D67 !important' : '#A99D9F !important')};
+    color: ${({ theme }) => (theme.darkMode ? '#A89FCA !important' : '#A99D9F !important')};
     cursor: auto;
     font-weight: 500;
     font-size: 18px;
@@ -64,7 +64,7 @@ export const ButtonPrimary = styled(Base)`
 `
 
 export const ButtonPositionsMobile = styled(Base)`
-  background-color: ${({ theme }) => theme.positionsButtons};
+  background-color: ${({ theme }) => theme.bg8} !important;
   padding: 10px;
   color: ${({ theme }) => theme.text1};
   width: 90%;
@@ -141,8 +141,8 @@ export const ButtonGray = styled(Base)`
 `
 
 export const ButtonSecondary = styled(Base)`
-  background-color: ${({ theme }) => theme.colors.inputSecondary};
-  color: ${({ theme }) => theme.text1};
+  background-color: ${({ theme }) => theme.bg4};
+  color: ${({ theme }) => theme.darkMode ? '#fff' : theme.text1};
   font-size: 16px;
   border-radius: 8px;
   padding: ${({ padding }) => (padding ? padding : '10px')};

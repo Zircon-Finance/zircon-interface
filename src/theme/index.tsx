@@ -50,11 +50,11 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     text3: darkMode ?'#6C7284'  : '#000f0f',
     text4: darkMode ?'#565A69'  : '#000f0f',
     text5: '#9C8D94',
-    tabsText: darkMode ? '#D5AEAF' : '#945c67',
+    tabsText: darkMode ? '#6F6F6F' : '#945c67',
 
     // backgrounds / greys
-    bg1: darkMode ? '#3A1C29' : '#FCFBFC', // Dark purple
-    bg2: darkMode ? '#3f1f29' : '#FCFBFC', // Light purple
+    bg1: darkMode ? '#0D0D0D' : '#FCFBFC', // Dark purple
+    bg2: darkMode ? '#282828' : '#FCFBFC', // Light purple
     bg3: '#40444F', // Dark gray221237
     bg4: '#565A69', // Lighter gray
     bg5: '#6C7284',
@@ -63,7 +63,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     // darker purple - container
     bg7: darkMode ? '#3c2330' : '#f5f3f3',
     // connect wallet button - dark purple
-    bg8: darkMode ? '#874955' : '#874955',
+    bg8: darkMode ? '#424242' : '#424242',
     // max button - very light purple
     bg9: darkMode ? '#634d58' : '#edebeb',
     //modal bg
@@ -71,12 +71,12 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     //button bg
     bg11: '#5b4450',
     // hover button
-    bg12: darkMode ? '#61414A' : '#EAE0E3',
+    bg12: darkMode ? '#A494E1' : '#EAE0E3',
     // button purple
     bg13: '#361E2A',
-    bg14: darkMode ? '#592e40' : '#f5f3f3',
+    bg14: darkMode ? '#262626' : '#f5f3f3',
     //specialty colors
-    modalBG: darkMode ? '#3a1c29a0' : '#FCFCFDA1',
+    modalBG: darkMode ? '#282828aa' : '#FCFCFDA1',
     advancedBG: 'rgba(0,0,0,0.05)',
 
     //primary colors
@@ -85,76 +85,76 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     primary3: '#BA73ED',
     primary4: '#A548E970',
     primary5: '#BA73ED70',
-    maxButton: 'rgba(203, 116, 177, 0.1)',
-    maxButtonHover: 'rgba(203, 116, 177, 0.25)' ,
+    maxButton: 'rgba(104, 104, 104, 0.3)',
+    maxButtonHover: 'rgba(104, 104, 104, 0.5)' ,
 
-    outlinedHover: darkMode ? '#5C3D3B' : '#dfced2',
+    outlinedHover: darkMode ? '#A89FCA' : '#dfced2',
 
-    disabled1: darkMode ? '#4D2734' : '#dfced2',
+    disabled1: darkMode ? '#1C1C1C' : '#dfced2',
 
-    inputSelect1: darkMode ? '#d5aeaf' : '#f5f3f3',
+    inputSelect1: darkMode ? '#6F6F6F' : '#f5f3f3',
 
-    navigationTabs: darkMode ? '#603D39' : '#e7e2e2',
+    navigationTabs: darkMode ? '#A89FCA' : '#e7e2e2',
 
-    navigationBorder: darkMode ? '#61403C' : '#e7e2e2',
+    navigationBorder: darkMode ? '#A89FCA' : '#e7e2e2',
 
-    anchorFloatBadge: darkMode ? '#442734' : 'rgba(8, 5, 6, 0.05)',
+    anchorFloatBadge: darkMode ? '#737373' : 'rgba(8, 5, 6, 0.05)',
 
-    questionMarkBg: darkMode ? '#653047' : '#FCFCFD',
+    questionMarkBg: darkMode ? '#A89FCA' : '#FCFCFD',
 
-    farmTabsBg: darkMode ? '#5f3c37' : '#eae7ed',
+    farmTabsBg: darkMode ? '#A89FCA' : '#eae7ed',
 
     questionMarks: darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
 
     slippageActive: '#9E4D86',
 
-    walletActive: darkMode ? '#4E302D' : '#edebea',
+    walletActive: darkMode ? '#A89FCA' : '#edebea',
 
-    hoveredButton: darkMode ? '#9e4d86' : '#874955',
+    hoveredButton: darkMode ? '#fff' : '#424242',
 
-    blackBrown: darkMode ? '#331924' : '#331924',
+    blackBrown: darkMode ? '#282828' : '#282828',
 
-    meatPinkBrown: darkMode ? '#D5AEAF' : '#874955',
+    meatPinkBrown: darkMode ? '#6F6F6F' : '#424242',
 
-    poolPinkButton: '#874955',
+    poolPinkButton: '#424242',
 
-    pinkGamma: '#CB74B1',
+    pinkGamma: '#fff',
 
-    meatPink: '#D5AEAF',
+    meatPink: '#6F6F6F',
 
     percentageRed: darkMode ? '#E67066' : '#BC2929',
 
     percentageGreen: darkMode ? '#5CB376' : '#287438',
 
-    pinkBrown : darkMode ? '#D5AEAF' : '#874955',
+    pinkBrown : darkMode ? '#6F6F6F' : '#424242',
 
-    farmPoolCardsBg: darkMode ? '#39202b' : '#eeecf0',
+    farmPoolCardsBg: darkMode ? '#A89FCA' : '#eeecf0',
 
-    actionPanelBg: darkMode ? '#5a2f41' : '#efedee',
+    actionPanelBg: darkMode ? '#A89FCA' : '#efedee',
 
-    contrastLightButton: darkMode ? '#582b40' : '#f1ebef',
+    contrastLightButton: darkMode ? '#A89FCA' : '#f1ebef',
 
-    darkerContrastPink: darkMode ? '#412030' : '#f7f2f6',
+    darkerContrastPink: darkMode ? '#A89FCA' : '#f7f2f6',
 
     cardSmall: darkMode ? '#361E2A' : '#fcfbfc',
     cardLightBorder: '#f2f0f1',
-    cardExpanded: darkMode ? '#52273a' : '#faf5fc',
-    badgeSmall: darkMode ? '#442734' : '#fcfbfc',
+    cardExpanded: darkMode ? '#131212' : '#faf5fc',
+    badgeSmall: darkMode ? '#737373' : '#fcfbfc',
 
-    changeButtonNormal: darkMode ? '#633d4e' : '#f1ebef',
-    changeButtonHover: darkMode ? '#6c4758' : '#EAE5E8',
+    changeButtonNormal: darkMode ? 'rgb(51, 51, 51)' : '#f1ebef',
+    changeButtonHover: darkMode ? 'rgb(56, 56, 56)' : '#EAE5E8',
 
     tableButton: darkMode ? '#442233' : '#f1ebf0',
 
-    positionsButtons: darkMode ? '#5b3244' : '#EAE5E8',
+    positionsButtons: darkMode ? '#fff' : '#EAE5E8',
     modalBg : darkMode ? 'rgba(0,0,0,0.5)' : 'rgba(36, 17, 26, 0.5)',
 
-    liquidityBg: darkMode ? '#331924' : '#F5F3F6',
+    liquidityBg: darkMode ? '#282828' : '#F5F3F6',
 
-    walletModal: darkMode ? '#52273a' : '#fff',
+    walletModal: darkMode ? '#131212' : '#fff',
     opacitySmall: darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
 
-    searchInput: darkMode ? '#5B3244' : '#f5f3f3',
+    searchInput: darkMode ? '#fff' : '#f5f3f3',
 
     // color text
     primaryText1: '#ffffff',
@@ -179,10 +179,10 @@ export function colors(chainId: any, darkMode: boolean): Colors {
       cardBorder: '#361E2A',
       contrast: "#191326",
       dropdown: "#F6F6F6",
-      dropdownDeep: darkMode ? "#5f3c37" : '#d5aeaf',
+      dropdownDeep: darkMode ? "#5f3c37" : '#6F6F6F',
       invertedContrast: darkMode ? '#51323D' : '#EAEAEA',
-      input: '#8F5661',
-      inputSecondary: darkMode ? '#492B36' : '#F6F2F4',
+      input: '#575757',
+      inputSecondary: darkMode ? '#A89FCA' : '#F6F2F4',
       tertiary: '#4A303E',
       text: "#FFFFFF",
       textDisabled: "#BDC2C4",
@@ -191,7 +191,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
       success: "#2ECC71",
     },
     card: {
-      background: darkMode ? '#52273a' : '#f5f3f6',
+      background: darkMode ? '#131212' : '#f5f3f6',
     },
     lightColors: {
       card: '#361E2A' ,
@@ -226,10 +226,10 @@ export function colors(chainId: any, darkMode: boolean): Colors {
       tooltip: "0px 0px 2px rgba(0, 0, 0, 0.2), 0px 4px 12px -8px rgba(14, 14, 44, 0.1)",
     },
     toggle: {
-      handleBackground: darkMode ? '#D5AEAF' : '#FFF',
+      handleBackground: darkMode ? '#6F6F6F' : '#FFF',
     },
     modal: {
-      background: darkMode ? '#52273a' : '#f1eff1' ,
+      background: darkMode ? '#131212' : '#f1eff1' ,
     },
     zIndices: {
       modal: 1000,
@@ -389,9 +389,9 @@ export const ThemedGlobalStyle = createGlobalStyle`
     ${({theme}) =>
         (theme.darkMode ? (`
       background: rgb(87,51,46);
-      background: -moz-radial-gradient(circle, rgba(87,51,46,1) 0%, rgba(70,41,37,1) 100%);
-      background: -webkit-radial-gradient(circle, rgba(87,51,46,1) 0%, rgba(70,41,37,1) 100%);
-      background: radial-gradient(circle, rgba(87,51,46,1) 0%, rgba(70,41,37,1) 100%);
+      background: -moz-radial-gradient(circle, rgb(40, 40, 40) 0%, rgb(0, 0, 0) 100%);
+      background: -webkit-radial-gradient(circle, rgb(40, 40, 40) 0%, rgb(0, 0, 0) 100%);
+      background: radial-gradient(circle,rgb(40, 40, 40) 0%,rgb(0, 0, 0) 100%);
       filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#57332E",endColorstr="#462925",GradientType=1);`
         ) : (`background: #F5F4F4;`)) }
     background-attachment: fixed;

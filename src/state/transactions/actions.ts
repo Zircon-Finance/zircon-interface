@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit'
-import { ChainId } from 'zircon-sdk'
+import { ChainId } from 'diffuse-sdk'
 
 export interface SerializableTransactionReceipt {
   to: string

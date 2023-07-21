@@ -9,7 +9,7 @@ import {
 import axios from 'axios'
 import { BIG_ZERO } from '../../utils/bigNumber'
 import { deserializeToken } from '../user/hooks'
-import { ChainId, Token } from 'zircon-sdk'
+import { ChainId, Token } from 'diffuse-sdk'
 import {AddressZero} from "@ethersproject/constants";
 // import { convertSharesToCake } from 'views/Pools/helpers'
 

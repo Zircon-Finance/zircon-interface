@@ -1,4 +1,4 @@
-import { CurrencyAmount, JSBI, NATIVE_TOKEN, Token, Trade } from 'zircon-sdk'
+import { CurrencyAmount, JSBI, NATIVE_TOKEN, Token, Trade } from 'diffuse-sdk'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { ArrowDown } from 'react-feather'
 import ReactGA from 'react-ga4'
@@ -196,7 +196,7 @@ export default function Swap() {
   }, [approval, approvalSubmitted, chainId])
 
   // useEffect(() => {
-  //   ((chainId === 1285 && subgraphUrl === 'https://api.thegraph.com/subgraphs/name/reshyresh/zircon-finance') || 
+  //   ((chainId === 1285 && subgraphUrl === 'https://api.thegraph.com/subgraphs/name/reshyresh/diffuse-finance') || 
   //   (chainId === 56 && subgraphUrl === 'https://api.thegraph.com/subgraphs/name/reshyresh/zi')) &&
   //    getTopTokens(chainId, subgraphUrl, blockSubgraphUrl).then((res) => {
   //     setTopTokens(res.query ? res.query : [])

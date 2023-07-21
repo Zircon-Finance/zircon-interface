@@ -1,14 +1,14 @@
-import {TokenAmount, Pair, Currency, Pylon} from 'zircon-sdk'
+import {TokenAmount, Pair, Currency, Pylon} from 'diffuse-sdk'
 import { useMemo } from 'react'
-import { abi as ZirconPylonABI } from '../constants/abi/ZirconPylon.json'
+import { abi as DiffusePylonABI } from '../constants/abi/DiffusePylon.json'
 import { Interface } from '@ethersproject/abi'
 import { useActiveWeb3React } from '../hooks'
-import { abi as ZirconPairABI } from '../constants/abi/ZirconPair.json'
+import { abi as DiffusePairABI } from '../constants/abi/DiffusePair.json'
 import {useMultipleContractSingleData} from '../state/multicall/hooks'
 import { wrappedCurrency } from '../utils/wrappedCurrency'
 import {useLiquidityFee} from "./PylonData";
-const PAIR_INTERFACE = new Interface(ZirconPairABI)
-const PYLON_INTERFACE = new Interface(ZirconPylonABI)
+const PAIR_INTERFACE = new Interface(DiffusePairABI)
+const PYLON_INTERFACE = new Interface(DiffusePylonABI)
 
 export enum PylonState {
   LOADING,

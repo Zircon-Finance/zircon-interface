@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { useTheme } from 'styled-components'
-import {Token, Pylon, NATIVE_TOKEN} from 'zircon-sdk'
+import {Token, Pylon, NATIVE_TOKEN} from 'diffuse-sdk'
 // import { Link } from 'react-router-dom'
 // import { SwapPoolTabs } from '../../components/NavigationTabs'
 import { useTranslation } from 'react-i18next'

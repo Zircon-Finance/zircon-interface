@@ -6992,6 +6992,19 @@ diffie-hellman@^5.0.0:
     miller-rabin "^4.0.0"
     randombytes "^2.0.0"
 
+diffuse-sdk@0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/diffuse-sdk/-/diffuse-sdk-0.0.1.tgz#cb86357520bc66b2ea7e1afc9e858fb759c9390b"
+  integrity sha512-PNLuzrpFPZ2bwRRf2izdKFa7Xn2STUb91OQMzL/6Lj90/0XORdU/6D2BNL3H8Py3vy324cCJIrPy9jlBz/rjMg==
+  dependencies:
+    "@uniswap/v2-core" "^1.0.0"
+    big.js "^5.2.2"
+    decimal.js-light "^2.5.0"
+    jsbi "^3.1.1"
+    tiny-invariant "^1.1.0"
+    tiny-warning "^1.0.3"
+    toformat "^2.0.0"
+
 dijkstrajs@^1.0.1:
   version "1.0.2"
   resolved "https://registry.npmjs.org/dijkstrajs/-/dijkstrajs-1.0.2.tgz"
@@ -17838,16 +17851,3 @@ yauzl@^2.10.0:
   dependencies:
     buffer-crc32 "~0.2.3"
     fd-slicer "~1.1.0"
-
-zircon-sdk@1.0.11-rc-110:
-  version "1.0.11-rc-110"
-  resolved "https://registry.yarnpkg.com/zircon-sdk/-/zircon-sdk-1.0.11-rc-110.tgz#4fcaab13b89a11149d839defe49e3c79c28bc75f"
-  integrity sha512-schcesGhkhKyEt5jkrHUJ9Xxj2nV6tI5xXrN6Tw/CbY/ffJy+MwwV4yC1ZDtouqDbTYlBXQZN9jKvjPnB9r0dg==
-  dependencies:
-    "@uniswap/v2-core" "^1.0.0"
-    big.js "^5.2.2"
-    decimal.js-light "^2.5.0"
-    jsbi "^3.1.1"
-    tiny-invariant "^1.1.0"
-    tiny-warning "^1.0.3"
-    toformat "^2.0.0"

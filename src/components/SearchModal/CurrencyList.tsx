@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, currencyEquals, NATIVE_TOKEN, Token } from 'zircon-sdk'
+import { Currency, CurrencyAmount, currencyEquals, NATIVE_TOKEN, Token } from 'diffuse-sdk'
 import React, { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 import { FixedSizeList } from 'react-window'
 import { Flex, Text } from 'rebass'

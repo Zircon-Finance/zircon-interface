@@ -1,4 +1,4 @@
-import { Currency, Pair } from 'zircon-sdk'
+import { Currency, Pair } from 'diffuse-sdk'
 import React, { useState, useCallback } from 'react'
 import styled, { useTheme } from 'styled-components'
 import { useCurrencyBalance } from '../../state/wallet/hooks'

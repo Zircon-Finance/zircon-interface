@@ -1,5 +1,5 @@
 import React from 'react'
-import { Price } from 'zircon-sdk'
+import { Price } from 'diffuse-sdk'
 import RepeatIcon from '../RepeatIcon'
 import { Text } from 'rebass'
 import { useTheme } from 'styled-components'

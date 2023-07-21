@@ -1,5 +1,5 @@
 import { NETWORK_CHAIN_ID } from '../connectors'
-import {FARM_FACTORY_ADDRESS, MULTICALL_ADDRESS} from "zircon-sdk";
+import {FARM_FACTORY_ADDRESS, MULTICALL_ADDRESS} from "diffuse-sdk";
 
 // interface Address {
 //   97?: string

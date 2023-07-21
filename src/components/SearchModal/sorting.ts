@@ -1,4 +1,4 @@
-import { Token, TokenAmount } from 'zircon-sdk'
+import { Token, TokenAmount } from 'diffuse-sdk'
 import { useMemo } from 'react'
 import { useAllTokenBalances } from '../../state/wallet/hooks'
 

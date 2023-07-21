@@ -138,7 +138,7 @@ export default function App() {
         {/* {isMobile && <Redirect to="/mobile" />}
         {isMobile && <MobileWrapper><MobileView
           icon='laptop'
-          upperText='Please use your desktop to try the Zircon Beta'
+          upperText='Please use your desktop to try the Diffuse Beta'
           lowerText='Our app will be available on your phone soon'  />
         </MobileWrapper>} */}
         <Route component={GoogleAnalyticsReporter} />

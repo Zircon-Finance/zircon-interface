@@ -1,4 +1,4 @@
-import {Currency, Token} from 'zircon-sdk'
+import {Currency, Token} from 'diffuse-sdk'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import useHttpLocations from '../../hooks/useHttpLocations'

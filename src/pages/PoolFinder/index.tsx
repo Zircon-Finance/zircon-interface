@@ -1,4 +1,4 @@
-import {Currency, JSBI, NATIVE_TOKEN, TokenAmount} from 'zircon-sdk'
+import {Currency, JSBI, NATIVE_TOKEN, TokenAmount} from 'diffuse-sdk'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Plus } from 'react-feather'
 import { Text } from 'rebass'

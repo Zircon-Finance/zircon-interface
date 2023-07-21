@@ -1,4 +1,4 @@
-// import { ChainId } from 'zircon-sdk'
+// import { ChainId } from 'diffuse-sdk'
 import React, { useMemo } from 'react'
 // import { isMobile } from 'react-device-detect'
 import { Text } from 'rebass'
@@ -22,7 +22,7 @@ import SunLogo from '../SunLogo';
 import { useDarkModeManager } from '../../state/user/hooks';
 import Portal from '@reach/portal';
 import ClaimModal from '../ClaimModal';
-import { NATIVE_TOKEN } from 'zircon-sdk';
+import { NATIVE_TOKEN } from 'diffuse-sdk';
 // import { connectNet } from '../WalletModal';
 // import VersionSwitch from './VersionSwitch'
 

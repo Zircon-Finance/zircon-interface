@@ -1,4 +1,4 @@
-import {Currency, CurrencyAmount, JSBI, Pair, Percent, Pylon, PylonFactory, TokenAmount, ZERO} from 'zircon-sdk'
+import {Currency, CurrencyAmount, JSBI, Pair, Percent, Pylon, PylonFactory, TokenAmount, ZERO} from 'diffuse-sdk'
 import {useCallback, useMemo} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { usePair } from '../../data/Reserves'
@@ -15,7 +15,7 @@ import {usePylon} from "../../data/PylonReserves";
 import BigNumber from 'bignumber.js'
 import {usePairInfo, usePylonConstants, usePylonInfo} from "../../data/PylonData";
 import {useBlockNumber, useBlockTimestamp} from "../application/hooks";
-import { Decimals, PairInfo, PylonInfo } from 'zircon-sdk/dist/interfaces/pylonInterface'
+import { Decimals, PairInfo, PylonInfo } from 'diffuse-sdk/dist/interfaces/pylonInterface'
 import { HealthFactorParams } from '../mint/pylonHooks'
 
 export function useBurnState(): AppState['burn'] {

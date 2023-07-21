@@ -1,4 +1,4 @@
-import { Trade, TradeType } from 'zircon-sdk'
+import { Trade, TradeType } from 'diffuse-sdk'
 import React, { useMemo } from 'react'
 import { ArrowDown, AlertTriangle } from 'react-feather'
 import { Text } from 'rebass'

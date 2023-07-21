@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 
 import { getFullDisplayBalance } from '../../../utils/formatBalance'
 import { ButtonLight, ButtonPrimary } from '../../../components/Button'
-import { Token } from 'zircon-sdk'
+import { Token } from 'diffuse-sdk'
 
 interface WithdrawModalProps {
   max: BigNumber

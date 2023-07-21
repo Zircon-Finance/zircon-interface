@@ -1,6 +1,6 @@
 import {BigNumber} from "@ethersproject/bignumber";
 import {TransactionResponse} from "@ethersproject/providers";
-import {Currency, currencyEquals, NATIVE_TOKEN, TokenAmount, WDEV} from "zircon-sdk";
+import {Currency, currencyEquals, NATIVE_TOKEN, TokenAmount, WDEV} from "diffuse-sdk";
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import ReactGA from "react-ga4";
 import {RouteComponentProps} from "react-router-dom";

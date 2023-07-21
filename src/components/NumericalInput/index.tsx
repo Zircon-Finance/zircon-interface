@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Currency } from 'zircon-sdk';
+import { Currency } from 'diffuse-sdk';
 import { escapeRegExp } from '../../utils'
 
 const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: string }>`

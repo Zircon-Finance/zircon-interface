@@ -1,4 +1,4 @@
-import { CurrencyAmount, JSBI, NATIVE_TOKEN } from 'zircon-sdk'
+import { CurrencyAmount, JSBI, NATIVE_TOKEN } from 'diffuse-sdk'
 import { MIN_ETH } from '../constants'
 
 /**

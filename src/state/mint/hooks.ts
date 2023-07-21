@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, JSBI, NATIVE_TOKEN, Pair, Percent, Price, TokenAmount } from 'zircon-sdk'
+import { Currency, CurrencyAmount, JSBI, NATIVE_TOKEN, Pair, Percent, Price, TokenAmount } from 'diffuse-sdk'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { PairState, usePair } from '../../data/Reserves'

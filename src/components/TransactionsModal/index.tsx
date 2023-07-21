@@ -117,7 +117,7 @@ export default function TransactionsModal() {
             <ButtonEmpty as={Link} to={'/add/'} onClick={() => toggle()}>Classic Liquidity</ButtonEmpty>
             <ButtonEmpty as={Link} to={'/pool'}onClick={() => {
               toggle()
-              window.open('https://docs.zircon.finance', '_blank');
+              window.open('https://docs.diffuse.finance', '_blank');
             }}>Learn</ButtonEmpty>
 
           </AutoColumn>

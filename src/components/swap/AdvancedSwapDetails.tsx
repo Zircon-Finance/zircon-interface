@@ -1,4 +1,4 @@
-import { Trade, TradeType } from 'zircon-sdk'
+import { Trade, TradeType } from 'diffuse-sdk'
 import React from 'react'
 import { useTheme } from 'styled-components'
 import { Field } from '../../state/swap/actions'

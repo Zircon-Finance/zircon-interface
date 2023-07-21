@@ -1,4 +1,4 @@
-import { Currency, Percent, Price } from 'zircon-sdk'
+import { Currency, Percent, Price } from 'diffuse-sdk'
 import React  from 'react'
 import { Text } from 'rebass'
 import { useTheme } from 'styled-components'

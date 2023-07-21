@@ -17,7 +17,7 @@ import {
 import { resetUserState } from '../global/actions'
 import {BIG_ZERO} from '../../utils/bigNumber'
 import { getApiData } from './helpers'
-import { Token } from 'zircon-sdk'
+import { Token } from 'diffuse-sdk'
 
 const initialState: PoolsState = {
   data: [],
@@ -72,7 +72,7 @@ export const fetchPoolsPublicDataAsync = (chainId: number, currentBlock: number)
         ...blockLimit,
         isClassic: false,
         isAnchor: apiPool[0]?.isAnchor,
-        stakingToken: new Token(chainId, apiPool[0]?.stakedToken, 18, 'ZPT', 'Zircon Pool Token'),
+        stakingToken: new Token(chainId, apiPool[0]?.stakedToken, 18, 'ZPT', 'Diffuse Pool Token'),
         earningToken: apiPool[0]?.earningTokenInfo?.filter((entry) => entry.blockReward !== '0').map((earningInfo) => {
           return new Token(chainId, chainId === 1285 ?
             (earningInfo?.tokenSymbol === 'wMOVR' ? '0x98878B06940aE243284CA214f92Bb71a2b032B8A' : '0x4545E94974AdACb82FC56BCf136B07943e152055') :

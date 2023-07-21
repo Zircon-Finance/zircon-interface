@@ -93,7 +93,7 @@ export default function Menu() {
       </StyledMenuButton>
       {open && (
         <MenuFlyout>
-          <MenuItem id="link" href="https://zircon.finance/">
+          <MenuItem id="link" href="https://diffuse.finance/">
             <Home size={14} />
             {t('Website')}
           </MenuItem>

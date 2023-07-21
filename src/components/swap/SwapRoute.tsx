@@ -1,4 +1,4 @@
-import { Trade } from 'zircon-sdk'
+import { Trade } from 'diffuse-sdk'
 import React, { Fragment, memo } from 'react'
 import { ChevronRight } from 'react-feather'
 import { Flex } from 'rebass'

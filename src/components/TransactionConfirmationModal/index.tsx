@@ -1,4 +1,4 @@
-import { ChainId } from 'zircon-sdk'
+import { ChainId } from 'diffuse-sdk'
 import React  from 'react'
 import styled, { useTheme } from 'styled-components'
 import Modal from '../Modal'

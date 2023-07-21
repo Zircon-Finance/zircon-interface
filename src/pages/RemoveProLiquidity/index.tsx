@@ -1,5 +1,5 @@
 import {TransactionResponse} from '@ethersproject/providers'
-import {Currency, currencyEquals, NATIVE_TOKEN, Percent, WDEV} from 'zircon-sdk'
+import {Currency, currencyEquals, NATIVE_TOKEN, Percent, WDEV} from 'diffuse-sdk'
 import React, {useCallback, useEffect, useMemo, useState} from 'react'
 import {ArrowDown, Plus} from 'react-feather'
 import ReactGA from 'react-ga4'

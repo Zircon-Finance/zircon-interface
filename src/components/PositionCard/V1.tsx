@@ -1,6 +1,6 @@
 import React  from 'react'
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
-import { NATIVE_TOKEN, Token, TokenAmount, WDEV } from 'zircon-sdk'
+import { NATIVE_TOKEN, Token, TokenAmount, WDEV } from 'diffuse-sdk'
 
 import { Text } from 'rebass'
 import { AutoColumn } from '../Column'

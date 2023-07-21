@@ -1,4 +1,4 @@
-import { ChainId, Token } from 'zircon-sdk'
+import { ChainId, Token } from 'diffuse-sdk'
 import { Tags, TokenInfo, TokenList } from '@uniswap/token-lists'
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'

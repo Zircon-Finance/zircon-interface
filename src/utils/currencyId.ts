@@ -1,4 +1,4 @@
-import { Currency, NATIVE_TOKEN, Token } from 'zircon-sdk'
+import { Currency, NATIVE_TOKEN, Token } from 'diffuse-sdk'
 
 export function currencyId(currency: Currency, chainId: number): string {
   if (currency === NATIVE_TOKEN[chainId]) return NATIVE_TOKEN[chainId].symbol

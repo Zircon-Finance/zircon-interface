@@ -1,10 +1,10 @@
 import { Contract } from '@ethersproject/contracts'
-import { ChainId, WDEV } from 'zircon-sdk'
+import { ChainId, WDEV } from 'diffuse-sdk'
 import { abi as IUniswapV2PairABI } from '@uniswap/v2-core/build/IUniswapV2Pair.json'
-import { abi as ZirconPylon } from '../constants/abi/ZirconPylon.json'
+import { abi as DiffusePylonABI } from '../constants/abi/DiffusePylon.json'
 import { abi as ZirconPylonFactory } from '../constants/abi/ZirconPylonFactory.json'
 import { abi as ZirconFactory } from '../constants/abi/ZirconFactory.json'
-import { abi as ZirconEnergyFactory } from '../constants/abi/ZirconEnergyFactory.json'
+import { abi as DiffuseEnergyFactory } from '../constants/abi/DiffuseEnergyFactory.json'
 import BatchPrecompileABI from '../constants/abi/batch_precompile.json'
 import { useMemo } from 'react'
 import ENS_ABI from '../constants/abis/ens-registrar.json'
@@ -101,7 +101,7 @@ export function usePairContract(pairAddress?: string, withSignerIfPossible?: boo
 }
 
 export function usePylonContract(pylonAddress?: string, withSignerIfPossible?: boolean): Contract | null {
-  return useContract(pylonAddress, ZirconPylon, withSignerIfPossible)
+  return useContract(pylonAddress, DiffusePylonABI, withSignerIfPossible)
 }
 
 export function usePylonFactoryContract(pylonFactoryAddress?: string, withSignerIfPossible?: boolean): Contract | null {
@@ -113,7 +113,7 @@ export function usePairFactoryContract(factoryAddress?: string, withSignerIfPoss
 }
 
 export function useEnergyFactoryContract(energyFactoryAddress?: string, withSignerIfPossible?: boolean): Contract | null {
-  return useContract(energyFactoryAddress, ZirconEnergyFactory, withSignerIfPossible)
+  return useContract(energyFactoryAddress, DiffuseEnergyFactory, withSignerIfPossible)
 }
 
 export function useMulticallContract(): Contract | null {

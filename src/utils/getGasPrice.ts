@@ -1,4 +1,4 @@
-import { ChainId } from 'zircon-sdk'
+import { ChainId } from 'diffuse-sdk'
 import { NETWORK_CHAIN_ID } from '../connectors'
 import { parseUnits } from '@ethersproject/units'
 

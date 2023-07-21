@@ -1,7 +1,7 @@
 import React from "react";
 import styled, { useTheme } from "styled-components";
 import { Flex } from "@pancakeswap/uikit";
-// import { Token } from 'zircon-sdk'
+// import { Token } from 'diffuse-sdk'
 import DoubleCurrencyLogo from "../../../../components/DoubleLogo";
 import { BadgeSmall } from "../../../../components/Header";
 import { SerializedToken } from "../../../../constants/types";

@@ -7,9 +7,9 @@ import {
     usePylonFactoryContract
 } from '../hooks/useContract'
 import {useSingleCallResult, useSingleContractMultipleMethods} from '../state/multicall/hooks'
-import {EN_FACTORY_ADDRESS, FACTORY_ADDRESS, PYLON_FACTORY_ADDRESS, PylonFactory} from "zircon-sdk";
+import {EN_FACTORY_ADDRESS, FACTORY_ADDRESS, PYLON_FACTORY_ADDRESS, PylonFactory} from "diffuse-sdk";
 import {useActiveWeb3React} from "../hooks";
-import {PairInfo, PylonInfo} from "zircon-sdk/dist/interfaces/pylonInterface";
+import {PairInfo, PylonInfo} from "diffuse-sdk/dist/interfaces/pylonInterface";
 
 // returns undefined if input token is undefined, or fails to get token contract,
 // or contract total supply cannot be fetched

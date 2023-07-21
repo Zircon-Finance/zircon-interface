@@ -11,7 +11,7 @@ import { getFullDisplayBalance, formatNumber } from '../../../utils/formatBalanc
 import { ButtonLight, ButtonLinkGet, ButtonPrimary } from '../../../components/Button'
 import { Link } from 'rebass'
 import { StyledErrorMessage } from '../../../components/ModalFarm/ModalInput'
-import {Token} from 'zircon-sdk'
+import {Token} from 'diffuse-sdk'
 import { DeserializedPool } from '../../../state/types'
 // import {getPoolApr} from "../../../utils/apr";
 

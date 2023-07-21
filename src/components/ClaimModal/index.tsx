@@ -3,7 +3,7 @@ import { Modal } from '@pancakeswap/uikit'
 import { useTranslation } from 'react-i18next'
 import { ButtonOutlined, } from '../../components/Button'
 import { Text } from 'rebass'
-import { Token } from 'zircon-sdk'
+import { Token } from 'diffuse-sdk'
 import { useTheme } from 'styled-components'
 import Balance from '../Balance'
 import {providers, ethers, BigNumber} from "ethers";
@@ -90,7 +90,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
 
     const getUserData = async (address) => {
         setLoading(true)
-        await axios.get(`https://edgeapi.zircon.finance/proofs/${address}`).then((res) => {
+        await axios.get(`https://edgeapi.diffuse.finance/proofs/${address}`).then((res) => {
             res?.data?.body?.data?.index && check(res?.data)
             setLoading(false)
         });

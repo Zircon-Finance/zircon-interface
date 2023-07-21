@@ -20,7 +20,7 @@ import 'swiper/swiper.min.css'
 import 'swiper/modules/pagination/pagination.min.css'
 import { Flex } from 'rebass'
 import { useWindowDimensions } from '../../../../../hooks'
-import { Token } from 'zircon-sdk'
+import { Token } from 'diffuse-sdk'
 import CurrencyLogo from '../../../../../components/CurrencyLogo'
 import { usePool, usePools } from '../../../../../state/pools/hooks'
 

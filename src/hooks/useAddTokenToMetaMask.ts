@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { Token } from 'zircon-sdk'
+import { Token } from 'diffuse-sdk'
 import { useActiveWeb3React } from '.'
 import { getTokenLogoURL } from '../components/CurrencyLogo'
 

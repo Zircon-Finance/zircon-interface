@@ -115,7 +115,7 @@ export default function TriMenu() {
             <ButtonEmpty style={{fontWeight: 400, color: theme.pinkBrown}} as={Link} to={'/add/'} onClick={() => toggle()}>Classic Liquidity</ButtonEmpty>
             <ButtonEmpty style={{fontWeight: 400, color: theme.pinkBrown}} as={Link} to={'/pool'}onClick={() => {
               toggle()
-              window.open('https://docs.zircon.finance', '_blank');
+              window.open('https://docs.diffuse.finance', '_blank');
             }}>Learn</ButtonEmpty>
 
           </AutoColumn>

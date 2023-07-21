@@ -45,14 +45,14 @@ const SmallerBadge = styled.span`
 const LearnIcon = () => {
   return (
     <LearnBadge onClick={() => {
-        window.open('https://docs.zircon.finance', '_blank');
+        window.open('https://docs.diffuse.finance', '_blank');
       }}><CoffeeIcon /><Text style={{marginLeft: '8px'}} fontSize={16}>{'Learn'}</Text>  </LearnBadge>
   )
 }
 
 export const SmallerQuestionmark = () => (
     <SmallerBadge onClick={() => {
-        window.open('https://docs.zircon.finance', '_blank');
+        window.open('https://docs.diffuse.finance', '_blank');
       }}>?</SmallerBadge>
 )
 

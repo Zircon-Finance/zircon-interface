@@ -1,4 +1,4 @@
-import { Trade, TradeType } from 'zircon-sdk'
+import { Trade, TradeType } from 'diffuse-sdk'
 import React, { useMemo, useState } from 'react'
 import { Text } from 'rebass'
 import { useTheme } from 'styled-components'

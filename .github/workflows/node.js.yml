@@ -32,5 +32,5 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_COLOR: ${{ job.status }}
-          SLACK_TITLE: Test Failed on Zircon Interface
+          SLACK_TITLE: Test Failed on Diffuse Interface
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}

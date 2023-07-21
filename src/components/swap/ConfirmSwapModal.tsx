@@ -1,4 +1,4 @@
-import { currencyEquals, NATIVE_TOKEN, Trade } from 'zircon-sdk'
+import { currencyEquals, NATIVE_TOKEN, Trade } from 'diffuse-sdk'
 import React, { useCallback, useMemo } from 'react'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,

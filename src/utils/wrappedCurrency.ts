@@ -1,4 +1,4 @@
-import { ChainId, Currency, CurrencyAmount, NATIVE_TOKEN, Token, TokenAmount, WDEV } from 'zircon-sdk'
+import { ChainId, Currency, CurrencyAmount, NATIVE_TOKEN, Token, TokenAmount, WDEV } from 'diffuse-sdk'
 
 export function wrappedCurrency(currency: Currency | undefined, chainId: ChainId | undefined): Token | undefined {
   return chainId && currency === NATIVE_TOKEN[chainId] ? WDEV[chainId] : currency as Token

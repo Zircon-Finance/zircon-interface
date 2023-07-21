@@ -1,4 +1,4 @@
-import { Currency } from 'zircon-sdk'
+import { Currency } from 'diffuse-sdk'
 import { useCallback, useState } from 'react'
 import PriceChart from './PriceChart'
 import React from 'react'

@@ -1,4 +1,4 @@
-import {Currency, CurrencyAmount, JSBI, NATIVE_TOKEN, Pair, Percent, Price, Pylon} from 'zircon-sdk'
+import {Currency, CurrencyAmount, JSBI, NATIVE_TOKEN, Pair, Percent, Price, Pylon} from 'diffuse-sdk'
 import {useCallback, useEffect, useMemo, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {useTotalSupply} from '../../data/TotalSupply'
@@ -16,7 +16,7 @@ import {useBlockNumber, useBlockTimestamp} from "../application/hooks";
 import {usePylonFactoryContract} from '../../hooks/useContract'
 import axios from 'axios'
 import {PairState} from '../../data/Reserves'
-import {Decimals, MintSyncParams} from "zircon-sdk/dist/interfaces/pylonInterface";
+import {Decimals, MintSyncParams} from "diffuse-sdk/dist/interfaces/pylonInterface";
 import { ethers } from 'ethers'
 import { LLAMA_API } from '../../constants/lists'
 

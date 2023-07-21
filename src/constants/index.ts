@@ -1,4 +1,4 @@
-import {ChainId, JSBI, Percent, Token, WDEV, MOONBASE_ADDRESSES, MOONRIVER_ADDRESSES, BSC_ADDRESSES, BSCT_ADDRESSES, ARBGOERLY_ADDRESSES} from 'zircon-sdk'
+import {ChainId, JSBI, Percent, Token, WDEV, MOONBASE_ADDRESSES, MOONRIVER_ADDRESSES, BSC_ADDRESSES, BSCT_ADDRESSES, ARBGOERLY_ADDRESSES} from 'diffuse-sdk'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { injected, talisman, walletconnect } from '../connectors'
 // fortmatic, portis, walletconnect, walletlink, lattice
@@ -113,7 +113,6 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
       new Token(ChainId.MOONBASE, '0xe75f9ae61926ff1d27d16403c938b4cd15c756d5', 18, 'SAT', 'Saturn')
   ],
   [ChainId.MOONRIVER]: [
-      new Token(ChainId.MOONRIVER, '0x4545E94974AdACb82FC56BCf136B07943e152055', 18, 'ZRG', 'Zircon Gamma'),
       new Token(ChainId.MOONRIVER, '0x98878b06940ae243284ca214f92bb71a2b032b8a', 18, 'MOVR', 'MoonRiver'),
       new Token(ChainId.MOONRIVER, '0xE3F5a90F9cb311505cd691a46596599aA1A0AD7D', 6, 'USDC', 'USDC'),
       new Token(ChainId.MOONRIVER, '0x639A647fbe20b6c8ac19E48E2de44ea792c62c5C', 18, 'ETH', 'Ethereum'),
@@ -129,7 +128,6 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
       new Token(ChainId.BSC, '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c', 18, 'BTCB', 'Binance Pegged Bitcoin'),
   ],
   [ChainId.ARBGOERLY]: [
-      new Token(ChainId.ARBGOERLY, '0x680Faf7f226324F8ECdA0c5ba17c9bee2E8534C7', 18, 'ZRG', 'Zircon Gamma'),
       new Token(ChainId.ARBGOERLY, '0x723ac13403f6Ac850B921532e7CD6EF56bC1C0f4', 18, 'WMOVR', 'WMOVR Token'),
       new Token(ChainId.ARBGOERLY, '0x97a3fa0854ce32E88FDE98C90Cba798e51882563', 18, 'ETH', 'Athereum'),
       new Token(ChainId.ARBGOERLY, '0x47133e2774757ccb6052954907A46619FF6c4883', 6, 'USDC', 'USD Coin'),

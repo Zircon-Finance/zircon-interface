@@ -1,4 +1,4 @@
-import { Percent } from 'zircon-sdk'
+import { Percent } from 'diffuse-sdk'
 import { ALLOWED_PRICE_IMPACT_HIGH, PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN } from '../../constants'
 
 /**

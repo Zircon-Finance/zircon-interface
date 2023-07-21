@@ -1,4 +1,4 @@
-import { ChainId, JSBI, Pair, Route, Token, TokenAmount, Trade, TradeType } from 'zircon-sdk'
+import { ChainId, JSBI, Pair, Route, Token, TokenAmount, Trade, TradeType } from 'diffuse-sdk'
 import { computeTradePriceBreakdown } from './prices'
 
 describe('prices', () => {

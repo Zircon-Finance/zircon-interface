@@ -1,4 +1,4 @@
-import { Currency, NATIVE_TOKEN, Token } from 'zircon-sdk'
+import { Currency, NATIVE_TOKEN, Token } from 'diffuse-sdk'
 import React, { KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import ReactGA from 'react-ga4'
 import { useTranslation } from 'react-i18next'

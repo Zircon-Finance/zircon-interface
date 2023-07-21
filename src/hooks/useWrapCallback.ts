@@ -1,4 +1,4 @@
-import { Currency, currencyEquals, NATIVE_TOKEN, WDEV } from 'zircon-sdk'
+import { Currency, currencyEquals, NATIVE_TOKEN, WDEV } from 'diffuse-sdk'
 import { useMemo } from 'react'
 import { tryParseAmount } from '../state/swap/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'

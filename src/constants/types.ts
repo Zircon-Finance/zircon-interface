@@ -1,4 +1,4 @@
-import { Token } from 'zircon-sdk'
+import { Token } from 'diffuse-sdk'
 
 export type TranslatableText =
   | string

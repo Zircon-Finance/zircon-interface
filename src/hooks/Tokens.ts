@@ -1,5 +1,5 @@
 import { parseBytes32String } from '@ethersproject/strings'
-import { Currency, Token, currencyEquals, NATIVE_TOKEN } from 'zircon-sdk'
+import { Currency, Token, currencyEquals, NATIVE_TOKEN } from 'diffuse-sdk'
 import { useEffect, useMemo, useState } from 'react'
 import { useSelectedTokenList } from '../state/lists/hooks'
 import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'

@@ -1,4 +1,4 @@
-import {ChainId, Token} from 'zircon-sdk'
+import {ChainId, Token} from 'diffuse-sdk'
 import {serializeToken} from '../state/user/hooks'
 import {SerializedToken} from '../constants/types'
 

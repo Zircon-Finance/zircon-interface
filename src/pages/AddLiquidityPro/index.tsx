@@ -13,6 +13,7 @@ import TransactionConfirmationModal, {ConfirmationModalContent,} from "../../com
 import BigNumberJs from 'bignumber.js';
 import { MaxUint256 } from '@ethersproject/constants'
 import { ReactComponent as SmartAddImage } from '../../assets/images/smart_add.svg'
+import { ReactComponent as SmartAddImageDark } from '../../assets/images/smart_add_dark.svg'
 import CurrencyInputPanelInputOnly from "../../components/CurrencyInputPanelInputOnly";
 import CurrencyInputPanelPicOnly from "../../components/CurrencyInputPanelPicOnly";
 import CurrencyInputPanelBalOnly from "../../components/CurrencyInputPanelBalOnly";
@@ -1087,6 +1088,10 @@ export default function AddLiquidityPro({
     (approvalAPair !== ApprovalState.APPROVED ? true : false) :
     (approvalA !== ApprovalState.APPROVED ? true : false)
 
+  const SmartAddImageReturned = () => {
+    return theme.darkMode ? <SmartAddImageDark /> : <SmartAddImage />
+  }
+
   const callbackAToCall = pylonState === PylonState.EXISTS ? (approveACallback) : (pylonState === PylonState.ONLY_PAIR ? approveACallback : approveACallbackPair)
   const callbackBToCall = pylonState === PylonState.EXISTS ? (approveBCallback) : (pylonState === PylonState.ONLY_PAIR ? approveBCallback : approveBCallbackPair)
   return (
@@ -1142,7 +1147,7 @@ export default function AddLiquidityPro({
                         <TYPE.link fontWeight={500} fontSize={'18px'} textAlign={'center'} color={theme.text1} my={'10px'}>
                           {pylonState === PylonState.ONLY_PAIR ?  "PYLON CREATION" : (pylonState === PylonState.NOT_EXISTS ? "Pair creation" : "Select token & pair")}
                         </TYPE.link>
-                        <TYPE.link fontWeight={400} color={theme.darkMode ? '#9C8F95' : '#6A6768'} textAlign={'center'}>
+                        <TYPE.link fontWeight={400} color={theme.darkMode ? 'rgba(227, 228, 231, 0.60)' : '#6A6768'} textAlign={'center'}>
                           {pylonState === PylonState.ONLY_PAIR ?  "This Pylon has not been created yet, be the first liquidity provider to initialize it" :
                               pylonState !== PylonState.NOT_EXISTS ? "Stable is designed for stablecoins and L1 network tokens. Float is for all others, and it's always the more volatile in the pair." :
                                   "This pair has not been created yet, be the first liquidity provider to initialize it"}<br/>
@@ -1290,9 +1295,10 @@ export default function AddLiquidityPro({
                               style={{
                                 borderRadius: "17px",
                                 justifyContent: "space-between",
-                                background: theme.liquidityBg,
+                                background: 'transparent',
                                 flexDirection: 'column',
                                 padding: '5px',
+                                border: `1px solid  ${theme.darkMode ? '#212225' : '#F1F0EE'}`
                               }}
                           >
                             <Flex justifyContent={'space-between'}>
@@ -1308,7 +1314,7 @@ export default function AddLiquidityPro({
                                   fontWeight: 500,
                                 }}
                             >
-                              <SmartAddImage />
+                              <SmartAddImageReturned />
                               {"Hybrid add"}
                             </span>
                               </Flex>

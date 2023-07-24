@@ -213,7 +213,7 @@ export const ModalContainer = styled.div`
 const FiltersButton = styled.button`
   position: absolute;
   right: 0;
-  background: ${({ theme }) => theme.darkMode ? 'rgba(213, 174, 175, 0.07)' : '#EDEAEA'};
+  background: ${({ theme }) => theme.darkMode ? '#2E3036' : '#E4E2DF'};
   border-radius: 12px;
   padding: 3px 9px;
   font-size: 14px;

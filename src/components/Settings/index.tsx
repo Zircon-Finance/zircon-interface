@@ -48,6 +48,7 @@ const StyledMenuButton = styled.button`
   position: relative;
   width: 100%;
   border: none;
+  padding: 5px 10px;
   background-color: transparent;
   margin: 0;
   background-color: ${({ theme }) => theme.bg1};

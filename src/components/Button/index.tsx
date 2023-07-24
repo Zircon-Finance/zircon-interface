@@ -43,7 +43,7 @@ export const ButtonPrimary = styled(Base)`
   font-weight: 500;
   height: 60px;
   font-size: 18px;
-  color: white;
+  color: ${({ theme }) => theme.darkMode ? '#0F1011' : '#fff'};
   &:hover {
     background-color: ${({ theme }) => theme.colors.input};
   }
@@ -64,7 +64,7 @@ export const ButtonPrimary = styled(Base)`
 `
 
 export const ButtonPositionsMobile = styled(Base)`
-  background-color: ${({ theme }) => theme.bg8} !important;
+  background-color: ${({ theme }) => theme.bg8};
   padding: 10px;
   color: ${({ theme }) => theme.text1};
   width: 90%;
@@ -77,9 +77,6 @@ export const ButtonPositionsMobile = styled(Base)`
   &:hover {
     background-color: ${({ theme }) => theme.changeButtonHover};
   }
-  &:active {
-    background-color: ${({ theme }) => theme.changeButtonHover};
-  }
   &:disabled {
     background-color: ${({ theme, altDisabledStyle }) => (altDisabledStyle ? theme.primary1 : '#36195A')};
     color: ${({ theme, altDisabledStyle }) => (altDisabledStyle ? 'white' : theme.text3)};
@@ -90,7 +87,6 @@ export const ButtonPositionsMobile = styled(Base)`
     opacity: ${({ altDisabledStyle }) => (altDisabledStyle ? '0.7' : '1')};
   }
   @media (min-width: 500px) {
-    background-color: ${({ theme }) => theme.positionsButtons};
     font-size: 16px;
     border-radius: 12px;
   }
@@ -142,19 +138,19 @@ export const ButtonGray = styled(Base)`
 
 export const ButtonSecondary = styled(Base)`
   background-color: ${({ theme }) => theme.bg4};
-  color: ${({ theme }) => theme.darkMode ? '#fff' : theme.text1};
+  color: ${({ theme }) => theme.darkMode ? '#A89FCA' : '#1D1D1F'};
   font-size: 16px;
   border-radius: 8px;
   padding: ${({ padding }) => (padding ? padding : '10px')};
 
   &:focus {
-    background-color: ${({ theme }) => theme.darkMode ? theme.bg12 : theme.navigationBorder};
+    background-color: ${({ theme }) => theme.bg2};
   }
   &:hover {
-    background-color: ${({ theme }) => theme.darkMode ? theme.bg12 : theme.navigationBorder};
+    background-color: ${({ theme }) => theme.bg2};
   }
   &:active {
-    background-color: ${({ theme }) => theme.darkMode ? theme.bg12 : theme.navigationBorder};
+    background-color: ${({ theme }) => theme.bg2};
   }
   &:disabled {
     background-color: ${({ theme }) => theme.opacitySmall};

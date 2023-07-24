@@ -12,7 +12,7 @@ const StyledMenuIcon = styled(MoreHorizontal)`
   width: 40px;
 
   > * {
-    stroke: ${({ theme }) => theme.pinkBrown};
+    stroke: ${({ theme }) => theme.darkMode ? '#A89FCA' : '#1D1D1F'};
   }
 `
 
@@ -20,7 +20,7 @@ const StyledMenuButton = styled.button`
   position: relative;
   width: 100%;
   height: 100%;
-  background-color: ${({ theme }) => theme.colors.inputSecondary};
+  background-color: ${({ theme }) => theme.bg4};
   margin: 0;
   padding: 0;
   border: none;
@@ -32,7 +32,7 @@ const StyledMenuButton = styled.button`
   :focus {
     cursor: pointer;
     outline: none;
-    background-color: ${({ theme }) => theme.bg12};
+    background-color: ${({ theme }) => theme.bg2};
   }
 
   svg {

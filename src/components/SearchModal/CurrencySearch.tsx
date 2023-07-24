@@ -281,8 +281,9 @@ export function CurrencySearch({
             </Row>
           ) : null}
           <ButtonPositionsMobile
-            style={{ height: '34px', padding: '10px 12px', fontWeight: 400, color: theme.white, fontSize: 13, width: 'auto',
-            background: hover ? theme.changeButtonHover : theme.changeButtonNormal }}
+            style={{ background: `${hover ? theme.changeButtonHover : theme.changeButtonNormal}`, 
+            height: '34px', padding: '10px 12px', color: theme.darkMode ? '#A89FCA' : '#1D1D1F',fontWeight: 400, fontSize: 13, width: 'auto',
+            }}
             onClick={onChangeList}
             id="currency-search-change-list-button"
             onMouseEnter={() => setHover(true)}

@@ -2,16 +2,6 @@
   {
     "inputs": [
       {
-        "internalType": "contract ZirconToken",
-        "name": "_cake",
-        "type": "address"
-      },
-      {
-        "internalType": "contract ZirconFarm",
-        "name": "_syrup",
-        "type": "address"
-      },
-      {
         "internalType": "uint256",
         "name": "_cakePerBlock",
         "type": "uint256"
@@ -153,19 +143,6 @@
     "name": "add",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "cake",
-    "outputs": [
-      {
-        "internalType": "contract ZirconToken",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -465,19 +442,6 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "syrup",
-    "outputs": [
-      {
-        "internalType": "contract ZirconFarm",
-        "name": "",
-        "type": "address"
       }
     ],
     "stateMutability": "view",

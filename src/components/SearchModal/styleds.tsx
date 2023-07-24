@@ -81,12 +81,13 @@ animation: ${({ expanded }) =>
   background-position: right;
   background-position-x: 95%;
   ::placeholder {
-    color: ${({ theme }) => theme.text1};
+    color: ${({ theme }) => theme.darkMode ? '#fff' : '#1D1D1F'};
     font-weight: 400;
     opacity: 0.5;
+    font-size: 16px;
   }
   white-space: nowrap;
-  background-color: ${({ theme}) => theme.darkMode ? ' rgba(213, 174, 175, 0.1) !important' : '#E9E5E5 !important'};
+  background-color: ${({ theme}) => theme.darkMode ? ' #2E3036 !important' : '#F1F0EE !important'};
   border: 1px solid transparent;
   outline: none;
   border-radius: 17px;
@@ -104,11 +105,11 @@ animation: ${({ expanded }) =>
 export const Separator = styled.div`
   width: 100%;
   height: 1px;
-  background-color: ${({ theme }) => theme.opacitySmall};
+  background-color: #2E3036;
 `
 
 export const SeparatorDark = styled.div`
   width: 100%;
   height: 1px;
-  background-color: ${({ theme }) => theme.bg3};
+  background-color: #F1F0EE;
 `

@@ -83,7 +83,7 @@ const AccountElement = styled.div<{ active: boolean }>`
   display: flex;
   flex-direction: row;
   align-items: center;
-  background-color: ${({ theme, active }) => (!active ? theme.poolPinkButton : theme.darkMode ? '#A89FCA5a' : '#ECEAEA')};
+  background-color: ${({ theme, active }) => (!active ? theme.poolPinkButton : theme.darkMode ? '#16171A' : '#E4E2DF')};
   border-radius: 17px;
   color: ${({ theme }) => theme.text1};
   height: 100%;

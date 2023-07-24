@@ -22,11 +22,10 @@ const StyledMenuButton = styled.button`
   border: none;
   background-color: transparent;
   margin: 0;
-  padding: 0;
+  padding: 5px 10px;
   background-color: ${({ theme }) => theme.bg1};
   margin-right: 10px;
   height: 100%;
-  padding: 5px 10px;
   border-radius: 11px;
 
   :hover,

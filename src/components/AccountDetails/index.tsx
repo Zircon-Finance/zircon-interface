@@ -433,7 +433,7 @@ export default function AccountDetails({
             <ButtonPositionsMobile
               style={{
                 width: "auto",
-                color: theme.text1,
+                color: `${theme.darkMode ? '#1d1d1f' : '#fff'}`,
                 padding: "9px 12px 10px",
                 height: "34px"
               }}

@@ -15,8 +15,8 @@ const Container = styled.div`
   justify-content: space-between;
   width: 90%;
   color: ${({ theme }) => theme.darkMode ? '#9C8F95' : '#6A6768'};
-  border-top: 1px solid ${({ theme }) => theme.darkMode ? '#492B36' : '#F4EFF0'};
-  border-bottom: 1px solid ${({ theme }) => theme.darkMode ? '#492B36' : '#F4EFF0'};
+  border-top: 1px solid ${({ theme }) => theme.darkMode ? '#212225' : '#F7F6F3'};
+  border-bottom: 1px solid ${({ theme }) => theme.darkMode ? '#212225' : '#F7F6F3'};
   font-size: 16px;
   margin: 8px auto 8px auto;
   border-bottom: none;
@@ -28,7 +28,7 @@ const RowContainer = styled.div`
   justify-content: space-between;
   width: 100%;
   padding: 8px;
-  border-bottom: 1px solid ${({ theme }) => theme.darkMode ? '#492B36' : '#F4EFF0'};
+  border-bottom: 1px solid ${({ theme }) => theme.darkMode ? '#212225' : '#F7F6F3'};
 `
 const SmallContainer = styled.div`
   display: flex;

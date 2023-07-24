@@ -189,6 +189,7 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
             : [undefined, undefined]
 
     const { width } = useWindowDimensions();
+    const textColor = theme.darkMode ? '#0F1011' : '#fff'
     const formattedPoolBalance = userPoolBalance.toSignificant(4) as unknown as number
 
 
@@ -284,14 +285,14 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
                         <div style={{display: 'flex', flexFlow: 'row', padding: '5px'}}>
                             <ButtonPositionsMobile as={Link} to={`/remove/${currencyId(currency0, chainId)}/${currencyId(currency1, chainId)}`}
                                                    style={{marginRight: '2.5px'}}>
-                                <Text fontSize={width > 500 ? 16 : 13} fontWeight={400}>
+                                <Text color={textColor} fontSize={width > 500 ? 18 : 13} fontWeight={500}>
                                     {'Remove'}
                                 </Text>
                             </ButtonPositionsMobile>
                             <ButtonPositionsMobile as={Link} to={`/add/${currencyId(currency0, chainId)}/${currencyId(currency1, chainId)}`} padding={'6px'}
                                                    style={{marginLeft: '2.5px'}} >
                                 {/* {width > 500 && <Plus strokeWidth={1} /> } */}
-                                <Text fontSize={width > 500 ? 16 : 13} fontWeight={400}>
+                                <Text color={textColor} fontSize={width > 500 ? 18 : 13} fontWeight={500}>
                                     {'Add'}
                                 </Text>
                             </ButtonPositionsMobile>
@@ -325,6 +326,8 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
     // const [token0Deposited, token1Deposited] = !burnInfo ? [undefined, undefined] : [parsedAmounts["CURRENCY_A"], parsedAmounts["CURRENCY_B"]]
 
     const { width } = useWindowDimensions();
+
+    const textColor = theme.darkMode ? '#0F1011' : '#fff'
 
     return (
         <HoverCard border={'none'} padding={showMore ? '0px' : '1.25rem'} backgroundColor={showMore ? theme.cardExpanded : 'transparent'}>
@@ -406,14 +409,14 @@ export function PylonPositionCard({ isFloat, border, pylon, blockNumber, pylonCo
                         <div style={{display: 'flex', flexFlow: 'row', padding: '5px'}}>
                             <ButtonPositionsMobile as={Link} to={`/remove-pro/${currencyId(currency0, chainId)}/${currencyId(currency1, chainId)}/${isFloat ? "FLOAT" : "STABLE"}`}
                                                    style={{marginRight: '2.5px'}}>
-                                <Text fontSize={width > 500 ? 16 : 13} fontWeight={400}>
+                                <Text color={textColor} fontSize={width > 500 ? 18 : 13} fontWeight={500}>
                                     {'Remove'}
                                 </Text>
                             </ButtonPositionsMobile>
                             <ButtonPositionsMobile as={Link} to={`/add-pro/${currencyId(currency0, chainId)}/${currencyId(currency1, chainId)}/${ isFloat ? "float" : "stable"}`} padding={'6px'}
                                                    style={{marginLeft: '2.5px'}} >
                                 {/* {width > 500 && <Plus strokeWidth={1} /> } */}
-                                <Text fontSize={width > 500 ? 16 : 13} fontWeight={400}>
+                                <Text color={textColor} fontSize={width > 500 ? 18 : 13} fontWeight={500}>
                                     {'Add'}
                                 </Text>
                             </ButtonPositionsMobile>

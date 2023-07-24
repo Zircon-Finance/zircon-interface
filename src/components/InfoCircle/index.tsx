@@ -5,7 +5,7 @@ const Circle = styled.div`
     height: 40px;
     width: 40px;
     border-radius: 100%;
-    background-color: ${({ theme }) => theme.darkMode ? '#462935' : '#F4EFF0'};
+    background-color: ${({ theme }) => theme.darkMode ? '#212225' : '#F4EFF0'};
     margin: auto;
     display: flex;
     justify-content: center;
@@ -16,7 +16,7 @@ const Info = styled.span`
     font-family: 'DM Mono', sans-serif;
     text-align: center;
     font-size: 18px;
-    color: ${({ theme }) => theme.darkMode ? '#D5AEAF' : '#874955'};
+    color: ${({ theme }) => theme.darkMode ? '#E3E4E7' : '#1D1D1F'};
 `
 
 const InfoCircle = () => {

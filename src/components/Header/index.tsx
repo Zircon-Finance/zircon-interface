@@ -167,7 +167,7 @@ export default function Header() {
   const [showClaimTokens, setShowClaimTokens] = React.useState(false);
   // const blockedApiData = useBlockedApiData();
   const isPoolBlocked = false
-  const isFarmBlocked = true
+  const isFarmBlocked = false
 
   return (
     <HeaderFrame>

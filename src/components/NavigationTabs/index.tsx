@@ -81,7 +81,7 @@ export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' }) {
 
   const blockedApiData = useBlockedApiData();
   const isPoolBlocked = false
-  const isFarmBlocked = true
+  const isFarmBlocked = false
   const blockReasonTitle = blockedApiData?.blockReasonTitle
   const blockReasonDescription = blockedApiData?.blockReasonDescription
 

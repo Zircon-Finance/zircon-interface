@@ -50,7 +50,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     text3: darkMode ?'#6C7284'  : '#000f0f',
     text4: darkMode ?'#565A69'  : '#000f0f',
     text5: '#9C8D94',
-    tabsText: darkMode ? '#6F6F6F' : '#945c67',
+    tabsText: darkMode ? '#E3E4E7' : 'rgba(29, 29, 31, 0.65)',
 
     // backgrounds / greys
     bg1: darkMode ? '#16171A' : '#FFFFFF', 
@@ -173,13 +173,13 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     yellow2: '#D75FA3',
 
     colors: {
-      backgroundDisabled: darkMode ? "#482C38" : '#F0EDEE',
+      backgroundDisabled: darkMode ? "#2E3036" : '#F0EDEE',
       backgroundAlt: '#4A303E',
       backgroundAlt2: "rgba(255, 255, 255, 0.7)",
       cardBorder: '#361E2A',
       contrast: "#191326",
       dropdown: "#F6F6F6",
-      dropdownDeep: darkMode ? "#5f3c37" : '#6F6F6F',
+      dropdownDeep: darkMode ? "#222328" : '#E4E2DF',
       invertedContrast: darkMode ? '#51323D' : '#EAEAEA',
       input: '#575757',
       inputSecondary: darkMode ? '#A89FCA' : '#F6F2F4',

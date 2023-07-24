@@ -695,7 +695,7 @@ const Farms: React.FC = ({ children }) => {
                           <p
                               style={{
                                 fontSize: "13px",
-                                color: !darkMode ? '#874955' : theme.meatPink,
+                                color: !darkMode ? '#1d1d1f' : '#E3E4E7',
                                 fontWeight: 500,
                                 margin: 0,
                               }}

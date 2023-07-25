@@ -108,7 +108,7 @@ const IconContainer = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 100%;
-  background: ${({ theme }) => theme.maxButton};
+  background: ${({ theme }) => theme.darkMode ? 'rgba(168, 159, 202, 0.07)' : '#F1F0EE'};
   width: 45px;
   height: 45px;
   align-self: center;
@@ -121,7 +121,7 @@ const IconContainer = styled.div`
   }
   svg {
     path {
-      stroke: ${({ theme }) => theme.pinkGamma} !important;
+      stroke: ${({ theme }) => theme.darkMode ? '#A89FCA' : '#1D1D1F'} !important;
     }
   }
 `
@@ -1209,7 +1209,8 @@ export default function AddLiquidityPro({
                             <div
                                 style={{
                                   display: "flex",
-                                  background: theme.darkMode ? theme.liquidityBg : '#F5F3F3',
+                                  background: theme.darkMode ? theme.bg1 : '#F1F0EE',
+                                  border: `1px solid ${theme.darkMode ? '#212225' : '#F1F0EE'}`,
                                   borderRadius: "17px",
                                   padding: "5px",
                                   width: "100%",
@@ -1224,7 +1225,7 @@ export default function AddLiquidityPro({
                                     boxShadow: isFloat && selectedBoxShadow,
                                     backgroundColor:
                                         isFloat
-                                            ? theme.badgeSmall
+                                            ? theme.darkMode ? '#2E3036' : '#fff'
                                             : "transparent",
                                   }}
                                   onClick={() => {
@@ -1259,7 +1260,7 @@ export default function AddLiquidityPro({
                                     boxShadow: !isFloat && selectedBoxShadow,
                                     backgroundColor:
                                         !isFloat
-                                            ? theme.badgeSmall
+                                            ? theme.darkMode ? '#2E3036' : '#fff'
                                             : "transparent",
                                   }}
                                   onClick={() => {
@@ -1374,7 +1375,7 @@ export default function AddLiquidityPro({
                                 </ButtonAnchor>
                               </div>
                             </Flex>
-                            <span style={{color: theme.darkMode ? '#9C8F95' : '#6A6768', fontSize: '13px', paddingLeft: '41px', paddingBottom: '10px'}}>
+                            <span style={{color: theme.darkMode ? '#E3E4E7' : '#585248', fontSize: '13px', paddingLeft: '41px', paddingBottom: '10px'}}>
                               {'Reduce slippage with a virtual swap for high amounts'}
                             </span>
                           </Flex>

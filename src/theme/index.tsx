@@ -85,8 +85,8 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     primary3: '#BA73ED',
     primary4: '#A548E970',
     primary5: '#BA73ED70',
-    maxButton: 'rgba(104, 104, 104, 0.3)',
-    maxButtonHover: 'rgba(104, 104, 104, 0.5)' ,
+    maxButton: darkMode ? 'rgba(227, 228, 231, 0.07)' : '#E4E2DF',
+    maxButtonHover: darkMode ? '#3C3F48' : '#D9D6D1',
 
     outlinedHover: darkMode ? '#A89FCA' : '#dfced2',
 
@@ -138,7 +138,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
 
     cardSmall: darkMode ? '#361E2A' : '#fcfbfc',
     cardLightBorder: '#f2f0f1',
-    cardExpanded: darkMode ? '#222328' : '#faf5fc',
+    cardExpanded: darkMode ? '#222328' : '#F1F0EE',
     badgeSmall: darkMode ? '#2E3036' : '#E4E2DF',
 
     changeButtonNormal: darkMode ? 'rgba(168, 159, 202, 0.07)' : 'rgba(29, 29, 31, 0.07)',
@@ -181,7 +181,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
       dropdown: "#F6F6F6",
       dropdownDeep: darkMode ? "#222328" : '#E4E2DF',
       invertedContrast: darkMode ? '#51323D' : '#EAEAEA',
-      input: '#575757',
+      input: !darkMode ? '#363639' : '#BBB4D6',
       inputSecondary: darkMode ? '#A89FCA' : '#F6F2F4',
       tertiary: '#4A303E',
       text: "#FFFFFF",

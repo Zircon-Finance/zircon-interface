@@ -36,7 +36,6 @@ const InputPanel = styled.div<{ hideInput?: boolean }>`
   ${({ theme }) => theme.flexColumnNoWrap}
   position: relative;
   border-radius: ${({ hideInput }) => (hideInput ? '8px' : '17px')};
-  background-color: ${({ theme }) => theme.bg2};
   z-index: 1;
 `
 
@@ -61,7 +60,7 @@ const StyledBalanceMax = styled.button`
   font-weight: 500;
   cursor: pointer;
   margin-right: 0.5rem;
-  color: ${({ theme }) => theme.darkMode ? '#CA90BB' : '#9E4D86'};
+  color: ${({ theme }) => !theme.darkMode ? '#1D1D1F' : '#E3E4E7'};
 
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     margin-right: 0.5rem;
@@ -129,7 +128,9 @@ export default function CurrencyInputPanel({
 
   return (
     <InputPanel id={id}>
-      <Container hideInput={hideInput} style={{boxShadow: focus ? `0px 0px 1px 1px ${theme.pinkGamma}` : 'none'}}>
+      <Container hideInput={hideInput} style={{boxShadow: focus ? `0px 0px 1px 1px ${theme.darkMode ? '#454852' : '#C1BCB4'}` : 'none', 
+        background: focus ? 'transparent' : 
+        theme.liquidityBg}}>
         {!hideInput && (
           <LabelRow>
             <RowBetween style={{display: 'flex', flexFlow: 'column'}}>
@@ -182,7 +183,7 @@ export default function CurrencyInputPanel({
                   {account && currency && showMaxButton && label !== 'To' && (
                   <StyledBalanceMax onClick={onMax} style={{cursor: 'pointer'}}>MAX</StyledBalanceMax>
                   )}
-                  <Text color={theme.darkMode ? '#9C8F95' : '#6A6768'}>
+                  <Text color={theme.darkMode ? '#E3E4E7' : '#585248'}>
                     {!hideBalance && !!currency && selectedCurrencyBalance
                     ? 'Balance: ' + selectedCurrencyBalance?.toSignificant(6)
                     : ' -'}

@@ -75,7 +75,7 @@ export const ButtonPositionsMobile = styled(Base)`
     background-color: ${({ theme }) => darken(0.05, theme.primary1)};
   }
   &:hover {
-    background-color: ${({ theme }) => theme.changeButtonHover};
+    background-color: ${({ theme }) => theme.colors.input};
   }
   &:disabled {
     background-color: ${({ theme, altDisabledStyle }) => (altDisabledStyle ? theme.primary1 : '#36195A')};
@@ -318,7 +318,7 @@ const ButtonErrorStyle = styled(Base)`
 `
 
 export const ButtonAnchor = styled(Base)`
-  outline: none,;
+  outline: none;
   border: none;
   display: flex;
   cursor: pointer;

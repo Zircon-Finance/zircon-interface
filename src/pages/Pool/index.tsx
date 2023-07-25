@@ -116,7 +116,7 @@ export default function Pool() {
                         fontSize={13}
                         key = {option}
                         onClick={() => setFilter(option)}
-                        style={{borderBottom: `${filter === option ? ('1px solid #A19399') : 'none'}`,
+                        style={{borderBottom: `${filter === option ? (`1px solid ${theme.darkMode ? '#E3E4E7' : '#1D1D1F'}`) : 'none'}`,
                               cursor: 'pointer',
                               height: '50px',
                               display: 'flex',

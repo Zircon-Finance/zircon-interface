@@ -14,7 +14,7 @@ const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 90%;
-  color: ${({ theme }) => theme.darkMode ? '#9C8F95' : '#6A6768'};
+  color: ${({ theme }) => theme.darkMode ? '#E3E4E7' : '#4E4F54'};
   border-top: 1px solid ${({ theme }) => theme.darkMode ? '#212225' : '#F7F6F3'};
   border-bottom: 1px solid ${({ theme }) => theme.darkMode ? '#212225' : '#F7F6F3'};
   font-size: 16px;

@@ -22,7 +22,7 @@ export const ArrowWrapper = styled.div<{ clickable: boolean }>`
     background-color: ${({ theme }) => theme.maxButtonHover};
   }
   svg {
-    stroke: ${({ theme }) => theme.pinkGamma};
+    stroke: ${({ theme }) => theme.darkMode ? '#A89FCA' : '#1D1D1F'};
   }
   border-radius: 100%;
   justify-content: center;

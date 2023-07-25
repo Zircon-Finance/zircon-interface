@@ -176,7 +176,7 @@ export default function CurrencyInputPanel({
 
   return (
     <InputPanel id={id}>
-      <Container hideInput={hideInput} style={{boxShadow: focus ? `0px 0px 1px 1px ${theme.pinkGamma}` : 'none'}}>
+      <Container hideInput={hideInput} style={{boxShadow: focus ? `0px 0px 1px 1px ${theme.darkMode ? '#454852' : '#C1BCB4'}` : 'none', background: focus && 'transparent'}}>
         {!hideInput && (
           <LabelRow>
             <RowBetween style={{display: 'flex', flexFlow: 'column'}}>

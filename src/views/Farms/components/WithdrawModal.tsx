@@ -41,7 +41,7 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ onConfirm, onDismiss, max
   }, [fullBalance, setVal])
 
   return (
-    <Modal style={{position: 'absolute', width: 'auto', maxWidth: '360px'}} title={t('Unstake LP tokens')} onDismiss={onDismiss}>
+    <Modal style={{position: 'absolute', width: 'auto', maxWidth: '360px', border: 'none'}} title={t('Unstake LP tokens')} onDismiss={onDismiss}>
       <ModalInput
         onSelectMax={handleSelectMax}
         onChange={handleChange}

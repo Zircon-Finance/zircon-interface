@@ -398,7 +398,7 @@ export default function RemoveLiquidity({
             <TransparentCard style={{padding: '0px'}}>
               <AutoColumn gap="20px">
               <Flex justifyContent={'center'} marginBottom={15}>
-              <div style={{display: 'flex', background: theme.darkMode ? '#482537' : theme.darkerContrastPink, borderRadius: '17px', justifyContent: 'center', height: '33px'}}>
+              <div style={{display: 'flex', background: theme.darkMode ? '#43454b' : theme.slippageActive, borderRadius: '17px', justifyContent: 'center', height: '33px'}}>
 
                 <ButtonAnchor borderRadius={'12px'} padding={'5px 15px'}
                               style={{backgroundColor: !showDetailed ? theme.slippageActive : 'transparent', fontWeight: 500, fontSize: '13px', color: !showDetailed ? '#fff' : theme.slippageActive}}

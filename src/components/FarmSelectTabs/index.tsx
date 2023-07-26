@@ -79,7 +79,7 @@ const DropdownMenu = styled.div<{active}>`
   top: 45px;
   z-index: 0;
   width: 90px;
-  background: ${({ theme }) => theme.darkMode ? '#5a3934' : '#E9E5E5'};
+  background: ${({ theme }) => theme.darkMode ? '#16171a' : '#E9E5E5'};
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
   padding: 5px 0;

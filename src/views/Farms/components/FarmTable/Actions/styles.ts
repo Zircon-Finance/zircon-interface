@@ -54,7 +54,7 @@ export const ActionContent = styled.div`
 export const HarvestButton = styled.button`
   display: flex;
   flex-direction: row;
-  color: white;
+  color: ${({ theme }) => theme.darkMode ? '#1D1D1F' : '#FFF'};
   cursor: pointer;
   justify-content: center;
   align-items: center;
@@ -63,6 +63,6 @@ export const HarvestButton = styled.button`
   border: none;
   height: 27px;
 
-  background: #9e4d86;
+  background: ${({ theme }) => theme.primaryText1};
   border-radius: 12px;
 `

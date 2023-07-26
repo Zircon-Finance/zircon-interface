@@ -47,7 +47,7 @@ const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan
       hoverPage === 'tableCardBottom' ? {bottom: '125px', left: width >= 800 ? '20%' : '30%'} :
       hoverPage === 'positionCard' && {display: 'none', bottom: '50px', left: width >= 450 ? '70%' : '120px'}
       } show={hoverIndicator && showHover && (gamma !== undefined || health !== undefined)}>
-        <Text fontSize='13px' fontWeight={500} color={theme.text1}>
+        <Text fontSize='13px' fontWeight={500} color={'#1D1D1F'}>
             {isFloat ? gamma >= 110 ? 'The vault has zero or negative impermanent loss to encourage new liquidity.' :
             (gamma > 90 && gamma < 110) ? 'The Float vault is balanced, you will have very little impermanent loss' :
             gamma <= 90 && 'The vault is suffering heavy impermanent loss, you will gain less than expected.' :
@@ -57,21 +57,21 @@ const CapacityIndicatorSmall: React.FC<Props> = ({gamma, health, isFloat, noSpan
             `}
         </Text>
         {!isFloat && 
-        <Flex flexDirection={'column'} style={{background: theme.darkMode ? '#653047' : '#EAE7E8', borderRadius: '17px', borderTopLeftRadius: '0px', borderTopRightRadius: '0px', gap: '5px',
+        <Flex flexDirection={'column'} style={{borderRadius: '17px', borderTopLeftRadius: '0px', borderTopRightRadius: '0px', gap: '5px',
         margin: '5px -10px -10px -10px', padding: '0 10px 10px 10px'}}>
           <Flex justifyContent={'space-between'}>
-            <Text style={{width: '60%'}} mt={'10px'} fontSize='13px' fontWeight={500} color={theme.text1}>
+            <Text style={{width: '60%'}} mt={'10px'} fontSize='13px' fontWeight={500} color={'#1D1D1F'}>
               {`Omega (reduction factor for this pool):`}
             </Text>
-            <Text mt={'10px'} fontSize='13px' fontWeight={500} color={theme.text1}>
+            <Text mt={'10px'} fontSize='13px' fontWeight={500} color={'#1D1D1F'}>
                 {`${((1-(parseFloat(health?.omega?.toString()) / Math.pow(10, 18)))*100).toFixed(0)} %`}
             </Text>
           </Flex>
           <Flex justifyContent={'space-between'}>
-            <Text style={{width: '60%'}} mt={'10px'} fontSize='13px' fontWeight={500} color={theme.text1}>
+            <Text style={{width: '60%'}} mt={'10px'} fontSize='13px' fontWeight={500} color={'#1D1D1F'}>
                 {`Max withdrawal without suffering any Omega:`}
             </Text>
-            <Text mt={'10px'} fontSize='13px' fontWeight={500} color={theme.text1} textAlign={'right'}>
+            <Text mt={'10px'} fontSize='13px' fontWeight={500} color={'#1D1D1F'} textAlign={'right'}>
                 {`${(parseFloat(health?.maxNoOmega?.toString()) / Math.pow(10, currencies[1]?.decimals)).toFixed(3)} (${(parseFloat(health?.maxOfVab?.toString()) / Math.pow(10, 18)).toFixed(2)}%)`}
             </Text>
           </Flex>

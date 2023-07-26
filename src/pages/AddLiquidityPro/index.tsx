@@ -83,7 +83,7 @@ export const RadioButton = styled.div<{ active: boolean }>`
   width: 20px;
   height: 20px;
   border-radius: 100%;
-  background: ${({ active }) => (active ? '#B05D98' : 'none' )};
+  background: ${({ active, theme }) => (active ? theme.primaryText1 : 'none' )};
   cursor: pointer;
   transition: background 0.2s ease-in-out;
   &:hover {
@@ -219,7 +219,7 @@ export default function AddLiquidityPro({
         dispatch(fetchPoolsPublicDataAsync(chainId, currentBlock))
         dispatch(fetchPoolsUserDataAsync({chainId, account, pools}))
       }
-      (chainId === 1285 || chainId === 56) && fetchPoolsDataWithFarms()
+      (chainId === 1285 || chainId === 56 || chainId === 421613) && fetchPoolsDataWithFarms()
   }, [account, chainId, pools.length])
   const farm = pools.find(
       (f) => chainId === 1285 ? (

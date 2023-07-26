@@ -75,7 +75,7 @@ const CapacityIndicator: React.FC<Props> = ({gamma,
     console.log("QQ:: ", isFloat)
     const TooltipContentRisk: React.FC<ToolTipProps> = ({option}) => { return (
         <ToolTip style={{left: '-100px'}} show={hoverRisk || hoverFee || hoverSlashing || hoverSlippage}>
-            <Text fontSize='13px' fontWeight={500} color={theme.text1}>
+            <Text fontSize='13px' fontWeight={500} color={theme.darkMode ? '#1D1D1F' : '#FFF'}>
                 {`${ blocked ? "Transaction temporarly blocked" :
                     option === 'health' ? 'The health factor measures how balanced this Stable vault is. Imbalanced vaults may be partially slashed when withdrawing during critical market activity.' :
                 option === 'divergence' ? 'Divergence measures how much impermanent loss the Float vault is suffering.' :

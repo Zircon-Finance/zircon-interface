@@ -94,7 +94,7 @@ export const ButtonPositionsMobile = styled(Base)`
 
 export const ButtonLight = styled(Base)`
   background-color: ${({ theme }) => theme.bg8};
-  color: ${({ theme }) => theme.primaryText1};
+  color: ${({ theme }) => theme.darkMode ? '#0F1011' : '#fff'};
   font-size: 16px;
   font-weight: 200;
   &:focus {
@@ -198,11 +198,11 @@ export const ButtonOutlined = styled(Base)`
 
 export const ButtonLinkGet = styled(Base)`
   border: 1px solid rgba(89, 73, 110, 0.4);
-  background-color: ${({ theme }) => theme.darkMode ? 'rgba(202, 144, 187, 0.07)' : 'rgba(158, 77, 134, 0.07)'};
-  color: ${({ theme }) => theme.darkMode ? theme.pinkGamma : '#9E4D86'};
+  background-color: ${({ theme }) => theme.darkMode ? 'rgba(168, 159, 202, 0.07)' : '#E4E2DF'};
+  color: ${({ theme }) => theme.darkMode ? '#A89FCA' : '#1D1D1F'};
   
   &:hover {
-    background-color: ${({ theme }) => theme.darkMode ? 'rgba(202, 144, 187, 0.17)' : 'rgba(158, 77, 134, 0.17)'};
+    background-color: ${({ theme }) => theme.darkMode ? 'rgba(168, 159, 202, 0.17)' : '#E5E2DF)'};
   }
   &:disabled {
     opacity: 50%;

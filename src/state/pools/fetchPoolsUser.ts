@@ -3,79 +3,90 @@ import erc20ABI from '../../constants/abi/erc20.json'
 import BigNumber from 'bignumber.js'
 import uniq from 'lodash/uniq'
 import { getAddress } from '../../utils/addressHelpers'
-import multicall from '../../utils/multicall'
+import { ethers } from 'ethers';
 
 export const fetchPoolsAllowance = async (account, chainId, pools) => {
-    if (!account ) return {};
+    console.log('account:', account);
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    if (!account) return {};
+  
+    const allowances = {};
+  
+    for (let pool of pools) {
+      try {
+        const tokenContract = new ethers.Contract(pool.stakingToken.address, erc20ABI, provider);
+        const allowance = await tokenContract.allowance(account, getAddress(pool.contractAddress));
+        allowances[pool.contractAddress] = new BigNumber(allowance.toString()).toJSON();
+        } catch (error) {
+        console.error(`Failed to fetch allowance for contract ${pool.contractAddress}`, error);
+      }
+    }
+  
+    return allowances;
+  }
 
-    const calls = pools.map((pool) => ({
-        address: pool.stakingToken.address,
-        name: 'allowance',
-        params: [account, getAddress(pool.contractAddress)],
-    }))
-
-    const allowances = await multicall(chainId, erc20ABI, calls)
-
-    return pools.reduce(
-        (acc, pool, index) => ({ ...acc, [pool.contractAddress]: new BigNumber(allowances[index]).toJSON() }),
-        {},
-    )
-}
 
 
+  export const fetchUserBalances = async (account, chainId, pools) => {
+    if (!account) return {};
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const tokens = uniq(pools.map((pool) => pool.stakingToken.address));
+    const tokenBalances = {};
+    const poolTokenBalances = {};
 
-export const fetchUserBalances = async (account, chainId, pools: any[]) => {
-    if (!account ) return {};
-    const tokens = uniq(pools.map((pool) => pool.stakingToken.address))
-    const calls = tokens.map((token) => ({
-        address: token,
-        name: 'balanceOf',
-        params: [account],
-    }))
+    for (let token of tokens) {
+        try {
+            const tokenContract = new ethers.Contract(token as string, erc20ABI, provider);
+            const balance = await tokenContract.balanceOf(account);
+            tokenBalances[token as string] = balance;
+        } catch (error) {
+            console.error(`Failed to fetch balance for token ${token}`, error);
+        }
+    }
 
-    const tokenBalancesRaw = await multicall(chainId, erc20ABI, calls)
-    const tokenBalances = tokens.reduce((acc, token, index) => ({ ...acc, [token]: tokenBalancesRaw[index] }), {})
-    const poolTokenBalances = pools.reduce(
-        (acc, pool) => ({
-            ...acc,
-            ...(tokenBalances[pool.stakingToken.address] && {
-                [pool.contractAddress]: new BigNumber(tokenBalances[pool.stakingToken.address]).toJSON(),
-            }),
-        }),
-        {},
-    )
+    for (let pool of pools) {
+        try {
+            poolTokenBalances[pool.contractAddress] = new BigNumber(tokenBalances[pool.stakingToken.address].toString()).toJSON();
+        } catch (error) {
+            console.error(`Failed to convert balance for pool ${pool.contractAddress}`, error);
+        }
+    }
+    console.log('Returned poolTokenBalances:', poolTokenBalances);
 
-    return poolTokenBalances
+    return poolTokenBalances;
 }
 
 export const fetchUserStakeBalances = async (account, chainId, pools) => {
-    const calls = pools.map((p) => ({
-        address: getAddress(p.contractAddress),
-        name: 'userInfo',
-        params: [account],
-    }))
-    const userInfo = await multicall(chainId, psionicFarmABI, calls)
-    return pools.reduce(
-        (acc, pool, index) => ({
-            ...acc,
-            [pool.contractAddress]: new BigNumber(userInfo[index].amount._hex).toJSON(),
-        }),
-        {},
-    )
-}
+    const balances = {};
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    for (let p of pools) {
+      try {
+        const poolContract = new ethers.Contract(getAddress(p.contractAddress), psionicFarmABI, provider);
+        const userInfo = await poolContract.userInfo(account);
+        balances[p.contractAddress] = new BigNumber(userInfo.amount._hex.toString()).toJSON();
+      } catch (error) {
+        console.error(`Failed to fetch balance for contract ${p.contractAddress}`, error);
+      }
+    }
+    
+    console.log('Returned balances:', balances);
+    return balances;
+  }
 
-export const fetchUserPendingRewards = async (account, chainId, pools) => {
-    const calls = pools.map((p) => ({
-        address: getAddress(p.contractAddress),
-        name: 'pendingReward',
-        params: [account],
-    }))
-    const res = await multicall(chainId, psionicFarmABI, calls)
-    return pools.reduce(
-        (acc, pool, index) => ({
-            ...acc,
-            [pool.contractAddress]: new BigNumber(res[index]).toJSON(),
-        }),
-        {},
-    )
+  export const fetchUserPendingRewards = async (account, chainId, pools) => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const pendingRewards = {};
+
+    for (let pool of pools) {
+        try {
+            const poolContract = new ethers.Contract(getAddress(pool.contractAddress), psionicFarmABI, provider);
+            const reward = await poolContract.pendingReward(account);
+            pendingRewards[pool.contractAddress] = new BigNumber(reward.toString()).toJSON();
+        } catch (error) {
+            console.error(`Failed to fetch pending reward for pool ${pool.contractAddress}`, error);
+        }
+    }
+
+    console.log('Returned pendingRewards:', pendingRewards);
+    return pendingRewards;
 }

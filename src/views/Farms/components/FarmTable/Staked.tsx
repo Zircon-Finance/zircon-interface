@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react'
-import styled, { css, keyframes } from 'styled-components'
+import styled, { css, keyframes, useTheme } from 'styled-components'
 import {
     // HelpIcon,
     Text, Skeleton, IconButton } from '@pancakeswap/uikit'
@@ -71,7 +71,7 @@ const DialogContainer = styled.div<{ show }>`
                   `};
   position: absolute;
   top: 40px;
-  background: #B05D98;
+  background: ${({ theme }) => theme.darkMode ? '#A89FCA' : '#1D1D1F'};
   border-radius: 17px;
   padding: 10px;
   z-index: 1000;
@@ -82,16 +82,17 @@ const Staked: React.FunctionComponent<StakedProps> = ({ staked, hovered, setHove
     const [hoverMinus, setHoverMinus] = React.useState(false)
     const [hoverPlus, setHoverPlus] = React.useState(false)
     const { width } = useWindowDimensions()
+    const theme = useTheme()
     const plusContent = (
         <DialogContainer style={{left: '20px'}} show={hoverPlus}>
-            <Text style={{color: '#FFF'}} fontSize='13px'>
+            <Text style={{color: theme.darkMode ? '#1D1D1F' : '#FFF'}} fontSize='13px'>
                 {('Stake')}
             </Text>
         </DialogContainer>
     )
     const minusContent = (
         <DialogContainer style={{right: '15px'}} show={hoverMinus}>
-            <Text style={{color: '#FFF'}} fontSize='13px'>
+            <Text style={{color: theme.darkMode ? '#1D1D1F' : '#FFF'}} fontSize='13px'>
                 {('Unstake')}
             </Text>
         </DialogContainer>
@@ -114,7 +115,7 @@ const Staked: React.FunctionComponent<StakedProps> = ({ staked, hovered, setHove
                 <div style={{display: 'flex', position: 'sticky', marginLeft: '5px', alignItems: 'center'}}
                      onMouseEnter={()=>setHovered(true)}>
                     <IconButton
-                        style={{background: '#B05D98', width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
+                        style={{background: theme.primaryText1, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
                         variant="tertiary"
                     >
                         <Flex
@@ -125,7 +126,7 @@ const Staked: React.FunctionComponent<StakedProps> = ({ staked, hovered, setHove
                     </IconButton>
                     {hoverMinus && minusContent}
                     <IconButton
-                        style={{background: '#B05D98', width: '29px', height: '28px', borderRadius: '100%'}}
+                        style={{background: theme.primaryText1, width: '29px', height: '28px', borderRadius: '100%'}}
                         variant="tertiary"
                     >
                         <Flex

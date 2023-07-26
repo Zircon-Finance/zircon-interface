@@ -111,7 +111,7 @@ const DepositModal: React.FC<DepositModalProps> = ({
     }
 
     return (
-        <Modal style={{position: 'absolute', width: 'auto', maxWidth: '360px'}} title={t(`Stake ${pool?.isAnchor ? 'stable' : 'float'} LP tokens`)} onDismiss={onDismiss}>
+        <Modal style={{position: 'absolute', width: 'auto', maxWidth: '360px', border: 'none'}} title={t(`Stake ${pool?.isAnchor ? 'stable' : 'float'} LP tokens`)} onDismiss={onDismiss}>
             <ModalInput
                 value={val}
                 onSelectMax={handleSelectMax}
@@ -138,7 +138,7 @@ const DepositModal: React.FC<DepositModalProps> = ({
                     width: '130px',
                 }}
             >
-                <Link style={{textDecoration: 'none', color: isBalanceZero ? '#fff' : theme.pinkGamma, fontWeight: 500, fontSize: '13px'}}
+                <Link style={{textDecoration: 'none', color: theme.darkMode ? '#A89FCA' : '#1D1D1F', fontWeight: 500, fontSize: '13px'}}
                       href={addLiquidityUrl}>{'Get ' + lpLabel}</Link>
             </ButtonLinkGet>
             <Flex mb="15px" alignItems="center" justifyContent="space-around">

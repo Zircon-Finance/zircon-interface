@@ -90,7 +90,7 @@ const Container = styled.div<{ expanded, staked }>`
             ${collapseAnimation} 300ms linear forwards
           `};
   overflow: hidden;
-  background: ${({ theme }) => theme.darkMode ? '#452632' : '#F5F3F4'};
+  background: ${({ theme }) => theme.darkMode ? '#222328' : '#F1F0EE'};
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -316,7 +316,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
 
   const TooltipContentRisk: React.FC<ToolTipProps> = ({option}) => {return (
     <ToolTip style={{left: width >= 700 ? '-410px' : '-230px', bottom: width >= 700 ? '-10px' : '-20px', width: width >= 700 ? '400px' : '230px'}} show={hoverRisk}>
-      <Text fontSize='13px' fontWeight={500} color={theme.text1}>
+      <Text fontSize='13px' fontWeight={500} color={theme.darkMode ? '#1D1D1F' : '#FFF'}>
       {`${option === 'health' ? 'The health factor measures how balanced this Stable vault is. Imbalanced vaults may be partially slashed when withdrawing during critical market activity.' :
           option === 'divergence' ? 'Divergence measures how much impermanent loss the Float vault is suffering.' :
           'General info'}`}
@@ -462,7 +462,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
               <QuarterContainer >
                 {(isApproved || chainId === 1285) ? (
                         <StakeAdd 
-                          pink={true} clickAction={() => {!farm.isFinished && setShowModal(true)}} 
+                          clickAction={() => {!farm.isFinished && setShowModal(true)}} 
                           row={true} margin={false} 
                           width={'100px'} 
                           height='42px' 
@@ -472,10 +472,11 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
                         onMouseOver={() => setHovered(true)}
                         onMouseLeave={() => setHovered(false)}
                         style={{
-                            background: hovered ? theme.pinkGamma : '#B05D98',
+                            background: theme.darkMode ? hovered ? 'rgba(168, 159, 202, 0.17)' : 'rgba(168, 159, 202, 0.07)' :
+                            hovered ? '#EBEBFE' : '#EBEBED',
                             border: 'none', 
-                            color: '#FFF', 
                             height: '42px', 
+                            color: theme.darkMode ? '#A89FCA' : '#1D1D1F',
                             padding: '0 15px', 
                             borderRadius: '12px', 
                             width: 'auto'

@@ -49,7 +49,8 @@ const DialogContainer = styled.div<{ show }>`
       `};
   position: absolute;
   top: 40px;
-  background: #B05D98;
+  color: ${({ theme }) => theme.darkMode ? '#1D1D1F' : '#fff'};
+  background: ${({ theme }) => theme.darkMode ? '#A89FCA' : '#1D1D1F'};
   border-radius: 17px;
   padding: 10px;
   z-index: 1000;
@@ -80,7 +81,7 @@ animation: ${({ show }) =>
   z-index: 80;
   left: -15px;
   top: 30px;
-  background: ${({ theme }) => theme.darkMode ? '#452632' : '#F5F3F4'};
+  background: ${({ theme }) => theme.darkMode ? '#222328' : '#F1F0EE'};
   border-radius: 17px;
 `
 
@@ -99,7 +100,7 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
   const pairLiquidity = usePairLiquidity(farm?.token1, farm?.token2)
   const plusContent = (
       <DialogContainer show={hoverPlus}>
-        <Text style={{color: '#FFF'}} fontSize='13px'>
+        <Text fontSize='13px' color={theme.darkMode ? '#1D1D1F' : '#FFF'}>
           {('Add liquidity')}
         </Text>
       </DialogContainer>
@@ -126,7 +127,7 @@ const Liquidity: React.FunctionComponent<LiquidityProps> = ({ liquidity, hovered
             >
               <IconButton
                 style={{
-                  background: '#B05D98',
+                  background: theme.darkMode ? '#A89FCA' : '#1D1D1F',
                   width: "29px",
                   height: "28px",
                   borderRadius: "100%",

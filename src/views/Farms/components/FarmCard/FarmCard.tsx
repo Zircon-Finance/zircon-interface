@@ -43,7 +43,7 @@ const StyledCard = styled(Card)`
 
 const FarmCardInnerContainer = styled(Flex)`
   flex-direction: column;
-  background: ${({ theme }) => theme.darkMode ? '#452632' : '#F8F7F7'};
+  background: ${({ theme }) => theme.darkMode ? '#222328' : '#F1F0EE'};
   justify-content: space-around;
   padding: 10px;
   height: 600px;

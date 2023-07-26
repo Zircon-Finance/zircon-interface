@@ -53,8 +53,8 @@ import { ethers } from 'ethers'
 
 export const PercButton = styled.button<{ width: string }>`
   padding: 0.5rem 1rem;
-  background-color: ${({theme}) => theme.darkMode ? '#482537' : theme.darkerContrastPink};
-  color: ${({theme}) => theme.slippageActive};
+  background-color: ${({theme}) => theme.darkMode ? '#43454b' : theme.slippageActive};
+  color: ${({theme}) => theme.darkMode ? '#fff' : '#fff'};
   border-radius: 17px;
   font-size: 13px;
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -655,7 +655,7 @@ const SlippageWarningModal = () => (
               <TransparentCard style={{padding: '0px'}}>
                 <AutoColumn gap="20px">
                   <Flex justifyContent={'center'}>
-                    <div style={{display: 'flex', background: theme.darkMode ? '#482537' : theme.darkerContrastPink, borderRadius: '17px', justifyContent: 'center', height: '33px'}}>
+                    <div style={{display: 'flex', background: theme.darkMode ? '#43454b' : theme.darkerContrastPink, borderRadius: '17px', justifyContent: 'center', height: '33px'}}>
 
                       <ButtonAnchor borderRadius={'12px'} padding={'5px 15px'}
                                     style={{backgroundColor: !showDetailed ? theme.slippageActive : 'transparent', fontWeight: 500, fontSize: '13px', color: !showDetailed ? '#fff' : theme.slippageActive}}

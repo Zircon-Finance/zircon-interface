@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react'
-import styled, { css } from 'styled-components'
+import styled, { css, useTheme } from 'styled-components'
 import { IconButton, Skeleton } from '@pancakeswap/uikit'
 import MinusIcon from '../MinusIcon'
 import { expandAnimation, collapseAnimation } from './Staked'
@@ -40,7 +40,7 @@ const DialogContainer = styled.div<{ show }>`
       `};
   position: absolute;
   top: 40px;
-  background: #B05D98;
+  background: ${({ theme }) => theme.darkMode ? '#A89FCA' : '#1D1D1F'};
   border-radius: 17px;
   padding: 10px;
   z-index: 1000;
@@ -59,10 +59,11 @@ const AbsContainer = styled.div`
 const Earned: React.FunctionComponent<EarnedPropsWithLoading> = ({ contractAddress, earnings, userDataReady, hovered, setHovered, earningsUSD }) => {
   const [hoverMinus, setHoverMinus] = React.useState(false)
   const { width } = useWindowDimensions()
+  const theme = useTheme()
 
   const minusContent = (
     <DialogContainer show={hoverMinus}>
-      <Text style={{color: '#FFF'}}>
+      <Text style={{color: theme.darkMode ? '#1D1D1F' : '#FFF'}}>
         {('Withdraw')}
       </Text>
     </DialogContainer>
@@ -78,7 +79,7 @@ const Earned: React.FunctionComponent<EarnedPropsWithLoading> = ({ contractAddre
       <AbsContainer
       onMouseEnter={()=>setHovered(true)}>
         <IconButton
-            style={{background: '#B05D98', width: '29px', height: '28px', borderRadius: '100%'}}>
+            style={{background: theme.primaryText1, width: '29px', height: '28px', borderRadius: '100%'}}>
             <Flex
               onMouseEnter={()=>setHoverMinus(true)}
               onMouseLeave={()=>setHoverMinus(false)}>

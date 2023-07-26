@@ -23,6 +23,14 @@ type UserData =
     }
 
 export const transformUserData = (userData: UserData) => {
+  console.log('returning this userdata:', {
+    allowance: userData ? new BigNumber(userData.allowance) : BIG_ZERO,
+    stakingTokenBalance: userData ? new BigNumber(userData.stakingTokenBalance) : BIG_ZERO,
+    stakedBalance: userData ? new BigNumber(userData.stakedBalance) : BIG_ZERO,
+    pendingReward: userData ? new BigNumber(userData.pendingReward) : BIG_ZERO,
+  })
+  console.log('original userData:', userData)
+  
   return {
     allowance: userData ? new BigNumber(userData.allowance) : BIG_ZERO,
     stakingTokenBalance: userData ? new BigNumber(userData.stakingTokenBalance) : BIG_ZERO,
@@ -151,4 +159,4 @@ export const getTokenPricesFromFarm = (farms: SerializedFarm[]) => {
   }, {})
 }
 
-export const getApiData = async(chainId) => await axios.get(`https://edgeapi.zircon.finance/static/yield/${chainId}`).then((res) => res.data)
+export const getApiData = async(chainId) => await axios.get(`https://edgeapi.diffuse.finance/static/yield/${chainId}`).then((res) => res.data)

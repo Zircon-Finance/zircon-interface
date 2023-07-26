@@ -252,7 +252,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
                 </Text>
                 <IconButtonWrapper>
                   <IconButton
-                    style={{background: '#B05D98', width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
+                    style={{background: theme.primaryText1, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
                     variant="tertiary"
                       onClick={()=>setshowModalWithdraw(true)} mr="6px">
                     <Flex>
@@ -260,7 +260,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
                     </Flex>
                   </IconButton>
                   <IconButton
-                    style={{background: '#B05D98', width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
+                    style={{background: theme.primaryText1, width: '29px', height: '28px', borderRadius: '100%', marginRight: '5px'}}
                     variant="tertiary"
                       onClick={()=>{setshowModalDeposit(true)}}
                       disabled={pool.isFinished}

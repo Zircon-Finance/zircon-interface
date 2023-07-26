@@ -95,7 +95,7 @@ animation: ${({ show }) =>
     : css`
         ${collapseAnimation} 200ms linear forwards
       `};
-background: ${({theme}) => theme.darkMode ? '#743751' : '#E1DDDE'};
+background: ${({theme}) => theme.darkMode ? '#A89FCA' : '#E1DDDE'};
 border-radius: 17px; 
 padding: 10px;
 position: absolute; 
@@ -203,7 +203,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
 
   const TooltipContentRisk: React.FC<ToolTipProps> = ({option}) => {return (
     <ToolTip show={hoverRisk}>
-      <Text fontSize='13px' fontWeight={500} color={theme.text1}>
+      <Text fontSize='13px' fontWeight={500} color={theme.darkMode ? '#1D1D1F' : '#FFF'}>
       {`${option === 'health' ? 'The health factor measures how balanced this Stable vault is. Imbalanced vaults may be partially slashed when withdrawing during critical market activity.' :
           option === 'divergence' ? 'Divergence measures how much impermanent loss the Float vault is suffering.' :
           'General info'}`}
@@ -274,7 +274,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const isSmallerScreen = !isDesktop
   const tableSchema = isSmallerScreen ? MobileColumnSchema : DesktopColumnSchema
   const columnNames = tableSchema.map((column) => column.name)
-  const isApproved = account && details.userData.allowance && details.userData.allowance.isGreaterThan(0)
+  const isApproved = account && details.userData.allowance && details.userData.allowance.gt(0)
   const stakedAmount = usePool(details.contractAddress).pool.userData.stakedBalance.toNumber()
   const toggleWalletModal = useWalletModalToggle()
   // const [rewardTokens, setRewardTokens] = useState("")
@@ -293,7 +293,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
         !actionPanelExpanded && (
         <StyledTr expanded={isVisible} onClick={toggleActionPanel} onMouseOver={() => setHovered(true)}
         onMouseOut={() => setHovered(false)}
-        style={{backgroundColor: hovered ? theme.darkMode ? '#452632' : '#F5F3F4' : null}} >
+        style={{backgroundColor: hovered ? theme.darkMode ? '#222328' : '#F1F0EE' : null}} >
           {Object.keys(props).map((key) => {
             const columnIndex = columnNames.indexOf(key)
             if (columnIndex === -1) {
@@ -389,7 +389,6 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                           </CellInner>
                         ) : (
                           <StakeAdd
-                            pink={true}
                             row={true}
                             margin={true}
                             width={"86px"}
@@ -408,7 +407,9 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                             borderRadius: "12px",
                             height: "34px",
                             fontWeight: 500,
-                            background: theme.darkMode && hoverEnable ? 'rgba(202, 144, 187, 0.17)' : 'rgba(202, 144, 187, 0.07)'
+                            color: theme.darkMode ? '#A89FCA' : '#1D1D1F',
+                            background: theme.darkMode ? hoverEnable ? 'rgba(168, 159, 202, 0.17)' : 'rgba(168, 159, 202, 0.07)' :
+                            hoverEnable ? '#EBEBFE' : '#EBEBED'
                           }}
                           disabled={pendingTx || props.farm.isFinished}
                           onClick={handleApproval}

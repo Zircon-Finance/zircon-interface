@@ -99,7 +99,7 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap, d
             <Link to={`/add-pro/${tokenData?.id}/`}>
               <IconButton
                 style={{
-                  background: hoverPlus ? '#B05D98' : theme.slippageActive,
+                  background: hoverPlus ? theme.primaryText1 : theme.slippageActive,
                   boxShadow: "none",
                   width: "29px",
                   height: "29px",
@@ -118,7 +118,7 @@ const FavTokensRow = ({token, index, topTokens, topTokensPrevious, handleSwap, d
             <Link onClick={() => handleSwap(currency)} to={`#`}>
               <IconButton
                 style={{
-                  background: hoverPlus ? '#B05D98' : theme.slippageActive,
+                  background: hoverPlus ? theme.primaryText1 : theme.slippageActive,
                   width: "29px",
                   boxShadow: "none",
                   height: "29px",

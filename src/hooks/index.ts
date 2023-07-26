@@ -115,7 +115,7 @@ export const useBlockedApiData = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await fetch(`https://edgeapi.zircon.finance/static/paused/${chainId}`);
+      const result = await fetch(`https://edgeapi.diffuse.finance/static/paused/${chainId}`);
       const data = await result.json();
       setBlockedApiData(data);
     };

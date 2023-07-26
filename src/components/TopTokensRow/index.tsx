@@ -244,7 +244,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
             >
               <IconButton
                 style={{
-                  background: hoverPlus ? '#B05D98' : theme.slippageActive,
+                  background: hoverPlus ? theme.primaryText1 : theme.slippageActive,
                   boxShadow: 'none',
                   width: "29px",
                   height: "29px",
@@ -268,7 +268,7 @@ export const TopTokensRow: React.FC<TokenRowProps> = (item) => {
             >
               <IconButton
                 style={{
-                  background: hoverSwap ? '#B05D98' : theme.slippageActive,
+                  background: hoverSwap ? theme.primaryText1 : theme.slippageActive,
                   width: "29px",
                   boxShadow: 'none',
                   height: "29px",

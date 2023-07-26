@@ -144,10 +144,10 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     changeButtonNormal: darkMode ? 'rgba(168, 159, 202, 0.07)' : 'rgba(29, 29, 31, 0.07)',
     changeButtonHover: darkMode ? 'rgba(168, 159, 202, 0.17)' : 'rgba(29, 29, 31, 0.17)',
 
-    tableButton: darkMode ? '#442233' : '#f1ebf0',
+    tableButton: darkMode ? 'rgba(168, 159, 202, 0.07)' : '#E4E2DF',
 
     positionsButtons: darkMode ? '#fff' : '#EAE5E8',
-    modalBg : darkMode ? 'rgba(0,0,0,0.5)' : 'rgba(36, 17, 26, 0.5)',
+    modalBg : darkMode ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0.5)',
 
     liquidityBg: darkMode ? '#222328' : '#F1F0EE',
 
@@ -157,7 +157,7 @@ export function colors(chainId: any, darkMode: boolean): Colors {
     searchInput: darkMode ? '#2E3036' : '#F1F0EE',
 
     // color text
-    primaryText1: '#ffffff',
+    primaryText1: darkMode ? '#A89FCA' : '#1D1D1F',
     whiteBlackPink: darkMode ? '#ffffff' : '#9e4d86',
 
     // secondary colors

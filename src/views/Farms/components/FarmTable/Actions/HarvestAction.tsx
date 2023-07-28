@@ -137,7 +137,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ earningTok
                     >
                         {pendingTx ? t('HARVESTING..') : t('HARVEST ALL')}
                     </HarvestButton>
-                    {((pool.token1.symbol === 'ZRG' || pool.token2.symbol === 'ZRG') && pool.earningTokenInfo.find(t => t.symbol === 'KSM')?.currentPrice > 0) && (
+                    {((pool.token1.symbol === 'DFS' || pool.token2.symbol === 'DFS') && pool.earningTokenInfo.find(t => t.symbol === 'KSM')?.currentPrice > 0) && (
                      <HarvestButton
                         disabled={earnings.eq(0) || pendingTx || !userDataReady}
                         onClick={async () => {

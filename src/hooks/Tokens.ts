@@ -20,8 +20,8 @@ export const useSubgraphUrl = () => {
   useEffect(() => {
     if (chainId === 56) {
       setSubgraphUrl('https://api.thegraph.com/subgraphs/name/reshyresh/zi')
-    } else if (chainId === 1285) {
-      setSubgraphUrl('https://api.thegraph.com/subgraphs/name/reshyresh/zircon-finance')
+    } else if (chainId === 421613) {
+      setSubgraphUrl('https://api.thegraph.com/subgraphs/name/reshyresh/diffuse-alpha')
     }},[chainId])
   return subgraphUrl
 }
@@ -67,7 +67,7 @@ export function useApiTokens(): { [address: string]: Token } {
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await fetch(`https://edgeapi.zircon.finance/static/monitoring/${chainId}`);
+      const result = await fetch(`https://edgeapi.diffuse.finance/static/monitoring/${chainId}`);
       const data = await result.json();
       setTokensData(data?.tokens);
     };

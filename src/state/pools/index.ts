@@ -39,7 +39,7 @@ export const fetchPoolsPublicDataAsync = (chainId: number, currentBlock: number)
     }) : []
 
     // const poolsInformation = await fetchPools(chainId, apiData)
-    const priceZRGNTV = {zrg: apiData[0]?.zrgPrice, ntv: apiData[0]?.ntvPrice}
+    const priceDFSNTV = {dfs: apiData[0]?.dfsPrice, ntv: apiData[0]?.ntvPrice}
 
     const liveData = apiData.map((pool, i) => {
       const apiPool = apiData.filter((poolArray) => poolArray.contractAddress === pool.contractAddress.toLowerCase());
@@ -83,8 +83,8 @@ export const fetchPoolsPublicDataAsync = (chainId: number, currentBlock: number)
         vTotalSupply: apiPool[0]?.psiTS,
         liquidity: {pylon: parseFloat(apiPool[0]?.tvl.tvlPylon), pair: parseFloat(apiPool[0]?.tvl.tvlPair)},
         reserves: {reserve0: parseFloat(apiPool[0]?.reserves.r0Complete), reserve1: parseFloat(apiPool[0]?.reserves.r1Complete)},
-        zrgPrice: priceZRGNTV?.zrg,
-        ntvPrice: priceZRGNTV?.ntv,
+        dfsPrice: priceDFSNTV?.dfs,
+        ntvPrice: priceDFSNTV?.ntv,
         staked: new BigNumber(apiPool[0]?.staked).toString(),
         apr: parseFloat(apiPool[0]?.apr) + parseFloat(apiPool[0]?.feesAPR),
         baseApr: parseFloat(apiPool[0]?.apr),

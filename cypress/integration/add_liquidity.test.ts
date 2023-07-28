@@ -3,7 +3,7 @@ describe('Add Liquidity', () => {
   it('Loads the two correct tokens', () => {
     cy.visit('#/add/ETH/0x4545E94974AdACb82FC56BCf136B07943e152055/')
     cy.get('#add-liquidity-input-tokena .token-symbol-container').should('contain.text', 'MOVR')
-    cy.get('#add-liquidity-input-tokenb .token-symbol-container').should('contain.text', 'ZRG')
+    cy.get('#add-liquidity-input-tokenb .token-symbol-container').should('contain.text', 'DFS')
   })
 
   it('Does not crash if ETH is duplicated', () => {
@@ -16,7 +16,7 @@ describe('Add Liquidity', () => {
     cy.visit('#/add/ETH/0x4545E94974AdACb82FC56BCf136B07943e152055/')
     cy.get('#add-liquidity-input-tokena .token-symbol-container').should('contain.text', 'MOVR')
     cy.visit('/add/0x4545E94974AdACb82FC56BCf136B07943e152055')
-    cy.get('#add-liquidity-input-tokena .token-symbol-container').should('contain.text', 'ZRG')
+    cy.get('#add-liquidity-input-tokena .token-symbol-container').should('contain.text', 'DFS')
   })
 
 })

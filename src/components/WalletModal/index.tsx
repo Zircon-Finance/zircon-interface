@@ -175,7 +175,7 @@ const supportedNetworks = {
     blockExplorerUrls: ['https://goerli.arbiscan.io/'],
     nativeCurrency: {
       name: 'Goerli Ether',
-      symbol: 'GETH',
+      symbol: 'AGOR',
       decimals: 18,
     },
   }
@@ -420,8 +420,8 @@ export default function WalletModal({
               <>
               <h5 style={{textAlign: 'center'}}>{'Please connect to an appropriate supported network.'}</h5>
               <Flex style={{justifyContent: 'space-between'}}>
-                {connector === injected && <ButtonPrimary mt={'10px'} style={{width: '48%'}} onClick={() => connectNet('moonriver')} >{'Moonriver'}</ButtonPrimary>}
-                {connector === injected && <ButtonPrimary mt={'10px'} style={{width: '48%'}} onClick={() => connectNet('bsc')} >{'BSC'}</ButtonPrimary>}
+                {/* {connector === injected && <ButtonPrimary mt={'10px'} style={{width: '48%'}} onClick={() => connectNet('moonriver')} >{'Moonriver'}</ButtonPrimary>} */}
+                {connector === injected && <ButtonPrimary mt={'10px'} style={{width: '100%'}} onClick={() => connectNet('arbGoerli')} >{'Arbitrum Goerli'}</ButtonPrimary>}
               </Flex>
               </>
             ) : (

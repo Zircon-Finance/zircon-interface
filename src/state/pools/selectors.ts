@@ -12,7 +12,7 @@ export const basePool = {
   token2: new Token(ChainId.MOONRIVER, '0xE3F5a90F9cb311505cd691a46596599aA1A0AD7D', 6, 'USDC', 'USDC'),
   isClassic: false,
   isAnchor: true,
-  earningToken: [new Token(ChainId.MOONRIVER, '0x4545E94974AdACb82FC56BCf136B07943e152055', 18, 'ZRG', 'DIFFUSE Gamma'),],
+  earningToken: [new Token(ChainId.MOONRIVER, '0x4545E94974AdACb82FC56BCf136B07943e152055', 18, 'DFS', 'DIFFUSE Gamma'),],
   stakingToken: new Token(ChainId.MOONRIVER, '0x17Bd5A512ac2906C89C37B3b863D69e418fBdaAa', 18, 'sZPT', 'DIFFUSE Stable Token'),
   contractAddress: '0x5d69EDd498b7a335F0FC8d4a797b7a33654C6A28',
   vaultAddress: '0xDd3D81193dc9AfE0a03f425BaA6a081CAeDb32C4',

@@ -63,7 +63,7 @@ const StakedLP: React.FunctionComponent<StackedLPProps> = ({
 
   return (
       <Flex flexDirection="column" alignItems="flex-start" justifyContent={'space-between'} style={{height: '100%'}}>
-        <Heading style={{color: theme.text1, fontWeight: 400, fontSize: '24px', marginBottom: '18px', marginTop: viewMode === ViewMode.TABLE && width >= 800 && '35px'}}>{displayBalance() + " ZPT"}</Heading>
+        <Heading style={{color: theme.text1, fontWeight: 400, fontSize: '24px', marginBottom: '18px', marginTop: viewMode === ViewMode.TABLE && width >= 800 && '35px'}}>{displayBalance() + " DPT"}</Heading>
         {stakedBalance.gt(0) && !isClassic && (
             <>
               <Balance

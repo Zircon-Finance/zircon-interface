@@ -281,7 +281,7 @@ export default function RemoveLiquidity({
       <div>
         <RowBetween>
           <Text color={theme.text2} fontWeight={400} fontSize={16} mb='15px'>
-            {'ZPT ' + currencyA?.symbol + '/' + currencyB?.symbol} Burned
+            {'DPT ' + currencyA?.symbol + '/' + currencyB?.symbol} Burned
           </Text>
           <RowFixed>
             <DoubleCurrencyLogo currency0={currencyA} currency1={currencyB} margin={true} />

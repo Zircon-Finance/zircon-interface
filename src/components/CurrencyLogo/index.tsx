@@ -6,7 +6,7 @@ import { WrappedTokenInfo } from '../../state/lists/hooks'
 import Logo from '../Logo'
 
 export const getTokenLogoURL = (symbol: string) =>
-    `https://raw.githubusercontent.com/Diffuse-Finance/tokenlist/main/${symbol}/logo.png`
+    `https://raw.githubusercontent.com/Diffuse-Finance/tokenlist/master/${symbol}/logo.png`
 
 const getTokenLogoURL2 = (adddress: string) =>
     `https://raw.githubusercontent.com/solarbeamio/solarbeam-tokenlist/main/assets/moonriver/${adddress}/logo.png`

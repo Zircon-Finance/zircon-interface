@@ -183,7 +183,7 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
                 }
 
                 {showModalWithdraw &&
-                <WithdrawModal max={stakedBalance} onConfirm={handleUnstake} tokenName={'ZPT'} onDismiss={()=>setShowModalWithdraw(false)} token={stakingToken} />
+                <WithdrawModal max={stakedBalance} onConfirm={handleUnstake} tokenName={'DPT'} onDismiss={()=>setShowModalWithdraw(false)} token={stakingToken} />
                 }
             </ModalContainer>
             }

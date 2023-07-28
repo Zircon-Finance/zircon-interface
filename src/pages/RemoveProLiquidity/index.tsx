@@ -24,7 +24,7 @@ import {useCurrency} from '../../hooks/Tokens'
 
 import {useTransactionAdder} from '../../state/transactions/hooks'
 import {StyledInternalLink} from '../../theme'
-import {calculateSlippageAmount, getPylonRouterContract} from '../../utils'
+import {calculateGasMargin, calculateSlippageAmount, getPylonRouterContract} from '../../utils'
 //calculateGasMargin,
 import {currencyId} from '../../utils/currencyId'
 import useDebouncedChangeHandler from '../../utils/useDebouncedChangeHandler'
@@ -102,11 +102,12 @@ export default function RemoveProLiquidity({
   const { onUserInput: _onUserInput } = useBurnActionHandlers()
   const isValid = !error
   let textError = ''
-  if ((independentField === Field.CURRENCY_A && typedValue > parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)) || 
-    (independentField === Field.CURRENCY_B && typedValue > parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)) ||
-    (independentField === Field.LIQUIDITY && typedValue > parsedAmounts[Field.LIQUIDITY]?.toSignificant(6)) ||
-    parsedAmounts[Field.LIQUIDITY]?.toSignificant(6) === '0') textError = 'Enter an amount' 
-  else textError = ''
+  // console.log('parsedAmounts', parsedAmounts)
+  // if ((independentField === Field.CURRENCY_A && Field.CURRENCY_A && typedValue > parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)) || 
+  //   (independentField === Field.CURRENCY_B && Field.CURRENCY_B && typedValue > parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)) ||
+  //   (independentField === Field.LIQUIDITY && Field.LIQUIDITY && typedValue > parsedAmounts[Field.LIQUIDITY]?.toSignificant(6)) ||
+  //   parsedAmounts[Field.LIQUIDITY]?.toSignificant(6) === '0') textError = 'Enter an amount' 
+  // else textError = ''
   // modal and loading
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [showDetailed, setShowDetailed] = useState<boolean>(false)
@@ -259,7 +260,7 @@ export default function RemoveProLiquidity({
     }else{
       throw new Error('Attempting to confirm without approval. Please contact support.')
     }
-    /*
+    
     const safeGasEstimates: (BigNumber | undefined)[] = await Promise.all(
       methodNames.map(methodName =>
         router.estimateGas[methodName](...args)
@@ -270,8 +271,8 @@ export default function RemoveProLiquidity({
           })
       )
     )
-    */
-    const safeGasEstimates: BigNumber[] = [BigNumber.from('1000000')]
+    
+    // const safeGasEstimates: BigNumber[] = [BigNumber.from('1000000')]
     const indexOfSuccessfulEstimation = safeGasEstimates.findIndex(safeGasEstimate =>
         BigNumber.isBigNumber(safeGasEstimate)
     )
@@ -439,16 +440,16 @@ const ConfirmationInputModal = () => (
 )
 
 const SlippageWarningModal = () => (
-<Flex flexDirection={'column'} style={{background: theme.darkMode ? '#52273A' : 'transparent'}}>
+<Flex flexDirection={'column'} >
         <Text mt='20px' style={{lineHeight: '160%'}} textAlign='center'>{'You can reduce slippage and get more'}</Text>
         <Text mb='10px' textAlign='center'>{`tokens using the Hybrid Remove method`}</Text>
         <Flex mt='20px' mb='30px' mx='auto' style={{gap: '10px', textAlign: 'center'}}>
           <Flex onClick={() => [setChosenOption(1), setConfirmationSlippage(true)]} flexDirection={'column'}
           style={{
             border: `${(chosenOption === 1) ? `2px solid ${theme.pinkGamma}` :
-              theme.darkMode ? '2px solid rgba(98, 47, 69, 0.5)' : '2px solid #F5F3F4'}` ,
+              theme.darkMode ? `2px solid #A89FCA` : '2px solid #F5F3F4'}` ,
                borderRadius: '17px', cursor: 'pointer', marginTop: '30px'}}>
-            <Text fontSize='14px' fontWeight={500} p='20px 10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#F5F3F4'}`}}>{'CURRENT POSITION'}</Text>
+            <Text fontSize='14px' fontWeight={500} p='20px 10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#A89FCA' : '#F5F3F4'}`}}>{'CURRENT POSITION'}</Text>
             <Text my='10px'>{'You get'}</Text>
             <Text fontSize='18px' mb='20px' fontWeight={500}>{`${originalValue.length > 15 ? originalValue.slice(0, 3) + '...' + originalValue.slice(-3) : originalValue} ${!isFloat ? currencyB?.symbol : currencyA?.symbol}`}</Text>
             <RadioContainer style={{marginTop: '5px'}} active={chosenOption === 1} second={false}>
@@ -460,10 +461,10 @@ const SlippageWarningModal = () => (
               style={{border: `${(chosenOption === 2) ? `2px solid ${theme.pinkGamma}` : '2px solid transparent'}` ,
               borderBottomLeftRadius: '17px',
               borderBottomRightRadius: '17px',
-              backgroundColor: theme.darkMode ? '#622F45' : '#EEEAEC',
+              backgroundColor: theme.bg2,
               cursor: 'pointer'}}
             >
-              <Text fontSize='14px' fontWeight={500} p='20px 10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#E4E0E3'}`}}>{'WITH HYBRID REMOVE'}</Text>
+              <Text fontSize='14px' fontWeight={500} p='20px 10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#A89FCA' : '#E4E0E3'}`}}>{'WITH HYBRID REMOVE'}</Text>
               <Text fontSize='14px' my='10px'>{'You get'}</Text>
               <Text fontSize='18px' fontWeight={500}>
                 {`${formattedAmounts[Field.CURRENCY_A]} ${isFloat ? currencyB?.symbol : currencyA?.symbol} `}
@@ -512,7 +513,7 @@ const SlippageWarningModal = () => (
         <div>
           <RowBetween mb='5px'>
             <Text color={theme.text2} fontWeight={400} fontSize={16}>
-              {'ZPT ' + currencyA?.symbol + '/' + currencyB?.symbol} Burned
+              {'DPT ' + currencyA?.symbol + '/' + currencyB?.symbol} Burned
             </Text>
             <RowFixed>
               <DoubleCurrencyLogo currency0={currencyA} currency1={currencyB} margin={true} />

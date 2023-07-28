@@ -72,9 +72,9 @@ export const RadioContainer = styled.div<{ active: boolean, second: boolean }>`
   justify-content: center;
   border-radius: 100%;
   width: 30px;
-  border: ${({ theme, second }) => second ? 'none' : `1px solid ${theme.darkMode ? '#733751' : '#EEEAEC'}`};
+  border: ${({ theme, second }) => second ? 'none' : `1px solid ${theme.darkMode ? '#A89FCA' : '#EEEAEC'}`};
   height: 30px;
-  background: ${({ theme, second }) => second ? theme.darkMode ? '#52273A' : '#FCFBFC' : 'none'};
+  background: ${({ theme, second }) => second ? theme.darkMode ? '#A89FCA' : '#FCFBFC' : 'none'};
   align-self: center;
   cursor: pointer;
 `
@@ -856,18 +856,18 @@ export default function AddLiquidityPro({
   }, [showConfirm])
 
   const SlippageWarningModal = () => (
-    <Flex flexDirection={'column'} style={{background: theme.darkMode ? '#52273A' : 'transparent'}}>
+    <Flex flexDirection={'column'} style={{background: 'transparent'}}>
         <Text mt='20px' style={{lineHeight: '160%'}} textAlign='center'>{'You can reduce slippage and get more'}</Text>
         <Text mb='10px' textAlign='center'>{`LP tokens using the Hybrid Add method`}</Text>
         <Flex mt='20px' mb='30px' mx='auto' style={{gap: '10px', textAlign: 'center'}}>
           <Flex onClick={() => [setChosenOption(1), setConfirmationSlippage(true)]} flexDirection={'column'}
           style={{
             border: `${(chosenOption === 1) ? `2px solid ${theme.pinkGamma}` :
-              theme.darkMode ? '2px solid rgba(98, 47, 69, 0.5)' : '2px solid #F5F3F4'}` ,
+              theme.darkMode ? '2px solid #A89FCA' : '2px solid #F5F3F4'}` ,
                borderRadius: '17px', cursor: 'pointer', marginTop: '30px'}}>
-            <Text fontSize='14px' fontWeight={500} p='20px 10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#F5F3F4'}`}}>{'CURRENT POSITION'}</Text>
+            <Text fontSize='14px' fontWeight={500} p='20px 10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#A89FCA' : '#F5F3F4'}`}}>{'CURRENT POSITION'}</Text>
             <Text my='10px'>{'You add'}</Text>
-            <Text fontSize='18px' pb='54px' fontWeight={500} style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#F5F3F4'}`}}>
+            <Text fontSize='18px' pb='54px' fontWeight={500} style={{borderBottom: `1px solid ${theme.darkMode ? '#A89FCA' : '#F5F3F4'}`}}>
               {`${originalValue} ${currencies[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.symbol} `}
             </Text>
             <Text fontSize='14px' mt='10px'>{'You get'}</Text>
@@ -881,16 +881,16 @@ export default function AddLiquidityPro({
               style={{border: `${(chosenOption === 2) ? `2px solid ${theme.pinkGamma}` : '2px solid transparent'}` ,
               borderBottomLeftRadius: '17px',
               borderBottomRightRadius: '17px',
-              backgroundColor: theme.darkMode ? '#622F45' : '#EEEAEC',
+              backgroundColor: theme.darkMode ? theme.bg1 : '#EEEAEC',
               cursor: 'pointer'}}
             >
-              <Text fontSize='14px' fontWeight={500} p='20px 10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#E4E0E3'}`}}>{'WITH Hybrid ADD'}</Text>
+              <Text fontSize='14px' fontWeight={500} p='20px 10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#A89FCA' : '#E4E0E3'}`}}>{'WITH Hybrid ADD'}</Text>
               <Text fontSize='14px' my='10px'>{'You add'}</Text>
               <Text fontSize='18px' fontWeight={500}>
                 {`${customValue1} ${currencies[isFloat ? Field.CURRENCY_A : Field.CURRENCY_B]?.symbol} `}
               </Text>
               <Flex style={{width: '100%', justifyContent: 'center', alignItems:'center'}}><PlusIcon /></Flex>
-              <Text fontSize='18px' pb='10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#5A2B3F' : '#E4E0E3'}`}} fontWeight={500}>
+              <Text fontSize='18px' pb='10px' style={{borderBottom: `1px solid ${theme.darkMode ? '#A89FCA' : '#E4E0E3'}`}} fontWeight={500}>
                 {`${customValue2} ${currencies[isFloat ? Field.CURRENCY_B : Field.CURRENCY_A]?.symbol} `}
               </Text>
               <Text fontSize='14px' mt='10px'>{'You get'}</Text>
